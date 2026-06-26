@@ -2006,7 +2006,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
     /* Canvas : prend tout l'écran avec espace pour logo et barre du bas */
     .lb-canvas-wrap {
-        padding: 90px 24px 140px 24px;
+        padding: 90px 45px 140px 45px;
         padding-top: calc(90px + env(safe-area-inset-top, 0px));
         padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
     }
