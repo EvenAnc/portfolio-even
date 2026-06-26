@@ -238,24 +238,25 @@
                     </div>
                     <p class="page-intro" data-i18n="contact_intro">Discutons de votre projet d'aménagement intérieur.</p>
                     <div class="contact-layout">
-                        <form class="contact-form" onsubmit="event.preventDefault();">
+                        <form class="contact-form" id="contact-form" novalidate>
                             <div class="fg">
-                                <input type="text" id="fn" required placeholder=" " class="fi">
+                                <input type="text" id="fn" name="name" required placeholder=" " class="fi" autocomplete="name">
                                 <label for="fn" class="fl" data-i18n="form_name">NOM</label>
                                 <span class="fb"></span>
                             </div>
                             <div class="fg">
-                                <input type="email" id="fe" required placeholder=" " class="fi">
+                                <input type="email" id="fe" name="email" required placeholder=" " class="fi" autocomplete="email">
                                 <label for="fe" class="fl" data-i18n="form_email">EMAIL</label>
                                 <span class="fb"></span>
                             </div>
                             <div class="fg">
-                                <textarea id="fm" required placeholder=" " class="fi fi-ta"></textarea>
+                                <textarea id="fm" name="message" required placeholder=" " class="fi fi-ta"></textarea>
                                 <label for="fm" class="fl" data-i18n="form_message">MESSAGE</label>
                                 <span class="fb"></span>
                             </div>
+                            <div id="form-feedback" class="form-feedback" aria-live="polite"></div>
                             <div class="frame-wrap btn-wrap">
-                                <button type="submit" class="submit-btn">
+                                <button type="submit" class="submit-btn" id="contact-submit">
                                     <span data-i18n="form_send">ENVOYER</span>
                                 </button>
                                 <svg class="sketch-rect-svg btn-rect" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
@@ -333,7 +334,7 @@
                         <div class="frame-wrap">
                             <div class="torn-frame">
                                 <div class="media-frame-inner">
-                                    <img src="assets/render_living_room.png" alt="Résidence Brutaliste" class="media-frame-img">
+                                    <img src="assets/render_living_room.png" alt="Résidence Brutaliste" class="media-frame-img" loading="lazy">
                                 </div>
                             </div>
                             <div class="frame-text-overlay overlay-br">
@@ -351,7 +352,7 @@
                         <div class="frame-wrap">
                             <div class="torn-frame torn-alt">
                                 <div class="media-frame-inner">
-                                    <img src="assets/blueprint_apartment.png" alt="Appartement Hus" class="media-frame-img">
+                                    <img src="assets/blueprint_apartment.png" alt="Appartement Hus" class="media-frame-img" loading="lazy">
                                 </div>
                             </div>
                             <div class="frame-text-overlay overlay-tl">
@@ -369,7 +370,7 @@
                         <div class="frame-wrap">
                             <div class="torn-frame">
                                 <div class="media-frame-inner">
-                                    <img src="assets/sketch_interior.png" alt="Cuisine Minimaliste" class="media-frame-img">
+                                    <img src="assets/sketch_interior.png" alt="Cuisine Minimaliste" class="media-frame-img" loading="lazy">
                                 </div>
                             </div>
                             <div class="frame-text-overlay overlay-bl">
@@ -385,9 +386,9 @@
                 </div>
 
                 <!-- Flèche suivant → -->
-                <a href="#" class="page-next" data-next="photos">
+                <a href="javascript:void(0)" class="page-next" data-next="photos" aria-label="Aller à la page Photos">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
-                    <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none">
+                    <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
@@ -479,9 +480,9 @@
                 </div>
 
                 <!-- Flèche suivant → -->
-                <a href="#" class="page-next" data-next="drawings">
+                <a href="javascript:void(0)" class="page-next" data-next="drawings" aria-label="Aller à la page Dessins">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
-                    <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none">
+                    <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
@@ -589,12 +590,12 @@
                             <div class="bd-carousel-viewport">
                                 <div class="bd-carousel-track">
                                     <div class="bd-slide active" data-slide="0">
-                                    <div class="drawing-sheet-wrap torn-frame">
-                                        <div class="media-frame-inner drawing-sheet">
-                                            <img src="dessin/BD page 1-1.png" class="media-frame-img" alt="BD page 1" loading="lazy">
+                                        <div class="drawing-sheet-wrap torn-frame">
+                                            <div class="media-frame-inner drawing-sheet">
+                                                <img src="dessin/BD page 1-1.png" class="media-frame-img" alt="BD page 1" loading="lazy">
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                                 <div class="bd-slide" data-slide="1">
                                     <div class="drawing-sheet-wrap torn-frame torn-alt">
                                         <div class="media-frame-inner drawing-sheet">
@@ -654,9 +655,9 @@
                 </div>
 
                 <!-- Flèche suivant → -->
-                <a href="#" class="page-next" data-next="diploma">
+                <a href="javascript:void(0)" class="page-next" data-next="diploma" aria-label="Aller à la page Diplôme">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
-                    <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none">
+                    <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>

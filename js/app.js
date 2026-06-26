@@ -290,6 +290,9 @@ function toggleMenu() {
 function openMenu() {
     isMenuOpen = true;
     document.body.classList.add('menu-open');
+    // BUG-12 FIX : mettre à jour aria-hidden pour les screen readers
+    const menuOverlay = document.getElementById('menu-overlay');
+    if (menuOverlay) menuOverlay.setAttribute('aria-hidden', 'false');
 
     // Animation d'entrée des items avec décalage vertical
     const items = document.querySelectorAll('.menu-nav-item');
@@ -322,6 +325,9 @@ function openMenu() {
 function closeMenu() {
     isMenuOpen = false;
     document.body.classList.remove('menu-open');
+    // BUG-12 FIX : mettre à jour aria-hidden pour les screen readers
+    const menuOverlay = document.getElementById('menu-overlay');
+    if (menuOverlay) menuOverlay.setAttribute('aria-hidden', 'true');
 }
 
 // ─────────────────────────────────────
@@ -431,7 +437,14 @@ function initPageLenis(scrollContainer) {
     });
 
     lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add(time => lenis.raf(time * 1000));
+
+    // BUG-04 FIX : stocker la référence du ticker pour pouvoir le supprimer plus tard
+    // et éviter l'accumulation de tickers à chaque navigation entre pages.
+    if (window._lenisTickerFn) {
+        gsap.ticker.remove(window._lenisTickerFn);
+    }
+    window._lenisTickerFn = time => lenis.raf(time * 1000);
+    gsap.ticker.add(window._lenisTickerFn);
     gsap.ticker.lagSmoothing(0);
 
     // Sur la page home : animer le logo vers le header au scroll
@@ -587,7 +600,63 @@ function initContactAnimation() {
         { opacity: 1, x: 0, duration: 0.7, stagger: 0.12, ease: "power3.out" },
         "-=0.6"
     );
+
+    // BUG-07 FIX : Validation formulaire contact avec feedback visuel
+    const form = document.getElementById('contact-form');
+    const feedback = document.getElementById('form-feedback');
+    if (!form || !feedback) return;
+
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const nameEl  = document.getElementById('fn');
+        const emailEl = document.getElementById('fe');
+        const msgEl   = document.getElementById('fm');
+
+        const name  = nameEl.value.trim();
+        const email = emailEl.value.trim();
+        const msg   = msgEl.value.trim();
+
+        // Nettoyage des erreurs précédentes
+        [nameEl, emailEl, msgEl].forEach(el => el.classList.remove('fi-error'));
+        feedback.className = 'form-feedback';
+        feedback.textContent = '';
+
+        // Validation
+        let hasError = false;
+        if (!name) { nameEl.classList.add('fi-error'); hasError = true; }
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailEl.classList.add('fi-error'); hasError = true;
+        }
+        if (!msg) { msgEl.classList.add('fi-error'); hasError = true; }
+
+        if (hasError) {
+            const errMsg = currentLang === 'fr'
+                ? 'Merci de remplir tous les champs correctement.'
+                : 'Please fill in all fields correctly.';
+            feedback.textContent = errMsg;
+            feedback.classList.add('form-feedback--error');
+            gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.35 });
+            return;
+        }
+
+        // Simulation d'envoi (le site est statique, pas de backend)
+        const submitSpan = form.querySelector('[data-i18n="form_send"]');
+        if (submitSpan) submitSpan.textContent = currentLang === 'fr' ? 'Envoi...' : 'Sending...';
+
+        setTimeout(() => {
+            const successMsg = currentLang === 'fr'
+                ? '✓ Message envoyé ! Je vous répondrai rapidement.'
+                : '✓ Message sent! I will reply shortly.';
+            feedback.textContent = successMsg;
+            feedback.classList.add('form-feedback--success');
+            gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.4 });
+            form.reset();
+            if (submitSpan) submitSpan.textContent = currentLang === 'fr' ? 'ENVOYER' : 'SEND';
+        }, 600);
+    });
 }
+
 
 // ─────────────────────────────────────
 // CARROUSEL BANDE DESSINÉE (BD)
@@ -710,8 +779,39 @@ function initBDCarousel() {
         });
     });
 
-    // Lancement
+    // ── Lancement
     startAutoplay();
+
+    // BUG-03 FIX : Pause l'autoplay quand la page dessins n'est pas visible
+    // pour éviter des timeouts et RAF qui tournent inutilement en arrière-plan.
+    const drawingsPage = document.getElementById('page-drawings');
+    if (drawingsPage) {
+        const pageObserver = new MutationObserver(() => {
+            const isPageActive = drawingsPage.classList.contains('is-active');
+            if (!isPageActive && isPlaying) {
+                stopAutoplay();
+            } else if (isPageActive && isPlaying) {
+                startAutoplay();
+            }
+        });
+        pageObserver.observe(drawingsPage, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    // BUG-09 FIX : Support du swipe tactile sur le carousel BD
+    let bdTouchStartX = 0;
+    const bdViewport = container.querySelector('.bd-carousel-viewport');
+    if (bdViewport) {
+        bdViewport.addEventListener('touchstart', e => {
+            bdTouchStartX = e.changedTouches[0].clientX;
+        }, { passive: true });
+        bdViewport.addEventListener('touchend', e => {
+            const dx = e.changedTouches[0].clientX - bdTouchStartX;
+            if (Math.abs(dx) > 40) {
+                if (dx < 0) nextSlide();
+                else prevSlide();
+            }
+        }, { passive: true });
+    }
 }
 
 // ─────────────────────────────────────
@@ -901,10 +1001,17 @@ function initDrawingLightbox() {
 
     // ── Clic sur les dessins de la galerie et les slides BD ──
     document.querySelectorAll('.drawing-item .frame-wrap, .bd-slide .drawing-sheet-wrap').forEach((item) => {
-        item.style.cursor = 'zoom-in';
+        // Ne PAS appliquer le curseur ici en JS : il est géré en CSS uniquement
+        // quand la page parente est active (.page.is-active), ce qui évite que
+        // le curseur "zoom" déborde sur d'autres pages ou sur le menu.
         item.addEventListener('click', () => {
             const parentItem = item.closest('.drawing-item, .bd-slide');
             if (!parentItem) return;
+
+            // Vérifier que la page contenant cet élément est bien la page active
+            const parentPage = item.closest('.page');
+            if (parentPage && !parentPage.classList.contains('is-active')) return;
+
             if (parentItem.classList.contains('bd-slide') && !parentItem.classList.contains('active')) return;
 
             const allElements = Array.from(document.querySelectorAll('.drawing-item, .bd-slide'));
@@ -1051,5 +1158,23 @@ function initDrawingLightbox() {
         e.stopPropagation();
         showDrawing((current + 1) % allDrawings.length);
     });
+
+    // BUG-10 FIX : Swipe tactile sur la lightbox pour naviguer entre les images
+    let lbTouchStartX = 0;
+    let lbTouchStartY = 0;
+    lightbox.addEventListener('touchstart', (e) => {
+        lbTouchStartX = e.changedTouches[0].clientX;
+        lbTouchStartY = e.changedTouches[0].clientY;
+    }, { passive: true });
+    lightbox.addEventListener('touchend', (e) => {
+        if (isZoomed) return; // Ne pas swiper si on est en zoom
+        const dx = e.changedTouches[0].clientX - lbTouchStartX;
+        const dy = e.changedTouches[0].clientY - lbTouchStartY;
+        // Seuil : au moins 50px horizontaux, et plus horizontal que vertical
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+            if (dx < 0) showDrawing((current + 1) % allDrawings.length);
+            else showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
+        }
+    }, { passive: true });
 }
 
