@@ -977,9 +977,9 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 /* Animation photo de référence Noir & Blanc */
 .ref-photo-wrap {
     position: absolute;
-    top: -20px;
-    right: -140px;
-    width: 140px;
+    top: -15px;
+    right: -110px;
+    width: 120px;
     z-index: 5;
     pointer-events: none;
 }
@@ -1991,27 +1991,26 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
     /* Canvas : prend tout l'écran avec espace pour logo et barre du bas */
     .lb-canvas-wrap {
-        padding: 90px 12px 110px 12px;
+        padding: 90px 24px 140px 24px;
         padding-top: calc(90px + env(safe-area-inset-top, 0px));
-        padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+        padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
     }
 
-    /* Flèches de navigation : plus grandes, touch-friendly (44px min) */
+    /* Flèches de navigation : plus petites, sans fond (Swipe disponible) */
     .lb-arrow {
         padding: 12px 8px;
         min-width: 44px;
         min-height: 60px;
-        /* Fond semi-transparent pour mieux voir les flèches */
-        background: rgba(18, 18, 18, 0.4);
-        border-radius: 8px;
+        background: none;
+        border-radius: 0;
     }
-    .lb-prev { left: 4px; }
-    .lb-next { right: 4px; }
-    .lb-arrow svg { width: 24px; height: 24px; }
+    .lb-prev { left: 0px; }
+    .lb-next { right: 0px; }
+    .lb-arrow svg { width: 18px; height: 18px; }
 
-    /* Points indicateurs : plus gros pour touch */
+    /* Points indicateurs : remontés pour ne pas chevaucher la barre */
     .lb-dots {
-        bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+        bottom: calc(125px + env(safe-area-inset-bottom, 0px));
         gap: 12px;
     }
     .lb-dot { width: 10px; height: 10px; }
@@ -2026,28 +2025,28 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 ───────────────────────────────────── */
 @media (hover: none) {
 
-    /* ── Cadres : rectangle rouge se dessine au scroll ── */
-    .frame-wrap.is-inview > .sketch-rect-svg {
+    /* ── Cadres : rectangle rouge se dessine au clic/touch (active) ── */
+    .frame-wrap:active > .sketch-rect-svg {
         opacity: 1;
     }
-    .frame-wrap.is-inview > .sketch-rect-svg .sketch-rect-path {
+    .frame-wrap:active > .sketch-rect-svg .sketch-rect-path {
         stroke-dashoffset: 0;
     }
 
-    /* ── Cadres : image légèrement zoomée au scroll ── */
-    .frame-wrap.is-inview .torn-frame .media-frame-img,
-    .frame-wrap.is-inview .showcase-img {
+    /* ── Cadres : image légèrement zoomée au touch ── */
+    .frame-wrap:active .torn-frame .media-frame-img,
+    .frame-wrap:active .showcase-img {
         transform: scale(1.04);
     }
 
-    /* ── Cadres : texte overlay glisse vers le haut au scroll ── */
-    .frame-wrap.is-inview .frame-big-text {
+    /* ── Cadres : texte overlay glisse vers le haut au touch ── */
+    .frame-wrap:active .frame-big-text {
         transform: translateY(-4px);
     }
 
-    /* ── Bouton ENVOYER : rect rouge au scroll ── */
-    .btn-wrap.is-inview > .sketch-rect-svg { opacity: 1; }
-    .btn-wrap.is-inview > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
+    /* ── Bouton ENVOYER : rect rouge au touch ── */
+    .btn-wrap:active > .sketch-rect-svg { opacity: 1; }
+    .btn-wrap:active > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
 
     /* ── Galerie dessins : désactiver le blur global au hover
        et animer chaque item individuellement à son entrée ── */
