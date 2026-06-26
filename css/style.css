@@ -1830,37 +1830,68 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 /* ─────────────────────────────────────
-   18. RESPONSIVE
+   18. RESPONSIVE — MOBILE (≤ 768px)
 ───────────────────────────────────── */
 @media (max-width: 768px) {
-    .header-inner { padding: 0 22px; }
+
+    /* ── Header ── */
+    .header-inner { padding: 0 18px; }
     .social-nav { display: none; }
-    .menu-overlay { padding: 0 24px 30px; }
-    .menu-logo-wrap { padding-top: 90px; padding-bottom: 25px; }
-    .menu-scribble { right: 24px; }
-    .page-inner { padding: 100px 24px 80px; }
-    .page-title { font-size: clamp(2.5rem, 8vw, 3.5rem); }
-    .home-showcase { padding: 0 20px; margin-bottom: 40px; }
+    .lang-switcher { gap: 4px; font-size: 0.75rem; }
+
+    /* ── Menu overlay ── */
+    .menu-overlay { padding: 0 20px 30px; }
+    .menu-logo-wrap { padding-top: 85px; padding-bottom: 20px; }
+    .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
+    .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
+
+    /* ── Pages intérieures ── */
+    .page-inner { padding: 95px 20px 80px; }
+    .page-title { font-size: clamp(2.2rem, 8vw, 3.5rem); }
+    .page-intro { font-size: 0.95rem; margin-bottom: 36px; }
+
+    /* ── Accueil ── */
+    .home-showcase { padding: 0 16px; margin-bottom: 36px; }
     .home-projects-shortcut { margin-top: -10px; margin-bottom: 10px; }
     .shortcut-click-hint { display: none; }
     .shortcut-underline-svg { width: 80%; }
+    .shortcut-main-text { font-size: clamp(3rem, 12vw, 7rem); }
+
+    /* ── Cahier de brouillon ── */
     .notebook-bg-sheet { top: -45px; }
-    .notebook-inner { padding: 80px 30px 100px; }
-    .notebook-bg-sheet::before { left: 30px; }
-    .notebook-bg-sheet::after { left: 34px; }
-    .notebook-content { padding-left: 16px; }
-    .home-contact-inner { padding: 70px 24px; }
-    .contact-layout { grid-template-columns: 1fr; gap: 50px; }
-    .footer-inner { padding: 40px 24px 30px; }
-    .projects-grid { grid-template-columns: 1fr; }
+    .notebook-inner { padding: 80px 20px 100px; }
+    .notebook-bg-sheet::before { left: 20px; }
+    .notebook-bg-sheet::after { left: 24px; }
+    .notebook-content { padding-left: 12px; }
+
+    /* ── Contact ── */
+    .home-contact-inner { padding: 60px 20px 80px; }
+    .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+
+    /* ── Footer ── */
+    .footer-inner { padding: 36px 20px 28px; }
+    .footer-bottom { flex-wrap: wrap; gap: 8px; }
+
+    /* ── Grille Projets ── */
+    .projects-grid { grid-template-columns: 1fr; gap: 24px; }
     .pi-wide { grid-column: 1; }
-    .drawings-gallery { grid-template-columns: 1fr; }
+    .pi-wide .torn-frame .media-frame-inner { aspect-ratio: 4/3; }
+
+    /* ── Galerie Photos ── */
+    .hcarousel-wrap { width: 100%; margin-left: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .hcarousel-track { flex-wrap: nowrap; justify-content: flex-start; padding: 0 20px 20px; gap: 16px; width: max-content; }
+    .hc-portrait { width: 180px; }
+    .hc-landscape { width: 300px; }
+    .hc-medium { width: 240px; }
+    .hc-a4 { width: 150px; }
+
+    /* ── Galerie Dessins ── */
+    .drawings-gallery { grid-template-columns: 1fr; gap: 28px; }
+
+    /* ── Diplôme ── */
     .diploma-layout { grid-template-columns: 1fr; }
     .diploma-placeholder .media-frame-inner,
-    .diploma-card-inner {
-        aspect-ratio: auto;
-        height: auto;
-    }
+    .diploma-card-inner { aspect-ratio: auto; height: auto; }
     .diploma-scan-container { margin-top: 40px; padding-top: 30px; }
     .scan-section-title { font-size: 1.8rem; margin-bottom: 16px; }
     .scan-coming { font-size: 1.4rem; }
@@ -1868,32 +1899,119 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .diploma-stamp-icon { width: 50px; height: 50px; }
     .diploma-scan-placeholder { padding: 20px; gap: 10px; }
     .diploma-cert-stamp {
-        font-size: 1.1rem;
+        font-size: 1rem;
         padding: 4px 10px;
         border-width: 2.5px;
         top: -10px;
         right: -10px;
     }
-    .hcarousel-wrap { width: 100%; margin-left: 0; }
-    .hcarousel-track { padding: 0; gap: 24px; }
-    .hc-portrait { width: 180px; }
-    .hc-landscape { width: 320px; }
-    .hc-medium { width: 260px; }
-    .hc-a4 { width: 160px; }
-    .footer-bottom { flex-wrap: wrap; }
 
-    /* BD Carousel Mobile overrides */
-    .bd-carousel-container { gap: 12px; }
-    .bd-carousel-viewport { width: 280px; }
-    .bd-nav-btn { width: 42px; height: 42px; }
-    .bd-progress-container { width: 90px; }
-    .bd-section-title { font-size: 1.8rem; margin-bottom: 24px; }
+    /* ── BD Carousel ── */
+    .bd-carousel-container { gap: 10px; }
+    .bd-carousel-viewport { width: min(280px, 80vw); }
+    .bd-nav-btn { width: 44px; height: 44px; }
+    .bd-progress-container { width: 80px; }
+    .bd-section-title { font-size: 1.6rem; margin-bottom: 20px; }
 
-    /* Lightbox Mobile overrides */
-    .lb-logo { font-size: 1.8rem; top: 16px; }
-    .lb-counter { top: 52px; font-size: 1rem; }
-    .lb-canvas-wrap { padding: 90px 16px 60px 16px; }
+    /* ────────────────────────────────────────
+       LIGHTBOX — REFONTE COMPLÈTE MOBILE
+       Problèmes résolus :
+       - Barre zoom superposée au logo
+       - Bouton plein écran mal placé
+       - Canvas trop petit / padding excessif
+       - Flèches trop petites pour les doigts
+    ──────────────────────────────────────── */
+
+    /* Conteneur global : padding safe-area pour les encoches */
+    .drawing-lightbox {
+        padding: 0;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Logo : remonté, taille ajustée, reste centré */
+    .lb-logo {
+        font-size: 1.6rem;
+        top: calc(12px + env(safe-area-inset-top, 0px));
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+
+    /* Compteur sous le logo, plus petit */
+    .lb-counter {
+        top: calc(50px + env(safe-area-inset-top, 0px));
+        font-size: 0.9rem;
+    }
+
+    /* Barre d'outils — sur mobile, on la déplace EN BAS
+       pour éviter toute superposition avec le logo haut */
+    .lb-tools {
+        top: auto;
+        bottom: calc(44px + env(safe-area-inset-bottom, 0px));
+        right: 50%;
+        transform: translateX(50%);
+        flex-direction: row;
+        gap: 24px;
+        background: rgba(18, 18, 18, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 30px;
+        padding: 10px 22px;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Boutons outils : plus grands pour les doigts */
+    .lb-tool-btn {
+        padding: 8px;
+        min-width: 44px;
+        min-height: 44px;
+    }
+    .lb-tool-btn svg { width: 22px; height: 22px; }
+
+    /* Bouton fermer : intégré dans la barre du bas */
+    .lb-close {
+        font-size: 2rem;
+        padding: 8px;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Slider de zoom : visible mais dans la barre du bas, plein largeur */
+    .lb-zoom-slider-container {
+        width: 90px;
+        height: 36px;
+        margin-right: 0;
+    }
+
+    /* Canvas : prend tout l'écran avec espace pour logo et barre du bas */
+    .lb-canvas-wrap {
+        padding: 90px 12px 110px 12px;
+        padding-top: calc(90px + env(safe-area-inset-top, 0px));
+        padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* Flèches de navigation : plus grandes, touch-friendly (44px min) */
+    .lb-arrow {
+        padding: 12px 8px;
+        min-width: 44px;
+        min-height: 60px;
+        /* Fond semi-transparent pour mieux voir les flèches */
+        background: rgba(18, 18, 18, 0.4);
+        border-radius: 8px;
+    }
+    .lb-prev { left: 4px; }
+    .lb-next { right: 4px; }
+    .lb-arrow svg { width: 24px; height: 24px; }
+
+    /* Points indicateurs : plus gros pour touch */
+    .lb-dots {
+        bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+        gap: 12px;
+    }
+    .lb-dot { width: 10px; height: 10px; }
 }
+
 
 /* ─────────────────────────────────────
    19. ANIMATIONS AU SCROLL — MOBILE TOUCH
