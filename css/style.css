@@ -1,0 +1,1858 @@
+/* ============================================================
+   PORTFOLIO ANICET EVEN — Style V4
+   Fixes: sketch-rect overflow, showcase sizing, notebook, menu
+   ============================================================ */
+
+/* ─────────────────────────────────────
+   1. CUSTOM FONT
+───────────────────────────────────── */
+@font-face {
+    font-family: 'Skribblugh';
+    src: url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ─────────────────────────────────────
+   2. VARIABLES
+───────────────────────────────────── */
+:root {
+    --bg: #1a1a1a;
+    --white: #FFFFFF;
+    --red: #FF364A;
+    --muted: rgba(255,255,255,0.45);
+    --notebook-bg: #f2f0eb;
+    --notebook-line: rgba(140,135,125,0.35);
+    --notebook-text: #1a1a1a;
+
+    --font-display: 'Bebas Neue', 'Impact', sans-serif;
+    --font-body:    'Space Grotesk', sans-serif;
+    --font-sketch:  'Skribblugh', 'Permanent Marker', cursive;
+
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 0.22s;
+    --dur-med:  0.55s;
+}
+
+/* ─────────────────────────────────────
+   3. RESET & BASE
+───────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+a, button { color: inherit; text-decoration: none; background: none; border: none; cursor: pointer; font-family: inherit; }
+
+img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; }
+
+.font-sketch { font-family: var(--font-sketch); }
+
+/* ─────────────────────────────────────
+   4. HEADER
+───────────────────────────────────── */
+.site-header {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 72px;
+    z-index: 100; pointer-events: none;
+    background: linear-gradient(180deg, rgba(26,26,26,0.85) 0%, transparent 100%);
+}
+
+.header-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 100%; padding: 0 42px;
+}
+
+.burger-btn {
+    width: 36px; height: 22px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    pointer-events: auto; z-index: 110; position: relative;
+}
+
+.b-line {
+    display: block; width: 100%; height: 2px; background: var(--white);
+    transform-origin: center;
+    transition: transform var(--dur-med) var(--ease-out), opacity var(--dur-med) var(--ease-out), background var(--dur-fast);
+}
+
+.burger-btn:hover .b-line { background: var(--red); }
+
+body.menu-open .b-line:nth-child(1) { transform: translateY(10px) rotate(45deg); }
+body.menu-open .b-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
+
+.header-logo {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.4s var(--ease-out);
+}
+
+.header-logo.is-visible { opacity: 1; pointer-events: auto; }
+
+.header-logo-text {
+    font-size: 2.3rem; line-height: 1; letter-spacing: 0.03em;
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+@keyframes logoWobbleMini {
+    0%,33%   { filter: url(#sketch-1); }
+    34%,66%  { filter: url(#sketch-2); }
+    67%,100% { filter: url(#sketch-3); }
+}
+
+.header-right { display: flex; align-items: center; gap: 54px; pointer-events: auto; }
+
+.lang-switcher { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; }
+.lang-btn { opacity: 0.35; transition: opacity var(--dur-fast); }
+.lang-btn.active { opacity: 1; }
+.lang-btn:hover { opacity: 0.75; }
+.lang-sep { opacity: 0.2; }
+
+.social-nav { display: flex; gap: 16px; align-items: center; }
+.social-lnk {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    transition: opacity var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
+    position: relative;
+}
+.social-lnk::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-fast); }
+.social-lnk:hover { opacity: 1; color: var(--red); transform: translateY(-2px); }
+.social-lnk:hover::after { width: 100%; }
+
+/* ─────────────────────────────────────
+   5. MENU OVERLAY
+───────────────────────────────────── */
+.menu-overlay {
+    position: fixed; inset: 0; z-index: 90;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    padding: 0 60px 50px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
+    overflow-y: auto;
+}
+
+body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
+
+.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
+
+.menu-logo {
+    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+/* Items alignés, espacement vertical régulier */
+.menu-nav {
+    display: flex; flex-direction: column;
+    gap: 18px;
+    flex: 1;
+    justify-content: center;
+}
+
+.menu-nav-item {
+    display: flex; align-items: baseline; gap: 18px;
+    width: fit-content; padding: 10px 0;
+    position: relative;
+}
+
+.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
+
+.mn-label {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1; letter-spacing: 0.02em;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+}
+
+.mn-deco {
+    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+    color: var(--red); opacity: 0;
+    transform: translateX(-8px) rotate(-3deg);
+    transition: opacity 0.3s, transform 0.4s var(--ease-out);
+    white-space: nowrap;
+}
+
+.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
+.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
+
+.menu-scribble {
+    position: absolute; top: 110px; right: 60px;
+    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
+}
+
+.menu-footer {
+    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 40px;
+}
+
+.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
+.menu-mail:hover { opacity: 1; color: var(--red); }
+
+.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
+.menu-footer-social a { transition: color var(--dur-fast); }
+.menu-footer-social a:hover { color: var(--red); }
+
+/* ─────────────────────────────────────
+   6. PAGES SPA
+───────────────────────────────────── */
+#page-wrapper { width: 100%; height: 100%; position: relative; }
+
+.page {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    opacity: 0; pointer-events: none;
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.page.is-active { opacity: 1; pointer-events: auto; }
+.page::-webkit-scrollbar { width: 4px; }
+.page::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+
+/* ─────────────────────────────────────
+   7. HERO
+───────────────────────────────────── */
+.hero-screen {
+    width: 100%; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 80px 40px 60px; position: relative;
+}
+
+.hero-logo-wrap { text-align: center; z-index: 2; }
+
+.hero-logo {
+    font-size: clamp(5rem, 14vw, 12rem); line-height: 0.85;
+    color: var(--white); text-transform: uppercase;
+    will-change: transform, filter;
+    animation: logoWobble 0.26s steps(1) infinite;
+}
+
+@keyframes logoWobble {
+    0%,33%   { filter: url(#sketch-1) drop-shadow(0 0 0 transparent); }
+    34%,66%  { filter: url(#sketch-2) drop-shadow(0 0 0 transparent); }
+    67%,100% { filter: url(#sketch-3) drop-shadow(0 0 0 transparent); }
+}
+
+.hero-profession {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 2.2vw, 1.6rem); font-weight: 300;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--red); margin-top: 14px;
+}
+
+.scroll-invite {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    z-index: 3; opacity: 0.45;
+}
+
+.scroll-line { width: 1px; height: 50px; background: var(--white); animation: scrollPulse 2s ease-in-out infinite; transform-origin: top; }
+@keyframes scrollPulse { 0% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(0); opacity: 0; } }
+.scroll-label { font-size: 1.4rem; letter-spacing: 0.15em; text-transform: uppercase; }
+
+/* ─────────────────────────────────────
+   8. SHOWCASE (coins arrondis Fortiche, taille limitée)
+───────────────────────────────────── */
+.home-showcase {
+    padding: 0 60px;
+    margin-bottom: 110px;
+}
+
+.showcase-frame {
+    position: relative;
+    width: 100%;
+    max-height: 60vh;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #111;
+}
+
+.showcase-img {
+    width: 100%;
+    height: 100%;
+    max-height: 60vh;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.7s var(--ease-out);
+}
+
+.showcase-frame:hover .showcase-img {
+    transform: scale(1.03);
+}
+
+/* === BOUTON EXPOSITION PROJETS (SUPERPOSITION MAQUETTE) === */
+.home-projects-shortcut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+    width: fit-content; /* N'occupe que la taille réelle du texte */
+    margin-left: auto;  /* Centre horizontalement l'élément */
+    margin-right: auto; /* Centre horizontalement l'élément */
+    /* Superposition à cheval sur la transition wobbly (fond anthracite -> beige) */
+    margin-top: -25px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-align: center;
+    user-select: none;
+    transition: transform var(--dur-med) var(--ease-out);
+}
+
+.shortcut-sub-text {
+    font-family: var(--font-sketch);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    color: var(--white); /* Devient blanc par défaut */
+    transform: translateY(18px) rotate(-4deg);
+    z-index: 2;
+    pointer-events: none;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+.shortcut-main-text {
+    font-family: var(--font-display);
+    font-size: clamp(3.8rem, 12vw, 9.8rem);
+    font-weight: bold;
+    line-height: 0.75;
+    letter-spacing: -0.01em;
+    color: var(--red);
+    text-transform: uppercase;
+    pointer-events: none;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+}
+
+/* Effets au survol */
+.home-projects-shortcut:hover {
+    transform: scale(1.03);
+}
+
+.home-projects-shortcut:hover .shortcut-sub-text {
+    transform: translateY(10px) rotate(-6deg) scale(1.08);
+    color: var(--red); /* Devient rouge au survol pour vibrer */
+}
+
+.home-projects-shortcut:hover .shortcut-main-text {
+    transform: scaleY(1.06);
+    color: #ff4a5c; /* Rouge légèrement plus lumineux */
+}
+
+/* Underline crayonné animé */
+.shortcut-underline-svg {
+    width: min(400px, 50vw);
+    height: 16px;
+    margin-top: 10px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.shortcut-underline-path {
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+    transition: stroke-dashoffset 0.5s var(--ease-out);
+}
+
+.home-projects-shortcut:hover .shortcut-underline-path {
+    stroke-dashoffset: 0;
+}
+
+/* Annotation flèche "cliquez !" */
+.shortcut-click-hint {
+    position: absolute;
+    left: calc(50% + min(290px, 25vw));
+    top: 15px; /* Aligné dans l'angle droit de "MES PROJETS", au niveau de la fin du texte */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    z-index: 4;
+    transition: transform var(--dur-med) var(--ease-out);
+    transform: rotate(5deg);
+}
+
+.click-hint-text {
+    font-size: 3.0rem; /* Taille augmentée encore plus */
+    color: var(--red);
+    white-space: nowrap;
+    animation: logoWobbleMini 0.28s steps(1) infinite;
+    transform: translateY(-8px) rotate(4deg); /* Légèrement surélevé par rapport à la flèche */
+}
+
+.click-hint-arrow {
+    width: 72px; /* Flèche augmentée */
+    height: 48px;
+    transform: scaleX(-1); /* Retourne horizontalement le tracé courbe pour pointer vers la gauche */
+}
+
+/* Feedback au survol pour la flèche et le texte */
+.home-projects-shortcut:hover .shortcut-click-hint {
+    transform: scale(1.08) rotate(7deg);
+}
+
+/* ─────────────────────────────────────
+   9. FRAME-WRAP + TORN PAPER + SKETCH RECT
+───────────────────────────────────── */
+
+/* === FRAME-WRAP : contient le cadre + le SVG rect rouge par-dessus === */
+.frame-wrap {
+    position: relative;
+}
+
+/* === TORN FRAME : clip-path papier déchiré, overflow caché === */
+.torn-frame {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    /* Le masque de déchirure est appliqué ici pour créer l'effet papier déchiré wobbly */
+    -webkit-mask: url(#mask-torn-1);
+    mask: url(#mask-torn-1);
+}
+
+.torn-frame.torn-alt {
+    -webkit-mask: url(#mask-torn-2);
+    mask: url(#mask-torn-2);
+}
+
+.media-frame-inner {
+    position: relative; 
+    width: 100%; 
+    overflow: hidden; 
+    line-height: 0;
+}
+
+.media-frame-img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.7s var(--ease-out);
+}
+
+.torn-frame:hover .media-frame-img,
+.frame-wrap:hover .torn-frame .media-frame-img {
+    transform: scale(1.04);
+}
+
+/* Overlay texte */
+.frame-text-overlay {
+    position: absolute; inset: 0; z-index: 3;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 22px 26px;
+    pointer-events: none;
+}
+
+.overlay-tl { justify-content: flex-start; align-items: flex-start; }
+.overlay-tr { justify-content: flex-start; align-items: flex-end; }
+.overlay-bl { justify-content: flex-end;   align-items: flex-start; }
+.overlay-br { justify-content: flex-end;   align-items: flex-end; }
+
+.frame-big-text {
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 4vw, 3.5rem);
+    line-height: 0.9; letter-spacing: 0.02em; text-transform: uppercase;
+    color: var(--white); text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.6);
+    transition: transform 0.6s var(--ease-out);
+}
+
+.frame-sub { display: block; font-size: 1.45rem; color: var(--red); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.05em; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+
+.frame-wrap:hover .frame-big-text { transform: translateY(-4px); }
+
+/* ═══════════════════════════════════
+   RECTANGLE ROUGE DESSINÉ MAIN (SVG)
+   ✓ Positionné sur .frame-wrap (DEHORS du clip-path)
+   ✓ Déborde du cadre comme un collage
+   ✓ Tourné de 4° et légèrement plus grand
+   ✓ Animation de tracé au hover
+═══════════════════════════════════ */
+.sketch-rect-svg {
+    position: absolute;
+    top: -2.5%;
+    left: -2.5%;
+    width: 105%;
+    height: 105%;
+    z-index: 10;
+    pointer-events: none;
+    transform: rotate(2deg);
+    opacity: 0;
+    transition: opacity 0.2s var(--ease-out); /* Révélation rapide pour voir le tracé dès le début */
+}
+
+.sketch-rect-path {
+    stroke-dasharray: 1800;
+    stroke-dashoffset: 1800;
+    transition: stroke-dashoffset 1.5s var(--ease-out); /* Dessin progressif en 1.5s */
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+/* Rotations et vitesses de dessin alternées pour casser la répétition visuelle */
+.hc-item:nth-child(2n) .sketch-rect-svg { transform: rotate(-1.5deg); }
+.hc-item:nth-child(3n) .sketch-rect-svg { transform: rotate(1.2deg); }
+.hc-item:nth-child(4n) .sketch-rect-svg { transform: rotate(-2.5deg); }
+
+.hc-item:nth-child(2n) .sketch-rect-path { transition: stroke-dashoffset 1.2s var(--ease-out); }
+.hc-item:nth-child(3n) .sketch-rect-path { transition: stroke-dashoffset 1.7s var(--ease-out); }
+.hc-item:nth-child(4n) .sketch-rect-path { transition: stroke-dashoffset 1.4s var(--ease-out); }
+
+.project-item:nth-child(2n) .sketch-rect-svg { transform: rotate(-1.8deg); }
+.project-item:nth-child(3n) .sketch-rect-svg { transform: rotate(1deg); }
+
+.project-item:nth-child(2n) .sketch-rect-path { transition: stroke-dashoffset 1.3s var(--ease-out); }
+.project-item:nth-child(3n) .sketch-rect-path { transition: stroke-dashoffset 1.6s var(--ease-out); }
+
+.drawing-item:nth-child(2n) .sketch-rect-svg { transform: rotate(-1.5deg); }
+.drawing-item:nth-child(2n) .sketch-rect-path { transition: stroke-dashoffset 1.3s var(--ease-out); }
+
+@keyframes rectWobble {
+    0%,33%   { filter: url(#sketch-1); }
+    34%,66%  { filter: url(#sketch-2); }
+    67%,100% { filter: url(#sketch-3); }
+}
+
+/* Hover sur le frame-wrap → dessine le rectangle */
+.frame-wrap:hover > .sketch-rect-svg {
+    opacity: 1;
+}
+
+.frame-wrap:hover > .sketch-rect-svg .sketch-rect-path {
+    stroke-dashoffset: 0;
+}
+
+/* Variante bouton */
+.btn-wrap {
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.btn-rect {
+    top: -5%;
+    left: -3%;
+    width: 106%;
+    height: 110%;
+    transform: rotate(1deg);
+}
+
+.btn-wrap:hover > .sketch-rect-svg { opacity: 1; }
+.btn-wrap:hover > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
+
+/* ─────────────────────────────────────
+   10. SECTION CAHIER DE BROUILLON
+───────────────────────────────────── */
+.notebook-section {
+    position: relative;
+    color: var(--notebook-text);
+}
+
+.notebook-bg-sheet {
+    position: absolute;
+    top: -85px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--notebook-bg);
+    clip-path: polygon(0% 2.5%, 10% 1.8%, 25% 2.8%, 40% 1.5%, 55% 3.2%, 70% 1.8%, 85% 2.8%, 100% 1.8%, 100% 97.2%, 85% 98.2%, 70% 97.2%, 55% 98.5%, 40% 97.2%, 25% 98.2%, 10% 97.2%, 0% 98.2%);
+    z-index: 0;
+    filter: url(#paper-tear);
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.36, 1), clip-path 0.8s cubic-bezier(0.25, 1, 0.36, 1);
+    transform-origin: center;
+    pointer-events: none;
+}
+
+/* Au survol de la section cahier, la feuille de papier se déroule (scaleX/Y) et les bords déchirés se déforment dynamiquement (morphing) */
+.notebook-section:hover .notebook-bg-sheet {
+    transform: scale(1.015, 1.07);
+    clip-path: polygon(0% 3.5%, 10% 2.2%, 25% 3.8%, 40% 2%, 55% 4.2%, 70% 2.2%, 85% 3.8%, 100% 2.2%, 100% 96.2%, 85% 97.5%, 70% 96.2%, 55% 97.8%, 40% 96.2%, 25% 97.5%, 10% 96.2%, 0% 97.5%);
+}
+
+.notebook-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 110px 80px 130px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Lignes : conteneur vide, rempli par JS avec des longueurs aléatoires */
+.notebook-lines {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* Chaque ligne générée par JS */
+.nb-line {
+    position: absolute;
+    height: 4px;
+    background: var(--notebook-line);
+    border-radius: 2px;
+}
+
+/* Marge rouge de cahier (placée sur la feuille d'arrière-plan pour suivre son étirement) */
+.notebook-bg-sheet::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 80px;
+    width: 2px;
+    background: rgba(255, 54, 74, 0.3);
+    z-index: 1;
+}
+
+.notebook-bg-sheet::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 84px;
+    width: 1px;
+    background: rgba(255, 54, 74, 0.18);
+    z-index: 1;
+}
+
+.notebook-content {
+    position: relative;
+    z-index: 2;
+    padding-left: 30px;
+}
+
+.notebook-title-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 24px;
+}
+
+.notebook-title {
+    font-size: clamp(3.2rem, 6vw, 5rem);
+    line-height: 1;
+    margin-bottom: 0;
+    color: var(--notebook-text);
+}
+
+.notebook-text {
+    font-size: 1.1rem;
+    line-height: 34px; /* Correspond exactement au pas des lignes du cahier (spacing = 34px) */
+    color: rgba(26,26,26,0.75);
+    max-width: 640px;
+    margin-bottom: 34px; /* Permet aux paragraphes de rester calés sur la grille */
+    transition: transform 0.3s var(--ease-out);
+    position: relative;
+    top: -2px; /* Ajustement fin de 5px entre la ligne et l'écriture */
+}
+
+/* Hover wobble sur le texte du cahier */
+.notebook-hover-zone:hover .notebook-text {
+    animation: notebookWobble 0.4s ease-out;
+}
+
+@keyframes notebookWobble {
+    0%   { transform: rotate(0deg); }
+    25%  { transform: rotate(-0.3deg) translateX(-1px); }
+    50%  { transform: rotate(0.2deg) translateX(1px); }
+    75%  { transform: rotate(-0.15deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.notebook-title-wrap:hover .notebook-title {
+    animation: notebookWobble 0.5s ease-out;
+}
+
+.notebook-annotation {
+    display: inline-block;
+    font-size: 1.9rem;
+    color: var(--red);
+    margin-top: 24px;
+    transform: rotate(-2deg);
+    opacity: 0.85;
+}
+
+/* Signature "EVEN" avec flèche courbée - cachée par défaut */
+.notebook-signature {
+    position: absolute;
+    bottom: 25%;
+    left: 95%;
+    z-index: 3;
+    opacity: 0;
+    transform: translateY(10px) translateX(-10px);
+    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+}
+
+/* Affichage de la signature uniquement au survol du titre "Qui suis-je ?" */
+.notebook-title-wrap:hover .notebook-signature {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+}
+
+.signature-arrow {
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    width: 80px;
+    height: 60px;
+}
+
+.signature-name {
+    font-size: 3.0rem;
+    color: var(--red);
+    transform: rotate(-6deg);
+    white-space: nowrap;
+    margin-left: 65px; /* Décalage pour laisser la place à la flèche */
+    margin-bottom: 25px; /* Surélève le nom pour que la flèche pointe dessus */
+}
+
+/* ─────────────────────────────────────
+   10b. FLÈCHE "SUIVANT" EN BAS DES PAGES
+───────────────────────────────────── */
+.page-next {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 80px;
+    float: right;
+    padding: 10px 0;
+    transition: transform 0.3s var(--ease-out);
+}
+
+.page-next:hover {
+    transform: translateX(10px);
+}
+
+.page-next-label {
+    font-family: var(--font-sketch);
+    font-size: 3.5rem;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    transition: color 0.3s;
+}
+
+.page-next:hover .page-next-label {
+    color: var(--red);
+}
+
+.page-next-arrow {
+    width: 60px;
+    height: 30px;
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+.page-next-arrow path {
+    stroke: var(--red);
+}
+
+/* ─────────────────────────────────────
+   11. CONTACT (intégré dans accueil)
+───────────────────────────────────── */
+.home-contact { padding: 0; background: var(--bg); }
+
+.home-contact-inner {
+    max-width: 1200px; margin: 0 auto; padding: 100px 60px;
+}
+
+.contact-layout {
+    display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 80px; align-items: start;
+}
+
+.contact-form { display: flex; flex-direction: column; gap: 36px; }
+
+.fg { position: relative; }
+
+.fi {
+    display: block;
+    width: 100%; padding: 12px 0;
+    background: transparent; border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    color: var(--white); font-family: var(--font-body);
+    font-size: 1rem; outline: none;
+    transition: border-color var(--dur-fast);
+}
+
+.fi-ta {
+    height: 48px;
+    resize: none;
+    overflow: hidden;
+    transition: height 0.4s var(--ease-out), border-color var(--dur-fast);
+}
+
+.fi-ta:focus,
+.fi-ta:not(:placeholder-shown) {
+    height: 120px;
+    overflow-y: auto;
+}
+
+.fl {
+    position: absolute; left: 0; top: 12px;
+    font-family: var(--font-display); font-size: 1.1rem;
+    letter-spacing: 0.05em; color: rgba(255,255,255,0.3);
+    pointer-events: none; transform-origin: left top;
+    transition: transform 0.3s var(--ease-out), color 0.3s;
+}
+
+.fi:focus ~ .fl, .fi:not(:placeholder-shown) ~ .fl {
+    transform: translateY(-20px) scale(0.82); color: var(--red);
+}
+
+/* La ligne rouge animée est gérée uniquement par le span .fb pour éviter tout dédoublement */
+
+.fb { position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-med) var(--ease-out); }
+.fi:focus ~ .fb { width: 100%; }
+
+.submit-btn {
+    padding: 14px 42px;
+    font-family: var(--font-display); font-size: 1.3rem;
+    letter-spacing: 0.07em; color: var(--white);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+
+.submit-btn:hover { border-color: var(--red); color: var(--red); }
+
+.contact-info { display: flex; flex-direction: column; gap: 36px; padding-top: 12px; }
+.ci-label { font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.25); margin-bottom: 10px; text-transform: uppercase; }
+.ci-link { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.03em; display: inline-block; transition: color var(--dur-fast); }
+.ci-link:hover { color: var(--red); }
+.ci-soc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    margin-bottom: 12px;
+    transition: opacity var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
+}
+.ci-soc:hover {
+    opacity: 1;
+    color: var(--red);
+    transform: translateX(4px);
+}
+.ci-soc-icon {
+    flex-shrink: 0;
+}
+.ci-text { font-size: 1rem; font-weight: 300; opacity: 0.5; }
+
+/* ─────────────────────────────────────
+   12. FOOTER LÉGAL
+───────────────────────────────────── */
+.site-footer { background: #111111; color: rgba(255,255,255,0.4); border-top: 1px solid rgba(255,255,255,0.05); }
+.footer-inner { max-width: 1200px; margin: 0 auto; padding: 50px 60px 40px; }
+.footer-top { display: flex; align-items: baseline; gap: 16px; margin-bottom: 30px; }
+.footer-logo { font-size: 1.6rem; color: var(--white); animation: logoWobbleMini 0.3s steps(1) infinite; }
+.footer-year { font-size: 0.85rem; opacity: 0.5; }
+.footer-legal { font-size: 0.8rem; line-height: 1.7; opacity: 0.5; max-width: 800px; margin-bottom: 26px; }
+.footer-legal p { margin-bottom: 12px; }
+.footer-bottom { display: flex; gap: 14px; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.3; }
+.footer-sep { opacity: 0.3; }
+
+/* ─────────────────────────────────────
+   13. PAGES INTÉRIEURES
+───────────────────────────────────── */
+.page-inner { max-width: 1200px; margin: 0 auto; padding: 120px 60px 100px; }
+.page-heading { display: flex; align-items: baseline; gap: 16px; margin-bottom: 16px; }
+.page-num { font-family: var(--font-display); font-size: 1.1rem; color: var(--red); letter-spacing: 0.05em; }
+.page-title { font-family: var(--font-display); font-size: clamp(3rem, 7vw, 6rem); line-height: 0.9; letter-spacing: 0.02em; text-transform: uppercase; }
+.page-intro { font-size: 1.05rem; color: var(--muted); font-weight: 300; max-width: 550px; margin-bottom: 60px; line-height: 1.7; }
+
+/* ─────────────────────────────────────
+   14. GRILLE PROJETS
+───────────────────────────────────── */
+.projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 30px; }
+.project-item { position: relative; }
+.pi-wide { grid-column: 1 / -1; }
+.pi-wide .torn-frame .media-frame-inner { aspect-ratio: 16 / 7; }
+.pi-medium .torn-frame .media-frame-inner { aspect-ratio: 4 / 3; }
+.pi-portrait .torn-frame .media-frame-inner { aspect-ratio: 1 / 1.3; }
+.pi-meta { margin-top: 10px; display: flex; align-items: center; gap: 10px; }
+.pi-num { font-family: var(--font-display); font-size: 1.1rem; color: var(--red); letter-spacing: 0.05em; }
+
+/* ─────────────────────────────────────
+   15. CARROUSEL HORIZONTAL
+───────────────────────────────────── */
+.hcarousel-wrap { width: 100%; margin-left: 0; padding: 10px 0 30px; }
+.hcarousel-track { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: 40px 30px; width: 100%; }
+.hc-item { flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+.hc-portrait { width: 260px; }
+.hc-portrait .torn-frame .media-frame-inner { aspect-ratio: 3/4; }
+.hc-landscape { width: 520px; }
+.hc-landscape .torn-frame .media-frame-inner { aspect-ratio: 16/9; }
+.hc-medium { width: 380px; }
+.hc-medium .torn-frame .media-frame-inner { aspect-ratio: 4/3; }
+.hc-a4 { width: 240px; }
+.hc-a4 .torn-frame .media-frame-inner { aspect-ratio: 1/1.414; }
+.hc-caption { font-size: 1.1rem; color: var(--muted); padding-left: 4px; }
+
+/* ─────────────────────────────────────
+   16. GALERIE DESSINS
+───────────────────────────────────── */
+.drawings-gallery { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 40px; align-items: end; }
+
+.drawing-item { 
+    display: flex; flex-direction: column; gap: 18px; 
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                filter 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    position: relative;
+    z-index: 1;
+}
+
+@media (hover: hover) {
+    .drawings-gallery:hover .drawing-item {
+        filter: blur(4px) grayscale(50%);
+        opacity: 0.5;
+    }
+    .drawings-gallery .drawing-item:hover {
+        filter: none;
+        opacity: 1;
+        transform: scale(1.08);
+        z-index: 20;
+    }
+}
+.drawing-sheet-wrap .media-frame-inner { background: #f0ede6; padding: 15px; }
+.drawing-item.orient-portrait .media-frame-inner { aspect-ratio: 1 / 1.414; }
+.drawing-item.orient-landscape .media-frame-inner { aspect-ratio: 1.414 / 1; }
+.drawing-sheet img,
+.drawing-sheet object {
+    transform: scale(1.18); /* Zoom 18% to crop white borders and fill beautifully */
+    transform-origin: center center;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.drawing-meta { text-align: left; }
+.drawing-title { font-family: var(--font-display); font-size: 1.35rem; letter-spacing: 0.02em; line-height: 1.2; margin-bottom: 6px; }
+.drawing-detail { font-size: 1.3rem; color: var(--red); }
+
+/* Animation photo de référence Noir & Blanc */
+.ref-photo-wrap {
+    position: absolute;
+    top: -20px;
+    right: -140px;
+    width: 140px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.ref-photo {
+    width: 100%;
+    opacity: 0;
+    transform: rotate(15deg) translateY(20px);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+}
+
+.ref-photo .media-frame-inner {
+    padding: 10px 10px 36px 10px;
+    background: #fdfdfd;
+    border-radius: 2px;
+}
+
+.ref-photo .media-frame-img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.drawing-item:hover .ref-photo {
+    opacity: 1;
+    transform: rotate(6deg) translateY(0);
+}
+
+.ref-arrow {
+    position: absolute;
+    top: -50px;
+    left: -40px;
+    width: 90px;
+    height: 90px;
+    overflow: visible;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.1s;
+    transform: rotate(5deg);
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+.ref-arrow-path {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 0.5s ease 0.2s;
+}
+
+.drawing-item:hover .ref-arrow {
+    opacity: 1;
+}
+
+.drawing-item:hover .ref-arrow-path {
+    stroke-dashoffset: 0;
+}
+
+/* Animation épingle Cartographie */
+.map-pin-wrap {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 100px;
+    z-index: 15;
+    pointer-events: none;
+}
+
+.map-pin-icon {
+    width: 32px;
+    height: 48px;
+    position: absolute;
+    top: 26px;
+    left: 84px;
+    opacity: 0;
+    transform: translateY(-40px) scale(1.2);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.5));
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+.map-pin-text {
+    font-size: 2.8rem;
+    color: var(--red);
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    transform: rotate(-15deg) scale(0.8);
+    opacity: 0;
+    transition: all 0.4s ease 0.2s;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    letter-spacing: 2px;
+}
+
+.drawing-item:hover .map-pin-icon {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.drawing-item:hover .map-pin-text {
+    opacity: 1;
+    transform: rotate(-15deg) scale(1);
+}
+/* ─────────────────────────────────────
+   BD CAROUSEL (BANDE DESSINÉE)
+───────────────────────────────────── */
+.bd-carousel-section {
+    margin-top: 100px;
+    padding-top: 60px;
+    position: relative;
+    text-align: center;
+}
+
+.bd-carousel-section::before,
+.diploma-scan-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 10' preserveAspectRatio='none'%3E%3Cpath d='M 0 5 Q 25 3 50 5 T 100 6 T 150 4 T 200 5 T 250 4 T 300 6 T 350 4 T 400 5' stroke='rgba(255,255,255,0.25)' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-size: 400px 10px;
+    background-repeat: repeat-x;
+}
+
+.bd-title-wrap {
+    position: relative;
+    text-align: center;
+    margin-bottom: 5px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.bd-section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    color: var(--white);
+    letter-spacing: 0.05em;
+    transform: translateY(18px) rotate(-4deg);
+    margin-bottom: 0;
+    display: inline-block;
+    position: relative;
+    z-index: 15;
+}
+
+.bd-section-subtitle {
+    font-family: var(--font-display);
+    font-size: clamp(3.8rem, 12vw, 9.8rem);
+    font-weight: bold;
+    line-height: 0.75;
+    letter-spacing: -0.01em;
+    color: var(--red);
+    text-transform: uppercase;
+    display: block;
+    position: relative;
+    z-index: 10;
+    cursor: default;
+    pointer-events: auto;
+}
+
+.animation-explosion-detail {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    margin-left: -285px;
+    width: 150px;
+    height: 150px;
+    background-image: url('../assets/gemini-svg2.svg');
+    background-size: 500% 100%;
+    background-position: 0 0;
+    transform-origin: 50% 100%;
+    transform: rotate(-45deg) scale(1.15);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 20;
+}
+
+.bd-section-subtitle:hover ~ .animation-explosion-detail {
+    opacity: 1;
+    animation: explosion-flipbook-detail 0.6s steps(4) forwards;
+}
+
+@keyframes explosion-flipbook-detail {
+    from { background-position: 0% 0; }
+    to { background-position: 100% 0; }
+}
+
+@media (max-width: 768px) {
+    .animation-explosion-detail {
+        width: 100px;
+        height: 100px;
+        margin-left: -190px;
+        bottom: -20px;
+    }
+}
+
+.bd-carousel-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 24px;
+}
+
+.bd-carousel-viewport {
+    width: 420px;
+    aspect-ratio: 1 / 1.414;
+    overflow: hidden;
+    position: relative;
+    border-radius: 4px;
+}
+
+.bd-carousel-track {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.bd-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transform: scale(0.96) translateY(10px);
+    transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.bd-slide.active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+    z-index: 2;
+}
+
+.bd-slide .drawing-sheet-wrap,
+.bd-slide .media-frame-inner {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.bd-slide .media-frame-inner {
+    padding: 0 !important;
+    background: transparent !important;
+}
+
+.bd-nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--white);
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.bd-nav-btn:hover {
+    color: var(--red);
+    transform: scale(1.15) rotate(-5deg);
+}
+
+/* 3-Frame Sketch Animation for arrows */
+.sketch-f1 { animation: frame-toggle 0.45s infinite; animation-delay: 0s; }
+.sketch-f2 { animation: frame-toggle 0.45s infinite; animation-delay: 0.15s; }
+.sketch-f3 { animation: frame-toggle 0.45s infinite; animation-delay: 0.3s; }
+
+@keyframes frame-toggle {
+    0%, 33.32% { opacity: 1; }
+    33.33%, 100% { opacity: 0; }
+}
+
+.bd-carousel-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 28px;
+}
+
+.bd-play-pause-btn {
+    background: none;
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.bd-play-pause-btn:hover {
+    color: var(--red);
+    transform: scale(1.15);
+}
+
+.bd-dots {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.bd-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.bd-dot.active {
+    background: var(--red);
+    transform: scale(1.3);
+}
+
+.bd-progress-container {
+    width: 180px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    position: relative;
+}
+
+.bd-progress-bar {
+    width: 0%;
+    height: 100%;
+    background: var(--red);
+}
+
+.bd-page-indicator {
+    font-size: 1.3rem;
+    color: var(--muted);
+    min-width: 50px;
+    text-align: right;
+}
+
+/* ─────────────────────────────────────
+   17. DIPLÔME
+───────────────────────────────────── */
+.diploma-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: 50px; align-items: start; }
+.school-name-wrap { margin-bottom: 28px; }
+.school-name { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1; }
+.school-city { font-size: 2.3rem; color: var(--red); margin-left: 8px; }
+.school-img-wrap .media-frame-inner { aspect-ratio: 4/3; }
+.study-list { list-style: none; margin-top: 30px; display: flex; flex-direction: column; gap: 22px; font-size: 0.95rem; line-height: 1.6; }
+.study-list strong { display: block; font-family: var(--font-display); font-size: 1.15rem; text-transform: uppercase; margin-bottom: 3px; }
+.study-year { color: var(--red); font-weight: 600; }
+.diploma-placeholder .media-frame-inner {
+    aspect-ratio: 1 / 1.414;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.diploma-card-inner {
+    aspect-ratio: 1 / 1.414;
+    padding: 36px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    box-sizing: border-box;
+    line-height: 1.4; /* Override line-height: 0 from .media-frame-inner */
+}
+
+.diploma-cert-header {
+    border-bottom: 1px solid rgba(255, 54, 74, 0.2);
+    padding-bottom: 18px;
+    position: relative;
+}
+
+.diploma-cert-stamp {
+    position: absolute;
+    top: -15px;      /* Déplacé vers le haut pour chevaucher la bordure */
+    right: -25px;    /* Déplacé vers la droite pour chevaucher la bordure */
+    font-size: 1.5rem; /* Beaucoup plus gros */
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    color: var(--red);
+    border: 3.5px solid var(--red); /* Bordure plus épaisse */
+    padding: 6px 14px;
+    border-radius: 6px;
+    transform: rotate(-12deg); /* Rotation négative (incliné vers le haut-droit) */
+    opacity: 0.95;
+    z-index: 20; /* Passer par-dessus le cadre */
+    background: var(--bg); /* Fond opaque pour masquer la bordure du cadre en dessous */
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+.diploma-cert-title {
+    font-family: var(--font-display);
+    font-size: 1.5rem; /* Augmenté de 1.25rem */
+    letter-spacing: 0.05em;
+    color: var(--white);
+    margin-bottom: 6px;
+    line-height: 1.2;
+}
+
+.diploma-cert-subtitle {
+    font-size: 0.95rem; /* Augmenté de 0.8rem */
+    color: var(--red);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.3;
+}
+
+.diploma-cert-body {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Ajusté pour s'adapter aux polices plus grandes */
+    margin-top: 18px;
+    flex-grow: 1;
+}
+
+.diploma-cert-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.diploma-section-label {
+    font-family: var(--font-display);
+    font-size: 0.9rem; /* Augmenté de 0.82rem */
+    letter-spacing: 0.08em;
+    color: rgba(255, 255, 255, 0.35);
+    text-transform: uppercase;
+}
+
+.diploma-section-text {
+    font-size: 0.92rem; /* Augmenté de 0.82rem */
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 300;
+}
+
+.diploma-skills-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Ajusté */
+}
+
+.diploma-skills-list li {
+    font-size: 0.9rem; /* Augmenté de 0.8rem */
+    line-height: 1.45;
+    color: rgba(255, 255, 255, 0.65);
+    padding-left: 14px;
+    position: relative;
+    font-weight: 300;
+}
+
+.diploma-skills-list li::before {
+    content: '▪';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--red);
+    font-size: 0.6rem;
+}
+
+.diploma-cert-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem; /* Augmenté de 0.72rem */
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.diploma-cert-code {
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 480px) {
+    .diploma-card-inner {
+        padding: 22px 18px;
+    }
+    .diploma-cert-body {
+        gap: 15px;
+    }
+}
+
+.diploma-scan-container {
+    margin-top: 60px;
+    position: relative;
+    padding-top: 40px;
+    text-align: center;
+}
+
+.scan-section-title {
+    font-size: 2.2rem;
+    color: var(--white);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+}
+
+.diploma-scan-wrap {
+    max-width: 850px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.diploma-scan-frame {
+    width: 100%;
+    aspect-ratio: 1.414 / 1; /* A4 Paysage */
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.diploma-scan-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.diploma-scan-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 40px;
+    opacity: 0.35;
+    transition: opacity var(--dur-fast);
+}
+
+.diploma-scan-wrap:hover .diploma-scan-placeholder {
+    opacity: 0.7;
+}
+
+.diploma-stamp-icon {
+    width: 80px;
+    height: 80px;
+    color: var(--red);
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+.scan-coming {
+    font-size: 2.2rem;
+    color: var(--white);
+    text-align: center;
+}
+
+.scan-sub {
+    font-size: 1.4rem;
+    color: var(--red);
+    text-align: center;
+}
+
+/* ─────────────────────────────────────
+   LIGHTBOX ULTRA-ÉPURÉE (STYLE FORTICHE)
+───────────────────────────────────── */
+.drawing-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 90px 60px 60px;
+    box-sizing: border-box;
+    background: #121212;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    cursor: default;
+}
+
+.drawing-lightbox[aria-hidden="false"] {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ── Logo centré en haut ── */
+.lb-logo {
+    position: absolute;
+    top: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.2rem;
+    color: var(--white);
+    z-index: 10010;
+    letter-spacing: 0.04em;
+    opacity: 0.85;
+    transition: opacity 0.4s ease;
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+/* ── Compteur discret sous le logo ── */
+.lb-counter {
+    position: absolute;
+    top: 78px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.35);
+    z-index: 10010;
+    letter-spacing: 0.04em;
+    transition: opacity 0.4s ease;
+}
+
+/* ── Outils (Plein écran, Zoom, Fermer) ── */
+.lb-tools {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 10010;
+}
+
+.lb-tool-btn, .lb-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+}
+
+.lb-close {
+    font-size: 2.4rem;
+    line-height: 1;
+}
+
+.lb-tool-btn:hover, .lb-close:hover {
+    color: var(--white);
+    transform: scale(1.15);
+}
+
+/* ── Flèches de navigation ── */
+.lb-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    z-index: 10005;
+    padding: 14px;
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.lb-prev { left: 18px; }
+.lb-next { right: 18px; }
+
+.lb-arrow:hover {
+    color: var(--white);
+    transform: translateY(-50%) scale(1.2);
+}
+
+/* ── Conteneur du canvas (l'image) ── */
+.lb-canvas-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    z-index: 10001;
+    background: transparent;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 130px 70px 80px 70px;
+}
+
+.lb-canvas-wrap img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: none;
+    outline: none;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+/* ── Slider de Zoom (Crayonné) ── */
+.lb-zoom-slider-container {
+    position: relative;
+    width: 120px;
+    height: 30px;
+    display: none;
+    align-items: center;
+    margin-right: 5px;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.drawing-lightbox.zoomed .lb-zoom-slider-container {
+    display: flex;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.lb-slider-svg {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+#lb-zoom-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+    z-index: 2;
+    margin: 0;
+}
+
+#lb-zoom-range:focus {
+    outline: none;
+}
+
+#lb-zoom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 30px;
+    background: transparent;
+}
+#lb-zoom-range::-moz-range-thumb {
+    width: 20px;
+    height: 30px;
+    background: transparent;
+    border: none;
+}
+
+/* ── État zoomé (Pan & Zoom) ── */
+.drawing-lightbox.zoomed .lb-canvas-wrap {
+    overflow: hidden !important; 
+    touch-action: none;
+}
+
+.drawing-lightbox.zoomed .lb-canvas-wrap img {
+    cursor: grab;
+    transform-origin: center center;
+}
+
+.drawing-lightbox.zoomed .lb-canvas-wrap img.dragging {
+    cursor: grabbing;
+    transition: none !important;
+}
+
+/* Fallback embed PDF — supprimer le cadre gris du viewer natif */
+.lb-canvas-wrap embed,
+.lb-canvas-wrap object {
+    display: block;
+    border: none;
+    outline: none;
+    background: #121212;
+}
+
+/* ── Loader spinner ── */
+.lb-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.lb-loader.active {
+    opacity: 1;
+}
+
+.lb-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2.5px solid rgba(255, 255, 255, 0.12);
+    border-top: 2.5px solid var(--red);
+    border-radius: 50%;
+    animation: lb-spin 0.9s linear infinite;
+}
+
+@keyframes lb-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ── Points indicateurs en bas ── */
+.lb-dots {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10010;
+}
+
+.lb-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.25s ease;
+}
+
+.lb-dot.active {
+    background: var(--white);
+    transform: scale(1.35);
+}
+
+.lb-dot:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Auto-masquage des contrôles (classe JS) ── */
+.drawing-lightbox.controls-hidden .lb-logo,
+.drawing-lightbox.controls-hidden .lb-counter,
+.drawing-lightbox.controls-hidden .lb-close,
+.drawing-lightbox.controls-hidden .lb-arrow,
+.drawing-lightbox.controls-hidden .lb-dots {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ─────────────────────────────────────
+   18. RESPONSIVE
+───────────────────────────────────── */
+@media (max-width: 768px) {
+    .header-inner { padding: 0 22px; }
+    .social-nav { display: none; }
+    .menu-overlay { padding: 0 24px 30px; }
+    .menu-logo-wrap { padding-top: 90px; padding-bottom: 25px; }
+    .menu-scribble { right: 24px; }
+    .page-inner { padding: 100px 24px 80px; }
+    .page-title { font-size: clamp(2.5rem, 8vw, 3.5rem); }
+    .home-showcase { padding: 0 20px; margin-bottom: 40px; }
+    .home-projects-shortcut { margin-top: -10px; margin-bottom: 10px; }
+    .shortcut-click-hint { display: none; }
+    .shortcut-underline-svg { width: 80%; }
+    .notebook-bg-sheet { top: -45px; }
+    .notebook-inner { padding: 80px 30px 100px; }
+    .notebook-bg-sheet::before { left: 30px; }
+    .notebook-bg-sheet::after { left: 34px; }
+    .notebook-content { padding-left: 16px; }
+    .home-contact-inner { padding: 70px 24px; }
+    .contact-layout { grid-template-columns: 1fr; gap: 50px; }
+    .footer-inner { padding: 40px 24px 30px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .pi-wide { grid-column: 1; }
+    .drawings-gallery { grid-template-columns: 1fr; }
+    .diploma-layout { grid-template-columns: 1fr; }
+    .diploma-placeholder .media-frame-inner,
+    .diploma-card-inner {
+        aspect-ratio: auto;
+        height: auto;
+    }
+    .diploma-scan-container { margin-top: 40px; padding-top: 30px; }
+    .scan-section-title { font-size: 1.8rem; margin-bottom: 16px; }
+    .scan-coming { font-size: 1.4rem; }
+    .scan-sub { font-size: 1rem; }
+    .diploma-stamp-icon { width: 50px; height: 50px; }
+    .diploma-scan-placeholder { padding: 20px; gap: 10px; }
+    .diploma-cert-stamp {
+        font-size: 1.1rem;
+        padding: 4px 10px;
+        border-width: 2.5px;
+        top: -10px;
+        right: -10px;
+    }
+    .hcarousel-wrap { width: 100%; margin-left: 0; }
+    .hcarousel-track { padding: 0; gap: 24px; }
+    .hc-portrait { width: 180px; }
+    .hc-landscape { width: 320px; }
+    .hc-medium { width: 260px; }
+    .hc-a4 { width: 160px; }
+    .footer-bottom { flex-wrap: wrap; }
+
+    /* BD Carousel Mobile overrides */
+    .bd-carousel-container { gap: 12px; }
+    .bd-carousel-viewport { width: 280px; }
+    .bd-nav-btn { width: 42px; height: 42px; }
+    .bd-progress-container { width: 90px; }
+    .bd-section-title { font-size: 1.8rem; margin-bottom: 24px; }
+
+    /* Lightbox Mobile overrides */
+    .lb-logo { font-size: 1.8rem; top: 16px; }
+    .lb-counter { top: 52px; font-size: 1rem; }
+    .lb-canvas-wrap { padding: 90px 16px 60px 16px; }
+}

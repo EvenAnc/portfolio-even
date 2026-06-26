@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANICET EVEN — Architecte d'intérieur</title>
+    <meta name="description" content="Portfolio d'Anicet Even, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- SVG FILTRES INVISIBLES -->
+    <svg width="0" height="0" style="position:absolute;overflow:hidden;">
+        <defs>
+            <filter id="sketch-1" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" seed="1" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <filter id="sketch-2" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" seed="8" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="6" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <filter id="sketch-3" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" seed="15" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <filter id="paper-tear" x="-10%" y="-10%" width="120%" height="120%" primitiveUnits="userSpaceOnUse">
+                <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="1" result="noise"/>
+                <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+            <clipPath id="torn-1" clipPathUnits="objectBoundingBox">
+                <path d="M0,0.04 C0.05,0 0.12,0.02 0.2,0.01 C0.32,-0.01 0.38,0.03 0.5,0.01 C0.62,-0.01 0.72,0.02 0.84,0 C0.92,-0.01 0.97,0.02 1,0.03 L1,0.97 C0.96,1 0.88,0.98 0.78,1 C0.66,1.02 0.6,0.97 0.48,1 C0.36,1.02 0.28,0.98 0.18,1 C0.1,1.01 0.04,0.99 0,0.97 Z"/>
+            </clipPath>
+            <clipPath id="torn-2" clipPathUnits="objectBoundingBox">
+                <path d="M0,0.02 C0.08,0.01 0.15,0.04 0.25,0.02 C0.38,-0.01 0.45,0.03 0.55,0.01 C0.68,-0.01 0.78,0.03 0.88,0.01 C0.94,-0.01 0.98,0.01 1,0.02 L1,0.98 C0.92,1 0.84,0.97 0.72,1 C0.62,1.02 0.53,0.97 0.42,1 C0.3,1.02 0.22,0.98 0.12,1 C0.06,1.01 0.02,0.99 0,0.98 Z"/>
+            </clipPath>
+            <mask id="mask-torn-1" maskContentUnits="objectBoundingBox" filter="url(#paper-tear)">
+                <path d="M 0.03,0.05 C 0.15,0.02 0.3,0.05 0.5,0.02 C 0.7,0.04 0.85,0.01 0.97,0.04 C 0.99,0.2 0.95,0.4 0.97,0.6 C 0.95,0.8 0.99,0.9 0.96,0.95 C 0.85,0.98 0.7,0.95 0.5,0.97 C 0.3,0.95 0.15,0.98 0.03,0.95 C 0.01,0.8 0.05,0.5 0.03,0.3 C 0.05,0.15 0.01,0.08 0.03,0.05 Z" fill="white"/>
+            </mask>
+            <mask id="mask-torn-2" maskContentUnits="objectBoundingBox" filter="url(#paper-tear)">
+                <path d="M 0.04,0.03 C 0.2,0.05 0.35,0.01 0.5,0.04 C 0.65,0.01 0.8,0.05 0.96,0.03 C 0.95,0.25 0.98,0.45 0.96,0.65 C 0.98,0.8 0.95,0.92 0.96,0.97 C 0.8,0.95 0.65,0.98 0.5,0.95 C 0.35,0.98 0.2,0.95 0.04,0.97 C 0.05,0.75 0.02,0.55 0.04,0.35 C 0.02,0.2 0.05,0.08 0.04,0.03 Z" fill="white"/>
+            </mask>
+        </defs>
+    </svg>
+
+    <!-- ═══════════════════════════════════
+         HEADER FIXE
+    ═══════════════════════════════════ -->
+    <header class="site-header" id="site-header">
+        <div class="header-inner">
+            <button class="burger-btn" id="burger-btn" aria-label="Menu">
+                <span class="b-line"></span>
+                <span class="b-line"></span>
+                <span class="b-line"></span>
+            </button>
+
+            <a href="#" class="header-logo" id="header-logo" data-page="home">
+                <span class="header-logo-text font-sketch">EVEN ANICET</span>
+            </a>
+
+            <div class="header-right">
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="fr">FR</button>
+                    <span class="lang-sep">/</span>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+                <nav class="social-nav">
+                    <a href="https://www.instagram.com/even.anc/" target="_blank" rel="noopener noreferrer" class="social-lnk" aria-label="Instagram">
+                        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/even-anicet-544088275/" target="_blank" rel="noopener noreferrer" class="social-lnk" aria-label="LinkedIn">
+                        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                            <rect x="2" y="9" width="4" height="12"></rect>
+                            <circle cx="4" cy="4" r="2"></circle>
+                        </svg>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════
+         MENU OVERLAY
+    ═══════════════════════════════════ -->
+    <div class="menu-overlay" id="menu-overlay" aria-hidden="true">
+
+        <div class="menu-logo-wrap">
+            <span class="menu-logo font-sketch">EVEN ANICET</span>
+        </div>
+
+        <nav class="menu-nav" id="menu-nav">
+            <a href="#" class="menu-nav-item" data-page="home">
+                <span class="mn-num">01</span>
+                <span class="mn-label" data-i18n="menu_01">ACCUEIL</span>
+                <span class="mn-deco font-sketch" data-i18n="menu_deco_01">bienvenue</span>
+            </a>
+            <a href="#" class="menu-nav-item" data-page="projects">
+                <span class="mn-num">02</span>
+                <span class="mn-label" data-i18n="menu_02">PROJETS</span>
+                <span class="mn-deco font-sketch" data-i18n="menu_deco_02">mes réalisations</span>
+            </a>
+            <a href="#" class="menu-nav-item" data-page="photos">
+                <span class="mn-num">03</span>
+                <span class="mn-label" data-i18n="menu_03">PHOTOS</span>
+                <span class="mn-deco font-sketch" data-i18n="menu_deco_03">lumière & matière</span>
+            </a>
+            <a href="#" class="menu-nav-item" data-page="drawings">
+                <span class="mn-num">04</span>
+                <span class="mn-label" data-i18n="menu_04">DESSINS</span>
+                <span class="mn-deco font-sketch" data-i18n="menu_deco_04">à main levée</span>
+            </a>
+            <a href="#" class="menu-nav-item" data-page="diploma">
+                <span class="mn-num">05</span>
+                <span class="mn-label" data-i18n="menu_05">DIPLÔME</span>
+                <span class="mn-deco font-sketch" data-i18n="menu_deco_05">MJM Toulouse</span>
+            </a>
+            <a href="#" class="menu-nav-item" data-page="contact">
+                <span class="mn-num">06</span>
+                <span class="mn-label" data-i18n="menu_06">CONTACT</span>
+                <span class="mn-deco font-sketch" data-i18n="menu_deco_06">parlons-en</span>
+            </a>
+        </nav>
+
+        <div class="menu-footer">
+            <a href="mailto:even.anicet@gmail.com" class="menu-mail">even.anicet@gmail.com</a>
+            <div class="menu-footer-social">
+                <a href="https://www.instagram.com/even.anc/" target="_blank" rel="noopener noreferrer">Instagram</a>
+                <span>—</span>
+                <a href="https://www.linkedin.com/in/even-anicet-544088275/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            </div>
+        </div>
+
+        <span class="menu-scribble font-sketch">sommaire ↓</span>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         CONTENEUR SPA
+    ═══════════════════════════════════ -->
+    <div id="page-wrapper">
+
+        <!-- ─── PAGE 01 : ACCUEIL ─── -->
+        <section class="page" id="page-home" data-page="home">
+
+            <!-- HERO -->
+            <div class="hero-screen">
+                <div class="hero-logo-wrap" id="hero-logo-wrap">
+                    <h1 class="hero-logo font-sketch" id="hero-logo">EVEN ANICET</h1>
+                    <p class="hero-profession" data-i18n="home_subtitle">Architecte d'intérieur</p>
+                </div>
+                <div class="scroll-invite" id="scroll-invite">
+                    <div class="scroll-line"></div>
+                    <span class="scroll-label font-sketch" data-i18n="home_scroll">Défilez</span>
+                </div>
+            </div>
+
+            <!-- GRAND CADRE SHOWCASE (coins arrondis, taille limitée) -->
+            <div class="home-showcase">
+                <!-- frame-wrap : le rectangle SVG rouge est ICI, DEHORS du cadre clippé -->
+                <div class="frame-wrap">
+                    <div class="showcase-frame">
+                        <img src="assets/render_living_room.png" alt="Résidence" class="showcase-img" draggable="false">
+                        <div class="frame-text-overlay overlay-bl">
+                            <span class="frame-big-text">RÉSIDENCE<br>BRUTALISTE</span>
+                            <span class="frame-sub font-sketch" data-i18n="showcase_sub">Rendu 3D — 2025</span>
+                        </div>
+                    </div>
+                    <!-- Rectangle rouge DESSINÉ MAIN — par-dessus, déborde du cadre -->
+                    <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- BOUTON EXPOSITION PROJETS (SUPERPOSITION INSPIRÉE DE LA MAQUETTE) -->
+            <div class="home-projects-shortcut showcase-projects-btn" data-next="projects">
+                <span class="shortcut-sub-text font-sketch" data-i18n="shortcut_sub">Aperçu</span>
+                <span class="shortcut-main-text" data-i18n="shortcut_main">MES PROJETS</span>
+                
+                <!-- Underline crayonné animé au hover -->
+                <svg class="shortcut-underline-svg" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true">
+                    <path class="shortcut-underline-path" d="M10 10 C 80 12, 220 8, 290 10" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+
+                <!-- Annotation flèche crayonnée cliquez ! -->
+                <div class="shortcut-click-hint">
+                    <svg class="click-hint-arrow" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 10 C 25 5, 45 15, 48 30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" fill="none" style="animation: rectWobble 0.3s steps(1) infinite;"/>
+                        <path d="M38 25 L48 30 L48 18" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                    <span class="click-hint-text font-sketch" data-i18n="click_hint">cliquez !</span>
+                </div>
+            </div>
+
+            <!-- SECTION CAHIER DE BROUILLON -->
+            <div class="notebook-section" id="notebook-section">
+                <div class="notebook-bg-sheet" aria-hidden="true"></div>
+                <div class="notebook-inner">
+                    <div class="notebook-lines" id="notebook-lines" aria-hidden="true"></div>
+                    <div class="notebook-content notebook-hover-zone">
+                        <div class="notebook-title-wrap">
+                            <h2 class="notebook-title font-sketch" data-i18n="about_title">Qui suis-je ?</h2>
+                            <!-- Annotation "EVEN" avec flèche pointant vers le haut à droite -->
+                            <div class="notebook-signature">
+                                <span class="signature-name font-sketch">EVEN</span>
+                                <svg class="signature-arrow" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 45 C 18 55, 32 50, 45 15" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" fill="none" style="animation: rectWobble 0.3s steps(1) infinite;"/>
+                                    <path d="M30 22 L45 15 L42 30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="notebook-text" data-i18n="about_p1">
+                            Passionné d'architecture d'intérieur depuis toujours, je suis étudiant en dernière année à MJM Graphic Design Toulouse. Mon approche allie l'esquisse traditionnelle au rendu 3D numérique pour créer des espaces qui racontent une histoire.
+                        </p>
+                        <p class="notebook-text" data-i18n="about_p2">
+                            Je m'intéresse particulièrement aux volumes bruts, aux matériaux nobles et à la lumière naturelle. Chaque projet est une exploration entre fonctionnalité et esthétique.
+                        </p>
+                        <span class="notebook-annotation font-sketch" data-i18n="about_annotation">→ toujours en quête du détail juste</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTACT (intégré dans accueil) -->
+            <div class="home-contact" id="home-contact">
+                <div class="home-contact-inner">
+                    <div class="page-heading">
+                        <span class="page-num">06</span>
+                        <h2 class="page-title" data-i18n="menu_06">CONTACT</h2>
+                    </div>
+                    <p class="page-intro" data-i18n="contact_intro">Discutons de votre projet d'aménagement intérieur.</p>
+                    <div class="contact-layout">
+                        <form class="contact-form" onsubmit="event.preventDefault();">
+                            <div class="fg">
+                                <input type="text" id="fn" required placeholder=" " class="fi">
+                                <label for="fn" class="fl" data-i18n="form_name">NOM</label>
+                                <span class="fb"></span>
+                            </div>
+                            <div class="fg">
+                                <input type="email" id="fe" required placeholder=" " class="fi">
+                                <label for="fe" class="fl" data-i18n="form_email">EMAIL</label>
+                                <span class="fb"></span>
+                            </div>
+                            <div class="fg">
+                                <textarea id="fm" required placeholder=" " class="fi fi-ta"></textarea>
+                                <label for="fm" class="fl" data-i18n="form_message">MESSAGE</label>
+                                <span class="fb"></span>
+                            </div>
+                            <div class="frame-wrap btn-wrap">
+                                <button type="submit" class="submit-btn">
+                                    <span data-i18n="form_send">ENVOYER</span>
+                                </button>
+                                <svg class="sketch-rect-svg btn-rect" viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden="true">
+                                    <path class="sketch-rect-path" d="M6 5 L192 3 L196 8 L194 52 L190 57 L8 55 L4 50 L5 10 Z" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </form>
+                        <div class="contact-info">
+                            <div class="ci-block">
+                                <h4 class="ci-label" data-i18n="contact_direct">CONTACT DIRECT</h4>
+                                <a href="mailto:even.anicet@gmail.com" class="ci-link">even.anicet@gmail.com</a>
+                            </div>
+                            <div class="ci-block">
+                                <h4 class="ci-label" data-i18n="contact_social">RÉSEAUX</h4>
+                                <a href="https://www.instagram.com/even.anc/" target="_blank" rel="noopener noreferrer" class="ci-soc">
+                                    <svg class="ci-soc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                                    </svg>
+                                    <span>INSTAGRAM</span>
+                                </a>
+                                <a href="https://www.linkedin.com/in/even-anicet-544088275/" target="_blank" rel="noopener noreferrer" class="ci-soc">
+                                    <svg class="ci-soc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                        <rect x="2" y="9" width="4" height="12"></rect>
+                                        <circle cx="4" cy="4" r="2"></circle>
+                                    </svg>
+                                    <span>LINKEDIN</span>
+                                </a>
+                            </div>
+                            <div class="ci-block">
+                                <h4 class="ci-label" data-i18n="contact_location">LOCALISATION</h4>
+                                <span class="ci-text">Toulouse, France</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER LÉGAL -->
+            <footer class="site-footer" id="site-footer">
+                <div class="footer-inner">
+                    <div class="footer-top">
+                        <span class="footer-logo font-sketch">EVEN ANICET</span>
+                        <span class="footer-year">© 2025</span>
+                    </div>
+                    <div class="footer-legal">
+                        <p data-i18n="legal_copyright">Toutes les œuvres présentées sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriété exclusive d'Anicet Even. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est strictement interdite.</p>
+                        <p data-i18n="legal_cert">Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).</p>
+                    </div>
+                    <div class="footer-bottom">
+                        <span data-i18n="legal_mentions">Mentions légales</span>
+                        <span class="footer-sep">|</span>
+                        <span data-i18n="legal_rights">Tous droits réservés</span>
+                        <span class="footer-sep">|</span>
+                        <span>even.anicet@gmail.com</span>
+                    </div>
+                </div>
+            </footer>
+
+        </section>
+
+        <!-- ─── PAGE 02 : PROJETS ─── -->
+        <section class="page" id="page-projects" data-page="projects" aria-hidden="true">
+            <div class="page-inner">
+                <div class="page-heading">
+                    <span class="page-num">02</span>
+                    <h2 class="page-title" data-i18n="menu_02">PROJETS</h2>
+                </div>
+                <p class="page-intro" data-i18n="projects_intro">Conception d'espaces minimalistes et modélisations techniques 3D.</p>
+
+                <div class="projects-grid">
+                    <div class="project-item pi-wide">
+                        <div class="frame-wrap">
+                            <div class="torn-frame">
+                                <div class="media-frame-inner">
+                                    <img src="assets/render_living_room.png" alt="Résidence Brutaliste" class="media-frame-img">
+                                </div>
+                            </div>
+                            <div class="frame-text-overlay overlay-br">
+                                <span class="frame-big-text">RÉSIDENCE<br>BRUTALISTE</span>
+                                <span class="frame-sub font-sketch" data-i18n="proj_cat_3d">Rendu 3D & Intérieur</span>
+                            </div>
+                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="pi-meta"><span class="pi-num">02.1</span></div>
+                    </div>
+
+                    <div class="project-item pi-medium">
+                        <div class="frame-wrap">
+                            <div class="torn-frame torn-alt">
+                                <div class="media-frame-inner">
+                                    <img src="assets/blueprint_apartment.png" alt="Appartement Hus" class="media-frame-img">
+                                </div>
+                            </div>
+                            <div class="frame-text-overlay overlay-tl">
+                                <span class="frame-big-text">APPARTEMENT<br>HUS</span>
+                                <span class="frame-sub font-sketch" data-i18n="proj_cat_plan">Plan & Aménagement</span>
+                            </div>
+                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M10 12 L392 7 L387 15 L394 285 L389 292 L8 288 L14 284 L11 10 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="pi-meta"><span class="pi-num">02.2</span></div>
+                    </div>
+
+                    <div class="project-item pi-portrait">
+                        <div class="frame-wrap">
+                            <div class="torn-frame">
+                                <div class="media-frame-inner">
+                                    <img src="assets/sketch_interior.png" alt="Cuisine Minimaliste" class="media-frame-img">
+                                </div>
+                            </div>
+                            <div class="frame-text-overlay overlay-bl">
+                                <span class="frame-big-text">CUISINE<br>MINIMALISTE</span>
+                                <span class="frame-sub font-sketch" data-i18n="proj_cat_sketch">Esquisse & Concept</span>
+                            </div>
+                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M14 6 L385 9 L390 14 L388 292 L382 287 L12 295 L8 290 L13 18 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="pi-meta"><span class="pi-num">02.3</span></div>
+                    </div>
+                </div>
+
+                <!-- Flèche suivant → -->
+                <a href="#" class="page-next" data-next="photos">
+                    <span class="page-next-label" data-i18n="nav_next">suivant</span>
+                    <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none">
+                        <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- ─── PAGE 03 : PHOTOS ─── -->
+        <section class="page" id="page-photos" data-page="photos" aria-hidden="true">
+            <div class="page-inner">
+                <div class="page-heading">
+                    <span class="page-num">03</span>
+                    <h2 class="page-title" data-i18n="menu_03">PHOTOS</h2>
+                </div>
+                <p class="page-intro" data-i18n="photos_intro">Détails de textures, matières et jeux d'ombres.</p>
+
+                <div class="hcarousel-wrap">
+                    <div class="hcarousel-track" id="hcarousel-track">
+
+                        <div class="hc-item hc-portrait">
+                            <div class="frame-wrap">
+                                <div class="torn-frame">
+                                    <div class="media-frame-inner">
+                                        <img src="assets/photo_detail.png" alt="Détail texture" class="media-frame-img" draggable="false">
+                                    </div>
+                                </div>
+                                <div class="frame-text-overlay overlay-bl">
+                                    <span class="frame-big-text">TEXTURE</span>
+                                </div>
+                                <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                    <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="hc-caption font-sketch">Détail &amp; Ombre</span>
+                        </div>
+
+                        <div class="hc-item hc-landscape">
+                            <div class="frame-wrap">
+                                <div class="torn-frame torn-alt">
+                                    <div class="media-frame-inner">
+                                        <img src="assets/render_living_room.png" alt="Salon" class="media-frame-img" draggable="false">
+                                    </div>
+                                </div>
+                                <div class="frame-text-overlay overlay-tr">
+                                    <span class="frame-big-text">SALON</span>
+                                </div>
+                                <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                    <path class="sketch-rect-path" d="M10 12 L392 7 L387 15 L394 285 L389 292 L8 288 L14 284 L11 10 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="hc-caption font-sketch">Perspective lumière</span>
+                        </div>
+
+                        <div class="hc-item hc-medium">
+                            <div class="frame-wrap">
+                                <div class="torn-frame">
+                                    <div class="media-frame-inner">
+                                        <img src="assets/blueprint_apartment.png" alt="Plan" class="media-frame-img" draggable="false">
+                                    </div>
+                                </div>
+                                <div class="frame-text-overlay overlay-br">
+                                    <span class="frame-big-text">PLAN</span>
+                                </div>
+                                <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                    <path class="sketch-rect-path" d="M14 6 L385 9 L390 14 L388 292 L382 287 L12 295 L8 290 L13 18 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="hc-caption font-sketch">Plan technique</span>
+                        </div>
+
+                        <div class="hc-item hc-a4">
+                            <div class="frame-wrap">
+                                <div class="torn-frame torn-alt">
+                                    <div class="media-frame-inner">
+                                        <img src="assets/sketch_interior.png" alt="Croquis" class="media-frame-img" draggable="false">
+                                    </div>
+                                </div>
+                                <div class="frame-text-overlay overlay-tl">
+                                    <span class="frame-big-text">CROQUIS</span>
+                                </div>
+                                <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                    <path class="sketch-rect-path" d="M8 10 L390 4 L393 9 L389 290 L384 293 L16 287 L10 283 L12 12 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <span class="hc-caption font-sketch">Graphite A4</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Flèche suivant → -->
+                <a href="#" class="page-next" data-next="drawings">
+                    <span class="page-next-label" data-i18n="nav_next">suivant</span>
+                    <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none">
+                        <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- ─── PAGE 04 : DESSINS ─── -->
+        <section class="page" id="page-drawings" data-page="drawings" aria-hidden="true">
+            <div class="page-inner">
+                <div class="page-heading">
+                    <span class="page-num">04</span>
+                    <h2 class="page-title" data-i18n="menu_04">DESSINS</h2>
+                </div>
+                <p class="page-intro" data-i18n="drawings_intro">Esquisses architecturales à main levée sur papier A4.</p>
+
+                <!-- Dessins uniques -->
+                <div class="drawings-gallery">
+                    <div class="drawing-item orient-portrait">
+                        <div class="frame-wrap">
+                            <div class="drawing-sheet-wrap torn-frame">
+                                <div class="media-frame-inner drawing-sheet">
+                                    <img src="dessin/Cartographie-1.png" class="media-frame-img" alt="Dessin Cartographie" loading="lazy">
+                                </div>
+                            </div>
+                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <div class="map-pin-wrap">
+                                <div class="map-pin-text font-sketch">TOULOUSE</div>
+                                <svg class="map-pin-icon" viewBox="0 0 40 60" aria-hidden="true">
+                                    <path class="map-pin-path" d="M20 5 C5 5 5 30 20 55 C35 30 35 5 20 5 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    <circle cx="20" cy="18" r="4" fill="none" stroke="var(--red)" stroke-width="3.5" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="drawing-meta">
+                            <h4 class="drawing-title" data-i18n="drawing_title_carto">CARTOGRAPHIE</h4>
+                            <span class="drawing-detail font-sketch" data-i18n="drawing_desc_carto">Dessin technique & Relief — A4</span>
+                        </div>
+                    </div>
+
+                    <div class="drawing-item orient-landscape">
+                        <div class="frame-wrap">
+                            <div class="drawing-sheet-wrap torn-frame">
+                                <div class="media-frame-inner drawing-sheet">
+                                    <img src="dessin/A la manière de-1.png" class="media-frame-img" alt="Dessin A la manière de" loading="lazy">
+                                </div>
+                            </div>
+                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M14 6 L385 9 L390 14 L388 292 L382 287 L12 295 L8 290 L13 18 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="drawing-meta">
+                            <h4 class="drawing-title" data-i18n="drawing_title_style">À LA MANIÈRE DE...</h4>
+                            <span class="drawing-detail font-sketch" data-i18n="drawing_desc_style">Étude de style & Graphite — A4</span>
+                        </div>
+                    </div>
+
+                    <div class="drawing-item orient-portrait">
+                        <div class="frame-wrap">
+                            <div class="drawing-sheet-wrap torn-frame torn-alt">
+                                <div class="media-frame-inner drawing-sheet">
+                                    <img src="dessin/NOIR ET BLANC Even-1.png" class="media-frame-img" alt="Dessin Noir et Blanc" loading="lazy">
+                                </div>
+                            </div>
+                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M10 12 L392 7 L387 15 L394 285 L389 292 L8 288 L14 284 L11 10 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <div class="ref-photo-wrap">
+                                <svg class="ref-arrow" viewBox="0 0 100 100" aria-hidden="true">
+                                    <path class="ref-arrow-path" d="M 25 80 C 25 35, 55 25, 75 50 L 65 50 M 75 50 L 70 35" pathLength="100" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <div class="ref-photo torn-frame">
+                                    <div class="media-frame-inner">
+                                        <img src="dessin/PXL_20240123_101717726.png" class="media-frame-img" alt="Photo de référence">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="drawing-meta">
+                            <h4 class="drawing-title" data-i18n="drawing_title_nb">NOIR ET BLANC</h4>
+                            <span class="drawing-detail font-sketch" data-i18n="drawing_desc_nb">Encre de Chine & Graphisme — A4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Bande Dessinée -->
+                <div class="bd-carousel-section">
+                    <div class="bd-title-wrap">
+                        <h3 class="bd-section-title font-sketch" data-i18n="bd_title">BANDE DESSINÉE</h3>
+                        <p class="bd-section-subtitle">FALLOUT</p>
+                        <div class="animation-explosion-detail"></div>
+                    </div>
+                    <div class="bd-carousel-container">
+                        <button class="bd-nav-btn prev-btn" aria-label="Page précédente">
+                            <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M 26 9 L 14 21 L 27 29" class="sketch-f1" />
+                                <path d="M 24 11 L 16 19 L 23 31" class="sketch-f2" />
+                                <path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-f3" />
+                            </svg>
+                        </button>
+                        
+                        <div class="frame-wrap">
+                            <div class="bd-carousel-viewport">
+                                <div class="bd-carousel-track">
+                                    <div class="bd-slide active" data-slide="0">
+                                    <div class="drawing-sheet-wrap torn-frame">
+                                        <div class="media-frame-inner drawing-sheet">
+                                            <img src="dessin/BD page 1-1.png" class="media-frame-img" alt="BD page 1" loading="lazy">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bd-slide" data-slide="1">
+                                    <div class="drawing-sheet-wrap torn-frame torn-alt">
+                                        <div class="media-frame-inner drawing-sheet">
+                                            <img src="dessin/BD page 2-1.png" class="media-frame-img" alt="BD page 2" loading="lazy">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bd-slide" data-slide="2">
+                                    <div class="drawing-sheet-wrap torn-frame">
+                                        <div class="media-frame-inner drawing-sheet">
+                                            <img src="dessin/BD page 3-1.png" class="media-frame-img" alt="BD page 3" loading="lazy">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="bd-slide" data-slide="3">
+                                    <div class="drawing-sheet-wrap torn-frame torn-alt">
+                                        <div class="media-frame-inner drawing-sheet">
+                                            <img src="dessin/BD page 4-1.png" class="media-frame-img" alt="BD page 4" loading="lazy">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            
+                            <!-- SVG Crayonné rouge dessiné main -->
+                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+
+                        <button class="bd-nav-btn next-btn" aria-label="Page suivante">
+                            <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M 14 9 L 26 21 L 13 29" class="sketch-f1" />
+                                <path d="M 16 11 L 24 19 L 17 31" class="sketch-f2" />
+                                <path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-f3" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Contrôles interactifs du bas -->
+                    <div class="bd-carousel-controls">
+                        <button class="bd-play-pause-btn" aria-label="Pause/Play">
+                            <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/></svg>
+                            <svg class="icon-play" viewBox="0 0 24 24" width="24" height="24" style="display: none;"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+                        </button>
+                        <div class="bd-dots">
+                            <span class="bd-dot active" data-goto="0"></span>
+                            <span class="bd-dot" data-goto="1"></span>
+                            <span class="bd-dot" data-goto="2"></span>
+                            <span class="bd-dot" data-goto="3"></span>
+                        </div>
+                        <div class="bd-progress-container">
+                            <div class="bd-progress-bar"></div>
+                        </div>
+                        <span class="bd-page-indicator font-sketch">1 / 4</span>
+                    </div>
+                </div>
+
+                <!-- Flèche suivant → -->
+                <a href="#" class="page-next" data-next="diploma">
+                    <span class="page-next-label" data-i18n="nav_next">suivant</span>
+                    <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none">
+                        <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- ─── PAGE 05 : DIPLÔME ─── -->
+        <section class="page" id="page-diploma" data-page="diploma" aria-hidden="true">
+            <div class="page-inner">
+                <div class="page-heading">
+                    <span class="page-num">05</span>
+                    <h2 class="page-title" data-i18n="menu_05">DIPLÔME</h2>
+                </div>
+
+                <div class="diploma-layout">
+                    <div class="school-card">
+                        <div class="school-name-wrap">
+                            <h3 class="school-name">MJM GRAPHIC DESIGN</h3>
+                            <span class="school-city font-sketch">Toulouse</span>
+                        </div>
+                        <div class="frame-wrap">
+                            <a href="https://www.mjm-design.com/formation/bachelor-architecture-dinterieur" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; height: 100%; cursor: pointer;" title="Visiter le site de la formation MJM Graphic Design">
+                                <div class="school-img-wrap torn-frame">
+                                    <div class="media-frame-inner">
+                                        <img src="assets/ecole-art-mjm-toulouse-rncp-alternance.webp" alt="MJM Toulouse Facade" class="media-frame-img">
+                                    </div>
+                                </div>
+                            </a>
+                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M14 6 L385 9 L390 14 L388 292 L382 287 L12 295 L8 290 L13 18 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <ul class="study-list">
+                            <li>
+                                <strong data-i18n="study_focus">Spécialisations</strong>
+                                <span data-i18n="study_focus_desc">Modélisation 3D, plans de coupe, design mobilier et gestion d'espace.</span>
+                            </li>
+                            <li>
+                                <strong data-i18n="study_address">Adresse</strong>
+                                <span>14 Descente de la Halle aux Poissons, 31000 Toulouse</span>
+                            </li>
+                            <li>
+                                <strong data-i18n="study_school_status">Statut de l'établissement</strong>
+                                <span data-i18n="study_school_status_desc">Enseignement supérieur privé technique, enregistré auprès de l'Académie de Toulouse.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="frame-wrap diploma-cert-wrap">
+                        <div class="diploma-placeholder torn-frame">
+                            <div class="media-frame-inner diploma-card-inner">
+                                <div class="diploma-cert-header">
+                                    <h4 class="diploma-cert-title" data-i18n="diploma_cert_title">CERTIFICATION & RECONNAISSANCE</h4>
+                                    <p class="diploma-cert-subtitle" data-i18n="diploma_cert_subtitle">Titre RNCP de niveau 6 (équivalent Bac+3 / Licence)</p>
+                                </div>
+                                <div class="diploma-cert-body">
+                                    <div class="diploma-cert-section">
+                                        <h5 class="diploma-section-label" data-i18n="diploma_cert_rncp">STATUT RÉGLEMENTAIRE</h5>
+                                        <p class="diploma-section-text" data-i18n="diploma_cert_rncp_val">
+                                            Le titre Designer en architecture d’intérieur délivré par MJM Graphic Design est enregistré au Répertoire National des Certifications Professionnelles (RNCP) et reconnu par l'État comme qualification de niveau 6.
+                                        </p>
+                                    </div>
+                                    <div class="diploma-cert-section">
+                                        <h5 class="diploma-section-label" data-i18n="diploma_cert_credits">CRÉDENTIALS ACADÉMIQUES</h5>
+                                        <p class="diploma-section-text" data-i18n="diploma_cert_credits_val">
+                                            Équivalence de 180 crédits ECTS (Niveau 6 Européen EQF). Équivalence Suisse : Bachelor of Arts (BA) HES en architecture d'intérieur. Formation éligible au CPF.
+                                        </p>
+                                    </div>
+                                    <div class="diploma-cert-section">
+                                        <h5 class="diploma-section-label" data-i18n="diploma_cert_competences">COMPÉTENCES CLÉS ACCRÉDITÉES</h5>
+                                        <ul class="diploma-skills-list">
+                                            <li data-i18n="diploma_cert_c1">Établir le diagnostic technique, réglementaire et budgétaire d’un espace à aménager.</li>
+                                            <li data-i18n="diploma_cert_c2">Concevoir des maquettes, plans de coupe, modélisations 3D et rendus photoréalistes.</li>
+                                            <li data-i18n="diploma_cert_c3">Sélectionner les matériaux, rédiger le cahier des charges et chiffrer les projets.</li>
+                                            <li data-i18n="diploma_cert_c4">Coordonner les équipes de maîtrise d'œuvre et piloter l'exécution des travaux.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="diploma-cert-footer">
+                                    <span class="diploma-cert-code">Code RNCP : 34993</span>
+                                    <span class="diploma-cert-authority" data-i18n="diploma_cert_footer">Enregistré par France Compétences</span>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="diploma-cert-stamp">CERTIFIED</span>
+                    </div>
+                </div>
+
+                <!-- Section du scan du diplôme (A4 Paysage) -->
+                <div class="diploma-scan-container">
+                    <h4 class="scan-section-title font-sketch">
+                        <span data-i18n="study_degree">Diplôme d'Architecte d'Intérieur</span>
+                        <span class="study-year" style="margin-left: 15px; font-size: 1.8rem; vertical-align: middle;">2022 – 2025</span>
+                    </h4>
+                    <div class="frame-wrap diploma-scan-wrap">
+                        <div class="torn-frame diploma-scan-frame">
+                            <div class="media-frame-inner diploma-scan-inner">
+                                <div class="diploma-scan-placeholder">
+                                    <svg class="diploma-stamp-icon" viewBox="0 0 100 100" fill="none" stroke="currentColor">
+                                        <circle cx="50" cy="50" r="40" stroke-width="1.5" stroke-dasharray="4 2"/>
+                                        <polygon points="50,20 60,40 80,40 65,55 70,75 50,65 30,75 35,55 20,40 40,40" stroke-width="1.5"/>
+                                    </svg>
+                                    <span class="scan-coming font-sketch" data-i18n="diploma_scan_placeholder_title">Scan du diplôme (A4 Paysage) à intégrer ici</span>
+                                    <span class="scan-sub font-sketch" data-i18n="diploma_scan_placeholder_sub">Format Paysage A4 — Glisser-déposer le scan final</span>
+                                </div>
+                            </div>
+                        </div>
+                        <svg class="sketch-rect-svg" viewBox="0 0 600 424" preserveAspectRatio="none" aria-hidden="true">
+                            <path class="sketch-rect-path" d="M8 8 L592 5 L596 10 L592 414 L588 418 L10 415 L6 410 L8 8 Z" fill="none" stroke="var(--red)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Lightbox ultra-épurée (style Fortiche) -->
+    <div id="drawing-lightbox" class="drawing-lightbox" aria-hidden="true">
+
+        <!-- Logo centré en haut -->
+        <span class="lb-logo font-sketch">EVEN ANICET</span>
+
+        <!-- Compteur discret sous le logo -->
+        <span class="lb-counter font-sketch">1 / 7</span>
+
+        <!-- Outils (Plein écran, Zoom, Fermer) -->
+        <div class="lb-tools">
+            <div class="lb-zoom-slider-container" id="lb-zoom-slider-container">
+                <svg class="lb-slider-svg" viewBox="0 0 100 20" preserveAspectRatio="none">
+                    <path d="M 5 10 Q 25 8, 50 11 T 95 10" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <path id="lb-slider-red-path" d="M 5 10 Q 25 8, 50 11 T 95 10" stroke="var(--red)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100"/>
+                    <path d="M 5 5 Q 4 10, 6 15" stroke="var(--red)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                    <path d="M 95 5 Q 96 10, 94 15" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                </svg>
+                <input type="range" id="lb-zoom-range" min="1" max="4" step="0.05" value="1" aria-label="Niveau de zoom">
+            </div>
+            <button class="lb-tool-btn lb-fullscreen-btn" aria-label="Plein écran">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="currentColor"/></svg>
+            </button>
+            <button class="lb-tool-btn lb-zoom-btn" aria-label="Zoomer">
+                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm2.5-4h-2v2H9v-2H7V9h2V7h1.5v2h2v1.5z" fill="currentColor"/></svg>
+            </button>
+            <button class="lb-close" aria-label="Fermer">&times;</button>
+        </div>
+
+        <!-- Flèche gauche -->
+        <button class="lb-arrow lb-prev" aria-label="Précédent">
+            <svg viewBox="0 0 24 24" width="28" height="28"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor"/></svg>
+        </button>
+
+        <!-- Image -->
+        <div class="lb-canvas-wrap" id="lb-canvas-wrap">
+            <img id="lb-img" src="" alt="Drawing preview">
+        </div>
+
+        <!-- Loader -->
+        <div class="lb-loader" id="lb-loader"><div class="lb-spinner"></div></div>
+
+        <!-- Flèche droite -->
+        <button class="lb-arrow lb-next" aria-label="Suivant">
+            <svg viewBox="0 0 24 24" width="28" height="28"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor"/></svg>
+        </button>
+
+        <!-- Points indicateurs en bas -->
+        <div class="lb-dots"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
