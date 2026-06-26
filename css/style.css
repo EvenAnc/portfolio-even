@@ -1861,10 +1861,11 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .shortcut-click-hint { 
         display: flex;
         opacity: 0;
-        transition: opacity 0.5s var(--ease-out) 0.8s, transform 0.5s var(--ease-out) 0.8s;
-        transform: translateY(15px) rotate(5deg);
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
+        transform: translateY(-40px) scale(1.2) rotate(5deg);
         left: auto;
-        right: 15px; /* Aligné à droite mais avec une marge */
+        right: -10px; /* Décalé vers la droite, dans la zone anthracite */
+        top: -15px; /* Décalé vers le haut */
     }
     .click-hint-text {
         font-size: 2.2rem;
@@ -2172,19 +2173,26 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .home-projects-shortcut:hover .shortcut-underline-path { stroke-dashoffset: 400; }
     .drawings-gallery .drawing-item:hover { transform: none; filter: none; }
     
+    /* ── Base Bounce States for Mobile ── */
+    .notebook-signature, .ref-photo, .ref-arrow {
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s !important;
+    }
+    .notebook-signature { transform: translateY(-40px) translateX(20px) scale(1.2) !important; }
+    .ref-photo { transform: translateY(-40px) scale(1.2) !important; }
+    .ref-arrow { transform: translateY(-40px) scale(1.2) !important; }
+
     /* ── Extras sur dessins (mobile au scroll) ── */
     .drawing-item.is-inview .ref-photo {
         opacity: 1 !important;
-        transform: rotate(15deg) translateY(0) !important;
-        transition-delay: 0.8s !important;
+        transform: rotate(15deg) translateY(0) scale(1) !important;
     }
     .drawing-item.is-inview .ref-arrow {
         opacity: 1 !important;
-        transition-delay: 0.8s !important;
+        transform: translateY(0) scale(1) !important;
     }
     .drawing-item.is-inview .ref-arrow-path {
         stroke-dashoffset: 0 !important;
-        transition-delay: 0.8s !important;
+        transition: stroke-dashoffset 0.6s var(--ease-out) 0.8s !important;
     }
     .drawing-item.is-inview .map-pin-icon {
         opacity: 1 !important;
@@ -2204,14 +2212,13 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     }
     .notebook-section.is-inview .notebook-signature {
         opacity: 1 !important;
-        transform: translateY(0) translateX(0) !important;
-        transition-delay: 0.8s !important;
+        transform: translateY(0) translateX(0) scale(1) !important;
     }
 
     /* ── Cliquez ! au scroll ── */
     .home-projects-shortcut.is-inview .shortcut-click-hint {
         opacity: 1 !important;
-        transform: translateY(0) rotate(5deg) !important;
+        transform: translateY(0) scale(1) rotate(5deg) !important;
     }
 
     /* ── Dessin Noir et Blanc (3ème) : rétrécissement pour faire de la place ── */
