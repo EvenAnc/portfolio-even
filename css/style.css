@@ -1861,8 +1861,17 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .shortcut-click-hint { 
         display: flex;
         opacity: 0;
-        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+        transition: opacity 0.5s var(--ease-out) 0.8s, transform 0.5s var(--ease-out) 0.8s;
         transform: translateY(15px) rotate(5deg);
+        left: auto;
+        right: 15px; /* Aligné à droite mais avec une marge */
+    }
+    .click-hint-text {
+        font-size: 2.2rem;
+    }
+    .click-hint-arrow {
+        width: 45px;
+        height: 30px;
     }
     .shortcut-underline-svg { width: 80%; }
     .shortcut-main-text { font-size: clamp(3rem, 12vw, 7rem); }
@@ -2167,29 +2176,36 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .drawing-item.is-inview .ref-photo {
         opacity: 1 !important;
         transform: rotate(15deg) translateY(0) !important;
+        transition-delay: 0.8s !important;
     }
     .drawing-item.is-inview .ref-arrow {
         opacity: 1 !important;
+        transition-delay: 0.8s !important;
     }
     .drawing-item.is-inview .ref-arrow-path {
         stroke-dashoffset: 0 !important;
+        transition-delay: 0.8s !important;
     }
     .drawing-item.is-inview .map-pin-icon {
         opacity: 1 !important;
         transform: translateY(0) scale(1) !important;
+        transition-delay: 0.8s !important;
     }
     .drawing-item.is-inview .map-pin-text {
         opacity: 1 !important;
         transform: rotate(-15deg) scale(1) !important;
+        transition-delay: 0.9s !important;
     }
 
     /* ── Agrandissement du brouillon au scroll ── */
     .notebook-section.is-inview .notebook-bg-sheet {
         transform: scale(1.02) rotate(-1deg);
+        transition-delay: 0.3s;
     }
     .notebook-section.is-inview .notebook-signature {
         opacity: 1 !important;
         transform: translateY(0) translateX(0) !important;
+        transition-delay: 0.8s !important;
     }
 
     /* ── Cliquez ! au scroll ── */
@@ -2198,10 +2214,10 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
         transform: translateY(0) rotate(5deg) !important;
     }
 
-    /* ── Dessin Noir et Blanc : rétrécissement pour faire de la place ── */
-    .drawing-item.orient-portrait.is-inview .frame-wrap {
-        transform: scale(0.85) translateX(-8%);
-        transition: transform 0.6s var(--ease-out) 0.1s; /* Petit délai pour matcher l'apparition */
+    /* ── Dessin Noir et Blanc (3ème) : rétrécissement pour faire de la place ── */
+    .drawing-item:nth-child(3).is-inview .frame-wrap {
+        transform: scale(0.70) translateX(-18%);
+        transition: transform 0.8s var(--ease-out) 0.1s;
     }
 
     /* Disable hover rules for mobile on extras when not in view */
