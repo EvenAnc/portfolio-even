@@ -1666,7 +1666,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     background: transparent;
     overflow: hidden;
     box-sizing: border-box;
-    padding: 130px 70px 80px 70px;
+    padding: 110px 70px 50px 70px;
 }
 
 .lb-canvas-wrap img {
