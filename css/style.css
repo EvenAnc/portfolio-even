@@ -1894,3 +1894,141 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .lb-counter { top: 52px; font-size: 1rem; }
     .lb-canvas-wrap { padding: 90px 16px 60px 16px; }
 }
+
+/* ─────────────────────────────────────
+   19. ANIMATIONS AU SCROLL — MOBILE TOUCH
+   Sur les appareils tactiles (hover: none), les animations
+   de survol sont remplacées par des animations déclenchées
+   au scroll via la classe .is-inview ajoutée par JS.
+───────────────────────────────────── */
+@media (hover: none) {
+
+    /* ── Cadres : rectangle rouge se dessine au scroll ── */
+    .frame-wrap.is-inview > .sketch-rect-svg {
+        opacity: 1;
+    }
+    .frame-wrap.is-inview > .sketch-rect-svg .sketch-rect-path {
+        stroke-dashoffset: 0;
+    }
+
+    /* ── Cadres : image légèrement zoomée au scroll ── */
+    .frame-wrap.is-inview .torn-frame .media-frame-img,
+    .frame-wrap.is-inview .showcase-img {
+        transform: scale(1.04);
+    }
+
+    /* ── Cadres : texte overlay glisse vers le haut au scroll ── */
+    .frame-wrap.is-inview .frame-big-text {
+        transform: translateY(-4px);
+    }
+
+    /* ── Bouton ENVOYER : rect rouge au scroll ── */
+    .btn-wrap.is-inview > .sketch-rect-svg { opacity: 1; }
+    .btn-wrap.is-inview > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
+
+    /* ── Galerie dessins : désactiver le blur global au hover
+       et animer chaque item individuellement à son entrée ── */
+    .drawings-gallery:hover .drawing-item {
+        filter: none;
+        opacity: 1;
+        transform: none;
+    }
+    .drawing-item {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.6s var(--ease-out),
+                    transform 0.6s var(--ease-out);
+    }
+    .drawing-item.is-inview {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Délais en cascade pour les dessins */
+    .drawing-item:nth-child(1) { transition-delay: 0s; }
+    .drawing-item:nth-child(2) { transition-delay: 0.1s; }
+    .drawing-item:nth-child(3) { transition-delay: 0.2s; }
+
+    /* ── Bouton "MES PROJETS" : animer à l'entrée ── */
+    .home-projects-shortcut {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+        transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+    .home-projects-shortcut.is-inview {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    /* ── Items du carousel photos (hc-item) ── */
+    .hc-item {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.55s var(--ease-out), transform 0.55s var(--ease-out);
+    }
+    .hc-item.is-inview {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    /* Délais en cascade pour les photos */
+    .hc-item:nth-child(1) { transition-delay: 0s; }
+    .hc-item:nth-child(2) { transition-delay: 0.1s; }
+    .hc-item:nth-child(3) { transition-delay: 0.2s; }
+    .hc-item:nth-child(4) { transition-delay: 0.3s; }
+
+    /* ── Items projets ── */
+    .project-item {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+    }
+    .project-item.is-inview {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .project-item:nth-child(2) { transition-delay: 0.1s; }
+    .project-item:nth-child(3) { transition-delay: 0.2s; }
+
+    /* ── Blocs d'infos contact ── */
+    .ci-block {
+        opacity: 0;
+        transform: translateX(16px);
+        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+    .ci-block.is-inview {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    .ci-block:nth-child(2) { transition-delay: 0.1s; }
+    .ci-block:nth-child(3) { transition-delay: 0.2s; }
+
+    /* ── Groupes de champs formulaire ── */
+    .fg {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+    .fg.is-inview {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .fg:nth-child(2) { transition-delay: 0.08s; }
+    .fg:nth-child(3) { transition-delay: 0.16s; }
+
+    /* ── Désactiver les hover visuels sur mobile (ils ne font rien
+       mais laissent un état intermédiaire bloqué sur certains OS) ── */
+    .frame-wrap:hover .frame-big-text { transform: none; }
+    .frame-wrap:hover .torn-frame .media-frame-img { transform: none; }
+    .torn-frame:hover .media-frame-img { transform: none; }
+    .showcase-frame:hover .showcase-img { transform: none; }
+    .home-projects-shortcut:hover { transform: none; }
+    .home-projects-shortcut:hover .shortcut-sub-text { transform: translateY(18px) rotate(-4deg); }
+    .home-projects-shortcut:hover .shortcut-main-text { transform: none; }
+    .home-projects-shortcut:hover .shortcut-underline-path { stroke-dashoffset: 400; }
+    .drawings-gallery .drawing-item:hover { transform: none; filter: none; }
+    .drawing-item:hover .ref-photo { opacity: 0; }
+    .drawing-item:hover .ref-arrow { opacity: 0; }
+    .drawing-item:hover .map-pin-icon { opacity: 0; }
+    .drawing-item:hover .map-pin-text { opacity: 0; }
+}
+

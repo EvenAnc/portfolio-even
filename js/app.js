@@ -173,6 +173,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initDrawingLightbox();
 
+    // Animations au scroll pour les appareils tactiles (mobile)
+    initScrollAnimationsMobile();
+
     // Révéler la page home avec animation d'entrée
     showPage('home', false);
 
@@ -1178,3 +1181,67 @@ function initDrawingLightbox() {
     }, { passive: true });
 }
 
+// ─────────────────────────────────────
+// ANIMATIONS AU SCROLL — MOBILE TOUCH
+// Remplace les effets de survol sur les appareils tactiles
+// ─────────────────────────────────────
+function initScrollAnimationsMobile() {
+    // Uniquement sur les appareils sans hover (mobile, tablette tactile)
+    if (!window.matchMedia('(hover: none)').matches) return;
+
+    // Sélecteurs à observer — même liste que les éléments animés en CSS
+    const SELECTORS = [
+        '.frame-wrap',
+        '.btn-wrap',
+        '.drawing-item',
+        '.project-item',
+        '.hc-item',
+        '.ci-block',
+        '.fg',
+        '.home-projects-shortcut',
+    ].join(', ');
+
+    // Options de l'observer : déclencher quand 20% de l'élément est visible
+    const observerOptions = {
+        threshold: 0.2,
+        // rootMargin légèrement négatif pour éviter les faux positifs tout en haut
+        rootMargin: '0px 0px -5% 0px'
+    };
+
+    // Créer un IntersectionObserver qui ajoute .is-inview à chaque élément visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-inview');
+                // On ne désobserve PAS pour que le rectangle reste dessiné
+                // même si l'utilisateur revient en arrière
+            }
+        });
+    }, observerOptions);
+
+    // Observer tous les éléments dans un conteneur donné
+    function observeInContainer(container) {
+        container.querySelectorAll(SELECTORS).forEach(el => {
+            // Éviter de ré-observer un élément déjà marqué
+            if (!el.dataset.mobileObserved) {
+                el.dataset.mobileObserved = '1';
+                observer.observe(el);
+            }
+        });
+    }
+
+    // Observer les éléments de la page active au chargement initial
+    document.querySelectorAll('.page.is-active').forEach(observeInContainer);
+
+    // Re-observer à chaque changement de page active (SPA navigation)
+    // On surveille les attributs de classe sur chaque page
+    document.querySelectorAll('.page').forEach(page => {
+        const pageClassObserver = new MutationObserver(() => {
+            if (page.classList.contains('is-active')) {
+                // Petit délai pour laisser la transition de page se terminer
+                setTimeout(() => observeInContainer(page), 400);
+            }
+        });
+        pageClassObserver.observe(page, { attributes: true, attributeFilter: ['class'] });
+    });
+}
