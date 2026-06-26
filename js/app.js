@@ -1282,7 +1282,10 @@ function initScrollAnimationsMobile() {
     // Sélecteurs à observer — même liste que les éléments animés en CSS
     const SELECTORS = [
         '.drawing-item',
+        '.project-item',
+        '.hc-item',
         '.ci-block',
+        '.fg',
         '.home-projects-shortcut',
     ].join(', ');
 
