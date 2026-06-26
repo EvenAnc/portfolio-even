@@ -174,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDrawingLightbox();
 
     // Animations au scroll pour les appareils tactiles (mobile)
+    // Appelé APRÈS showPage pour que is-active soit bien présent
     initScrollAnimationsMobile();
 
     // Révéler la page home avec animation d'entrée
@@ -1182,6 +1183,7 @@ function initDrawingLightbox() {
 }
 
 // ─────────────────────────────────────
+// ─────────────────────────────────────
 // ANIMATIONS AU SCROLL — MOBILE TOUCH
 // Remplace les effets de survol sur les appareils tactiles
 // ─────────────────────────────────────
@@ -1201,28 +1203,39 @@ function initScrollAnimationsMobile() {
         '.home-projects-shortcut',
     ].join(', ');
 
-    // Options de l'observer : déclencher quand 20% de l'élément est visible
-    const observerOptions = {
-        threshold: 0.2,
-        // rootMargin légèrement négatif pour éviter les faux positifs tout en haut
-        rootMargin: '0px 0px -5% 0px'
-    };
+    // BUG ANDROID FIX : Le scroll se fait à l'intérieur des éléments .page
+    // (overflow-y: auto), pas dans le viewport du navigateur.
+    // Il faut donc créer un IntersectionObserver PAR PAGE avec root = la page,
+    // sinon le navigateur considère que tout est "dans le viewport" car .page
+    // couvre tout l'écran en position: absolute.
+    const pageObservers = new Map(); // page element → IntersectionObserver
 
-    // Créer un IntersectionObserver qui ajoute .is-inview à chaque élément visible
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-inview');
-                // On ne désobserve PAS pour que le rectangle reste dessiné
-                // même si l'utilisateur revient en arrière
-            }
+    function createObserverForPage(page) {
+        if (pageObservers.has(page)) return pageObservers.get(page);
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-inview');
+                    // Désobserver après déclenchement pour optimiser les perfs
+                    // L'élément garde sa classe .is-inview définitivement
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: page,           // ← clé du fix : la page elle-même est le root
+            threshold: 0.15,      // déclenche quand 15% de l'élément est visible
+            rootMargin: '0px 0px -8% 0px'
         });
-    }, observerOptions);
 
-    // Observer tous les éléments dans un conteneur donné
-    function observeInContainer(container) {
-        container.querySelectorAll(SELECTORS).forEach(el => {
-            // Éviter de ré-observer un élément déjà marqué
+        pageObservers.set(page, observer);
+        return observer;
+    }
+
+    // Observer tous les éléments d'une page donnée
+    function observeInPage(page) {
+        const observer = createObserverForPage(page);
+        page.querySelectorAll(SELECTORS).forEach(el => {
             if (!el.dataset.mobileObserved) {
                 el.dataset.mobileObserved = '1';
                 observer.observe(el);
@@ -1230,18 +1243,24 @@ function initScrollAnimationsMobile() {
         });
     }
 
-    // Observer les éléments de la page active au chargement initial
-    document.querySelectorAll('.page.is-active').forEach(observeInContainer);
+    // Lancement initial sur la page home (déjà active au moment de l'appel)
+    const homePage = document.getElementById('page-home');
+    if (homePage) {
+        // Léger délai pour s'assurer que showPage() a bien ajouté is-active
+        // et que le layout est statisé
+        setTimeout(() => observeInPage(homePage), 300);
+    }
 
-    // Re-observer à chaque changement de page active (SPA navigation)
-    // On surveille les attributs de classe sur chaque page
+    // Pour chaque autre page : observer dès qu'elle devient active (navigation SPA)
     document.querySelectorAll('.page').forEach(page => {
-        const pageClassObserver = new MutationObserver(() => {
+        if (page.id === 'page-home') return; // déjà géré ci-dessus
+
+        const mutObserver = new MutationObserver(() => {
             if (page.classList.contains('is-active')) {
-                // Petit délai pour laisser la transition de page se terminer
-                setTimeout(() => observeInContainer(page), 400);
+                // Délai pour laisser la transition de page se terminer
+                setTimeout(() => observeInPage(page), 450);
             }
         });
-        pageClassObserver.observe(page, { attributes: true, attributeFilter: ['class'] });
+        mutObserver.observe(page, { attributes: true, attributeFilter: ['class'] });
     });
 }

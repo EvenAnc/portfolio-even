@@ -407,19 +407,24 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     position: relative;
 }
 
-/* === TORN FRAME : clip-path papier déchiré, overflow caché === */
+/* === TORN FRAME : clip-path papier déchiré ===
+   NOTE: On utilise clip-path: url(#torn-1) et non mask: url(#mask-torn-1)
+   car le mask avec filter="url(#paper-tear)" n'est pas supporté sur iOS Safari
+   (WebKit), ce qui génère des bandes noires. clip-path + clipPath SVG sans
+   filtre est compatible sur tous les navigateurs modernes.
+*/
 .torn-frame {
     position: relative;
     overflow: hidden;
     width: 100%;
-    /* Le masque de déchirure est appliqué ici pour créer l'effet papier déchiré wobbly */
-    -webkit-mask: url(#mask-torn-1);
-    mask: url(#mask-torn-1);
+    clip-path: url(#torn-1);
+    /* Webkit prefix pour compatibilité maximale */
+    -webkit-clip-path: url(#torn-1);
 }
 
 .torn-frame.torn-alt {
-    -webkit-mask: url(#mask-torn-2);
-    mask: url(#mask-torn-2);
+    clip-path: url(#torn-2);
+    -webkit-clip-path: url(#torn-2);
 }
 
 .media-frame-inner {
