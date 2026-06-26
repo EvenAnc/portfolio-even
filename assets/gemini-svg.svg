@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 100" width="500" height="100">
+  <defs>
+    <filter id="crayon" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </defs>
+  
+  <g stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#crayon)">
+    
+    <path d="M 40 85 Q 50 65 60 85" />
+    
+    <path d="M 145 85 L 140 65 Q 125 65 130 50 Q 150 40 170 50 Q 175 65 160 65 L 155 85" />
+    
+    <path d="M 245 85 L 240 55 Q 220 60 215 40 Q 235 25 250 25 Q 265 25 285 40 Q 280 60 260 55 L 255 85" />
+    <path d="M 230 45 Q 250 35 270 45" />
+    
+    <path d="M 345 85 L 335 55 Q 310 60 315 35 Q 330 15 350 15 Q 370 15 385 35 Q 390 60 365 55 L 355 85" />
+    <path d="M 330 35 Q 350 25 370 35 M 340 45 Q 350 35 360 45" />
+    
+    <path d="M 445 85 L 435 55 Q 400 65 405 35 Q 425 10 450 10 Q 475 10 495 35 Q 500 65 465 55 L 455 85" />
+    <path d="M 425 35 Q 450 20 475 35 M 435 50 Q 450 35 465 50 M 415 45 Q 425 30 440 35" />
+    <path d="M 445 25 L 455 35 M 415 65 Q 430 75 440 60 M 485 65 Q 470 75 460 60" />
+    
+  </g>
+</svg>

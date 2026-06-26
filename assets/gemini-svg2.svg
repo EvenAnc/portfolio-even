@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 120" width="600" height="120">
+  <defs>
+    <filter id="crayon-texture" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.1" numOctaves="4" result="noise" />
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0 1" />
+      <feComposite in2="SourceGraphic" operator="in" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+      <feGaussianBlur stdDeviation="0.25" />
+    </filter>
+  </defs>
+  
+  <g stroke="white" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#crayon-texture)">
+    
+    <path d="M 50 110 Q 60 95 70 110 M 55 105 L 65 110" />
+    <circle cx="60" cy="100" r="1.5" />
+    
+    <path d="M 175 110 L 170 80 Q 155 75 160 60 Q 180 50 200 60 Q 205 75 190 80 L 185 110" />
+    <path d="M 170 70 L 190 70 M 165 75 L 195 75 M 175 60 Q 185 55 195 60" />
+    <path d="M 160 90 H 180 M 160 85 H 180 M 170 80 H 190" />
+    
+    <path d="M 295 110 L 290 70 Q 265 75 260 55 Q 280 35 300 35 Q 320 35 340 55 Q 335 75 310 70 L 305 110" />
+    <path d="M 280 65 Q 295 55 310 65 M 275 60 L 315 60 M 270 55 H 320 M 265 50 H 325" />
+    <path d="M 290 80 L 310 80 M 290 85 L 310 85 M 300 75 H 320" />
+    <path d="M 295 40 Q 305 35 315 40 M 300 45 L 310 45" />
+    
+    <path d="M 415 110 L 405 70 Q 375 75 380 50 Q 395 25 420 25 Q 445 25 460 50 Q 465 75 435 70 L 425 110" />
+    <path d="M 390 60 Q 405 50 420 60 M 385 55 L 425 55 M 380 50 H 430 M 375 45 H 435" />
+    <path d="M 405 85 L 435 85 M 405 90 L 435 90 M 415 80 H 445" />
+    <path d="M 410 40 Q 420 30 430 40 M 415 45 L 425 45" />
+    <path d="M 395 40 L 405 45 M 445 40 L 435 45 M 410 50 Q 415 45 420 50" />
+    
+    <path d="M 535 110 L 525 70 Q 490 80 495 50 Q 515 20 540 20 Q 565 20 585 50 Q 590 80 555 70 L 545 110" />
+    <path d="M 510 65 Q 525 55 540 65 M 505 60 L 545 60 M 500 55 H 550 M 495 50 H 555" />
+    <path d="M 525 85 L 555 85 M 525 90 L 555 90 M 535 80 H 565" />
+    <path d="M 520 40 Q 530 30 540 40 M 525 45 L 535 45" />
+    <path d="M 505 40 L 515 45 M 565 40 L 555 45 M 530 50 Q 535 45 540 50" />
+    <path d="M 530 25 Q 540 15 550 25 M 535 30 L 545 30" />
+    <path d="M 505 70 Q 515 75 525 65 M 565 70 Q 555 75 545 65" />
+    
+  </g>
+</svg>
