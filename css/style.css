@@ -2026,17 +2026,26 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 @media (hover: none) {
 
     /* ── Cadres : rectangle rouge se dessine au clic/touch (active) ── */
+    .frame-wrap > .sketch-rect-svg {
+        transition: opacity 0.15s 0.1s var(--ease-out); /* Délai de 0.1s pour éviter le flash au scroll */
+    }
     .frame-wrap:active > .sketch-rect-svg {
         opacity: 1;
+        transition-delay: 0s;
     }
     .frame-wrap:active > .sketch-rect-svg .sketch-rect-path {
         stroke-dashoffset: 0;
     }
 
     /* ── Cadres : image légèrement zoomée au touch ── */
+    .frame-wrap .torn-frame .media-frame-img,
+    .frame-wrap .showcase-img {
+        transition: transform 0.2s 0.1s ease;
+    }
     .frame-wrap:active .torn-frame .media-frame-img,
     .frame-wrap:active .showcase-img {
         transform: scale(1.04);
+        transition-delay: 0s;
     }
 
     /* ── Cadres : texte overlay glisse vers le haut au touch ── */
