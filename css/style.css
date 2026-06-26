@@ -2157,9 +2157,36 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .home-projects-shortcut:hover .shortcut-main-text { transform: none; }
     .home-projects-shortcut:hover .shortcut-underline-path { stroke-dashoffset: 400; }
     .drawings-gallery .drawing-item:hover { transform: none; filter: none; }
-    .drawing-item:hover .ref-photo { opacity: 0; }
-    .drawing-item:hover .ref-arrow { opacity: 0; }
-    .drawing-item:hover .map-pin-icon { opacity: 0; }
-    .drawing-item:hover .map-pin-text { opacity: 0; }
+    
+    /* ── Extras sur dessins (mobile au scroll) ── */
+    .drawing-item.is-inview .ref-photo {
+        opacity: 1 !important;
+        transform: rotate(15deg) translateY(0) !important;
+    }
+    .drawing-item.is-inview .ref-arrow {
+        opacity: 1 !important;
+    }
+    .drawing-item.is-inview .ref-arrow-path {
+        stroke-dashoffset: 0 !important;
+    }
+    .drawing-item.is-inview .map-pin-icon {
+        opacity: 1 !important;
+        transform: translateY(0) scale(1) !important;
+    }
+    .drawing-item.is-inview .map-pin-text {
+        opacity: 1 !important;
+        transform: rotate(-15deg) scale(1) !important;
+    }
+
+    /* ── Agrandissement du brouillon au scroll ── */
+    .notebook-section.is-inview .notebook-bg-sheet {
+        transform: scale(1.02) rotate(-1deg);
+    }
+
+    /* Disable hover rules for mobile on extras when not in view */
+    .drawing-item:not(.is-inview):hover .ref-photo { opacity: 0; }
+    .drawing-item:not(.is-inview):hover .ref-arrow { opacity: 0; }
+    .drawing-item:not(.is-inview):hover .map-pin-icon { opacity: 0; }
+    .drawing-item:not(.is-inview):hover .map-pin-text { opacity: 0; }
 }
 

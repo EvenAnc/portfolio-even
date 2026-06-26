@@ -1286,6 +1286,7 @@ function initScrollAnimationsMobile() {
         '.hc-item',
         '.ci-block',
         '.fg',
+        '.notebook-section',
         '.home-projects-shortcut',
     ].join(', ');
 
@@ -1303,15 +1304,11 @@ function initScrollAnimationsMobile() {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('is-inview');
-                    // Désobserver après déclenchement pour optimiser les perfs
-                    // L'élément garde sa classe .is-inview définitivement
                     observer.unobserve(entry.target);
                 }
             });
         }, {
-            root: page,           // ← clé du fix : la page elle-même est le root
-            threshold: 0.15,      // déclenche quand 15% de l'élément est visible
-            rootMargin: '0px 0px -8% 0px'
+            threshold: 0.05
         });
 
         pageObservers.set(page, observer);
