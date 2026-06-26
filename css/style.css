@@ -1841,7 +1841,9 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
     /* ── Header ── */
     .header-inner { padding: 0 18px; }
-    .social-nav { display: none; }
+    .header-right { gap: 14px; }
+    .social-nav { display: flex; gap: 8px; }
+    .social-icon { width: 15px; height: 15px; }
     .lang-switcher { gap: 4px; font-size: 0.75rem; }
 
     /* ── Menu overlay ── */
