@@ -817,6 +817,35 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
 .submit-btn:hover { border-color: var(--red); color: var(--red); }
 
+/* ── Validation formulaire (BUG-07 FIX) ── */
+.fi-error {
+    border-bottom-color: var(--red) !important;
+}
+
+.fi-error ~ .fl {
+    color: var(--red) !important;
+    transform: translateY(-20px) scale(0.82) !important;
+}
+
+.form-feedback {
+    min-height: 22px;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-feedback--error {
+    color: var(--red);
+    opacity: 1;
+}
+
+.form-feedback--success {
+    color: #4ade80; /* vert succès */
+    opacity: 1;
+}
+
+
 .contact-info { display: flex; flex-direction: column; gap: 36px; padding-top: 12px; }
 .ci-label { font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.25); margin-bottom: 10px; text-transform: uppercase; }
 .ci-link { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.03em; display: inline-block; transition: color var(--dur-fast); }
@@ -917,6 +946,12 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
         transform: scale(1.08);
         z-index: 20;
     }
+}
+
+/* Curseur "loupe" uniquement quand la page Dessins est active et visible */
+.page.is-active .drawing-item .frame-wrap,
+.page.is-active .bd-slide.active .drawing-sheet-wrap {
+    cursor: zoom-in;
 }
 .drawing-sheet-wrap .media-frame-inner { background: #f0ede6; padding: 15px; }
 .drawing-item.orient-portrait .media-frame-inner { aspect-ratio: 1 / 1.414; }
@@ -1517,14 +1552,17 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     box-sizing: border-box;
     background: #121212;
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
-    transition: opacity 0.35s ease;
+    transition: opacity 0.35s ease, visibility 0s linear 0.35s;
     cursor: default;
 }
 
 .drawing-lightbox[aria-hidden="false"] {
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
+    transition: opacity 0.35s ease, visibility 0s linear 0s;
 }
 
 /* ── Logo centré en haut ── */
