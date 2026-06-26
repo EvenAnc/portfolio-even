@@ -896,6 +896,7 @@ function initDrawingLightbox() {
     let isDragging = false;
     let startX, startY;
     let initialTx, initialTy;
+    let isSingleMode = false;
 
     function updateTransform() {
         const img = canvasWrap.querySelector('img');
@@ -949,25 +950,45 @@ function initDrawingLightbox() {
 
         // Mettre à jour le compteur
         if (counterEl) {
-            counterEl.textContent = `${index + 1} / ${allDrawings.length}`;
+            if (isSingleMode) {
+                counterEl.style.display = 'none';
+            } else {
+                counterEl.style.display = '';
+                counterEl.textContent = `${index + 1} / ${allDrawings.length}`;
+            }
         }
 
-        updateDots();
+        if (isSingleMode) {
+            if (dotsWrap) dotsWrap.style.display = 'none';
+            if (prevBtn) prevBtn.style.display = 'none';
+            if (nextBtn) nextBtn.style.display = 'none';
+        } else {
+            if (dotsWrap) dotsWrap.style.display = '';
+            if (prevBtn) prevBtn.style.display = '';
+            if (nextBtn) nextBtn.style.display = '';
+            updateDots();
+        }
 
         // Préparer l'image
         if (canvasWrap) canvasWrap.innerHTML = '';
         if (loader) loader.classList.add('active');
 
-        const drawing = allDrawings[index];
         const img = document.createElement('img');
-        img.src = drawing.url;
-        img.alt = drawing.title;
+        if (isSingleMode) {
+            // Dans le mode Single, l'index est en fait passé comme objet contenant l'URL et le titre
+            img.src = index.url;
+            img.alt = index.title || '';
+        } else {
+            const drawing = allDrawings[index];
+            img.src = drawing.url;
+            img.alt = drawing.title;
+        }
         img.onload = () => {
             if (loader) loader.classList.remove('active');
         };
         img.onerror = () => {
             if (loader) loader.classList.remove('active');
-            console.error('Erreur lors du chargement de l\'image:', drawing.url);
+            console.error('Erreur lors du chargement de l\'image:', img.src);
         };
         
         if (canvasWrap) canvasWrap.appendChild(img);
@@ -977,10 +998,20 @@ function initDrawingLightbox() {
 
     // ── Ouvrir / Fermer ──
     function openLightbox(index) {
+        isSingleMode = false;
         lightbox.setAttribute('aria-hidden', 'false');
         if (window._lenis) window._lenis.stop();
         document.body.style.overflow = 'hidden';
         showDrawing(index);
+    }
+
+    function openSingleImage(url, title) {
+        isSingleMode = true;
+        lightbox.setAttribute('aria-hidden', 'false');
+        if (window._lenis) window._lenis.stop();
+        document.body.style.overflow = 'hidden';
+        // En mode single, index = { url, title }
+        showDrawing({ url, title });
     }
 
     function closeLightbox() {
@@ -1021,6 +1052,15 @@ function initDrawingLightbox() {
             const allElements = Array.from(document.querySelectorAll('.drawing-item, .bd-slide'));
             const idx = allElements.indexOf(parentItem);
             if (idx !== -1) openLightbox(idx);
+        });
+    });
+
+    // ── Clic sur le scan du diplôme (Mode image unique) ──
+    document.querySelectorAll('.single-lightbox-trigger').forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            const src = trigger.getAttribute('src');
+            const alt = trigger.getAttribute('alt');
+            if (src) openSingleImage(src, alt);
         });
     });
 
@@ -1081,6 +1121,27 @@ function initDrawingLightbox() {
         } else {
             document.exitFullscreen().catch(()=>{});
         }
+    });
+
+    // Navigation Clavier
+    document.addEventListener('keydown', (e) => {
+        if (lightbox.getAttribute('aria-hidden') === 'false') {
+            if (e.key === 'Escape') closeLightbox();
+            if (!isSingleMode) {
+                if (e.key === 'ArrowRight') showDrawing((current + 1) % allDrawings.length);
+                else if (e.key === 'ArrowLeft') showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
+            }
+        }
+    });
+
+    // Boutons Suivant / Précédent
+    if (prevBtn) prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!isSingleMode) showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
+    });
+    if (nextBtn) nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!isSingleMode) showDrawing((current + 1) % allDrawings.length);
     });
 
     // Clic en dehors de l'image = fermer, clic sur l'image = zoom (si non zoomé)
@@ -1145,25 +1206,7 @@ function initDrawingLightbox() {
         }, { passive: false });
     }
 
-    // ── Clavier ──
-    window.addEventListener('keydown', (e) => {
-        if (lightbox.getAttribute('aria-hidden') !== 'false') return;
-        if (e.key === 'Escape') closeLightbox();
-        else if (e.key === 'ArrowRight') showDrawing((current + 1) % allDrawings.length);
-        else if (e.key === 'ArrowLeft') showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
-    });
-
-    // ── Flèches ──
-    if (prevBtn) prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
-    });
-    if (nextBtn) nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showDrawing((current + 1) % allDrawings.length);
-    });
-
-    // BUG-10 FIX : Swipe tactile sur la lightbox pour naviguer entre les images
+    // ── Swipe tactile sur la lightbox pour naviguer entre les images ──
     let lbTouchStartX = 0;
     let lbTouchStartY = 0;
     lightbox.addEventListener('touchstart', (e) => {
@@ -1171,13 +1214,14 @@ function initDrawingLightbox() {
         lbTouchStartY = e.changedTouches[0].clientY;
     }, { passive: true });
     lightbox.addEventListener('touchend', (e) => {
-        if (isZoomed) return; // Ne pas swiper si on est en zoom
         const dx = e.changedTouches[0].clientX - lbTouchStartX;
         const dy = e.changedTouches[0].clientY - lbTouchStartY;
-        // Seuil : au moins 50px horizontaux, et plus horizontal que vertical
-        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
-            if (dx < 0) showDrawing((current + 1) % allDrawings.length);
-            else showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
+        // Seuil : au moins 40px horizontaux, et plus horizontal que vertical
+        if (!isZoomed && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+            if (!isSingleMode) {
+                if (dx < 0) showDrawing((current + 1) % allDrawings.length);
+                else showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
+            }
         }
     }, { passive: true });
 }
