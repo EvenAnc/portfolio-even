@@ -1033,7 +1033,7 @@ function initDrawingLightbox() {
             };
             img.onerror = () => {
                 if (loader) loader.classList.remove('active');
-                console.error('Erreur lors du chargement de l\\'image:', img.src);
+                console.error("Erreur lors du chargement de l'image:", img.src);
             };
             
             if (canvasWrap) canvasWrap.appendChild(img);
