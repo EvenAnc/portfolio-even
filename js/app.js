@@ -899,8 +899,8 @@ function initDrawingLightbox() {
     let isSingleMode = false;
 
     function updateTransform() {
-        const img = canvasWrap.querySelector('img');
-        if (img) img.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        const item = canvasWrap.querySelector('img, canvas');
+        if (item) item.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
         
         if (sliderRedPath && zoomRange) {
             const percent = (scale - zoomRange.min) / (zoomRange.max - zoomRange.min);
@@ -973,25 +973,71 @@ function initDrawingLightbox() {
         if (canvasWrap) canvasWrap.innerHTML = '';
         if (loader) loader.classList.add('active');
 
-        const img = document.createElement('img');
-        if (isSingleMode) {
-            // Dans le mode Single, l'index est en fait passé comme objet contenant l'URL et le titre
-            img.src = index.url;
-            img.alt = index.title || '';
+        const url = isSingleMode ? index.url : allDrawings[index].url;
+        const altText = isSingleMode ? (index.title || '') : allDrawings[index].title;
+
+        if (url.toLowerCase().endsWith('.pdf')) {
+            // Render as PDF on a canvas
+            const canvas = document.createElement('canvas');
+            canvas.style.backgroundColor = '#ffffff'; // White background for PDF
+            
+            // Wait for pdfjsLib to be available
+            if (typeof pdfjsLib !== 'undefined') {
+                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                
+                const loadingTask = pdfjsLib.getDocument(url);
+                loadingTask.promise.then(pdf => {
+                    return pdf.getPage(1);
+                }).then(page => {
+                    const pixelRatio = window.devicePixelRatio || 1;
+                    // Using a higher scale for sharp rendering (e.g., 3 or 4)
+                    const viewport = page.getViewport({ scale: 3.0 });
+                    
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+                    
+                    const context = canvas.getContext('2d');
+                    
+                    // Fill canvas with white before rendering
+                    context.fillStyle = '#ffffff';
+                    context.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport,
+                        background: 'white'
+                    };
+                    
+                    return page.render(renderContext).promise;
+                }).then(() => {
+                    if (loader) loader.classList.remove('active');
+                }).catch(err => {
+                    if (loader) loader.classList.remove('active');
+                    console.error('Erreur lors du chargement du PDF:', err);
+                });
+            } else {
+                if (loader) loader.classList.remove('active');
+                console.error('pdfjsLib introuvable');
+            }
+            
+            if (canvasWrap) canvasWrap.appendChild(canvas);
+
         } else {
-            const drawing = allDrawings[index];
-            img.src = drawing.url;
-            img.alt = drawing.title;
+            // Render as standard image
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = altText;
+            
+            img.onload = () => {
+                if (loader) loader.classList.remove('active');
+            };
+            img.onerror = () => {
+                if (loader) loader.classList.remove('active');
+                console.error('Erreur lors du chargement de l\\'image:', img.src);
+            };
+            
+            if (canvasWrap) canvasWrap.appendChild(img);
         }
-        img.onload = () => {
-            if (loader) loader.classList.remove('active');
-        };
-        img.onerror = () => {
-            if (loader) loader.classList.remove('active');
-            console.error('Erreur lors du chargement de l\'image:', img.src);
-        };
-        
-        if (canvasWrap) canvasWrap.appendChild(img);
 
         showControls();
     }
@@ -1148,7 +1194,7 @@ function initDrawingLightbox() {
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox || e.target.classList.contains('lb-canvas-wrap')) {
             closeLightbox();
-        } else if (e.target.tagName.toLowerCase() === 'img') {
+        } else if (e.target.tagName.toLowerCase() === 'img' || e.target.tagName.toLowerCase() === 'canvas') {
             if (!isZoomed) toggleZoom();
         }
     });
@@ -1156,7 +1202,7 @@ function initDrawingLightbox() {
     // ── Pan & Zoom Pointer Events ──
     if (canvasWrap) {
         canvasWrap.addEventListener('pointerdown', (e) => {
-            if (!isZoomed || e.target.tagName.toLowerCase() !== 'img') return;
+            if (!isZoomed || (e.target.tagName.toLowerCase() !== 'img' && e.target.tagName.toLowerCase() !== 'canvas')) return;
             isDragging = true;
             startX = e.clientX;
             startY = e.clientY;

@@ -1669,7 +1669,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     padding: 110px 70px 50px 70px;
 }
 
-.lb-canvas-wrap img {
+.lb-canvas-wrap img,
+.lb-canvas-wrap canvas {
     display: block;
     max-width: 100%;
     max-height: 100%;
@@ -1746,12 +1747,14 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     touch-action: none;
 }
 
-.drawing-lightbox.zoomed .lb-canvas-wrap img {
+.drawing-lightbox.zoomed .lb-canvas-wrap img,
+.drawing-lightbox.zoomed .lb-canvas-wrap canvas {
     cursor: grab;
     transform-origin: center center;
 }
 
-.drawing-lightbox.zoomed .lb-canvas-wrap img.dragging {
+.drawing-lightbox.zoomed .lb-canvas-wrap img.dragging,
+.drawing-lightbox.zoomed .lb-canvas-wrap canvas.dragging {
     cursor: grabbing;
     transition: none !important;
 }
