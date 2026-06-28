@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style_v2.css">
 </head>
 <body ontouchstart="">
 
@@ -323,69 +323,179 @@
         <!-- ─── PAGE 02 : PROJETS ─── -->
         <section class="page" id="page-projects" data-page="projects" aria-hidden="true">
             <div class="page-inner">
-                <div class="page-heading">
-                    <span class="page-num">02</span>
-                    <h2 class="page-title" data-i18n="menu_02">PROJETS</h2>
-                </div>
-                <p class="page-intro" data-i18n="projects_intro">Conception d'espaces minimalistes et modélisations techniques 3D.</p>
 
-                <div class="projects-grid">
-                    <div class="project-item pi-wide">
-                        <div class="frame-wrap">
-                            <div class="torn-frame">
-                                <div class="media-frame-inner">
-                                    <img src="assets/render_living_room.png" alt="Résidence Brutaliste" class="media-frame-img" loading="lazy">
-                                </div>
-                            </div>
-                            <div class="frame-text-overlay overlay-br">
-                                <span class="frame-big-text">RÉSIDENCE<br>BRUTALISTE</span>
-                                <span class="frame-sub font-sketch" data-i18n="proj_cat_3d">Rendu 3D & Intérieur</span>
-                            </div>
-                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
-                                <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+                <div class="fortiche-projects-board">
+
+                    <!-- ══════ TAPE TITLE ══════ -->
+                    <div class="projects-board-header" style="margin-bottom: 0; text-align: center; padding: 60px 0 20px;">
+                        <div class="tape-title-wrap" style="position: relative; display: inline-block;">
+                            <h3 class="font-sketch tape-title" style="
+                                background-color: #2a2a2a; 
+                                color: #fff; 
+                                padding: 8px 16px; 
+                                display: inline-block;
+                                box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+                            ">PROJET 01 : DIPLÔME</h3>
                         </div>
-                        <div class="pi-meta"><span class="pi-num">02.1</span></div>
                     </div>
 
-                    <div class="project-item pi-medium">
-                        <div class="frame-wrap">
-                            <div class="torn-frame torn-alt">
-                                <div class="media-frame-inner">
-                                    <img src="assets/blueprint_apartment.png" alt="Appartement Hus" class="media-frame-img" loading="lazy">
-                                </div>
+                    <!-- ══════ DESCRIPTION CAHIER ══════ -->
+                    <div class="project-description-notebook">
+                        <div class="project-desc-sheet">
+                            <div class="project-desc-content">
+                                <p class="project-desc-text">
+                                    Conception d'un complexe automobile multifonctionnel inspiré des motels américains des années 60-70. 
+                                    Le projet articule une station essence, un garage moto, un espace d'exposition, un bar/restaurant 
+                                    et un espace de pause autour d'une circulation fluide et d'une toiture servant de signalétique.
+                                </p>
+                                <span class="project-desc-annotation">→ MJM Graphic Design Toulouse — 2025</span>
                             </div>
-                            <div class="frame-text-overlay overlay-tl">
-                                <span class="frame-big-text">APPARTEMENT<br>HUS</span>
-                                <span class="frame-sub font-sketch" data-i18n="proj_cat_plan">Plan & Aménagement</span>
-                            </div>
-                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
-                                <path class="sketch-rect-path" d="M10 12 L392 7 L387 15 L394 285 L389 292 L8 288 L14 284 L11 10 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
                         </div>
-                        <div class="pi-meta"><span class="pi-num">02.2</span></div>
                     </div>
 
-                    <div class="project-item pi-portrait">
-                        <div class="frame-wrap">
-                            <div class="torn-frame">
-                                <div class="media-frame-inner">
-                                    <img src="assets/sketch_interior.png" alt="Cuisine Minimaliste" class="media-frame-img" loading="lazy">
+                    <!-- ══════ PANEL 1 : ZOONING & ANALYSE (anthracite) ══════ -->
+                    <div class="panel-section panel-light">
+                        <div class="sticker-title-wrap">
+                            <span class="sticker-title font-sketch">ZOONING ET ANALYSE</span>
+                        </div>
+                        <div class="bd-carousel-section carousel-landscape">
+                            <div class="bd-carousel-container">
+                                <button class="bd-nav-btn prev-btn" aria-label="Précédent">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 26 9 L 14 21 L 27 29" class="sketch-f1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-f2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-f3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="bd-carousel-viewport">
+                                        <div class="bd-carousel-track">
+                                            <div class="bd-slide active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/plan masse.pdf"></canvas></div></div></div>
+                                            <div class="bd-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/trame.pdf"></canvas></div></div></div>
+                                            <div class="bd-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/zooning batiment.pdf"></canvas></div></div></div>
+                                            <div class="bd-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/zooning circulation.pdf"></canvas></div></div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="bd-nav-btn next-btn" aria-label="Suivant">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 14 9 L 26 21 L 13 29" class="sketch-f1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-f2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-f3"/></svg>
+                                </button>
+                            </div>
+                            <div class="bd-carousel-ui">
+                                <div class="bd-carousel-pagination font-sketch">1 / 4</div>
+                                <div class="bd-carousel-progress"><div class="progress-bar"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══════ PANEL 2 : PLANS (noir) ══════ -->
+                    <div class="panel-section">
+                        <div class="sticker-title-wrap sticker-right">
+                            <span class="sticker-title font-sketch">PLANS</span>
+                        </div>
+                        <div class="bd-carousel-section carousel-landscape">
+                            <div class="bd-carousel-container">
+                                <button class="bd-nav-btn prev-btn" aria-label="Précédent">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 26 9 L 14 21 L 27 29" class="sketch-f1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-f2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-f3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="bd-carousel-viewport">
+                                        <div class="bd-carousel-track">
+                                            <div class="bd-slide active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/plan r-1.pdf"></canvas></div></div></div>
+                                            <div class="bd-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/plan rdc.pdf"></canvas></div></div></div>
+                                            <div class="bd-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/plan r+1.pdf"></canvas></div></div></div>
+                                            <div class="bd-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/plan station.pdf"></canvas></div></div></div>
+                                            <div class="bd-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/plan resto.pdf"></canvas></div></div></div>
+                                            <div class="bd-slide" data-slide="5"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/plan garage.pdf"></canvas></div></div></div>
+                                            <div class="bd-slide" data-slide="6"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/plan expo.pdf"></canvas></div></div></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="bd-nav-btn next-btn" aria-label="Suivant">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 14 9 L 26 21 L 13 29" class="sketch-f1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-f2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-f3"/></svg>
+                                </button>
+                            </div>
+                            <div class="bd-carousel-ui">
+                                <div class="bd-carousel-pagination font-sketch">1 / 7</div>
+                                <div class="bd-carousel-progress"><div class="progress-bar"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ══════ PANEL 3 : COUPES ARCHITECTURALES (anthracite) ══════ -->
+                    <div class="panel-section panel-light">
+                        <div class="sticker-title-wrap">
+                            <span class="sticker-title font-sketch">COUPES ARCHITECTURALES</span>
+                        </div>
+
+                        <div class="cut-stack" data-coupe-gallery>
+                            <div class="stack-item" data-coupe-index="0" style="cursor: pointer;">
+                                <div class="drawing-sheet-wrap">
+                                    <span class="stack-label font-sketch">Coupe Nord Lointaine</span>
+                                    <div class="media-frame-inner drawing-sheet">
+                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe nord loingtaine.pdf" data-pdf-crop-top="8"></canvas>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="frame-text-overlay overlay-bl">
-                                <span class="frame-big-text">CUISINE<br>MINIMALISTE</span>
-                                <span class="frame-sub font-sketch" data-i18n="proj_cat_sketch">Esquisse & Concept</span>
+                            <div class="stack-item" data-coupe-index="1" style="cursor: pointer;">
+                                <div class="drawing-sheet-wrap">
+                                    <span class="stack-label stack-label-right font-sketch">Coupe Nord Texturée</span>
+                                    <div class="media-frame-inner drawing-sheet">
+                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe nord texturé.pdf" data-pdf-crop-top="8"></canvas>
+                                    </div>
+                                </div>
                             </div>
-                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
-                                <path class="sketch-rect-path" d="M14 6 L385 9 L390 14 L388 292 L382 287 L12 295 L8 290 L13 18 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
+                            <div class="stack-item" data-coupe-index="2" style="cursor: pointer;">
+                                <div class="drawing-sheet-wrap">
+                                    <span class="stack-label font-sketch">Coupe Ouest Texturée</span>
+                                    <div class="media-frame-inner drawing-sheet">
+                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe ouest texturé.pdf" data-pdf-crop-top="8"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="stack-item" data-coupe-index="3" style="cursor: pointer;">
+                                <div class="drawing-sheet-wrap">
+                                    <span class="stack-label stack-label-right font-sketch">Coupe Sud Texturée</span>
+                                    <div class="media-frame-inner drawing-sheet">
+                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe sud texturé.pdf" data-pdf-crop-top="8"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="pi-meta"><span class="pi-num">02.3</span></div>
                     </div>
-                </div>
 
-                <!-- Flèche suivant → -->
+                    <!-- ══════ PANEL 4 : 3D (noir) ══════ -->
+                    <div class="panel-section">
+                        <div class="sticker-title-wrap sticker-right">
+                            <span class="sticker-title font-sketch">3D</span>
+                        </div>
+
+                        <div class="render3d-grid">
+                            <div class="render3d-item">
+                                <span class="render3d-label font-sketch">Intérieur</span>
+                                <div class="drawing-sheet-wrap">
+                                    <div class="media-frame-inner" style="aspect-ratio: 4/3; background: #222; display: flex; justify-content: center; align-items: center;">
+                                        <div class="font-sketch" style="color: var(--muted); font-size: 1.5rem;">[ 3D Intérieur ]</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="render3d-item">
+                                <span class="render3d-label font-sketch">Immersion</span>
+                                <div class="drawing-sheet-wrap">
+                                    <div class="media-frame-inner" style="aspect-ratio: 4/3; background: #222; display: flex; justify-content: center; align-items: center;">
+                                        <div class="font-sketch" style="color: var(--muted); font-size: 1.5rem;">[ 3D Immersion ]</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="render3d-item">
+                                <span class="render3d-label font-sketch">Vue de loin</span>
+                                <div class="drawing-sheet-wrap">
+                                    <div class="media-frame-inner" style="aspect-ratio: 4/3; background: #222; display: flex; justify-content: center; align-items: center;">
+                                        <div class="font-sketch" style="color: var(--muted); font-size: 1.5rem;">[ Vue Lointaine ]</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div><!-- /.fortiche-projects-board -->
+
                 <a href="javascript:void(0)" class="page-next" data-next="photos" aria-label="Aller à la page Photos">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
@@ -393,6 +503,25 @@
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </a>
+                <footer class="site-footer" style="margin-top: 80px;">
+                    <div class="footer-inner">
+                        <div class="footer-top">
+                            <span class="footer-logo font-sketch">EVEN ANICET</span>
+                            <span class="footer-year">© 2025</span>
+                        </div>
+                        <div class="footer-legal">
+                            <p data-i18n="legal_copyright">Toutes les œuvres présentées sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriété exclusive d'Anicet Even. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est strictement interdite.</p>
+                            <p data-i18n="legal_cert">Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).</p>
+                        </div>
+                        <div class="footer-bottom">
+                            <span data-i18n="legal_mentions">Mentions légales</span>
+                            <span class="footer-sep">|</span>
+                            <span data-i18n="legal_rights">Tous droits réservés</span>
+                            <span class="footer-sep">|</span>
+                            <span>even.anicet@gmail.com</span>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </section>
 
@@ -487,6 +616,25 @@
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </a>
+                <footer class="site-footer" style="margin-top: 80px;">
+                    <div class="footer-inner">
+                        <div class="footer-top">
+                            <span class="footer-logo font-sketch">EVEN ANICET</span>
+                            <span class="footer-year">© 2025</span>
+                        </div>
+                        <div class="footer-legal">
+                            <p data-i18n="legal_copyright">Toutes les œuvres présentées sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriété exclusive d'Anicet Even. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est strictement interdite.</p>
+                            <p data-i18n="legal_cert">Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).</p>
+                        </div>
+                        <div class="footer-bottom">
+                            <span data-i18n="legal_mentions">Mentions légales</span>
+                            <span class="footer-sep">|</span>
+                            <span data-i18n="legal_rights">Tous droits réservés</span>
+                            <span class="footer-sep">|</span>
+                            <span>even.anicet@gmail.com</span>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </section>
 
@@ -662,6 +810,25 @@
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </a>
+                <footer class="site-footer" style="margin-top: 80px;">
+                    <div class="footer-inner">
+                        <div class="footer-top">
+                            <span class="footer-logo font-sketch">EVEN ANICET</span>
+                            <span class="footer-year">© 2025</span>
+                        </div>
+                        <div class="footer-legal">
+                            <p data-i18n="legal_copyright">Toutes les œuvres présentées sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriété exclusive d'Anicet Even. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est strictement interdite.</p>
+                            <p data-i18n="legal_cert">Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).</p>
+                        </div>
+                        <div class="footer-bottom">
+                            <span data-i18n="legal_mentions">Mentions légales</span>
+                            <span class="footer-sep">|</span>
+                            <span data-i18n="legal_rights">Tous droits réservés</span>
+                            <span class="footer-sep">|</span>
+                            <span>even.anicet@gmail.com</span>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </section>
 
@@ -764,7 +931,27 @@
                         </svg>
                     </div>
                 </div>
-            </div>
+            
+            <footer class="site-footer" style="margin-top: 80px;">
+                <div class="footer-inner">
+                    <div class="footer-top">
+                        <span class="footer-logo font-sketch">EVEN ANICET</span>
+                        <span class="footer-year">© 2025</span>
+                    </div>
+                    <div class="footer-legal">
+                        <p data-i18n="legal_copyright">Toutes les œuvres présentées sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriété exclusive d'Anicet Even. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est strictement interdite.</p>
+                        <p data-i18n="legal_cert">Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).</p>
+                    </div>
+                    <div class="footer-bottom">
+                        <span data-i18n="legal_mentions">Mentions légales</span>
+                        <span class="footer-sep">|</span>
+                        <span data-i18n="legal_rights">Tous droits réservés</span>
+                        <span class="footer-sep">|</span>
+                        <span>even.anicet@gmail.com</span>
+                    </div>
+                </div>
+            </footer>
+</div>
         </section>
 
     </div>
@@ -825,7 +1012,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="js/pdf_data_v2.js"></script>
     <script src="js/app.js"></script>
 
 </body>
 </html>
+
+
+
