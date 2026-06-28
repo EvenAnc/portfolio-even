@@ -367,6 +367,8 @@ function showPage(pageId, animate = true) {
         initPageLenis(inEl);
         if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
         updateHeaderLogo(pageId);
+        
+        if (pageId === 'projects') renderInlinePDFs();
         return;
     }
 
@@ -391,6 +393,8 @@ function showPage(pageId, animate = true) {
             initPageLenis(inEl);
             if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
             updateHeaderLogo(pageId);
+
+            if (pageId === 'projects') renderInlinePDFs();
         }
     });
 }
@@ -430,15 +434,24 @@ function updateHeaderLogo(pageId) {
 function initPageLenis(scrollContainer) {
     if (typeof Lenis === 'undefined') return;
 
-    lenis = new Lenis({
+    const contentWrapper = scrollContainer.querySelector('.page-inner') || null;
+
+    const lenisOptions = {
         wrapper: scrollContainer,
-        content: scrollContainer,
+        eventsTarget: document,  // capture wheel events globally — scroll works everywhere
         duration: 1.15,
         easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smooth: true,
         mouseMultiplier: 0.95,
         smoothTouch: false,
-    });
+    };
+
+    // Only set content if we found a specific wrapper
+    if (contentWrapper) {
+        lenisOptions.content = contentWrapper;
+    }
+
+    lenis = new Lenis(lenisOptions);
 
     lenis.on('scroll', ScrollTrigger.update);
 
@@ -666,156 +679,240 @@ function initContactAnimation() {
 // CARROUSEL BANDE DESSINÉE (BD)
 // ─────────────────────────────────────
 function initBDCarousel() {
-    const container = document.querySelector('.bd-carousel-section');
-    if (!container) return;
+    const containers = document.querySelectorAll('.bd-carousel-section');
+    if (!containers.length) return;
 
-    const slides = container.querySelectorAll('.bd-slide');
-    const dots = container.querySelectorAll('.bd-dot');
-    const prevBtn = container.querySelector('.prev-btn');
-    const nextBtn = container.querySelector('.next-btn');
-    const playPauseBtn = container.querySelector('.bd-play-pause-btn');
-    const iconPause = playPauseBtn.querySelector('.icon-pause');
-    const iconPlay = playPauseBtn.querySelector('.icon-play');
-    const progressBar = container.querySelector('.bd-progress-bar');
-    const indicator = container.querySelector('.bd-page-indicator');
+    containers.forEach(container => {
+        const slides = container.querySelectorAll('.bd-slide');
+        if (!slides.length) return;
 
-    let currentIndex = 0;
-    let isPlaying = true;
-    let autoplayTimeout = null;
-    let progressAnimFrame = null;
-    const slideDuration = 5000; // 5 secondes par page
-    let progressStart = 0;
+        const dots = container.querySelectorAll('.bd-dot');
+        const prevBtn = container.querySelector('.prev-btn');
+        const nextBtn = container.querySelector('.next-btn');
+        const playPauseBtn = container.querySelector('.bd-play-pause-btn');
+        const iconPause = playPauseBtn ? playPauseBtn.querySelector('.icon-pause') : null;
+        const iconPlay = playPauseBtn ? playPauseBtn.querySelector('.icon-play') : null;
+        const progressBar = container.querySelector('.progress-bar');
+        const indicator = container.querySelector('.bd-carousel-pagination');
 
-    function updateCarousel(index) {
-        // Boucler sur les limites
-        if (index >= slides.length) index = 0;
-        if (index < 0) index = slides.length - 1;
+        let currentIndex = 0;
+        let isPlaying = true;
+        let autoplayTimeout = null;
+        let progressAnimFrame = null;
+        const slideDuration = 5000;
+        let progressStart = performance.now();
 
-        currentIndex = index;
+        function updateCarousel(index) {
+            if (index >= slides.length) index = 0;
+            if (index < 0) index = slides.length - 1;
 
-        // Activer la slide
-        slides.forEach((slide, i) => {
-            slide.classList.toggle('active', i === currentIndex);
-        });
+            currentIndex = index;
 
-        // Activer le dot
-        dots.forEach((dot, i) => {
-            dot.classList.toggle('active', i === currentIndex);
-        });
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === currentIndex);
+            });
 
-        // Indicateur textuel
-        if (indicator) {
-            indicator.textContent = `${currentIndex + 1} / ${slides.length}`;
-        }
-
-        // Relancer l'autoplay si actif
-        if (isPlaying) {
-            startAutoplay();
-        } else {
-            progressBar.style.width = '0%';
-        }
-    }
-
-    function nextSlide() {
-        updateCarousel(currentIndex + 1);
-    }
-
-    function prevSlide() {
-        updateCarousel(currentIndex - 1);
-    }
-
-    function startAutoplay() {
-        stopAutoplay();
-        
-        progressStart = performance.now();
-        autoplayTimeout = setTimeout(nextSlide, slideDuration);
-        
-        function drawProgress(time) {
-            if (!isPlaying) return;
-            const elapsed = time - progressStart;
-            const percent = Math.min((elapsed / slideDuration) * 100, 100);
-            progressBar.style.width = `${percent}%`;
-            
-            if (elapsed < slideDuration) {
-                progressAnimFrame = requestAnimationFrame(drawProgress);
+            if (dots.length > 0) {
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
             }
-        }
-        progressAnimFrame = requestAnimationFrame(drawProgress);
-    }
 
-    function stopAutoplay() {
-        if (autoplayTimeout) clearTimeout(autoplayTimeout);
-        if (progressAnimFrame) cancelAnimationFrame(progressAnimFrame);
-        progressBar.style.width = '0%';
-    }
+            if (indicator) {
+                indicator.textContent = `${currentIndex + 1} / ${slides.length}`;
+            }
 
-    function togglePlayPause() {
-        isPlaying = !isPlaying;
-        if (isPlaying) {
-            iconPause.style.display = 'block';
-            iconPlay.style.display = 'none';
-            startAutoplay();
-        } else {
-            iconPause.style.display = 'none';
-            iconPlay.style.display = 'block';
-            stopAutoplay();
-        }
-    }
-
-    // Navigation
-    prevBtn.addEventListener('click', () => {
-        prevSlide();
-    });
-
-    nextBtn.addEventListener('click', () => {
-        nextSlide();
-    });
-
-    // Bouton Play/Pause
-    playPauseBtn.addEventListener('click', () => {
-        togglePlayPause();
-    });
-
-    // Clic sur les points indicateurs
-    dots.forEach((dot, i) => {
-        dot.addEventListener('click', () => {
-            updateCarousel(i);
-        });
-    });
-
-    // ── Lancement
-    startAutoplay();
-
-    // BUG-03 FIX : Pause l'autoplay quand la page dessins n'est pas visible
-    // pour éviter des timeouts et RAF qui tournent inutilement en arrière-plan.
-    const drawingsPage = document.getElementById('page-drawings');
-    if (drawingsPage) {
-        const pageObserver = new MutationObserver(() => {
-            const isPageActive = drawingsPage.classList.contains('is-active');
-            if (!isPageActive && isPlaying) {
-                stopAutoplay();
-            } else if (isPageActive && isPlaying) {
+            if (isPlaying) {
                 startAutoplay();
+            } else if (progressBar) {
+                progressBar.style.width = '0%';
             }
-        });
-        pageObserver.observe(drawingsPage, { attributes: true, attributeFilter: ['class'] });
+        }
+
+        function nextSlide() { updateCarousel(currentIndex + 1); }
+        function prevSlide() { updateCarousel(currentIndex - 1); }
+
+        function startAutoplay() {
+            stopAutoplay();
+            
+            progressStart = performance.now();
+            autoplayTimeout = setTimeout(nextSlide, slideDuration);
+            
+            function drawProgress(time) {
+                if (!isPlaying) return;
+                const elapsed = time - progressStart;
+                const percent = Math.min((elapsed / slideDuration) * 100, 100);
+                if (progressBar) progressBar.style.width = `${percent}%`;
+                
+                if (elapsed < slideDuration) {
+                    progressAnimFrame = requestAnimationFrame(drawProgress);
+                }
+            }
+            progressAnimFrame = requestAnimationFrame(drawProgress);
+        }
+
+        function stopAutoplay() {
+            if (autoplayTimeout) clearTimeout(autoplayTimeout);
+            if (progressAnimFrame) cancelAnimationFrame(progressAnimFrame);
+            if (progressBar) progressBar.style.width = '0%';
+        }
+
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                if(iconPause) iconPause.style.display = 'block';
+                if(iconPlay) iconPlay.style.display = 'none';
+                startAutoplay();
+            } else {
+                if(iconPause) iconPause.style.display = 'none';
+                if(iconPlay) iconPlay.style.display = 'block';
+                stopAutoplay();
+            }
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', () => { stopAutoplay(); prevSlide(); });
+        if (nextBtn) nextBtn.addEventListener('click', () => { stopAutoplay(); nextSlide(); });
+        if (playPauseBtn) playPauseBtn.addEventListener('click', () => { togglePlayPause(); });
+        
+        if (dots.length > 0) {
+            dots.forEach((dot, i) => {
+                dot.addEventListener('click', () => { stopAutoplay(); updateCarousel(i); });
+            });
+        }
+
+        startAutoplay();
+
+        const parentPage = container.closest('.page');
+        if (parentPage) {
+            let wasActive = parentPage.classList.contains('is-active');
+            const pageObserver = new MutationObserver(() => {
+                const isPageActive = parentPage.classList.contains('is-active');
+                if (isPageActive !== wasActive) {
+                    wasActive = isPageActive;
+                    if (!isPageActive && isPlaying) {
+                        stopAutoplay();
+                    } else if (isPageActive && isPlaying) {
+                        startAutoplay();
+                    }
+                }
+            });
+            pageObserver.observe(parentPage, { attributes: true, attributeFilter: ['class'] });
+        }
+
+        let bdTouchStartX = 0;
+        const bdViewport = container.querySelector('.bd-carousel-viewport');
+        if (bdViewport) {
+            bdViewport.addEventListener('touchstart', e => {
+                bdTouchStartX = e.changedTouches[0].clientX;
+                stopAutoplay();
+            }, { passive: true });
+            bdViewport.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - bdTouchStartX;
+                if (Math.abs(dx) > 40) {
+                    if (dx < 0) nextSlide();
+                    else prevSlide();
+                }
+            }, { passive: true });
+        }
+    });
+}
+
+// ─────────────────────────────────────
+// RENDU PDF INLINE POUR CARROUSELS
+// ─────────────────────────────────────
+async function renderInlinePDFs() {
+    const canvases = document.querySelectorAll('canvas.pdf-inline-render');
+    if (!canvases.length) return;
+
+    let pdfLib = null;
+    if (typeof pdfjsLib !== 'undefined') {
+        pdfLib = pdfjsLib;
+    } else if (window['pdfjs-dist/build/pdf']) {
+        pdfLib = window['pdfjs-dist/build/pdf'];
+    } else if (window.pdfjsLib) {
+        pdfLib = window.pdfjsLib;
     }
 
-    // BUG-09 FIX : Support du swipe tactile sur le carousel BD
-    let bdTouchStartX = 0;
-    const bdViewport = container.querySelector('.bd-carousel-viewport');
-    if (bdViewport) {
-        bdViewport.addEventListener('touchstart', e => {
-            bdTouchStartX = e.changedTouches[0].clientX;
-        }, { passive: true });
-        bdViewport.addEventListener('touchend', e => {
-            const dx = e.changedTouches[0].clientX - bdTouchStartX;
-            if (Math.abs(dx) > 40) {
-                if (dx < 0) nextSlide();
-                else prevSlide();
-            }
-        }, { passive: true });
+    if (!pdfLib) {
+        console.error("PDF.js non chargé.");
+        return;
     }
+    
+    if (!pdfLib.GlobalWorkerOptions.workerSrc) {
+        pdfLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    for (const canvas of canvases) {
+        const url = canvas.dataset.pdfUrl;
+        if (!url || canvas.classList.contains('pdf-loaded')) continue;
+
+        try {
+            let loadingTask;
+            if (typeof pdfData !== 'undefined' && pdfData[url]) {
+                const base64 = pdfData[url];
+                const res = await fetch("data:application/pdf;base64," + base64);
+                const buffer = await res.arrayBuffer();
+                loadingTask = pdfLib.getDocument({ data: buffer });
+            } else {
+                loadingTask = pdfLib.getDocument(encodeURI(url));
+            }
+            const pdf = await loadingTask.promise;
+            const page = await pdf.getPage(1);
+            
+            const scale = 2.5;
+            const viewport = page.getViewport({ scale: scale });
+
+            const context = canvas.getContext('2d', { willReadFrequently: true });
+            
+            // Support crop-top to remove title blocks from PDFs
+            const cropTopPercent = parseFloat(canvas.dataset.pdfCropTop || '0');
+            const cropTopPx = Math.round(viewport.height * cropTopPercent / 100);
+            
+            // Couper la pagination en bas (ex: on garde seulement 95% de la hauteur)
+            canvas.height = (viewport.height * 0.95) - cropTopPx;
+            canvas.width = viewport.width;
+            
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.objectFit = 'contain';
+
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport,
+                background: 'white'
+            };
+            
+            // If cropping top, translate the canvas up to hide the title
+            if (cropTopPx > 0) {
+                context.translate(0, -cropTopPx);
+            }
+
+            await page.render(renderContext).promise;
+            canvas.classList.add('pdf-loaded');
+            if (window._lenis) { window._lenis.resize(); }
+            if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.refresh(); }
+        } catch (error) {
+            console.error('Erreur rendu PDF inline :', url, error);
+            const errDiv = document.createElement('div');
+            errDiv.style.color = 'red';
+            errDiv.style.position = 'absolute';
+            errDiv.style.zIndex = '100';
+            errDiv.style.padding = '10px';
+            errDiv.style.background = 'white';
+            errDiv.textContent = 'Erreur PDF: ' + (error.message || error);
+            canvas.parentElement.appendChild(errDiv);
+        }
+
+        // Permet au navigateur de respirer entre chaque PDF pour éviter tout lag de l'interface
+        await new Promise(r => setTimeout(r, 150));
+    }
+    
+    // Rafraichir le scroll de la page une fois tous les canvas rendus
+    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.refresh(); }
+    if (window._lenis) { window._lenis.resize(); }
 }
 
 // ─────────────────────────────────────
@@ -866,6 +963,36 @@ const allDrawings = [
     }
 ];
 
+const diplomePlans = [
+    { url: 'PDF/plan r-1.pdf', title: 'Plan R-1' },
+    { url: 'PDF/plan rdc.pdf', title: 'Plan RDC' },
+    { url: 'PDF/plan r+1.pdf', title: 'Plan R+1' },
+    { url: 'PDF/plan station.pdf', title: 'Zoom Station' },
+    { url: 'PDF/plan resto.pdf', title: 'Zoom Resto' },
+    { url: 'PDF/plan garage.pdf', title: 'Zoom Garage' },
+    { url: 'PDF/plan expo.pdf', title: 'Zoom Expo' }
+];
+
+const diplomeCoupes = [
+    { url: 'PDF/coupe nord loingtaine.pdf', title: 'Coupe Lointaine' },
+    { url: 'PDF/coupe nord texturé.pdf', title: 'Coupe Nord' },
+    { url: 'PDF/coupe ouest texturé.pdf', title: 'Coupe Ouest' },
+    { url: 'PDF/coupe sud texturé.pdf', title: 'Coupe Sud' }
+];
+
+const diplomeAnalyses = [
+    { url: 'PDF/plan masse.pdf', title: 'Plan Masse' },
+    { url: 'PDF/trame.pdf', title: 'Trame' },
+    { url: 'PDF/zooning batiment.pdf', title: 'Zoning Bâtiment' },
+    { url: 'PDF/zooning circulation.pdf', title: 'Zoning Circulation' }
+];
+
+const galleriesMap = {
+    'plans': diplomePlans,
+    'coupes': diplomeCoupes,
+    'analyses': diplomeAnalyses
+};
+
 // Removed PDF.js rendering logic
 
 // ─────────────────────────────────────
@@ -897,6 +1024,9 @@ function initDrawingLightbox() {
     let startX, startY;
     let initialTx, initialTy;
     let isSingleMode = false;
+    let currentGallery = allDrawings;
+    let maxZoom = 4;
+    let currentRenderId = 0;
 
     function updateTransform() {
         const item = canvasWrap.querySelector('img, canvas');
@@ -909,15 +1039,19 @@ function initDrawingLightbox() {
     }
 
     // ── Créer les points indicateurs ──
-    allDrawings.forEach((_, i) => {
-        const dot = document.createElement('span');
-        dot.className = 'lb-dot' + (i === 0 ? ' active' : '');
-        dot.addEventListener('click', (e) => {
-            e.stopPropagation();
-            showDrawing(i);
+    function generateDots() {
+        if (!dotsWrap) return;
+        dotsWrap.innerHTML = '';
+        currentGallery.forEach((_, i) => {
+            const dot = document.createElement('span');
+            dot.className = 'lb-dot' + (i === current ? ' active' : '');
+            dot.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showDrawing(i);
+            });
+            dotsWrap.appendChild(dot);
         });
-        dotsWrap.appendChild(dot);
-    });
+    }
 
     function updateDots() {
         dotsWrap.querySelectorAll('.lb-dot').forEach((d, i) => {
@@ -954,7 +1088,7 @@ function initDrawingLightbox() {
                 counterEl.style.display = 'none';
             } else {
                 counterEl.style.display = '';
-                counterEl.textContent = `${index + 1} / ${allDrawings.length}`;
+                counterEl.textContent = `${index + 1} / ${currentGallery.length}`;
             }
         }
 
@@ -973,28 +1107,51 @@ function initDrawingLightbox() {
         if (canvasWrap) canvasWrap.innerHTML = '';
         if (loader) loader.classList.add('active');
 
-        const url = isSingleMode ? index.url : allDrawings[index].url;
-        const altText = isSingleMode ? (index.title || '') : allDrawings[index].title;
+        const renderId = ++currentRenderId;
 
-        if (url.toLowerCase().endsWith('.pdf')) {
+        const url = isSingleMode ? index.url : currentGallery[index].url;
+        const altText = isSingleMode ? (index.title || '') : currentGallery[index].title;
+
+        const isPdf = url.toLowerCase().endsWith('.pdf');
+        maxZoom = isPdf ? 10 : 4;
+        if (zoomRange) {
+            zoomRange.max = maxZoom;
+        }
+
+        if (isPdf) {
             // Render as PDF on a canvas
             const canvas = document.createElement('canvas');
             canvas.style.backgroundColor = '#ffffff'; // White background for PDF
             
-            // Wait for pdfjsLib to be available
-            if (typeof pdfjsLib !== 'undefined') {
-                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            let pdfLib = null;
+            if (window['pdfjs-dist/build/pdf']) {
+                pdfLib = window['pdfjs-dist/build/pdf'];
+            } else if (window.pdfjsLib) {
+                pdfLib = window.pdfjsLib;
+            }
+            
+            if (pdfLib) {
+                pdfLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                 
-                const loadingTask = pdfjsLib.getDocument(url);
-                loadingTask.promise.then(pdf => {
+                let loadingTaskPromise;
+                if (typeof pdfData !== 'undefined' && pdfData[url]) {
+                    loadingTaskPromise = fetch("data:application/pdf;base64," + pdfData[url])
+                        .then(res => res.arrayBuffer())
+                        .then(buffer => pdfLib.getDocument({ data: buffer }).promise);
+                } else {
+                    loadingTaskPromise = pdfLib.getDocument(encodeURI(url)).promise;
+                }
+                
+                loadingTaskPromise.then(pdf => {
                     return pdf.getPage(1);
                 }).then(page => {
                     const pixelRatio = window.devicePixelRatio || 1;
-                    // Using a higher scale for sharp rendering (e.g., 3 or 4)
+                    // Using a higher scale for sharp rendering
                     const viewport = page.getViewport({ scale: 3.0 });
                     
                     canvas.width = viewport.width;
-                    canvas.height = viewport.height;
+                    // Couper la pagination en bas (95% de la hauteur)
+                    canvas.height = viewport.height * 0.95;
                     
                     const context = canvas.getContext('2d');
                     
@@ -1010,17 +1167,23 @@ function initDrawingLightbox() {
                     
                     return page.render(renderContext).promise;
                 }).then(() => {
-                    if (loader) loader.classList.remove('active');
+                    if (renderId === currentRenderId) {
+                        if (canvasWrap) {
+                            canvasWrap.innerHTML = '';
+                            canvasWrap.appendChild(canvas);
+                        }
+                        if (loader) loader.classList.remove('active');
+                    }
                 }).catch(err => {
-                    if (loader) loader.classList.remove('active');
-                    console.error('Erreur lors du chargement du PDF:', err);
+                    if (renderId === currentRenderId) {
+                        if (loader) loader.classList.remove('active');
+                        console.error('Erreur lors du chargement du PDF:', err);
+                    }
                 });
             } else {
                 if (loader) loader.classList.remove('active');
-                console.error('pdfjsLib introuvable');
+                console.error('pdfLib introuvable');
             }
-            
-            if (canvasWrap) canvasWrap.appendChild(canvas);
 
         } else {
             // Render as standard image
@@ -1029,14 +1192,19 @@ function initDrawingLightbox() {
             img.alt = altText;
             
             img.onload = () => {
-                if (loader) loader.classList.remove('active');
+                if (renderId === currentRenderId && loader) loader.classList.remove('active');
             };
             img.onerror = () => {
-                if (loader) loader.classList.remove('active');
-                console.error("Erreur lors du chargement de l'image:", img.src);
+                if (renderId === currentRenderId) {
+                    if (loader) loader.classList.remove('active');
+                    console.error("Erreur lors du chargement de l'image:", img.src);
+                }
             };
             
-            if (canvasWrap) canvasWrap.appendChild(img);
+            if (canvasWrap) {
+                canvasWrap.innerHTML = '';
+                canvasWrap.appendChild(img);
+            }
         }
 
         showControls();
@@ -1048,8 +1216,15 @@ function initDrawingLightbox() {
         lightbox.setAttribute('aria-hidden', 'false');
         if (window._lenis) window._lenis.stop();
         document.body.style.overflow = 'hidden';
+        generateDots();
         showDrawing(index);
     }
+
+    // ── API globale pour ouvrir avec une galerie spécifique ──
+    window._openDrawingGallery = function(gallery, index) {
+        currentGallery = gallery;
+        openLightbox(index || 0);
+    };
 
     function openSingleImage(url, title) {
         isSingleMode = true;
@@ -1081,23 +1256,52 @@ function initDrawingLightbox() {
     }
 
     // ── Clic sur les dessins de la galerie et les slides BD ──
-    document.querySelectorAll('.drawing-item .frame-wrap, .bd-slide .drawing-sheet-wrap').forEach((item) => {
-        // Ne PAS appliquer le curseur ici en JS : il est géré en CSS uniquement
-        // quand la page parente est active (.page.is-active), ce qui évite que
-        // le curseur "zoom" déborde sur d'autres pages ou sur le menu.
+    document.querySelectorAll('.drawing-item .frame-wrap, #page-drawings .bd-slide .drawing-sheet-wrap').forEach((item) => {
         item.addEventListener('click', () => {
             const parentItem = item.closest('.drawing-item, .bd-slide');
             if (!parentItem) return;
 
-            // Vérifier que la page contenant cet élément est bien la page active
             const parentPage = item.closest('.page');
             if (parentPage && !parentPage.classList.contains('is-active')) return;
 
             if (parentItem.classList.contains('bd-slide') && !parentItem.classList.contains('active')) return;
 
-            const allElements = Array.from(document.querySelectorAll('.drawing-item, .bd-slide'));
+            const allElements = Array.from(document.querySelectorAll('.drawing-item, #page-drawings .bd-slide'));
             const idx = allElements.indexOf(parentItem);
             if (idx !== -1) openLightbox(idx);
+        });
+    });
+
+    // ── Clic sur les PDF des carrousels Projets ──
+    document.querySelectorAll('#page-projects .bd-slide .drawing-sheet-wrap').forEach((wrap) => {
+        wrap.addEventListener('click', () => {
+            const parentSlide = wrap.closest('.bd-slide');
+            if (parentSlide && !parentSlide.classList.contains('active')) return;
+
+            const parentPage = wrap.closest('.page');
+            if (parentPage && !parentPage.classList.contains('is-active')) return;
+
+            const canvas = wrap.querySelector('canvas.pdf-inline-render');
+            if (canvas) {
+                const url = canvas.dataset.pdfUrl;
+                
+                let foundGallery = null;
+                let foundIndex = -1;
+                for (const gallery of [diplomePlans, diplomeCoupes, diplomeAnalyses]) {
+                    foundIndex = gallery.findIndex(item => item.url === url);
+                    if (foundIndex !== -1) {
+                        foundGallery = gallery;
+                        break;
+                    }
+                }
+
+                if (foundGallery && foundIndex !== -1) {
+                    currentGallery = foundGallery;
+                    openLightbox(foundIndex);
+                } else {
+                    openSingleImage(url, "Plan Architecture");
+                }
+            }
         });
     });
 
@@ -1174,8 +1378,8 @@ function initDrawingLightbox() {
         if (lightbox.getAttribute('aria-hidden') === 'false') {
             if (e.key === 'Escape') closeLightbox();
             if (!isSingleMode) {
-                if (e.key === 'ArrowRight') showDrawing((current + 1) % allDrawings.length);
-                else if (e.key === 'ArrowLeft') showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
+                if (e.key === 'ArrowRight') showDrawing((current + 1) % currentGallery.length);
+                else if (e.key === 'ArrowLeft') showDrawing((current - 1 + currentGallery.length) % currentGallery.length);
             }
         }
     });
@@ -1183,11 +1387,11 @@ function initDrawingLightbox() {
     // Boutons Suivant / Précédent
     if (prevBtn) prevBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (!isSingleMode) showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
+        if (!isSingleMode) showDrawing((current - 1 + currentGallery.length) % currentGallery.length);
     });
     if (nextBtn) nextBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        if (!isSingleMode) showDrawing((current + 1) % allDrawings.length);
+        if (!isSingleMode) showDrawing((current + 1) % currentGallery.length);
     });
 
     // Clic en dehors de l'image = fermer, clic sur l'image = zoom (si non zoomé)
@@ -1231,12 +1435,26 @@ function initDrawingLightbox() {
             if (!isZoomed && e.deltaY > 0) return;
             e.preventDefault();
             const zoomSpeed = 0.15;
-            scale += e.deltaY < 0 ? zoomSpeed : -zoomSpeed;
+            
+            let oldScale = scale;
+            let newScale = scale + (e.deltaY < 0 ? zoomSpeed : -zoomSpeed);
             
             if (zoomRange) {
-                scale = Math.max(parseFloat(zoomRange.min), Math.min(parseFloat(zoomRange.max), scale));
-                zoomRange.value = scale;
+                newScale = Math.max(parseFloat(zoomRange.min), Math.min(parseFloat(zoomRange.max), newScale));
             }
+            
+            if (newScale === oldScale) return;
+            
+            // Zoom at pointer logic
+            const rect = canvasWrap.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left - rect.width / 2;
+            const mouseY = e.clientY - rect.top - rect.height / 2;
+            
+            translateX = mouseX - (mouseX - translateX) * (newScale / oldScale);
+            translateY = mouseY - (mouseY - translateY) * (newScale / oldScale);
+            
+            scale = newScale;
+            if (zoomRange) zoomRange.value = scale;
             
             if (scale <= 1) {
                 scale = 1;
@@ -1278,10 +1496,21 @@ function initDrawingLightbox() {
             const touch2 = e.touches[1];
             const dist = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
             const delta = dist / initialPinchDistance;
+            
+            let oldScale = scale;
             let newScale = initialPinchScale * delta;
             
             if (newScale < 1) newScale = 1;
-            if (newScale > 4) newScale = 4;
+            if (newScale > maxZoom) newScale = maxZoom;
+            
+            if (newScale === oldScale) return;
+            
+            const rect = canvasWrap.getBoundingClientRect();
+            const mouseX = ((touch1.clientX + touch2.clientX) / 2) - rect.left - rect.width / 2;
+            const mouseY = ((touch1.clientY + touch2.clientY) / 2) - rect.top - rect.height / 2;
+            
+            translateX = mouseX - (mouseX - translateX) * (newScale / oldScale);
+            translateY = mouseY - (mouseY - translateY) * (newScale / oldScale);
             
             scale = newScale;
             if (zoomRange) zoomRange.value = scale;
@@ -1308,8 +1537,8 @@ function initDrawingLightbox() {
             const dy = e.changedTouches[0].clientY - lbTouchStartY;
             if (!isZoomed && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
                 if (!isSingleMode) {
-                    if (dx < 0) showDrawing((current + 1) % allDrawings.length);
-                    else showDrawing((current - 1 + allDrawings.length) % allDrawings.length);
+                    if (dx < 0) showDrawing((current + 1) % currentGallery.length);
+                    else showDrawing((current - 1 + currentGallery.length) % currentGallery.length);
                 }
             }
         }
@@ -1394,3 +1623,21 @@ function initScrollAnimationsMobile() {
         mutObserver.observe(page, { attributes: true, attributeFilter: ['class'] });
     });
 }
+
+/* ==========================================================================
+   COUPE CLICK → Open in Drawing Lightbox (reuses the same viewer)
+   ========================================================================== */
+(function initCoupeClicks() {
+    const coupeItems = document.querySelectorAll('[data-coupe-gallery] .stack-item[data-coupe-index]');
+    if (!coupeItems.length) return;
+
+    coupeItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const idx = parseInt(item.getAttribute('data-coupe-index'), 10);
+            // Use the drawing lightbox with diplomeCoupes gallery
+            if (typeof window._openDrawingGallery === 'function') {
+                window._openDrawingGallery(diplomeCoupes, idx);
+            }
+        });
+    });
+})();
