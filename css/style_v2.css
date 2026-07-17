@@ -214,6 +214,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 .page.is-active { opacity: 1; pointer-events: auto; }
+.page:not(.is-active) * { pointer-events: none !important; }
 .page::-webkit-scrollbar { width: 4px; }
 .page::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 
@@ -3173,13 +3174,13 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
    POINTER-EVENTS — sections hors hero-screen
 ───────────────────────────────────── */
 /* La section contact et les autres sections hors hero-screen doivent rester interactives */
-.notebook-section,
-.home-contact,
-.page-next {
+.page.is-active .notebook-section,
+.page.is-active .home-contact,
+.page.is-active .page-next {
     pointer-events: auto;
 }
-.notebook-content,
-.notebook-hover-zone {
+.page.is-active .notebook-content,
+.page.is-active .notebook-hover-zone {
     pointer-events: auto;
     cursor: default;
 }
