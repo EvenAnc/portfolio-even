@@ -673,6 +673,15 @@ function initContactAnimation() {
     const feedback = document.getElementById('form-feedback');
     if (!form || !feedback) return;
 
+    // FIX: Observer les changements de taille du formulaire (textarea focus) pour Lenis/ScrollTrigger
+    if (window.ResizeObserver) {
+        const ro = new ResizeObserver(() => {
+            if (window._lenis) window._lenis.resize();
+            if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+        });
+        ro.observe(form);
+    }
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
