@@ -238,7 +238,12 @@
                     </div>
                     <p class="page-intro" data-i18n="contact_intro">Discutons de votre projet d'aménagement intérieur.</p>
                     <div class="contact-layout">
-                        <form class="contact-form" id="contact-form" novalidate>
+                        <form class="contact-form" id="contact-form" 
+                              action="https://formspree.io/f/xanobkgr" 
+                              method="POST" novalidate>
+                            <input type="hidden" name="_subject" value="Nouveau message portfolio — Anicet Even">
+                            <input type="hidden" name="_replyto" value="">
+                            <input type="text" name="_gotcha" style="display:none">
                             <div class="fg">
                                 <input type="text" id="fn" name="name" required placeholder=" " class="fi" autocomplete="name">
                                 <label for="fn" class="fl" data-i18n="form_name">NOM</label>
@@ -264,6 +269,7 @@
                                 </svg>
                             </div>
                         </form>
+
                         <div class="contact-info">
                             <div class="ci-block">
                                 <h4 class="ci-label" data-i18n="contact_direct">CONTACT DIRECT</h4>
@@ -329,7 +335,7 @@
                     <!-- ══════ TAPE TITLE ══════ -->
                     <div class="projects-board-header" style="margin-bottom: 0; text-align: center; padding: 60px 0 20px;">
                         <div class="tape-title-wrap" style="position: relative; display: inline-block;">
-                            <h3 class="font-sketch tape-title" style="
+                            <h3 class="font-sketch tape-title" data-i18n="proj_title" style="
                                 background-color: #2a2a2a; 
                                 color: #fff; 
                                 padding: 8px 16px; 
@@ -343,12 +349,12 @@
                     <div class="project-description-notebook">
                         <div class="project-desc-sheet">
                             <div class="project-desc-content">
-                                <p class="project-desc-text">
-                                    Conception d'un complexe automobile multifonctionnel inspiré des motels américains des années 60-70. 
-                                    Le projet articule une station essence, un garage moto, un espace d'exposition, un bar/restaurant 
-                                    et un espace de pause autour d'une circulation fluide et d'une toiture servant de signalétique.
+                                <p class="project-desc-text" data-i18n="proj_desc">
+                                    Conception d’un complexe automobile multifonctionnel inspiré des motels américains des années 60-70. 
+                                    Le projet articule une station essence, un garage moto, un espace d’exposition, un bar/restaurant 
+                                    et un espace de pause autour d’une circulation fluide et d’une toiture servant de signalétique.
                                 </p>
-                                <span class="project-desc-annotation">→ MJM Graphic Design Toulouse — 2025</span>
+                                <span class="project-desc-annotation" data-i18n="proj_annotation">→ MJM Graphic Design Toulouse — 2025</span>
                             </div>
                         </div>
                     </div>
@@ -356,7 +362,7 @@
                     <!-- ══════ PANEL 1 : ZOONING & ANALYSE (anthracite) ══════ -->
                     <div class="panel-section panel-light">
                         <div class="sticker-title-wrap">
-                            <span class="sticker-title font-sketch">ZOONING ET ANALYSE</span>
+                            <span class="sticker-title font-sketch" data-i18n="proj_panel_zooning">ZOONING ET ANALYSE</span>
                         </div>
                         <div class="bd-carousel-section carousel-landscape">
                             <div class="bd-carousel-container">
@@ -387,7 +393,7 @@
                     <!-- ══════ PANEL 2 : PLANS (noir) ══════ -->
                     <div class="panel-section">
                         <div class="sticker-title-wrap sticker-right">
-                            <span class="sticker-title font-sketch">PLANS</span>
+                            <span class="sticker-title font-sketch" data-i18n="proj_panel_plans">PLANS</span>
                         </div>
                         <div class="bd-carousel-section carousel-landscape">
                             <div class="bd-carousel-container">
@@ -421,7 +427,7 @@
                     <!-- ══════ PANEL 3 : COUPES ARCHITECTURALES (anthracite) ══════ -->
                     <div class="panel-section panel-light">
                         <div class="sticker-title-wrap">
-                            <span class="sticker-title font-sketch">COUPES ARCHITECTURALES</span>
+                            <span class="sticker-title font-sketch" data-i18n="proj_panel_coupes">COUPES ARCHITECTURALES</span>
                         </div>
 
                         <div class="cut-stack" data-coupe-gallery>
@@ -429,7 +435,7 @@
                                 <div class="drawing-sheet-wrap">
                                     <span class="stack-label font-sketch">Coupe Nord Lointaine</span>
                                     <div class="media-frame-inner drawing-sheet">
-                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe nord loingtaine.pdf" data-pdf-crop-top="8"></canvas>
+                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe nord loingtaine.pdf" data-pdf-crop-top="16"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -437,7 +443,7 @@
                                 <div class="drawing-sheet-wrap">
                                     <span class="stack-label stack-label-right font-sketch">Coupe Nord Texturée</span>
                                     <div class="media-frame-inner drawing-sheet">
-                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe nord texturé.pdf" data-pdf-crop-top="8"></canvas>
+                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe nord texturé.pdf" data-pdf-crop-top="16"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -445,7 +451,7 @@
                                 <div class="drawing-sheet-wrap">
                                     <span class="stack-label font-sketch">Coupe Ouest Texturée</span>
                                     <div class="media-frame-inner drawing-sheet">
-                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe ouest texturé.pdf" data-pdf-crop-top="8"></canvas>
+                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe ouest texturé.pdf" data-pdf-crop-top="16"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -453,7 +459,7 @@
                                 <div class="drawing-sheet-wrap">
                                     <span class="stack-label stack-label-right font-sketch">Coupe Sud Texturée</span>
                                     <div class="media-frame-inner drawing-sheet">
-                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe sud texturé.pdf" data-pdf-crop-top="8"></canvas>
+                                        <canvas class="pdf-inline-render" data-pdf-url="PDF/coupe sud texturé.pdf" data-pdf-crop-top="16"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -463,7 +469,7 @@
                     <!-- ══════ PANEL 4 : 3D (noir) ══════ -->
                     <div class="panel-section">
                         <div class="sticker-title-wrap sticker-right">
-                            <span class="sticker-title font-sketch">3D</span>
+                            <span class="sticker-title font-sketch" data-i18n="proj_panel_3d">3D</span>
                         </div>
 
                         <div class="render3d-grid">
