@@ -173,27 +173,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initDrawingLightbox();
 
+    // Révéler la page home avec animation d'entrée
+    showPage('home', false);
+
     // Animations au scroll pour les appareils tactiles (mobile)
     // Appelé APRÈS showPage pour que is-active soit bien présent
     initScrollAnimationsMobile();
 
-    // Révéler la page home avec animation d'entrée
-    showPage('home', false);
-
-    // Animation d'entrée du hero
+    // Animation d'entrée du hero — décalée pour laisser la page se monter
     requestAnimationFrame(() => {
-        const heroWrap = document.getElementById('hero-logo-wrap');
+        const heroWrap  = document.getElementById('hero-logo-wrap');
+        const profession = document.querySelector('.hero-profession');
         const scrollInv = document.getElementById('scroll-invite');
+        const showcase  = document.querySelector('.home-showcase');
+        const shortcut  = document.querySelector('.home-projects-shortcut');
+
         if (heroWrap) {
             gsap.fromTo(heroWrap,
-                { opacity: 0, y: 40, scale: 0.92 },
-                { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'power3.out', delay: 0.15 }
+                { opacity: 0, y: 40, scale: 0.94 },
+                { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'power3.out', delay: 0.1 }
+            );
+        }
+        if (profession) {
+            gsap.fromTo(profession,
+                { opacity: 0, y: 16, letterSpacing: '0.4em' },
+                { opacity: 1, y: 0, letterSpacing: '0.25em', duration: 0.9, ease: 'power2.out', delay: 0.55 }
             );
         }
         if (scrollInv) {
             gsap.fromTo(scrollInv,
                 { opacity: 0 },
-                { opacity: 0.45, duration: 0.8, delay: 1.4 }
+                { opacity: 0.45, duration: 0.8, delay: 1.5 }
+            );
+        }
+        if (showcase) {
+            gsap.fromTo(showcase,
+                { opacity: 0, y: 30 },
+                { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.4 }
+            );
+        }
+        if (shortcut) {
+            gsap.fromTo(shortcut,
+                { opacity: 0, y: 20 },
+                { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.7 }
             );
         }
     });
@@ -250,14 +272,17 @@ function initMenu() {
                     if (!wasOnHome) {
                         showPage('home', true);
                     }
-                    // Attendre la transition puis scroller dans le conteneur de la page
-                    const delay = wasOnHome ? 100 : 700;
+                    // FIX: utiliser lenis.scrollTo au lieu de homeEl.scrollTo pour éviter le conflit
+                    const delay = wasOnHome ? 100 : 750;
                     setTimeout(() => {
-                        const homeEl = document.getElementById('page-home');
                         const contactEl = document.getElementById('home-contact');
-                        if (homeEl && contactEl) {
-                            const targetY = contactEl.offsetTop - 40;
-                            homeEl.scrollTo({ top: targetY, behavior: 'smooth' });
+                        if (contactEl) {
+                            if (window._lenis) {
+                                window._lenis.scrollTo(contactEl, { offset: -40, duration: 1.2 });
+                            } else {
+                                const homeEl = document.getElementById('page-home');
+                                if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - 40, behavior: 'smooth' });
+                            }
                         }
                     }, delay);
                 }, 420);
@@ -438,12 +463,15 @@ function initPageLenis(scrollContainer) {
 
     const lenisOptions = {
         wrapper: scrollContainer,
-        eventsTarget: document,  // capture wheel events globally — scroll works everywhere
-        duration: 1.15,
+        eventsTarget: scrollContainer,  // FIX: cible le container de la page, pas le document entier
+        duration: 1.0,                  // FIX: réduit de 1.15 → 1.0 pour un scroll plus réactif
         easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smooth: true,
-        mouseMultiplier: 0.95,
+        wheelMultiplier: 1.0,           // FIX: remplace mouseMultiplier (API Lenis v2)
+        touchMultiplier: 1.5,
         smoothTouch: false,
+        infinite: false,
+        orientation: 'vertical',
     };
 
     // Only set content if we found a specific wrapper
