@@ -570,12 +570,13 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
 @media (min-width: 992px) {
     .projects-patchwork {
-        grid-template-columns: repeat(4, 1fr);
-        grid-auto-rows: 250px;
+        grid-template-columns: repeat(12, 1fr);
+        grid-auto-rows: 100px;
+        grid-auto-flow: dense;
     }
-    .patchwork-item.prio-1 { grid-column: span 2; grid-row: span 2; }
-    .patchwork-item.prio-2 { grid-column: span 2; grid-row: span 1; }
-    .patchwork-item.prio-3 { grid-column: span 1; grid-row: span 1; }
+    .patchwork-item.prio-1 { grid-column: span 6; grid-row: span 5; }
+    .patchwork-item.prio-2 { grid-column: span 4; grid-row: span 4; }
+    .patchwork-item.prio-3 { grid-column: span 3; grid-row: span 3; }
 }
 
 .patchwork-item {
@@ -2817,26 +2818,26 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 /* Pagination and Progress */
 
 /* --- PROJECTS PAGE REDESIGN --- */
-#page-projects {
+.project-detail-page {
     background: #111111;
 }
-#page-projects .page-inner {
+.project-detail-page .page-inner {
     max-width: none;
     margin: 0;
     padding: 120px 0 0;
     overflow: visible;
 }
-#page-projects .page-heading,
-#page-projects .page-intro {
+.project-detail-page .page-heading,
+.project-detail-page .page-intro {
     padding-left: 60px;
     padding-right: 60px;
     max-width: 1200px;
 }
-#page-projects .page-next {
+.project-detail-page .page-next {
     margin-right: 60px;
 }
 /* Footer in projects: no negative margins needed since page-inner has no horizontal padding */
-#page-projects .site-footer {
+.project-detail-page .site-footer {
     margin-left: 0;
     margin-right: 0;
     clear: both;
