@@ -1,5 +1,5 @@
 /**
- * Portfolio ANICET EVEN — app.js V3
+ * Portfolio Even ANICET — app.js V3
  * SPA + Logo Bandeau Scroll + Contact = scroll bas accueil
  * Rectangle SVG dessiné main + Menu habillé + Carrousel inertie
  */
@@ -9,8 +9,8 @@
 // ─────────────────────────────────────
 const i18n = {
     fr: {
-        meta_title:          "ANICET EVEN — Architecte d'intérieur",
-        meta_desc:           "Portfolio d'Anicet Even, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.",
+        meta_title:          "Even ANICET — Architecte d'intérieur",
+        meta_desc:           "Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.",
         home_subtitle:       "Architecte d'intérieur",
         home_scroll:         "Défilez",
         menu_01: "ACCUEIL",  menu_02: "PROJETS", menu_03: "DESSINS",
@@ -73,7 +73,7 @@ const i18n = {
         drawing_title_style: "À LA MANIÈRE DE...",
         drawing_desc_style:  "Étude de style & Graphite — A4",
         bd_title:            "BANDE DESSINÉE",
-        legal_copyright:  "Toutes les œuvres présentées sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriété exclusive d'Anicet Even. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est strictement interdite.",
+        legal_copyright:  "Toutes les œuvres présentées sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriété exclusive d'Even ANICET. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est strictement interdite.",
         legal_cert:       "Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).",
         legal_mentions:   "Mentions légales",
         legal_rights:     "Tous droits réservés",
@@ -90,8 +90,8 @@ const i18n = {
         proj_label_far:           "Vue de loin",
     },
     en: {
-        meta_title:          "ANICET EVEN — Interior Architect",
-        meta_desc:           "Portfolio of Anicet Even, interior architect from MJM Graphic Design Toulouse.",
+        meta_title:          "Even ANICET — Interior Architect",
+        meta_desc:           "Portfolio of Even ANICET, interior architect from MJM Graphic Design Toulouse.",
         home_subtitle:       "Interior Architect",
         home_scroll:         "Scroll",
         menu_01: "HOME",     menu_02: "PROJECTS", menu_03: "DRAWINGS",
@@ -154,7 +154,7 @@ const i18n = {
         drawing_title_style: "IN THE STYLE OF...",
         drawing_desc_style:  "Style Study & Graphite — A4",
         bd_title:            "COMIC BOOK (BD)",
-        legal_copyright:  "All works presented on this website (3D renders, sketches, photographs, drawings) are the exclusive property of Anicet Even. Any reproduction, distribution or use without prior written authorisation is strictly prohibited.",
+        legal_copyright:  "All works presented on this website (3D renders, sketches, photographs, drawings) are the exclusive property of Even ANICET. Any reproduction, distribution or use without prior written authorisation is strictly prohibited.",
         legal_cert:       "I certify that I am the sole author of all works and productions presented in this portfolio. All images and creations are protected by copyright in accordance with French Intellectual Property Code (articles L.111-1 et seq.).",
         legal_mentions:   "Legal notice",
         legal_rights:     "All rights reserved",
