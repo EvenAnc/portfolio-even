@@ -615,7 +615,27 @@ function initNextPageLinks() {
         link.addEventListener('click', e => {
             e.preventDefault();
             const nextPage = link.dataset.next;
-            if (nextPage) showPage(nextPage);
+            if (nextPage === 'contact') {
+                const wasOnHome = currentPage === 'home';
+                if (!wasOnHome) {
+                    showPage('home', true);
+                }
+                const contactSection = document.getElementById('contact');
+                if (contactSection && window.lenis) {
+                    setTimeout(() => {
+                        window.lenis.scrollTo(contactSection, { duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
+                    }, wasOnHome ? 0 : 800);
+                } else if (contactSection) {
+                    const homeEl = document.getElementById('page-home');
+                    if(homeEl) {
+                        setTimeout(() => {
+                            homeEl.scrollTo({ top: contactSection.offsetTop, behavior: 'smooth' });
+                        }, wasOnHome ? 0 : 800);
+                    }
+                }
+            } else if (nextPage) {
+                showPage(nextPage);
+            }
         });
     });
 }
