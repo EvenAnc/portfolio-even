@@ -239,11 +239,13 @@
                     <p class="page-intro" data-i18n="contact_intro">Discutons de votre projet d'aménagement intérieur.</p>
                     <div class="contact-layout">
                         <form class="contact-form" id="contact-form" 
-                              action="https://formspree.io/f/xanobkgr" 
-                              method="POST" novalidate>
+                              action="https://formsubmit.co/even.anicet@gmail.com" 
+                              method="POST">
+                            <!-- FormSubmit config -->
                             <input type="hidden" name="_subject" value="Nouveau message portfolio — Anicet Even">
-                            <input type="hidden" name="_replyto" value="">
-                            <input type="text" name="_gotcha" style="display:none">
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_next" value="https://evenanc.github.io/portfolio-even/">
+                            <input type="text" name="_honey" style="display:none">
                             <div class="fg">
                                 <input type="text" id="fn" name="name" required placeholder=" " class="fi" autocomplete="name">
                                 <label for="fn" class="fl" data-i18n="form_name">NOM</label>
@@ -616,7 +618,38 @@
                     <div class="bd-title-wrap">
                         <h3 class="bd-section-title font-sketch" data-i18n="bd_title">BANDE DESSINÉE</h3>
                         <p class="bd-section-subtitle">FALLOUT</p>
-                        <div class="animation-explosion-detail"></div>
+                        <!-- Champignon atomique SVG animé style crayon -->
+                        <div class="mushroom-cloud-wrap">
+                            <svg class="mushroom-cloud-svg" viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                <!-- Sol -->
+                                <path class="mc-ground" d="M5 148 Q30 144 60 146 Q90 148 115 145" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+                                <!-- Tronc de l'explosion -->
+                                <path class="mc-stem" d="M48 146 Q44 130 46 118 Q48 108 52 102 Q56 96 60 90 Q64 96 68 102 Q72 108 74 118 Q76 130 72 146" fill="rgba(255,255,255,0.08)" stroke="#fff" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <!-- Onde de choc bas -->
+                                <path class="mc-shockwave" d="M30 140 Q60 134 90 140" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-linecap="round"/>
+                                <!-- Nuage principal - calques de hachures style crayon -->
+                                <ellipse class="mc-cloud-base" cx="60" cy="72" rx="42" ry="28" fill="rgba(255,255,255,0.06)" stroke="#fff" stroke-width="1.3"/>
+                                <path class="mc-cloud-l1" d="M18 72 Q14 58 22 48 Q30 36 44 34 Q52 32 60 34" stroke="#fff" stroke-width="1" fill="none" stroke-linecap="round"/>
+                                <path class="mc-cloud-r1" d="M102 72 Q106 58 98 48 Q90 36 76 34 Q68 32 60 34" stroke="#fff" stroke-width="1" fill="none" stroke-linecap="round"/>
+                                <!-- Bulbes du nuage -->
+                                <path class="mc-lobe" d="M36 60 Q28 50 32 40 Q38 28 50 28 Q58 26 64 30" stroke="#fff" stroke-width="1.2" fill="rgba(255,255,255,0.05)" stroke-linecap="round"/>
+                                <path class="mc-lobe" d="M84 60 Q92 50 88 40 Q82 28 70 28 Q62 26 56 30" stroke="#fff" stroke-width="1.2" fill="rgba(255,255,255,0.05)" stroke-linecap="round"/>
+                                <path class="mc-top" d="M38 38 Q42 20 60 16 Q78 20 82 38" stroke="#fff" stroke-width="1.3" fill="rgba(255,255,255,0.07)" stroke-linecap="round"/>
+                                <!-- Hachures intérieures style crayon -->
+                                <path class="mc-hatch" d="M46 58 Q48 50 52 45" stroke="rgba(255,255,255,0.35)" stroke-width="0.8" stroke-linecap="round"/>
+                                <path class="mc-hatch" d="M55 55 Q57 44 60 40" stroke="rgba(255,255,255,0.3)" stroke-width="0.8" stroke-linecap="round"/>
+                                <path class="mc-hatch" d="M64 56 Q66 47 68 44" stroke="rgba(255,255,255,0.25)" stroke-width="0.8" stroke-linecap="round"/>
+                                <path class="mc-hatch" d="M42 68 Q44 62 48 58" stroke="rgba(255,255,255,0.2)" stroke-width="0.8" stroke-linecap="round"/>
+                                <path class="mc-hatch" d="M72 68 Q74 62 76 58" stroke="rgba(255,255,255,0.2)" stroke-width="0.8" stroke-linecap="round"/>
+                                <!-- Petits débris qui volent -->
+                                <path class="mc-debris" d="M22 110 L18 108" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-linecap="round"/>
+                                <path class="mc-debris" d="M96 108 L100 106" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-linecap="round"/>
+                                <path class="mc-debris" d="M28 120 Q26 118 24 119" stroke="rgba(255,255,255,0.4)" stroke-width="0.9" stroke-linecap="round"/>
+                                <path class="mc-debris" d="M92 118 Q94 116 96 117" stroke="rgba(255,255,255,0.4)" stroke-width="0.9" stroke-linecap="round"/>
+                                <!-- Nuage de poussière au sol -->
+                                <path class="mc-dust" d="M20 138 Q35 128 50 134 Q60 130 70 134 Q85 128 100 136" stroke="rgba(255,255,255,0.3)" stroke-width="1" fill="none" stroke-linecap="round"/>
+                            </svg>
+                        </div>
                     </div>
                     <div class="bd-carousel-container">
                         <button class="bd-nav-btn prev-btn" aria-label="Page précédente">
@@ -628,7 +661,7 @@
                         </button>
                         
                         <div class="frame-wrap">
-                            <div class="bd-carousel-viewport">
+                            <div class="bd-carousel-viewport" style="position:relative;">
                                 <div class="bd-carousel-track">
                                     <div class="bd-slide active" data-slide="0">
                                         <div class="drawing-sheet-wrap torn-frame">
@@ -661,9 +694,9 @@
                             </div>
                         </div>
                             
-                            <!-- SVG Crayonné rouge dessiné main -->
-                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
-                                <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- SVG Crayonné rouge sur le viewport uniquement -->
+                            <svg class="sketch-rect-svg bd-frame-svg" viewBox="0 0 400 565" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M10 8 L390 5 L396 14 L393 550 L384 560 L12 557 L4 548 L7 16 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </div>
 

@@ -1169,40 +1169,83 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     pointer-events: auto;
 }
 
-.animation-explosion-detail {
+/* ── Champignon atomique FALLOUT (hover) ─────────────────────── */
+.mushroom-cloud-wrap {
     position: absolute;
-    bottom: -40px;
+    bottom: -30px;
     left: 50%;
-    margin-left: -285px;
-    width: 150px;
-    height: 150px;
-    background-image: url('../assets/gemini-svg2.svg');
-    background-size: 500% 100%;
-    background-position: 0 0;
-    transform-origin: 50% 100%;
-    transform: rotate(-45deg) scale(1.15);
-    opacity: 0;
+    margin-left: -310px;
+    width: 140px;
+    height: 160px;
     pointer-events: none;
-    z-index: 20;
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+    transform-origin: 50% 100%;
+    transition: opacity 0.45s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-.bd-section-subtitle:hover ~ .animation-explosion-detail {
+.bd-section-subtitle:hover ~ .mushroom-cloud-wrap,
+.bd-title-wrap:hover .mushroom-cloud-wrap {
     opacity: 1;
-    animation: explosion-flipbook-detail 0.6s steps(4) forwards;
+    transform: translateY(0) scale(1);
 }
+.mushroom-cloud-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 8px rgba(255,80,50,0.4));
+}
+/* Parties du champignon avec délais d'apparition */
+.mc-ground, .mc-dust { animation: mc-draw 0.6s ease forwards; }
+.mc-stem { animation: mc-rise 0.5s 0.1s ease both; }
+.mc-shockwave { animation: mc-draw 0.4s 0.2s ease both; }
+.mc-cloud-base { animation: mc-puff 0.4s 0.3s ease both; }
+.mc-cloud-l1, .mc-cloud-r1 { animation: mc-draw 0.3s 0.35s ease both; }
+.mc-lobe { animation: mc-puff 0.3s 0.4s ease both; }
+.mc-top { animation: mc-puff 0.35s 0.5s ease both; }
+.mc-hatch { animation: mc-draw 0.25s 0.55s ease both; }
+.mc-debris { animation: mc-debris-fly 0.4s 0.25s ease both; }
 
-@keyframes explosion-flipbook-detail {
-    from { background-position: 0% 0; }
-    to { background-position: 100% 0; }
+@keyframes mc-draw {
+    from { opacity: 0; stroke-dashoffset: 50; }
+    to { opacity: 1; stroke-dashoffset: 0; }
+}
+@keyframes mc-puff {
+    from { opacity: 0; transform: scale(0.6); transform-origin: 50% 100%; }
+    to { opacity: 1; transform: scale(1); transform-origin: 50% 100%; }
+}
+@keyframes mc-rise {
+    from { opacity: 0; transform: scaleY(0); transform-origin: 50% 100%; }
+    to { opacity: 1; transform: scaleY(1); transform-origin: 50% 100%; }
+}
+@keyframes mc-debris-fly {
+    from { opacity: 0; transform: translate(0, 5px); }
+    to { opacity: 1; transform: translate(0, 0); }
 }
 
 @media (max-width: 768px) {
-    .animation-explosion-detail {
+    .mushroom-cloud-wrap {
         width: 100px;
-        height: 100px;
-        margin-left: -190px;
-        bottom: -20px;
+        height: 120px;
+        margin-left: -215px;
+        bottom: -15px;
     }
+}
+
+
+
+/* BD frame SVG sits exactly on the viewport, not the wider frame-wrap */
+.bd-frame-svg {
+    top: -3%;
+    left: -3%;
+    width: 106%;
+    height: 106%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.frame-wrap:hover .bd-frame-svg {
+    opacity: 1;
+}
+.frame-wrap:hover .bd-frame-svg .sketch-rect-path {
+    stroke-dashoffset: 0;
 }
 
 .bd-carousel-container { align-items: center;
