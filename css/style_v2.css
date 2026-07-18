@@ -1257,6 +1257,15 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     box-sizing: border-box;
 }
 
+/* Animation hover sur les plans avant (même style que les coupes) */
+.bd-slide .drawing-sheet-wrap {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.bd-slide .drawing-sheet-wrap:hover {
+    transform: scale(1.02);
+    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
+}
+
 .bd-slide .media-frame-inner {
     padding: 0 !important;
     /* removed transparent */
