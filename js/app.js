@@ -1804,3 +1804,14 @@ function initScrollAnimationsMobile() {
         });
     });
 })();
+
+/* --- FAVICON ANIMATION --- */
+(function animateFavicon() {
+    const favicon = document.getElementById('favicon');
+    if (!favicon) return;
+    let frame = 1;
+    setInterval(() => {
+        frame = (frame % 3) + 1;
+        favicon.href = 'favicon_' + frame + '.svg';
+    }, 200); // 200ms per frame = 600ms loop
+})();
