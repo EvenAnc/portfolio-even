@@ -618,22 +618,23 @@ function initNextPageLinks() {
             const nextPage = link.dataset.next;
             if (nextPage === 'contact') {
                 const wasOnHome = currentPage === 'home';
-                if (!wasOnHome) {
-                    showPage('home', true);
-                }
-                const contactSection = document.getElementById('contact');
-                if (contactSection && window.lenis) {
-                    setTimeout(() => {
-                        window.lenis.scrollTo(contactSection, { duration: 1.5, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)) });
-                    }, wasOnHome ? 0 : 800);
-                } else if (contactSection) {
-                    const homeEl = document.getElementById('page-home');
-                    if(homeEl) {
-                        setTimeout(() => {
-                            homeEl.scrollTo({ top: contactSection.offsetTop, behavior: 'smooth' });
-                        }, wasOnHome ? 0 : 800);
+                setTimeout(() => {
+                    if (!wasOnHome) {
+                        showPage('home', true);
                     }
-                }
+                    const delay = wasOnHome ? 100 : 750;
+                    setTimeout(() => {
+                        const contactEl = document.getElementById('home-contact');
+                        if (contactEl) {
+                            if (window._lenis) {
+                                window._lenis.scrollTo(contactEl, { offset: -40, duration: 1.2 });
+                            } else {
+                                const homeEl = document.getElementById('page-home');
+                                if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - 40, behavior: 'smooth' });
+                            }
+                        }
+                    }, delay);
+                }, 300);
             } else if (nextPage) {
                 showPage(nextPage);
             }
