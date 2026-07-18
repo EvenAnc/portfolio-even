@@ -13,13 +13,13 @@ const i18n = {
         meta_desc:           "Portfolio d'Anicet Even, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.",
         home_subtitle:       "Architecte d'intérieur",
         home_scroll:         "Défilez",
-        menu_01: "ACCUEIL",  menu_02: "PROJETS", menu_03: "PHOTOS",
-        menu_04: "DESSINS",  menu_05: "DIPLÔME", menu_06: "CONTACT",
+        menu_01: "ACCUEIL",  menu_02: "PROJETS", menu_03: "DESSINS",
+        menu_04: "DIPLÔME",  menu_05: "HOBBIES", menu_06: "CONTACT",
         menu_deco_01: "bienvenue",
         menu_deco_02: "mes réalisations",
-        menu_deco_03: "lumière & matière",
-        menu_deco_04: "à main levée",
-        menu_deco_05: "MJM Toulouse",
+        menu_deco_03: "à main levée",
+        menu_deco_04: "MJM Toulouse",
+        menu_deco_05: "moto & perso",
         menu_deco_06: "parlons-en",
         nav_next:            "suivant",
         showcase_sub:        "Rendu 3D — 2025",
@@ -92,13 +92,13 @@ const i18n = {
         meta_desc:           "Portfolio of Anicet Even, interior architect from MJM Graphic Design Toulouse.",
         home_subtitle:       "Interior Architect",
         home_scroll:         "Scroll",
-        menu_01: "HOME",     menu_02: "PROJECTS", menu_03: "PHOTOS",
-        menu_04: "DRAWINGS", menu_05: "DIPLOMA",  menu_06: "CONTACT",
+        menu_01: "HOME",     menu_02: "PROJECTS", menu_03: "DRAWINGS",
+        menu_04: "DIPLOMA",  menu_05: "HOBBIES",  menu_06: "CONTACT",
         menu_deco_01: "welcome",
         menu_deco_02: "my work",
-        menu_deco_03: "light & texture",
-        menu_deco_04: "freehand",
-        menu_deco_05: "MJM Toulouse",
+        menu_deco_03: "freehand",
+        menu_deco_04: "MJM Toulouse",
+        menu_deco_05: "moto & personal",
         menu_deco_06: "let's talk",
         nav_next:            "next",
         showcase_sub:        "3D Render — 2025",
@@ -722,7 +722,13 @@ function initContactAnimation() {
         const body = encodeURIComponent(msg + "\n\n---\nEmail de contact : " + email);
         const mailtoLink = `mailto:${myEmail}?subject=${subject}&body=${body}`;
 
-        window.location.href = mailtoLink;
+        // Ouvrir le client mail via un lien temporaire (évite la navigation de page sur mobile)
+        const tempLink = document.createElement('a');
+        tempLink.href = mailtoLink;
+        tempLink.style.display = 'none';
+        document.body.appendChild(tempLink);
+        tempLink.click();
+        document.body.removeChild(tempLink);
 
         // Feedback visuel
         const successMsg = currentLang === 'fr'
