@@ -214,7 +214,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 .page.is-active { opacity: 1; pointer-events: auto; }
-.page:not(.is-active) * { pointer-events: none !important; }
 .page::-webkit-scrollbar { width: 4px; }
 .page::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 
@@ -225,10 +224,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     width: 100%; min-height: 100vh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 80px 40px 60px; position: relative;
-    /* FIX: évite que le hero capture les événements de scroll/click en dehors des zones interactives */
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-select: none;
 }
 
 .hero-logo-wrap { text-align: center; z-index: 2; pointer-events: none; }
@@ -251,8 +246,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     font-size: clamp(1rem, 2.2vw, 1.6rem); font-weight: 300;
     letter-spacing: 0.25em; text-transform: uppercase;
     color: var(--red); margin-top: 14px;
-    /* Initialement invisible, GSAP anime l'entrée */
-    opacity: 0;
 }
 
 .scroll-invite {
@@ -271,8 +264,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 .home-showcase {
     padding: 0 60px;
     margin-bottom: 110px;
-    pointer-events: auto;  /* FIX: explicite auto hors du hero */
-    opacity: 0;             /* Animé par GSAP au chargement */
 }
 
 .showcase-frame {
@@ -282,7 +273,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     border-radius: 18px;
     overflow: hidden;
     background: #111;
-    cursor: pointer;         /* FIX: feedback visuel cliquable */
 }
 
 .showcase-img {
@@ -292,7 +282,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     object-fit: cover;
     display: block;
     transition: transform 0.7s var(--ease-out);
-    will-change: transform;  /* FIX: promotion GPU évite repaint */
 }
 
 .showcase-frame:hover .showcase-img {
@@ -307,16 +296,15 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     justify-content: center;
     position: relative;
     z-index: 10;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
+    width: fit-content; /* N'occupe que la taille réelle du texte */
+    margin-left: auto;  /* Centre horizontalement l'élément */
+    margin-right: auto; /* Centre horizontalement l'élément */
+    /* Superposition à cheval sur la transition wobbly (fond anthracite -> beige) */
     margin-top: -25px;
     margin-bottom: 20px;
     cursor: pointer;
     text-align: center;
-    user-select: none;        /* FIX: empêche la sélection de texte au double-click */
-    -webkit-user-select: none;
-    pointer-events: auto;     /* FIX: réactive les événements sur ce bouton (parent est none) */
+    user-select: none;
     transition: transform var(--dur-med) var(--ease-out);
 }
 
@@ -576,7 +564,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     clip-path: polygon(0% 2.5%, 10% 1.8%, 25% 2.8%, 40% 1.5%, 55% 3.2%, 70% 1.8%, 85% 2.8%, 100% 1.8%, 100% 97.2%, 85% 98.2%, 70% 97.2%, 55% 98.5%, 40% 97.2%, 25% 98.2%, 10% 97.2%, 0% 98.2%);
     z-index: 0;
     filter: url(#paper-tear);
-    will-change: transform;  /* FIX: promotion GPU réduit le repaint au hover */
     transition: transform 0.8s cubic-bezier(0.25, 1, 0.36, 1), clip-path 0.8s cubic-bezier(0.25, 1, 0.36, 1);
     transform-origin: center;
     pointer-events: none;
@@ -1205,24 +1192,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     }
 }
 
-
-
-/* BD frame SVG sits exactly on the viewport, not the wider frame-wrap */
-.bd-frame-svg {
-    top: -3%;
-    left: -3%;
-    width: 106%;
-    height: 106%;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-.frame-wrap:hover .bd-frame-svg {
-    opacity: 1;
-}
-.frame-wrap:hover .bd-frame-svg .sketch-rect-path {
-    stroke-dashoffset: 0;
-}
-
 .bd-carousel-container { align-items: center;
     display: flex;
     align-items: center;
@@ -1273,15 +1242,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-}
-
-/* Animation hover sur les plans avant (même style que les coupes) */
-.bd-slide .drawing-sheet-wrap {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.bd-slide .drawing-sheet-wrap:hover {
-    transform: scale(1.02);
-    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
 }
 
 .bd-slide .media-frame-inner {
@@ -2736,7 +2696,9 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     background: #f5f0e8;
     border-radius: 6px;
     padding: 35px 40px 30px;
+    clip-path: polygon(0% 2%, 8% 0.5%, 20% 2.5%, 35% 0.8%, 50% 2%, 65% 0.5%, 80% 2.2%, 95% 0.8%, 100% 2%, 100% 97%, 92% 99.5%, 78% 97.5%, 62% 99.2%, 48% 97%, 32% 99.5%, 18% 97.8%, 5% 99.2%, 0% 97%);
     box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
+    filter: url(#paper-tear);
 }
 .project-desc-content {
     position: relative;
@@ -2750,8 +2712,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     margin-bottom: 12px;
 }
 .project-desc-annotation {
-    font-family: var(--font-body);
-    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    font-size: clamp(0.9rem, 1.5vw, 1.1rem);
     color: var(--red);
     display: block;
     margin-top: 8px;
@@ -2760,11 +2721,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 .panel-section {
     position: relative;
     width: 100%;
-    padding: 120px 4vw 80px;   /* FIX: padding top généreux pour le sticker qui dépasse */
-    margin-top: 80px;          /* FIX: marge obligatoire entre description et section */
-}
-.panel-section:first-of-type {
-    margin-top: 60px;
+    padding: 120px 4vw 80px;
 }
 .panel-section::before {
     content: '';
@@ -2840,34 +2797,33 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 .carousel-landscape .bd-carousel-viewport {
     width: 100% !important;
     max-width: 1200px !important;
-    max-height: 65vh;
     aspect-ratio: 1.414 / 1;
     margin: 0 auto;
-    border: none;                              /* FIX: retire le bord gris */
+    border: 3px solid rgba(255, 255, 255, 0.1);
     box-shadow: 10px 10px 30px rgba(0,0,0,0.6);
     border-radius: 8px;
-    background: white;
-    overflow: hidden;
+    background: white; /* In case PDF takes time to load */
 }
 .panel-light .bd-carousel-viewport {
-    border: none;                              /* FIX: retire le bord gris sur fond clair */
-    box-shadow: 8px 8px 24px rgba(0,0,0,0.18);
+    border-color: rgba(0,0,0,0.2);
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.2);
 }
 .bd-carousel-container .frame-wrap {
-    flex: 0 0 auto;
+    flex: 1;
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 /* Professional Document Styling (replaces torn paper) */
 .drawing-sheet-wrap {
     border-radius: 8px !important;
     overflow: hidden;
     box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-    border: none !important;                   /* FIX: retire le bord gris/blanc */
-    position: relative;
+    border: 3px solid rgba(255, 255, 255, 0.1);
 }
 .panel-light .drawing-sheet-wrap {
-    box-shadow: 8px 8px 24px rgba(0,0,0,0.15);
+    border-color: rgba(0,0,0,0.2);
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.15);
 }
 
 /* Fix bd-carousel-container width so arrows aren't at extreme edges */
@@ -3034,12 +2990,11 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     position: relative;
 }
 .cut-stack .stack-item .drawing-sheet-wrap {
-    aspect-ratio: 2.8/1;                       /* FIX: coupes plus larges mais hauteur correcte */
+    aspect-ratio: 1.4/1;
     background: white;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: none !important;                   /* FIX: retire bord blanc des coupes */
+    border: 3px solid rgba(255,255,255,0.15) !important;
     position: relative;
-    overflow: hidden;
 }
 .cut-stack .stack-item .drawing-sheet-wrap:hover {
     transform: scale(1.02);
@@ -3167,7 +3122,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     color: var(--red);
 }
 
-/* Responsive 3D Grid & Projects page */
+/* Responsive 3D Grid */
 @media (max-width: 768px) {
     .render3d-grid {
         grid-template-columns: 1fr;
@@ -3177,134 +3132,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
         font-size: clamp(1.5rem, 4vw, 2.5rem) !important;
         padding: 10px 25px !important;
     }
-    .cut-stack .stack-item {
-        width: 100% !important;
-        max-width: 100% !important;
-        align-self: center !important;
-    }
     .cut-stack .stack-item .drawing-sheet-wrap {
-        aspect-ratio: 1.4/1;
-    }
-    .panel-section {
-        padding: 80px 20px 40px;
-    }
-    .carousel-landscape .bd-carousel-viewport {
-        max-height: 50vh;
-    }
-    .project-desc-sheet {
-        padding: 25px 20px;
+        aspect-ratio: 1.8/1;
     }
 }
-
-/* ─────────────────────────────────────
-   POINTER-EVENTS — sections hors hero-screen
-───────────────────────────────────── */
-/* La section contact et les autres sections hors hero-screen doivent rester interactives */
-.page.is-active .notebook-section,
-.page.is-active .home-contact,
-.page.is-active .page-next {
-    pointer-events: auto;
-}
-.page.is-active .notebook-content,
-.page.is-active .notebook-hover-zone {
-    pointer-events: auto;
-    cursor: default;
-}
-
-/* ─────────────────────────────────────
-   ACTIVE STATE — feedback tactile
-───────────────────────────────────── */
-.home-projects-shortcut:active {
-    transform: scale(0.97);
-    transition: transform 0.1s ease;
-}
-.showcase-frame:active .showcase-img {
-    transform: scale(1.01);
-}
-.menu-nav-item:active .mn-label {
-    color: var(--red);
-    transform: translateX(16px);
-}
-
-/* ─────────────────────────────────────
-   PREFERS-REDUCED-MOTION
-   Désactive les animations lourdes continues pour les utilisateurs
-   qui préfèrent moins de mouvement (accessibilité + performance)
-───────────────────────────────────── */
-@media (prefers-reduced-motion: reduce) {
-    .hero-logo,
-    .menu-logo,
-    .header-logo-text,
-    .shortcut-sub-text,
-    .click-hint-text,
-    .page-next-arrow,
-    .sketch-rect-path {
-        animation: none !important;
-        filter: none !important;
-    }
-    .scroll-line {
-        animation: none !important;
-        opacity: 0.4;
-        transform: scaleY(0.7);
-    }
-    .showcase-img,
-    .torn-frame:hover .media-frame-img,
-    .frame-wrap:hover .torn-frame .media-frame-img {
-        transform: none !important;
-        transition: none !important;
-    }
-    .notebook-bg-sheet {
-        transition: none !important;
-    }
-    .notebook-hover-zone:hover .notebook-text {
-        animation: none !important;
-    }
-}
-
-/* ─────────────────────────────────────
-   SCROLL SMOOTHNESS — optimisations finales
-───────────────────────────────────── */
-/* Évite les repaints inutiles sur les éléments animés par GSAP */
-.home-showcase,
-.home-projects-shortcut,
-.hero-logo-wrap,
-.home-contact-inner {
-    will-change: opacity, transform;
-}
-/* Nettoie will-change après entrée (GSAP le fait mais en CSS c'est plus sûr) */
-/* Nettoie will-change après entrée (GSAP le fait mais en CSS c'est plus sûr) */
-.page.is-active .home-showcase,
-.page.is-active .home-projects-shortcut {
-    will-change: auto;
-}
-
-/* ─────────────────────────────────────
-   PDF LOADING SHIMMER
-───────────────────────────────────── */
-.pdf-shimmer {
-    position: relative;
-    background: #f0f0f0;
-    overflow: hidden;
-}
-.panel-light .pdf-shimmer {
-    background: #2a2a2a;
-}
-.pdf-shimmer::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
-    animation: shimmer 1.5s infinite linear;
-    z-index: 2;
-}
-.panel-light .pdf-shimmer::before {
-    background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.05) 50%, transparent 100%);
-}
-@keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-.pdf-loading {
-    opacity: 0 !important;
-}
-
