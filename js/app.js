@@ -1805,13 +1805,59 @@ function initScrollAnimationsMobile() {
     });
 })();
 
-/* --- FAVICON ANIMATION --- */
+/* --- FAVICON ANIMATION (CANVAS BASED) --- */
 (function animateFavicon() {
     const favicon = document.getElementById('favicon');
     if (!favicon) return;
-    let frame = 1;
-    setInterval(() => {
-        frame = (frame % 3) + 1;
-        favicon.href = 'favicon_' + frame + '.svg';
-    }, 200); // 200ms per frame = 600ms loop
+    
+    // Attendre que la police soit chargée
+    document.fonts.ready.then(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 100;
+        canvas.height = 100;
+        const ctx = canvas.getContext('2d');
+        
+        const frames = [];
+        const transforms = [
+            { r: -0.03, x: 0, y: 0 },
+            { r: 0.03, x: 1, y: 1 },
+            { r: -0.01, x: -1, y: 1 }
+        ];
+
+        for (let i = 0; i < 3; i++) {
+            ctx.clearRect(0, 0, 100, 100);
+            
+            // Fond noir arrondi
+            ctx.fillStyle = "#111111";
+            ctx.beginPath();
+            if (ctx.roundRect) {
+                ctx.roundRect(0, 0, 100, 100, 25);
+            } else {
+                ctx.rect(0, 0, 100, 100); // Fallback
+            }
+            ctx.fill();
+            
+            // Texte EA
+            ctx.save();
+            ctx.translate(50, 50);
+            ctx.rotate(transforms[i].r);
+            ctx.translate(transforms[i].x, transforms[i].y);
+            
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 55px 'Skribblugh', cursive";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("EA", 0, 5);
+            
+            ctx.restore();
+            
+            frames.push(canvas.toDataURL('image/png'));
+        }
+
+        let currentFrame = 0;
+        setInterval(() => {
+            favicon.href = frames[currentFrame];
+            currentFrame = (currentFrame + 1) % 3;
+        }, 200);
+    });
 })();
