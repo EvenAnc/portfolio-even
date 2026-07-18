@@ -930,9 +930,8 @@ async function renderSingleCanvas(canvas) {
         // Utiliser le cache pour éviter de re-télécharger le même fichier
         if (!_pdfCache[url]) {
             // Charger le PDF directement via URL (streaming, compatible mobile)
-        // Note: le fichier pdf_data_v2.js (base64) n'est plus utilisé ici pour éviter
-        // les crashs mémoire sur mobile (17 Mo de JS à décoder = trop lourd sur iOS)
-        _pdfCache[url] = await pdfLib.getDocument(url).promise;
+        // encodeURI pour gérer les espaces et caractères spéciaux dans les noms de fichiers
+        _pdfCache[url] = await pdfLib.getDocument(encodeURI(url)).promise;
         }
         const pdf = _pdfCache[url];
         const page = await pdf.getPage(1);
