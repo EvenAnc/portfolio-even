@@ -194,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initBDCarousel();
 
     initDrawingLightbox();
+    initCopyEmail();
 
     // Révéler la page home avec animation d'entrée
     showPage('home', false);
@@ -636,6 +637,27 @@ function initNextPageLinks() {
             } else if (nextPage) {
                 showPage(nextPage);
             }
+        });
+    });
+}
+
+// Fonction pour copier l'email
+function initCopyEmail() {
+    document.querySelectorAll('.copy-email').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const email = this.dataset.email || this.innerText.trim();
+            navigator.clipboard.writeText(email).then(() => {
+                const feedback = this.nextElementSibling;
+                if (feedback && feedback.classList.contains('copy-feedback')) {
+                    feedback.style.opacity = '1';
+                    feedback.style.transform = 'translateX(5px)';
+                    setTimeout(() => {
+                        feedback.style.opacity = '0';
+                        feedback.style.transform = 'translateX(-10px)';
+                    }, 2000);
+                }
+            }).catch(err => console.error('Erreur de copie', err));
         });
     });
 }
