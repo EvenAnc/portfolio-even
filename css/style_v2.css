@@ -575,8 +575,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
         grid-auto-flow: dense;
     }
     .patchwork-item.prio-1 { grid-column: span 6; grid-row: span 5; }
-    .patchwork-item.prio-2 { grid-column: span 4; grid-row: span 4; }
-    .patchwork-item.prio-3 { grid-column: span 3; grid-row: span 3; }
+    .patchwork-item.prio-2 { grid-column: span 5; grid-row: span 4; }
+    .patchwork-item.prio-3 { grid-column: span 4; grid-row: span 3; }
 }
 
 .patchwork-item {
