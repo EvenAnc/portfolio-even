@@ -799,6 +799,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     height: 48px;
     resize: none;
     overflow: hidden;
+    padding-top: 0 !important;
+    margin-top: 12px;
     transition: height 0.4s var(--ease-out), border-color var(--dur-fast);
 }
 
@@ -817,7 +819,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 .fi:focus ~ .fl, .fi:not(:placeholder-shown) ~ .fl {
-    transform: translateY(-20px) scale(0.82); color: var(--red);
+    transform: translateY(-24px) scale(0.82); color: var(--red);
 }
 
 /* La ligne rouge animée est gérée uniquement par le span .fb pour éviter tout dédoublement */
@@ -844,7 +846,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
 .fi-error ~ .fl {
     color: var(--red) !important;
-    transform: translateY(-20px) scale(0.82) !important;
+    transform: translateY(-24px) scale(0.82) !important;
 }
 
 .form-feedback {
@@ -2839,10 +2841,11 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 /* Carnet de croquis style for viewport */
 .carousel-landscape .bd-carousel-viewport {
     width: 100% !important;
-    max-width: 1200px !important;
-    max-height: 65vh;
-    aspect-ratio: 1.414 / 1;
-    margin: 0;
+    max-width: 100% !important;
+    height: 100% !important;
+    max-height: none !important;
+    aspect-ratio: auto;
+    margin: 0 auto;
     border: none;                              /* FIX: retire le bord gris */
     box-shadow: 10px 10px 30px rgba(0,0,0,0.6);
     border-radius: 8px;
@@ -2855,9 +2858,14 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 .bd-carousel-container .frame-wrap {
     flex: 0 0 auto;
-    display: block;
-    width: fit-content;
-    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+.carousel-landscape .bd-carousel-container .frame-wrap {
+    width: 100%;
+    max-width: 1200px;
+    max-height: 65vh;
+    aspect-ratio: 1.414 / 1;
 }
 /* Professional Document Styling (replaces torn paper) */
 .drawing-sheet-wrap {
@@ -3189,7 +3197,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .panel-section {
         padding: 80px 20px 40px;
     }
-    .carousel-landscape .bd-carousel-viewport {
+    .carousel-landscape .bd-carousel-container .frame-wrap {
         max-height: 50vh;
     }
     .project-desc-sheet {
