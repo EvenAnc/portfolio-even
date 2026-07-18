@@ -1819,8 +1819,8 @@ function initScrollAnimationsMobile() {
         
         const frames = [];
         const transforms = [
-            { r: -0.01, x: 0, y: -1, s: 1.02 },
-            { r: 0.01,  x: 1, y: 1,  s: 0.98 },
+            { r: -0.01, x: -3, y: -1, s: 1.02 },
+            { r: 0.01,  x:  2, y:  1,  s: 0.98 },
             { r: 0,     x: -1, y: 0, s: 1.0 }
         ];
 
