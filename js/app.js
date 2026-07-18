@@ -1819,9 +1819,9 @@ function initScrollAnimationsMobile() {
         
         const frames = [];
         const transforms = [
-            { r: -0.03, x: 0, y: 0 },
-            { r: 0.03, x: 1, y: 1 },
-            { r: -0.01, x: -1, y: 1 }
+            { r: -0.1, x: -3, y: -3 },
+            { r: 0.08, x: 4, y: 4 },
+            { r: -0.04, x: -4, y: 2 }
         ];
 
         for (let i = 0; i < 3; i++) {
@@ -1837,17 +1837,17 @@ function initScrollAnimationsMobile() {
             }
             ctx.fill();
             
-            // Texte EA
+            // Texte E
             ctx.save();
             ctx.translate(50, 50);
             ctx.rotate(transforms[i].r);
             ctx.translate(transforms[i].x, transforms[i].y);
             
             ctx.fillStyle = "#ffffff";
-            ctx.font = "85px 'Skribblugh', cursive";
+            ctx.font = "115px 'Skribblugh', cursive";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("E", 0, 5);
+            ctx.fillText("E", 3, 10); // Offset X et Y pour centrer parfaitement la lettre
             
             ctx.restore();
             
