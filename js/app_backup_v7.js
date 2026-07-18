@@ -13,13 +13,13 @@ const i18n = {
         meta_desc:           "Portfolio d'Anicet Even, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.",
         home_subtitle:       "Architecte d'intérieur",
         home_scroll:         "Défilez",
-        menu_01: "ACCUEIL",  menu_02: "PROJETS", menu_03: "DESSINS",
-        menu_04: "DIPLÔME",  menu_05: "HOBBIES", menu_06: "CONTACT",
+        menu_01: "ACCUEIL",  menu_02: "PROJETS", menu_03: "PHOTOS",
+        menu_04: "DESSINS",  menu_05: "DIPLÔME", menu_06: "CONTACT",
         menu_deco_01: "bienvenue",
         menu_deco_02: "mes réalisations",
-        menu_deco_03: "à main levée",
-        menu_deco_04: "MJM Toulouse",
-        menu_deco_05: "moto & perso",
+        menu_deco_03: "lumière & matière",
+        menu_deco_04: "à main levée",
+        menu_deco_05: "MJM Toulouse",
         menu_deco_06: "parlons-en",
         nav_next:            "suivant",
         showcase_sub:        "Rendu 3D — 2025",
@@ -75,30 +75,19 @@ const i18n = {
         legal_cert:       "Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).",
         legal_mentions:   "Mentions légales",
         legal_rights:     "Tous droits réservés",
-        // Page Projets
-        proj_title:               "PROJET 01 : DIPLÔME",
-        proj_desc:                "Conception d’un complexe automobile multifonctionnel inspiré des motels américains des années 60-70. Le projet articule une station essence, un garage moto, un espace d’exposition, un bar/restaurant et un espace de pause autour d’une circulation fluide et d’une toiture servant de signalétique.",
-        proj_annotation:          "→ MJM Graphic Design Toulouse — 2025",
-        proj_panel_zooning:       "ZOONING ET ANALYSE",
-        proj_panel_plans:         "PLANS",
-        proj_panel_coupes:        "COUPES ARCHITECTURALES",
-        proj_panel_3d:            "3D",
-        proj_label_int:           "Intérieur",
-        proj_label_immersion:     "Immersion",
-        proj_label_far:           "Vue de loin",
     },
     en: {
         meta_title:          "ANICET EVEN — Interior Architect",
         meta_desc:           "Portfolio of Anicet Even, interior architect from MJM Graphic Design Toulouse.",
         home_subtitle:       "Interior Architect",
         home_scroll:         "Scroll",
-        menu_01: "HOME",     menu_02: "PROJECTS", menu_03: "DRAWINGS",
-        menu_04: "DIPLOMA",  menu_05: "HOBBIES",  menu_06: "CONTACT",
+        menu_01: "HOME",     menu_02: "PROJECTS", menu_03: "PHOTOS",
+        menu_04: "DRAWINGS", menu_05: "DIPLOMA",  menu_06: "CONTACT",
         menu_deco_01: "welcome",
         menu_deco_02: "my work",
-        menu_deco_03: "freehand",
-        menu_deco_04: "MJM Toulouse",
-        menu_deco_05: "moto & personal",
+        menu_deco_03: "light & texture",
+        menu_deco_04: "freehand",
+        menu_deco_05: "MJM Toulouse",
         menu_deco_06: "let's talk",
         nav_next:            "next",
         showcase_sub:        "3D Render — 2025",
@@ -154,17 +143,6 @@ const i18n = {
         legal_cert:       "I certify that I am the sole author of all works and productions presented in this portfolio. All images and creations are protected by copyright in accordance with French Intellectual Property Code (articles L.111-1 et seq.).",
         legal_mentions:   "Legal notice",
         legal_rights:     "All rights reserved",
-        // Projects Page
-        proj_title:               "PROJECT 01: DIPLOMA",
-        proj_desc:                "Design of a multifunctional automobile complex inspired by American motels of the 60s-70s. The project brings together a petrol station, motorcycle garage, exhibition space, bar/restaurant and rest area around a fluid circulation and a roof serving as signage.",
-        proj_annotation:          "→ MJM Graphic Design Toulouse — 2025",
-        proj_panel_zooning:       "ZONING & ANALYSIS",
-        proj_panel_plans:         "FLOOR PLANS",
-        proj_panel_coupes:        "ARCHITECTURAL SECTIONS",
-        proj_panel_3d:            "3D RENDERS",
-        proj_label_int:           "Interior",
-        proj_label_immersion:     "Immersion",
-        proj_label_far:           "Wide shot",
     }
 };
 
@@ -195,49 +173,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initDrawingLightbox();
 
-    // Révéler la page home avec animation d'entrée
-    showPage('home', false);
-
     // Animations au scroll pour les appareils tactiles (mobile)
     // Appelé APRÈS showPage pour que is-active soit bien présent
     initScrollAnimationsMobile();
 
-    // Animation d'entrée du hero — décalée pour laisser la page se monter
-    requestAnimationFrame(() => {
-        const heroWrap  = document.getElementById('hero-logo-wrap');
-        const profession = document.querySelector('.hero-profession');
-        const scrollInv = document.getElementById('scroll-invite');
-        const showcase  = document.querySelector('.home-showcase');
-        const shortcut  = document.querySelector('.home-projects-shortcut');
+    // Révéler la page home avec animation d'entrée
+    showPage('home', false);
 
+    // Animation d'entrée du hero
+    requestAnimationFrame(() => {
+        const heroWrap = document.getElementById('hero-logo-wrap');
+        const scrollInv = document.getElementById('scroll-invite');
         if (heroWrap) {
             gsap.fromTo(heroWrap,
-                { opacity: 0, y: 40, scale: 0.94 },
-                { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'power3.out', delay: 0.1 }
-            );
-        }
-        if (profession) {
-            gsap.fromTo(profession,
-                { opacity: 0, y: 16, letterSpacing: '0.4em' },
-                { opacity: 1, y: 0, letterSpacing: '0.25em', duration: 0.9, ease: 'power2.out', delay: 0.55 }
+                { opacity: 0, y: 40, scale: 0.92 },
+                { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'power3.out', delay: 0.15 }
             );
         }
         if (scrollInv) {
             gsap.fromTo(scrollInv,
                 { opacity: 0 },
-                { opacity: 0.45, duration: 0.8, delay: 1.5 }
-            );
-        }
-        if (showcase) {
-            gsap.fromTo(showcase,
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.4 }
-            );
-        }
-        if (shortcut) {
-            gsap.fromTo(shortcut,
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.7 }
+                { opacity: 0.45, duration: 0.8, delay: 1.4 }
             );
         }
     });
@@ -294,17 +250,14 @@ function initMenu() {
                     if (!wasOnHome) {
                         showPage('home', true);
                     }
-                    // FIX: utiliser lenis.scrollTo au lieu de homeEl.scrollTo pour éviter le conflit
-                    const delay = wasOnHome ? 100 : 750;
+                    // Attendre la transition puis scroller dans le conteneur de la page
+                    const delay = wasOnHome ? 100 : 700;
                     setTimeout(() => {
+                        const homeEl = document.getElementById('page-home');
                         const contactEl = document.getElementById('home-contact');
-                        if (contactEl) {
-                            if (window._lenis) {
-                                window._lenis.scrollTo(contactEl, { offset: -40, duration: 1.2 });
-                            } else {
-                                const homeEl = document.getElementById('page-home');
-                                if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - 40, behavior: 'smooth' });
-                            }
+                        if (homeEl && contactEl) {
+                            const targetY = contactEl.offsetTop - 40;
+                            homeEl.scrollTo({ top: targetY, behavior: 'smooth' });
                         }
                     }, delay);
                 }, 420);
@@ -485,15 +438,12 @@ function initPageLenis(scrollContainer) {
 
     const lenisOptions = {
         wrapper: scrollContainer,
-        eventsTarget: scrollContainer,  // FIX: cible le container de la page, pas le document entier
-        duration: 1.0,                  // FIX: réduit de 1.15 → 1.0 pour un scroll plus réactif
+        eventsTarget: document,  // capture wheel events globally — scroll works everywhere
+        duration: 1.15,
         easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smooth: true,
-        wheelMultiplier: 1.0,           // FIX: remplace mouseMultiplier (API Lenis v2)
-        touchMultiplier: 1.5,
+        mouseMultiplier: 0.95,
         smoothTouch: false,
-        infinite: false,
-        orientation: 'vertical',
     };
 
     // Only set content if we found a specific wrapper
@@ -673,15 +623,6 @@ function initContactAnimation() {
     const feedback = document.getElementById('form-feedback');
     if (!form || !feedback) return;
 
-    // FIX: Observer les changements de taille du formulaire (textarea focus) pour Lenis/ScrollTrigger
-    if (window.ResizeObserver) {
-        const ro = new ResizeObserver(() => {
-            if (window._lenis) window._lenis.resize();
-            if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-        });
-        ro.observe(form);
-    }
-
     form.addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -700,69 +641,36 @@ function initContactAnimation() {
 
         // Validation
         let hasError = false;
-        
         if (!name) { nameEl.classList.add('fi-error'); hasError = true; }
-        
-        // Validation basique pour autoriser les emails étranges (ex: sans .com)
-        if (!email || !/^[^\s@]+@[^\s@]+$/.test(email)) {
-            emailEl.classList.add('fi-error'); 
-            hasError = true;
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            emailEl.classList.add('fi-error'); hasError = true;
         }
-        
         if (!msg) { msgEl.classList.add('fi-error'); hasError = true; }
 
         if (hasError) {
             const errMsg = currentLang === 'fr'
                 ? 'Merci de remplir tous les champs correctement.'
                 : 'Please fill in all fields correctly.';
-                
             feedback.textContent = errMsg;
             feedback.classList.add('form-feedback--error');
             gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.35 });
             return;
         }
 
-        // Soumission AJAX à Formspree
-        const formData = new FormData(form);
-        const submitBtn = document.getElementById('contact-submit');
-        const originalBtnText = submitBtn.innerHTML;
-        
-        submitBtn.innerHTML = currentLang === 'fr' ? 'ENVOI...' : 'SENDING...';
-        submitBtn.style.pointerEvents = 'none';
+        // Simulation d'envoi (le site est statique, pas de backend)
+        const submitSpan = form.querySelector('[data-i18n="form_send"]');
+        if (submitSpan) submitSpan.textContent = currentLang === 'fr' ? 'Envoi...' : 'Sending...';
 
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                const successMsg = currentLang === 'fr'
-                    ? '✓ Message envoyé avec succès !'
-                    : '✓ Message sent successfully!';
-                feedback.textContent = successMsg;
-                feedback.classList.add('form-feedback--success');
-                gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.4 });
-                form.reset();
-            } else {
-                throw new Error('Network response was not ok.');
-            }
-        }).catch(error => {
-            const errorMsg = currentLang === 'fr'
-                ? 'Erreur lors de l\'envoi. Veuillez réessayer.'
-                : 'Error sending message. Please try again.';
-            feedback.textContent = errorMsg;
-            feedback.classList.add('form-feedback--error');
-            gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.35 });
-        }).finally(() => {
-            submitBtn.innerHTML = originalBtnText;
-            submitBtn.style.pointerEvents = 'auto';
-            setTimeout(() => {
-                feedback.textContent = '';
-                feedback.classList.remove('form-feedback--success', 'form-feedback--error');
-            }, 5000);
-        });
+        setTimeout(() => {
+            const successMsg = currentLang === 'fr'
+                ? '✓ Message envoyé ! Je vous répondrai rapidement.'
+                : '✓ Message sent! I will reply shortly.';
+            feedback.textContent = successMsg;
+            feedback.classList.add('form-feedback--success');
+            gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.4 });
+            form.reset();
+            if (submitSpan) submitSpan.textContent = currentLang === 'fr' ? 'ENVOYER' : 'SEND';
+        }, 600);
     });
 }
 
@@ -814,24 +722,12 @@ function initBDCarousel() {
                 indicator.textContent = `${currentIndex + 1} / ${slides.length}`;
             }
 
-            // LAZY PDF : rendre le PDF du slide qui devient actif s'il n'est pas encore chargé
-            const activeSlide = slides[currentIndex];
-            if (activeSlide) {
-                const canvas = activeSlide.querySelector('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)');
-                if (canvas) renderSingleCanvas(canvas);
-                // Pré-charger aussi le slide suivant (sans attendre)
-                const nextIdx = (currentIndex + 1) % slides.length;
-                const nextCanvas = slides[nextIdx] ? slides[nextIdx].querySelector('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)') : null;
-                if (nextCanvas) setTimeout(() => renderSingleCanvas(nextCanvas), 300);
-            }
-
             if (isPlaying) {
                 startAutoplay();
             } else if (progressBar) {
                 progressBar.style.width = '0%';
             }
         }
-
 
         function nextSlide() { updateCarousel(currentIndex + 1); }
         function prevSlide() { updateCarousel(currentIndex - 1); }
@@ -922,113 +818,101 @@ function initBDCarousel() {
 }
 
 // ─────────────────────────────────────
-// RENDU PDF INLINE — LAZY + OPTIMISÉ
-// Charge seulement le slide visible en premier, puis les autres en différé
+// RENDU PDF INLINE POUR CARROUSELS
 // ─────────────────────────────────────
-let _pdfLib = null;
-let _pdfCache = {}; // Cache des documents PDF déjà chargés
-
-async function getPdfLib() {
-    if (_pdfLib) return _pdfLib;
-    if (typeof pdfjsLib !== 'undefined') _pdfLib = pdfjsLib;
-    else if (window.pdfjsLib) _pdfLib = window.pdfjsLib;
-    if (!_pdfLib) { console.error('PDF.js non chargé.'); return null; }
-    // Toujours utiliser le worker CDN correspondant à la même version que pdf.min.js
-    // (version mismatch ou chemin relatif = crash silencieux sur mobile)
-    _pdfLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    return _pdfLib;
-}
-
-async function renderSingleCanvas(canvas) {
-    if (!canvas || canvas.classList.contains('pdf-loaded') || canvas.classList.contains('pdf-loading')) return;
-    canvas.classList.add('pdf-loading');
-
-    const url = canvas.dataset.pdfUrl;
-    if (!url) return;
-
-    const pdfLib = await getPdfLib();
-    if (!pdfLib) return;
-
-    // Montrer le shimmer de chargement
-    canvas.parentElement.classList.add('pdf-shimmer');
-
-    try {
-        // Utiliser le cache pour éviter de re-télécharger le même fichier
-        if (!_pdfCache[url]) {
-            // Charger le PDF directement via URL (streaming, compatible mobile)
-        // encodeURI pour gérer les espaces et caractères spéciaux dans les noms de fichiers
-        _pdfCache[url] = await pdfLib.getDocument(encodeURI(url)).promise;
-        }
-        const pdf = _pdfCache[url];
-        const page = await pdf.getPage(1);
-
-        // Échelle réduite pour les miniatures du carrousel (performance)
-        // 1.8 au lieu de 2.5 = 52% moins de pixels, rendu bien plus rapide
-        const thumbScale = 1.8;
-        const viewport = page.getViewport({ scale: thumbScale });
-
-        const cropTopPercent = parseFloat(canvas.dataset.pdfCropTop || '0');
-        const cropTopPx = Math.round(viewport.height * cropTopPercent / 100);
-
-        canvas.width  = viewport.width;
-        canvas.height = (viewport.height * 0.96) - cropTopPx;
-        canvas.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;';
-
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        if (cropTopPx > 0) ctx.translate(0, -cropTopPx);
-
-        await page.render({ canvasContext: ctx, viewport, background: 'white' }).promise;
-
-        canvas.classList.remove('pdf-loading');
-        canvas.classList.add('pdf-loaded');
-        canvas.parentElement.classList.remove('pdf-shimmer');
-
-    } catch (err) {
-        console.error('Erreur PDF :', url, err);
-        canvas.parentElement.classList.remove('pdf-shimmer');
-        canvas.classList.remove('pdf-loading');
-        // Afficher un placeholder élégant en cas d'erreur
-        canvas.parentElement.innerHTML = `
-            <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1a1a1a;color:rgba(255,255,255,0.4);font-family:var(--font-body);font-size:0.85rem;gap:8px;">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                <span>${url.split('/').pop()}</span>
-            </div>`;
-    }
-}
-
 async function renderInlinePDFs() {
-    // Trouver tous les canvas non rendus
-    const allCanvases = Array.from(document.querySelectorAll('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)'));
-    if (!allCanvases.length) return;
+    const canvases = document.querySelectorAll('canvas.pdf-inline-render');
+    if (!canvases.length) return;
 
-    // PRIORITÉ 1 : Rendre d'abord les slides actifs/visibles
-    const visibleCanvases = allCanvases.filter(c => {
-        const slide = c.closest('.bd-slide');
-        const stackItem = c.closest('.stack-item');
-        // Slide actif = premier du carrousel, ou coupe (toutes visibles)
-        return (slide && slide.classList.contains('active')) || stackItem || (!slide && !stackItem);
-    });
-
-    const deferredCanvases = allCanvases.filter(c => !visibleCanvases.includes(c));
-
-    // Rendre les visibles en premier (en parallèle limitée)
-    await Promise.allSettled(visibleCanvases.map(c => renderSingleCanvas(c)));
-
-    // Rafraîchir Lenis après le premier batch
-    if (window._lenis) window._lenis.resize();
-    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-
-    // Rendre les non-visibles en différé (avec délais entre chaque pour ne pas bloquer le thread)
-    for (const canvas of deferredCanvases) {
-        await renderSingleCanvas(canvas);
-        await new Promise(r => setTimeout(r, 80)); // respiration entre chaque
+    let pdfLib = null;
+    if (typeof pdfjsLib !== 'undefined') {
+        pdfLib = pdfjsLib;
+    } else if (window['pdfjs-dist/build/pdf']) {
+        pdfLib = window['pdfjs-dist/build/pdf'];
+    } else if (window.pdfjsLib) {
+        pdfLib = window.pdfjsLib;
     }
 
-    // Rafraîchir une dernière fois
-    if (window._lenis) window._lenis.resize();
-    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+    if (!pdfLib) {
+        console.error("PDF.js non chargé.");
+        return;
+    }
+    
+    if (!pdfLib.GlobalWorkerOptions.workerSrc) {
+        pdfLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    for (const canvas of canvases) {
+        const url = canvas.dataset.pdfUrl;
+        if (!url || canvas.classList.contains('pdf-loaded')) continue;
+
+        try {
+            let loadingTask;
+            if (typeof pdfData !== 'undefined' && pdfData[url]) {
+                const base64 = pdfData[url];
+                const res = await fetch("data:application/pdf;base64," + base64);
+                const buffer = await res.arrayBuffer();
+                loadingTask = pdfLib.getDocument({ data: buffer });
+            } else {
+                loadingTask = pdfLib.getDocument(encodeURI(url));
+            }
+            const pdf = await loadingTask.promise;
+            const page = await pdf.getPage(1);
+            
+            const scale = 2.5;
+            const viewport = page.getViewport({ scale: scale });
+
+            const context = canvas.getContext('2d', { willReadFrequently: true });
+            
+            // Support crop-top to remove title blocks from PDFs
+            const cropTopPercent = parseFloat(canvas.dataset.pdfCropTop || '0');
+            const cropTopPx = Math.round(viewport.height * cropTopPercent / 100);
+            
+            // Couper la pagination en bas (ex: on garde seulement 95% de la hauteur)
+            canvas.height = (viewport.height * 0.95) - cropTopPx;
+            canvas.width = viewport.width;
+            
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
+            canvas.style.objectFit = 'contain';
+
+            context.fillStyle = '#ffffff';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport,
+                background: 'white'
+            };
+            
+            // If cropping top, translate the canvas up to hide the title
+            if (cropTopPx > 0) {
+                context.translate(0, -cropTopPx);
+            }
+
+            await page.render(renderContext).promise;
+            canvas.classList.add('pdf-loaded');
+            if (window._lenis) { window._lenis.resize(); }
+            if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.refresh(); }
+        } catch (error) {
+            console.error('Erreur rendu PDF inline :', url, error);
+            const errDiv = document.createElement('div');
+            errDiv.style.color = 'red';
+            errDiv.style.position = 'absolute';
+            errDiv.style.zIndex = '100';
+            errDiv.style.padding = '10px';
+            errDiv.style.background = 'white';
+            errDiv.textContent = 'Erreur PDF: ' + (error.message || error);
+            canvas.parentElement.appendChild(errDiv);
+        }
+
+        // Permet au navigateur de respirer entre chaque PDF pour éviter tout lag de l'interface
+        await new Promise(r => setTimeout(r, 150));
+    }
+    
+    // Rafraichir le scroll de la page une fois tous les canvas rendus
+    if (typeof ScrollTrigger !== 'undefined') { ScrollTrigger.refresh(); }
+    if (window._lenis) { window._lenis.resize(); }
 }
 
 // ─────────────────────────────────────

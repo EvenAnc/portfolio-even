@@ -1,0 +1,38 @@
+﻿                    <div class="fortiche-section patchwork-section">
+                        <div class="section-tag font-sketch">RENDUS 3D</div>
+                        
+                        <!-- NEW 3D PATCHWORK -->
+                        <div class="patchwork-3d">
+                            <div class="patchwork-background-coupes">
+                                <!-- Coupes en arriÃ¨re plan -->
+                                <div class="scrapbook-item bg-coupe-1"><div class="drawing-sheet-wrap torn-frame"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/coupe nord texturÃ©.pdf"></canvas></div></div></div>
+                                <div class="scrapbook-item bg-coupe-2"><div class="drawing-sheet-wrap torn-frame torn-alt"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/coupe sud texturÃ©.pdf"></canvas></div></div></div>
+                                <div class="scrapbook-item bg-coupe-3"><div class="drawing-sheet-wrap torn-frame"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/coupe ouest texturÃ©.pdf"></canvas></div></div></div>
+                                <div class="scrapbook-item bg-coupe-4"><div class="drawing-sheet-wrap torn-frame torn-alt"><div class="media-frame-inner drawing-sheet"><canvas class="pdf-inline-render" data-pdf-url="PDF/coupe nord loingtaine.pdf"></canvas></div></div></div>
+                            </div>
+
+                            <div class="patchwork-foreground-3d">
+                                <!-- 3D Views in foreground -->
+                                <div class="scrapbook-item fg-3d-1">
+                                    <div class="scrapbook-note font-sketch" style="background: rgba(0,0,0,0.8); color: #fff; padding: 5px 10px; display: inline-block;">3D IntÃ©rieur</div>
+                                    <div class="drawing-sheet-wrap torn-frame" style="aspect-ratio: 4/3; background: #222; display: flex; justify-content: center; align-items: center;">
+                                        <div class="font-sketch" style="color: var(--muted); font-size: 1.5rem;">[ 3D IntÃ©rieur ]</div>
+                                    </div>
+                                </div>
+                                <div class="scrapbook-item fg-3d-2">
+                                    <div class="scrapbook-note font-sketch" style="background: rgba(0,0,0,0.8); color: #fff; padding: 5px 10px; display: inline-block;">3D Immersion</div>
+                                    <div class="drawing-sheet-wrap torn-frame torn-alt" style="aspect-ratio: 16/9; background: #222; display: flex; justify-content: center; align-items: center;">
+                                        <div class="font-sketch" style="color: var(--muted); font-size: 1.5rem;">[ 3D Immersion ]</div>
+                                    </div>
+                                </div>
+                                <div class="scrapbook-item fg-3d-3">
+                                    <div class="scrapbook-note font-sketch" style="background: rgba(0,0,0,0.8); color: #fff; padding: 5px 10px; display: inline-block;">Vue Lointaine</div>
+                                    <div class="drawing-sheet-wrap torn-frame" style="aspect-ratio: 4/3; background: #222; display: flex; justify-content: center; align-items: center;">
+                                        <div class="font-sketch" style="color: var(--muted); font-size: 1.5rem;">[ Vue Lointaine ]</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- FlÃ¨che suivant -->
