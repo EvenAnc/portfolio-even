@@ -1819,9 +1819,9 @@ function initScrollAnimationsMobile() {
         
         const frames = [];
         const transforms = [
-            { r: -0.06, x: -1, y: 1 },
-            { r: 0.05, x: 2, y: 2 },
-            { r: -0.03, x: -2, y: 0 }
+            { r: -0.01, x: 0, y: -1, s: 1.02 },
+            { r: 0.01,  x: 1, y: 1,  s: 0.98 },
+            { r: 0,     x: -1, y: 0, s: 1.0 }
         ];
 
         for (let i = 0; i < 3; i++) {
@@ -1841,6 +1841,7 @@ function initScrollAnimationsMobile() {
             ctx.save();
             ctx.translate(50, 50);
             ctx.rotate(transforms[i].r);
+            ctx.scale(transforms[i].s, transforms[i].s);
             ctx.translate(transforms[i].x, transforms[i].y);
             
             ctx.fillStyle = "#ffffff";
@@ -1858,6 +1859,6 @@ function initScrollAnimationsMobile() {
         setInterval(() => {
             favicon.href = frames[currentFrame];
             currentFrame = (currentFrame + 1) % 3;
-        }, 200);
+        }, 120);
     });
 })();
