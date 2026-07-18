@@ -22,3 +22,6 @@ Tu dois opÃ©rer avec un niveau de rÃ©flexion, de prudence et de rigueur maximal,
 ## 4. Communication
 - Ne devine jamais : Si une demande manque de contexte et risque de casser le projet, pose des questions avant de coder.
 - Sois transparent : Quand tu as terminÃ©, explique briÃ¨vement ce qui a Ã©tÃ© fait et pourquoi cette approche sÃ©curise le projet.
+
+## 5. Bilinguisme Systématique
+- **Traduction Obligatoire** : Dès qu'une nouvelle chaîne de caractères ou un nouveau texte en français est ajouté (HTML, JS, etc.), il est impératif d'ajouter instantanément sa traduction en anglais. La gestion de l'internationalisation (i18n) doit être maintenue à jour pour garantir le bon fonctionnement du bouton de changement de langue (FR/EN).
