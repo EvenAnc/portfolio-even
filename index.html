@@ -169,13 +169,9 @@
             <!-- GRAND CADRE SHOWCASE (coins arrondis, taille limitée) -->
             <div class="home-showcase">
                 <!-- frame-wrap : le rectangle SVG rouge est ICI, DEHORS du cadre clippé -->
-                <div class="frame-wrap">
-                    <div class="showcase-frame">
-                        <img src="assets/render_living_room.png" alt="Résidence" class="showcase-img" draggable="false">
-                        <div class="frame-text-overlay overlay-bl">
-                            <span class="frame-big-text">RÉSIDENCE<br>BRUTALISTE</span>
-                            <span class="frame-sub font-sketch" data-i18n="showcase_sub">Rendu 3D — 2025</span>
-                        </div>
+                <div class="frame-wrap" style="max-width: 1100px; margin: 0 auto; display: block;">
+                    <div class="showcase-frame" style="background: white; width: 100%; aspect-ratio: 16/9; max-height: none; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 18px;">
+                        <span class="font-sketch" style="color: var(--black); font-size: clamp(2.5rem, 6vw, 5rem); transform: rotate(-3deg); padding: 20px; text-align: center;">une vidéo arrive !</span>
                     </div>
                     <!-- Rectangle rouge DESSINÉ MAIN — par-dessus, déborde du cadre -->
                     <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
