@@ -359,7 +359,7 @@
                     <div class="patchwork-item prio-2">
                         <div class="polaroid-card" style="transform: rotate(2deg);">
                             <div class="polaroid-img-wrap">
-                                <img src="assets/render_living_room.png" alt="Projet Pater Suisse" class="polaroid-img">
+                                <img src="assets/paterr_icone.png" alt="Projet Pater Suisse" class="polaroid-img" style="object-fit: cover; object-position: center;">
                             </div>
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
@@ -375,8 +375,15 @@
                     <!-- Projet 3 -->
                     <div class="patchwork-item prio-3">
                         <div class="polaroid-card" style="transform: rotate(-1.5deg);">
-                            <div class="polaroid-img-wrap">
-                                <img src="assets/render_living_room.png" alt="Projet À suivre" class="polaroid-img" style="filter: grayscale(100%) opacity(0.5);">
+                            <div class="polaroid-img-wrap" style="background: #111; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;">
+                                <style>
+                                    @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+                                    @keyframes pulse-opacity { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+                                </style>
+                                <svg width="50" height="50" viewBox="0 0 100 100" style="animation: spin-slow 3s linear infinite;">
+                                    <path d="M 50 15 A 35 35 0 1 1 15 50" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-dasharray="80 30" style="animation: pulse-opacity 2s ease-in-out infinite;" />
+                                </svg>
+                                <span class="font-sketch" style="color: #fff; font-size: 2.2rem; animation: pulse-opacity 2s ease-in-out infinite; letter-spacing: 2px;">en cours...</span>
                             </div>
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
