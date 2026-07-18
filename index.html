@@ -339,9 +339,9 @@
                 <div class="projects-patchwork">
                     <!-- Projet 1 -->
                     <div class="patchwork-item prio-1" onclick="showPage('project-diploma')">
-                        <div class="polaroid-card">
-                            <div class="polaroid-img-wrap">
-                                <img src="assets/render_living_room.png" alt="Projet Diplôme" class="polaroid-img">
+                        <div class="polaroid-card" style="transform: rotate(-1deg);">
+                            <div class="polaroid-img-wrap" style="background: white;">
+                                <canvas class="pdf-inline-render polaroid-img" data-pdf-url="PDF/coupe-nord-texture.pdf" data-pdf-crop-top="0"></canvas>
                             </div>
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
@@ -356,7 +356,7 @@
                     
                     <!-- Projet 2 -->
                     <div class="patchwork-item prio-2">
-                        <div class="polaroid-card">
+                        <div class="polaroid-card" style="transform: rotate(2deg);">
                             <div class="polaroid-img-wrap">
                                 <img src="assets/render_living_room.png" alt="Projet Pater Suisse" class="polaroid-img">
                             </div>
@@ -373,7 +373,7 @@
                     
                     <!-- Projet 3 -->
                     <div class="patchwork-item prio-3">
-                        <div class="polaroid-card">
+                        <div class="polaroid-card" style="transform: rotate(-1.5deg);">
                             <div class="polaroid-img-wrap">
                                 <img src="assets/render_living_room.png" alt="Projet À suivre" class="polaroid-img" style="filter: grayscale(100%) opacity(0.5);">
                             </div>
@@ -404,7 +404,7 @@
         </section>
 
         <!-- ─── DETAIL PROJET : PATER SUISSE (PLACEHOLDER) ─── -->
-        <section class="page" id="page-project-2" data-page="project-2" aria-hidden="true">
+        <section class="page project-detail-page" id="page-project-2" data-page="project-2" aria-hidden="true">
             <div class="page-inner">
                 <div class="page-heading">
                     <span class="page-num">02.2</span>
@@ -424,7 +424,7 @@
         </section>
 
         <!-- ─── DETAIL PROJET : 3 (PLACEHOLDER) ─── -->
-        <section class="page" id="page-project-3" data-page="project-3" aria-hidden="true">
+        <section class="page project-detail-page" id="page-project-3" data-page="project-3" aria-hidden="true">
             <div class="page-inner">
                 <div class="page-heading">
                     <span class="page-num">02.3</span>
@@ -444,7 +444,7 @@
         </section>
 
         <!-- ─── DETAIL PROJET : DIPLÔME ─── -->
-        <section class="page" id="page-project-diploma" data-page="project-diploma" aria-hidden="true">
+        <section class="page project-detail-page" id="page-project-diploma" data-page="project-diploma" aria-hidden="true">
             <div class="page-inner">
 
                 <div class="fortiche-projects-board">
