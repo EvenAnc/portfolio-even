@@ -716,50 +716,27 @@ function initContactAnimation() {
             return;
         }
 
-        // Envoi via Formspree (AJAX)
-        const submitSpan = form.querySelector('[data-i18n="form_send"]');
-        if (submitSpan) submitSpan.textContent = currentLang === 'fr' ? 'Envoi...' : 'Sending...';
+        // Remplacement Formspree par Mailto
+        const myEmail = "even.anicet@gmail.com";
+        const subject = encodeURIComponent("Contact de " + name);
+        const body = encodeURIComponent(msg + "\n\n---\nEmail de contact : " + email);
+        const mailtoLink = `mailto:${myEmail}?subject=${subject}&body=${body}`;
 
-        const formData = new FormData(form);
+        window.location.href = mailtoLink;
+
+        // Feedback visuel
+        const successMsg = currentLang === 'fr'
+            ? '✓ Ouverture de votre messagerie...'
+            : '✓ Opening your email client...';
+        feedback.textContent = successMsg;
+        feedback.classList.add('form-feedback--success');
+        gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.4 });
         
-        fetch(form.action, {
-            method: form.method,
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            }
-        }).then(response => {
-            if (response.ok) {
-                const successMsg = currentLang === 'fr'
-                    ? '✓ Message envoyé ! Je vous répondrai rapidement.'
-                    : '✓ Message sent! I will reply shortly.';
-                feedback.textContent = successMsg;
-                feedback.classList.add('form-feedback--success');
-                gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.4 });
-                form.reset();
-            } else {
-                response.json().then(data => {
-                    let errMsg = currentLang === 'fr'
-                        ? 'Erreur lors de l\'envoi du message.'
-                        : 'Error sending message.';
-                    if (Object.hasOwn(data, 'errors')) {
-                        errMsg = data.errors.map(e => e.message).join(', ');
-                    }
-                    feedback.textContent = errMsg;
-                    feedback.classList.add('form-feedback--error');
-                    gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.35 });
-                });
-            }
-        }).catch(error => {
-            const errMsg = currentLang === 'fr'
-                ? 'Erreur de connexion. Veuillez réessayer.'
-                : 'Connection error. Please try again.';
-            feedback.textContent = errMsg;
-            feedback.classList.add('form-feedback--error');
-            gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.35 });
-        }).finally(() => {
-            if (submitSpan) submitSpan.textContent = currentLang === 'fr' ? 'ENVOYER' : 'SEND';
-        });
+        setTimeout(() => {
+            form.reset();
+            feedback.textContent = '';
+            feedback.classList.remove('form-feedback--success');
+        }, 3000);
     });
 }
 
@@ -930,11 +907,9 @@ async function getPdfLib() {
     if (typeof pdfjsLib !== 'undefined') _pdfLib = pdfjsLib;
     else if (window.pdfjsLib) _pdfLib = window.pdfjsLib;
     if (!_pdfLib) { console.error('PDF.js non chargé.'); return null; }
-    if (!_pdfLib.GlobalWorkerOptions.workerSrc) {
-        // Utilise le worker local si dispo, sinon CDN
-        const localWorker = 'js/pdf.worker.min.js';
-        _pdfLib.GlobalWorkerOptions.workerSrc = localWorker;
-    }
+    // Toujours utiliser le worker CDN correspondant à la même version que pdf.min.js
+    // (version mismatch ou chemin relatif = crash silencieux sur mobile)
+    _pdfLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     return _pdfLib;
 }
 
@@ -954,14 +929,10 @@ async function renderSingleCanvas(canvas) {
     try {
         // Utiliser le cache pour éviter de re-télécharger le même fichier
         if (!_pdfCache[url]) {
-            if (typeof pdfData !== 'undefined' && pdfData[url]) {
-                const base64 = pdfData[url];
-                const res = await fetch('data:application/pdf;base64,' + base64);
-                const buffer = await res.arrayBuffer();
-                _pdfCache[url] = await pdfLib.getDocument({ data: buffer }).promise;
-            } else {
-                _pdfCache[url] = await pdfLib.getDocument(encodeURI(url)).promise;
-            }
+            // Charger le PDF directement via URL (streaming, compatible mobile)
+        // Note: le fichier pdf_data_v2.js (base64) n'est plus utilisé ici pour éviter
+        // les crashs mémoire sur mobile (17 Mo de JS à décoder = trop lourd sur iOS)
+        _pdfCache[url] = await pdfLib.getDocument(url).promise;
         }
         const pdf = _pdfCache[url];
         const page = await pdf.getPage(1);
