@@ -1819,9 +1819,9 @@ function initScrollAnimationsMobile() {
         
         const frames = [];
         const transforms = [
-            { r: -0.1, x: -3, y: -3 },
-            { r: 0.08, x: 4, y: 4 },
-            { r: -0.04, x: -4, y: 2 }
+            { r: -0.06, x: -1, y: 1 },
+            { r: 0.05, x: 2, y: 2 },
+            { r: -0.03, x: -2, y: 0 }
         ];
 
         for (let i = 0; i < 3; i++) {
@@ -1844,10 +1844,10 @@ function initScrollAnimationsMobile() {
             ctx.translate(transforms[i].x, transforms[i].y);
             
             ctx.fillStyle = "#ffffff";
-            ctx.font = "115px 'Skribblugh', cursive";
+            ctx.font = "105px 'Skribblugh', cursive";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("E", 3, 10); // Offset X et Y pour centrer parfaitement la lettre
+            ctx.fillText("E", 0, 15); // Offset X et Y pour centrer parfaitement la lettre
             
             ctx.restore();
             
