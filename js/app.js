@@ -1844,10 +1844,10 @@ function initScrollAnimationsMobile() {
             ctx.translate(transforms[i].x, transforms[i].y);
             
             ctx.fillStyle = "#ffffff";
-            ctx.font = "bold 55px 'Skribblugh', cursive";
+            ctx.font = "85px 'Skribblugh', cursive";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("EA", 0, 5);
+            ctx.fillText("E", 0, 5);
             
             ctx.restore();
             
