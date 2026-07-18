@@ -2842,7 +2842,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     max-width: 1200px !important;
     max-height: 65vh;
     aspect-ratio: 1.414 / 1;
-    margin: 0 auto;
+    margin: 0;
     border: none;                              /* FIX: retire le bord gris */
     box-shadow: 10px 10px 30px rgba(0,0,0,0.6);
     border-radius: 8px;
@@ -2855,8 +2855,9 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 .bd-carousel-container .frame-wrap {
     flex: 0 0 auto;
-    display: flex;
-    justify-content: center;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
 }
 /* Professional Document Styling (replaces torn paper) */
 .drawing-sheet-wrap {
