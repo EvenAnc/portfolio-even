@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -54,17 +54,19 @@
     â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
     <header class="site-header" id="site-header">
         <div class="header-inner">
-            <button class="burger-btn" id="burger-btn" aria-label="Menu">
-                <span class="b-line"></span>
-                <span class="b-line"></span>
-                <span class="b-line"></span>
-            </button>
-            <button class="header-back-btn" id="header-back-btn" aria-label="Retour" style="display: none; background: none; border: none; cursor: pointer; color: #fff; align-items: center; gap: 10px; margin-left: 20px;">
-                <svg class="sketch-arrow-back" viewBox="0 0 100 50" style="width: 40px; height: 20px;">
-                    <path d="M90 25 L20 25 M40 10 L15 25 L40 40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span class="font-sketch" style="font-size: 1.5rem;" data-i18n="nav_back">retour</span>
-            </button>
+            <div class="header-left" style="display: flex; align-items: center; gap: 20px;">
+                <button class="burger-btn" id="burger-btn" aria-label="Menu">
+                    <span class="b-line"></span>
+                    <span class="b-line"></span>
+                    <span class="b-line"></span>
+                </button>
+                <button class="header-back-btn" id="header-back-btn" aria-label="Retour" style="display: none; background: none; border: none; cursor: pointer; color: #fff; align-items: center; gap: 10px;">
+                    <svg class="sketch-arrow-back" viewBox="0 0 100 50" style="width: 40px; height: 20px;">
+                        <path d="M90 25 L20 25 M40 10 L15 25 L40 40" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="font-sketch" style="font-size: 1.5rem;" data-i18n="nav_back">retour</span>
+                </button>
+            </div>
 
             <a href="#" class="header-logo" id="header-logo" data-page="home">
                 <span class="header-logo-text font-sketch">EVEN ANICET</span>
@@ -353,7 +355,7 @@
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
                                 <span class="pl-num font-sketch">#</span>
-                                <span class="pl-text font-sketch" data-i18n="proj_01_title">PROJECT 01: DIPLÔME</span>
+                                <span class="pl-text font-sketch" data-i18n="proj_01_title">PROJET 01 : DIPLÃ”ME</span>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
                                 <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -370,7 +372,7 @@
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
                                 <span class="pl-num font-sketch">#</span>
-                                <span class="pl-text font-sketch" data-i18n="proj_02_title">PROJECT 02: PATER SUISSE</span>
+                                <span class="pl-text font-sketch" data-i18n="proj_02_title">PROJET 02 : PATER SUISSE</span>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
                                 <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -388,13 +390,12 @@
                                 </style>
                                 <svg width="50" height="50" viewBox="0 0 100 100" style="animation: spin-slow 3s linear infinite;">
                                     <path d="M 50 15 A 35 35 0 1 1 15 50" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-dasharray="80 30" style="animation: pulse-opacity 2s ease-in-out infinite;" />
-                                </svg>
-                                <span class="font-sketch" style="color: #fff; font-size: 2.2rem; animation: pulse-opacity 2s ease-in-out infinite; letter-spacing: 2px;" data-i18n="proj_loading">en cours...</span>
+                                </svg><span class="font-sketch" style="color: #fff; font-size: 2.2rem; animation: pulse-opacity 2s ease-in-out infinite; letter-spacing: 2px;" data-i18n="proj_loading">en cours...</span>
                             </div>
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
                                 <span class="pl-num font-sketch">#</span>
-                                <span class="pl-text font-sketch" data-i18n="proj_03_title">PROJECT 03: À SUIVRE...</span>
+                                <span class="pl-text font-sketch" data-i18n="proj_03_title">PROJET 03 : Ã€ SUIVRE...</span>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
                                 <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
