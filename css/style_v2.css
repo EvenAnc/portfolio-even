@@ -84,6 +84,10 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; user-select:
 
 .burger-btn:hover .b-line { background: var(--red); }
 
+.header-back-btn { transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+.header-back-btn:hover { transform: translateX(-8px) scale(1.05); }
+.header-back-btn:active { transform: scale(0.95); }
+
 body.menu-open .b-line:nth-child(1) { transform: translateY(10px) rotate(45deg); }
 body.menu-open .b-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
 body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
