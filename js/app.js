@@ -1459,8 +1459,8 @@ function initDrawingLightbox() {
         });
     });
 
-    // ── Clic sur les PDF des carrousels Projets ──
-    document.querySelectorAll('#page-projects .bd-slide .drawing-sheet-wrap').forEach((wrap) => {
+    // ✦ ✦ Clic sur les PDF des carrousels Projets ✦ ✦
+    document.querySelectorAll('.project-detail-page .bd-slide .drawing-sheet-wrap').forEach((wrap) => {
         wrap.addEventListener('click', () => {
             const parentSlide = wrap.closest('.bd-slide');
             if (parentSlide && !parentSlide.classList.contains('active')) return;
