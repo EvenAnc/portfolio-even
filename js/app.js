@@ -1113,7 +1113,7 @@ const allDrawings = [
         orient: "portrait"
     },
     {
-        url: "dessin/A la manière de-1.png",
+        url: "dessin/A_la_maniere_de-1.png",
         title: "À LA MANIÈRE DE...",
         desc: "Étude de style & Graphite — A4",
         orient: "landscape"
