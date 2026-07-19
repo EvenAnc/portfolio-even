@@ -1377,6 +1377,7 @@ function initDrawingLightbox() {
             const img = document.createElement('img');
             img.src = url;
             img.alt = altText;
+            img.draggable = false;
             
             img.onload = () => {
                 if (renderId === currentRenderId && loader) loader.classList.remove('active');
