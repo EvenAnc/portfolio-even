@@ -1151,27 +1151,27 @@ const allDrawings = [
 ];
 
 const diplomePlans = [
-    { url: 'PDF/plan r-1.pdf', title: 'Plan R-1' },
-    { url: 'PDF/plan rdc.pdf', title: 'Plan RDC' },
-    { url: 'PDF/plan r+1.pdf', title: 'Plan R+1' },
-    { url: 'PDF/plan station.pdf', title: 'Zoom Station' },
-    { url: 'PDF/plan resto.pdf', title: 'Zoom Resto' },
-    { url: 'PDF/plan garage.pdf', title: 'Zoom Garage' },
-    { url: 'PDF/plan expo.pdf', title: 'Zoom Expo' }
+    { url: 'PDF/plan-rmoins1.pdf', title: 'Plan R-1' },
+    { url: 'PDF/plan-rdc.pdf', title: 'Plan RDC' },
+    { url: 'PDF/plan-r1.pdf', title: 'Plan R+1' },
+    { url: 'PDF/plan-station.pdf', title: 'Zoom Station' },
+    { url: 'PDF/plan-resto.pdf', title: 'Zoom Resto' },
+    { url: 'PDF/plan-garage.pdf', title: 'Zoom Garage' },
+    { url: 'PDF/plan-expo.pdf', title: 'Zoom Expo' }
 ];
 
 const diplomeCoupes = [
-    { url: 'PDF/coupe nord loingtaine.pdf', title: 'Coupe Lointaine' },
-    { url: 'PDF/coupe nord texturé.pdf', title: 'Coupe Nord' },
-    { url: 'PDF/coupe ouest texturé.pdf', title: 'Coupe Ouest' },
-    { url: 'PDF/coupe sud texturé.pdf', title: 'Coupe Sud' }
+    { url: 'PDF/coupe-nord-loingtaine.pdf', title: 'Coupe Lointaine' },
+    { url: 'PDF/coupe-nord-texture.pdf', title: 'Coupe Nord' },
+    { url: 'PDF/coupe-ouest-texture.pdf', title: 'Coupe Ouest' },
+    { url: 'PDF/coupe-sud-texture.pdf', title: 'Coupe Sud' }
 ];
 
 const diplomeAnalyses = [
-    { url: 'PDF/plan masse.pdf', title: 'Plan Masse' },
+    { url: 'PDF/plan-masse.pdf', title: 'Plan Masse' },
     { url: 'PDF/trame.pdf', title: 'Trame' },
-    { url: 'PDF/zooning batiment.pdf', title: 'Zoning Bâtiment' },
-    { url: 'PDF/zooning circulation.pdf', title: 'Zoning Circulation' }
+    { url: 'PDF/zooning-batiment.pdf', title: 'Zoning Bâtiment' },
+    { url: 'PDF/zooning-circulation.pdf', title: 'Zoning Circulations' }
 ];
 
 const galleriesMap = {
