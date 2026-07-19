@@ -1455,7 +1455,10 @@ function initDrawingLightbox() {
 
             const allElements = Array.from(document.querySelectorAll('.drawing-item, #page-drawings .bd-slide'));
             const idx = allElements.indexOf(parentItem);
-            if (idx !== -1) openLightbox(idx);
+            if (idx !== -1) {
+                currentGallery = allDrawings;
+                openLightbox(idx);
+            }
         });
     });
 
