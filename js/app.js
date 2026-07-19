@@ -1,100 +1,100 @@
-﻿/**
- * Portfolio Even ANICET â€” app.js V3
+/**
+ * Portfolio Even ANICET — app.js V3
  * SPA + Logo Bandeau Scroll + Contact = scroll bas accueil
- * Rectangle SVG dessinÃ© main + Menu habillÃ© + Carrousel inertie
+ * Rectangle SVG dessiné main + Menu habillé + Carrousel inertie
  */
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 // TRADUCTIONS FR / EN
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 const i18n = {
     fr: {
-        meta_title:          "Even ANICET â€” Architecte d'intÃ©rieur",
-        meta_desc:           "Portfolio d'Even ANICET, architecte d'intÃ©rieur diplÃ´mÃ© de MJM Graphic Design Toulouse.",
-        home_subtitle:       "Architecte d'intÃ©rieur",
-        home_scroll:         "DÃ©filez",
+        meta_title:          "Even ANICET — Architecte d'intérieur",
+        meta_desc:           "Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.",
+        home_subtitle:       "Architecte d'intérieur",
+        home_scroll:         "Défilez",
         menu_01: "ACCUEIL",  menu_02: "PROJETS", menu_03: "DESSINS",
-        menu_04: "DIPLÃ”ME",  menu_05: "HOBBIES", menu_06: "CONTACT",
+        menu_04: "DIPLÔME",  menu_05: "HOBBIES", menu_06: "CONTACT",
         menu_deco_01: "bienvenue",
-        menu_deco_02: "mes rÃ©alisations",
-        menu_deco_03: "Ã  main levÃ©e",
+        menu_deco_02: "mes réalisations",
+        menu_deco_03: "à main levée",
         menu_deco_04: "MJM Toulouse",
         menu_deco_05: "moto & perso",
         menu_deco_06: "parlons-en",
         nav_next:            "suivant",
-        proj_01_title:       "PROJET 01 : DIPLÃ”ME",
+        proj_01_title:       "PROJET 01 : DIPLÔME",
         proj_02_title:       "PROJET 02 : PATER SUISSE",
-        proj_03_title:       "PROJET 03 : Ã€ SUIVRE...",
+        proj_03_title:       "PROJET 03 : À SUIVRE...",
         proj_loading:        "en cours...",
-        copied:              "copiÃ© !",
-        video_placeholder:   "une vidÃ©o arrive !",
-        showcase_sub:        "Rendu 3D â€” 2025",
+        copied:              "copié !",
+        video_placeholder:   "une vidéo arrive !",
+        showcase_sub:        "Rendu 3D — 2025",
         showcase_btn:        "voir les projets",
-        shortcut_sub:        "AperÃ§u",
+        shortcut_sub:        "Aperçu",
         shortcut_main:       "MES PROJETS",
         click_hint:          "cliquez !",
         about_title:         "Qui suis-je ?",
-        about_p1:            "PassionnÃ© d'architecture d'intÃ©rieur depuis toujours, je suis Ã©tudiant en derniÃ¨re annÃ©e Ã  MJM Graphic Design Toulouse. Mon approche allie l'esquisse traditionnelle au rendu 3D numÃ©rique pour crÃ©er des espaces qui racontent une histoire.",
-        about_p2:            "Je m'intÃ©resse particuliÃ¨rement aux volumes bruts, aux matÃ©riaux nobles et Ã  la lumiÃ¨re naturelle. Chaque projet est une exploration entre fonctionnalitÃ© et esthÃ©tique.",
-        about_annotation:    "â†’ toujours en quÃªte du dÃ©tail juste",
-        projects_intro:      "Conception d'espaces minimalistes et modÃ©lisations techniques 3D.",
-        proj_cat_3d:         "Rendu 3D & IntÃ©rieur",
-        proj_cat_plan:       "Plan & AmÃ©nagement",
+        about_p1:            "Passionné d'architecture d'intérieur depuis toujours, je suis étudiant en dernière année à MJM Graphic Design Toulouse. Mon approche allie l'esquisse traditionnelle au rendu 3D numérique pour créer des espaces qui racontent une histoire.",
+        about_p2:            "Je m'intéresse particulièrement aux volumes bruts, aux matériaux nobles et à la lumière naturelle. Chaque projet est une exploration entre fonctionnalité et esthétique.",
+        about_annotation:    "→ toujours en quête du détail juste",
+        projects_intro:      "Conception d'espaces minimalistes et modélisations techniques 3D.",
+        proj_cat_3d:         "Rendu 3D & Intérieur",
+        proj_cat_plan:       "Plan & Aménagement",
         proj_cat_sketch:     "Esquisse & Concept",
-        photos_intro:        "DÃ©tails de textures, matiÃ¨res et jeux d'ombres.",
-        drawings_intro:      "Esquisses architecturales Ã  main levÃ©e sur papier A4.",
-        study_degree:        "DiplÃ´me d'Architecte d'IntÃ©rieur",
-        study_focus:         "SpÃ©cialisations",
-        study_focus_desc:    "ModÃ©lisation 3D, plans de coupe, design mobilier et gestion d'espace.",
+        photos_intro:        "Détails de textures, matières et jeux d'ombres.",
+        drawings_intro:      "Esquisses architecturales à main levée sur papier A4.",
+        study_degree:        "Diplôme d'Architecte d'Intérieur",
+        study_focus:         "Spécialisations",
+        study_focus_desc:    "Modélisation 3D, plans de coupe, design mobilier et gestion d'espace.",
         study_address:       "Adresse",
-        study_school_status: "Statut de l'Ã©tablissement",
-        study_school_status_desc: "Enseignement supÃ©rieur privÃ© technique, enregistrÃ© auprÃ¨s de l'AcadÃ©mie de Toulouse.",
+        study_school_status: "Statut de l'établissement",
+        study_school_status_desc: "Enseignement supérieur privé technique, enregistré auprès de l'Académie de Toulouse.",
         diploma_cert_title: "CERTIFICATION RNCP",
-        diploma_cert_subtitle: "Designer en architecture d'intÃ©rieur - Niveau 6",
-        diploma_cert_rncp: "STATUT RÃ‰GLEMENTAIRE",
-        diploma_cert_rncp_val: "Titre de niveau 6 (Bac+3 / Licence) inscrit au RNCP, certifiant l'aptitude Ã  concevoir des espaces intÃ©rieurs, Ã©laborer des dossiers techniques et superviser des chantiers.",
-        diploma_cert_credits: "CRÃ‰DENTIALS ACADÃ‰MIQUES",
-        diploma_cert_credits_val: "Ã‰quivalence de 180 crÃ©dits ECTS (Niveau 6 EuropÃ©en EQF). Ã‰quivalence Suisse : Bachelor of Arts (BA) HES en architecture d'intÃ©rieur. Formation Ã©ligible au CPF.",
-        diploma_cert_competences: "COMPÃ‰TENCES CLÃ‰S ACCRÃ‰DITÃ‰ES",
-        diploma_cert_c1: "Diagnostic technique, spatial et rÃ©glementaire de l'existant.",
-        diploma_cert_c2: "CrÃ©ation de concepts esthÃ©tiques, plans de coupe et modÃ©lisations 3D.",
-        diploma_cert_c3: "Prescription technique des matÃ©riaux, devis et cahiers des charges.",
-        diploma_cert_c4: "Planification des interventions et coordination de la maÃ®trise d'Å“uvre.",
-        diploma_cert_footer: "EnregistrÃ© par France CompÃ©tences",
-        diploma_scan_title: "Scan du diplÃ´me officiel",
-        diploma_scan_placeholder_title: "Scan du diplÃ´me (A4 Paysage) Ã  intÃ©grer ici",
-        diploma_scan_placeholder_sub: "Espace rÃ©servÃ© pour le document officiel de fin de cycle (A4 Paysage)",
-        contact_intro:       "Discutons de votre projet d'amÃ©nagement intÃ©rieur.",
+        diploma_cert_subtitle: "Designer en architecture d'intérieur - Niveau 6",
+        diploma_cert_rncp: "STATUT RÉGLEMENTAIRE",
+        diploma_cert_rncp_val: "Titre de niveau 6 (Bac+3 / Licence) inscrit au RNCP, certifiant l'aptitude à concevoir des espaces intérieurs, élaborer des dossiers techniques et superviser des chantiers.",
+        diploma_cert_credits: "CRÉDENTIALS ACADÉMIQUES",
+        diploma_cert_credits_val: "Équivalence de 180 crédits ECTS (Niveau 6 Européen EQF). Équivalence Suisse : Bachelor of Arts (BA) HES en architecture d'intérieur. Formation éligible au CPF.",
+        diploma_cert_competences: "COMPÉTENCES CLÉS ACCRÉDITÉES",
+        diploma_cert_c1: "Diagnostic technique, spatial et réglementaire de l'existant.",
+        diploma_cert_c2: "Création de concepts esthétiques, plans de coupe et modélisations 3D.",
+        diploma_cert_c3: "Prescription technique des matériaux, devis et cahiers des charges.",
+        diploma_cert_c4: "Planification des interventions et coordination de la maîtrise d'œuvre.",
+        diploma_cert_footer: "Enregistré par France Compétences",
+        diploma_scan_title: "Scan du diplôme officiel",
+        diploma_scan_placeholder_title: "Scan du diplôme (A4 Paysage) à intégrer ici",
+        diploma_scan_placeholder_sub: "Espace réservé pour le document officiel de fin de cycle (A4 Paysage)",
+        contact_intro:       "Discutons de votre projet d'aménagement intérieur.",
         form_name: "NOM", form_email: "EMAIL",
         form_message: "MESSAGE", form_send: "ENVOYER",
         contact_direct:   "CONTACT DIRECT",
-        contact_social:   "RÃ‰SEAUX",
+        contact_social:   "RÉSEAUX",
         contact_location: "LOCALISATION",
         drawing_title_carto: "CARTOGRAPHIE",
-        drawing_desc_carto:  "Dessin technique & Relief â€” A4",
+        drawing_desc_carto:  "Dessin technique & Relief — A4",
         drawing_title_nb:    "NOIR ET BLANC",
-        drawing_desc_nb:     "Encre de Chine & Graphisme â€” A4",
-        drawing_title_style: "Ã€ LA MANIÃˆRE DE...",
-        drawing_desc_style:  "Ã‰tude de style & Graphite â€” A4",
-        bd_title:            "BANDE DESSINÃ‰E",
-        legal_copyright:  "Toutes les Å“uvres prÃ©sentÃ©es sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriÃ©tÃ© exclusive d'Even ANICET. Toute reproduction, distribution ou utilisation sans autorisation Ã©crite prÃ©alable est strictement interdite.",
-        legal_cert:       "Je certifie Ãªtre l'auteur de l'ensemble des travaux et productions prÃ©sentÃ©s sur ce portfolio. Les images et crÃ©ations sont protÃ©gÃ©es par le droit d'auteur conformÃ©ment au Code de la PropriÃ©tÃ© Intellectuelle franÃ§ais (articles L.111-1 et suivants).",
-        legal_mentions:   "Mentions lÃ©gales",
-        legal_rights:     "Tous droits rÃ©servÃ©s",
+        drawing_desc_nb:     "Encre de Chine & Graphisme — A4",
+        drawing_title_style: "À LA MANIÈRE DE...",
+        drawing_desc_style:  "Étude de style & Graphite — A4",
+        bd_title:            "BANDE DESSINÉE",
+        legal_copyright:  "Toutes les œuvres présentées sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriété exclusive d'Even ANICET. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est strictement interdite.",
+        legal_cert:       "Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).",
+        legal_mentions:   "Mentions légales",
+        legal_rights:     "Tous droits réservés",
         // Page Projets
-        proj_title:               "PROJET 01 : DIPLÃ”ME",
-        proj_desc:                "Conception dâ€™un complexe automobile multifonctionnel inspirÃ© des motels amÃ©ricains des annÃ©es 60-70. Le projet articule une station essence, un garage moto, un espace dâ€™exposition, un bar/restaurant et un espace de pause autour dâ€™une circulation fluide et dâ€™une toiture servant de signalÃ©tique.",
-        proj_annotation:          "â†’ MJM Graphic Design Toulouse â€” 2025",
+        proj_title:               "PROJET 01 : DIPLÔME",
+        proj_desc:                "Conception d’un complexe automobile multifonctionnel inspiré des motels américains des années 60-70. Le projet articule une station essence, un garage moto, un espace d’exposition, un bar/restaurant et un espace de pause autour d’une circulation fluide et d’une toiture servant de signalétique.",
+        proj_annotation:          "→ MJM Graphic Design Toulouse — 2025",
         proj_panel_zooning:       "ZOONING ET ANALYSE",
         proj_panel_plans:         "PLANS",
         proj_panel_coupes:        "COUPES ARCHITECTURALES",
         proj_panel_3d:            "3D",
-        proj_label_int:           "IntÃ©rieur",
+        proj_label_int:           "Intérieur",
         proj_label_immersion:     "Immersion",
         proj_label_far:           "Vue de loin",
     },
     en: {
-        meta_title:          "Even ANICET â€” Interior Architect",
+        meta_title:          "Even ANICET — Interior Architect",
         meta_desc:           "Portfolio of Even ANICET, interior architect from MJM Graphic Design Toulouse.",
         home_subtitle:       "Interior Architect",
         home_scroll:         "Scroll",
@@ -113,7 +113,7 @@ const i18n = {
         proj_loading:        "loading...",
         copied:              "copied !",
         video_placeholder:   "video coming soon !",
-        showcase_sub:        "3D Render â€” 2025",
+        showcase_sub:        "3D Render — 2025",
         showcase_btn:        "view projects",
         shortcut_sub:        "sneak peek",
         shortcut_main:       "MY PROJECTS",
@@ -121,7 +121,7 @@ const i18n = {
         about_title:         "About me",
         about_p1:            "Passionate about interior architecture, I am a final-year student at MJM Graphic Design Toulouse. My approach combines traditional sketching with digital 3D rendering to create spaces that tell a story.",
         about_p2:            "I am particularly drawn to raw volumes, noble materials and natural light. Each project is an exploration between functionality and aesthetics.",
-        about_annotation:    "â†’ always chasing the perfect detail",
+        about_annotation:    "→ always chasing the perfect detail",
         projects_intro:      "Minimalist space design and 3D technical modelling.",
         proj_cat_3d:         "3D Render & Interior",
         proj_cat_plan:       "Technical Plan & Layout",
@@ -145,7 +145,7 @@ const i18n = {
         diploma_cert_c2: "Creation of aesthetic concepts, technical drawing section plans, and 3D renders.",
         diploma_cert_c3: "Technical specification of materials, cost estimation, and construction specifications.",
         diploma_cert_c4: "Project scheduling, execution management, and contractor coordination.",
-        diploma_cert_footer: "Registered by France CompÃ©tences",
+        diploma_cert_footer: "Registered by France Compétences",
         diploma_scan_title: "Official Diploma Scan",
         diploma_scan_placeholder_title: "Official diploma scan (A4 Landscape) placeholder",
         diploma_scan_placeholder_sub: "Reserved space for the official graduation document (A4 Landscape)",
@@ -156,11 +156,11 @@ const i18n = {
         contact_social:   "SOCIALS",
         contact_location: "LOCATION",
         drawing_title_carto: "CARTOGRAPHY",
-        drawing_desc_carto:  "Technical Drawing & Relief â€” A4",
+        drawing_desc_carto:  "Technical Drawing & Relief — A4",
         drawing_title_nb:    "BLACK & WHITE",
-        drawing_desc_nb:     "Indian Ink & Graphic â€” A4",
+        drawing_desc_nb:     "Indian Ink & Graphic — A4",
         drawing_title_style: "IN THE STYLE OF...",
-        drawing_desc_style:  "Style Study & Graphite â€” A4",
+        drawing_desc_style:  "Style Study & Graphite — A4",
         bd_title:            "COMIC BOOK (BD)",
         legal_copyright:  "All works presented on this website (3D renders, sketches, photographs, drawings) are the exclusive property of Even ANICET. Any reproduction, distribution or use without prior written authorisation is strictly prohibited.",
         legal_cert:       "I certify that I am the sole author of all works and productions presented in this portfolio. All images and creations are protected by copyright in accordance with French Intellectual Property Code (articles L.111-1 et seq.).",
@@ -169,7 +169,7 @@ const i18n = {
         // Projects Page
         proj_title:               "PROJECT 01: DIPLOMA",
         proj_desc:                "Design of a multifunctional automobile complex inspired by American motels of the 60s-70s. The project brings together a petrol station, motorcycle garage, exhibition space, bar/restaurant and rest area around a fluid circulation and a roof serving as signage.",
-        proj_annotation:          "â†’ MJM Graphic Design Toulouse â€” 2025",
+        proj_annotation:          "→ MJM Graphic Design Toulouse — 2025",
         proj_panel_zooning:       "ZONING & ANALYSIS",
         proj_panel_plans:         "FLOOR PLANS",
         proj_panel_coupes:        "ARCHITECTURAL SECTIONS",
@@ -185,9 +185,9 @@ let currentPage = 'home';
 let isMenuOpen  = false;
 let lenis       = null;
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 // INIT
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
 
     const saved = localStorage.getItem('lang');
@@ -208,14 +208,14 @@ document.addEventListener('DOMContentLoaded', () => {
     initDrawingLightbox();
     initCopyEmail();
 
-    // RÃ©vÃ©ler la page home avec animation d'entrÃ©e
+    // Révéler la page home avec animation d'entrée
     showPage('home', false);
 
     // Animations au scroll pour les appareils tactiles (mobile)
-    // AppelÃ© APRÃˆS showPage pour que is-active soit bien prÃ©sent
+    // Appelé APRÈS showPage pour que is-active soit bien présent
     initScrollAnimationsMobile();
 
-    // Animation d'entrÃ©e du hero â€” dÃ©calÃ©e pour laisser la page se monter
+    // Animation d'entrée du hero — décalée pour laisser la page se monter
     requestAnimationFrame(() => {
         const heroWrap  = document.getElementById('hero-logo-wrap');
         const profession = document.querySelector('.hero-profession');
@@ -256,9 +256,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 // LANGUE
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 function applyLang(lang) {
     currentLang = lang;
     localStorage.setItem('lang', lang);
@@ -286,15 +286,18 @@ function initLangSwitcher() {
     });
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 // MENU OVERLAY
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 function initMenu() {
     const burger = document.getElementById('burger-btn');
     burger.addEventListener('click', toggleMenu);
+
     const backBtn = document.getElementById('header-back-btn');
     if (backBtn) {
-        backBtn.addEventListener('click', () => { showPage('projects'); });
+        backBtn.addEventListener('click', () => {
+            showPage('projects');
+        });
     }
 
     // Clic sur item du menu
@@ -305,13 +308,13 @@ function initMenu() {
             closeMenu();
 
             if (page === 'contact') {
-                // CONTACT â†’ aller sur la page accueil puis scroller vers le bas
+                // CONTACT → aller sur la page accueil puis scroller vers le bas
                 const wasOnHome = currentPage === 'home';
                 setTimeout(() => {
                     if (!wasOnHome) {
                         showPage('home', true);
                     }
-                    // FIX: utiliser lenis.scrollTo au lieu de homeEl.scrollTo pour Ã©viter le conflit
+                    // FIX: utiliser lenis.scrollTo au lieu de homeEl.scrollTo pour éviter le conflit
                     const delay = wasOnHome ? 100 : 750;
                     setTimeout(() => {
                         const contactEl = document.getElementById('home-contact');
@@ -331,7 +334,7 @@ function initMenu() {
         });
     });
 
-    // Logo header â†’ retour accueil
+    // Logo header → retour accueil
     const headerLogo = document.getElementById('header-logo');
     if (headerLogo) {
         headerLogo.addEventListener('click', e => {
@@ -340,7 +343,7 @@ function initMenu() {
         });
     }
 
-    // Clic sur l'arriÃ¨re-plan du menu (partie grise) pour revenir en arriÃ¨re
+    // Clic sur l'arrière-plan du menu (partie grise) pour revenir en arrière
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) {
         menuOverlay.addEventListener('click', e => {
@@ -358,11 +361,11 @@ function toggleMenu() {
 function openMenu() {
     isMenuOpen = true;
     document.body.classList.add('menu-open');
-    // BUG-12 FIX : mettre Ã  jour aria-hidden pour les screen readers
+    // BUG-12 FIX : mettre à jour aria-hidden pour les screen readers
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) menuOverlay.setAttribute('aria-hidden', 'false');
 
-    // Animation d'entrÃ©e des items avec dÃ©calage vertical
+    // Animation d'entrée des items avec décalage vertical
     const items = document.querySelectorAll('.menu-nav-item');
     gsap.fromTo(items, { y: 40, opacity: 0 }, {
         y: 0, opacity: 1,
@@ -393,14 +396,14 @@ function openMenu() {
 function closeMenu() {
     isMenuOpen = false;
     document.body.classList.remove('menu-open');
-    // BUG-12 FIX : mettre Ã  jour aria-hidden pour les screen readers
+    // BUG-12 FIX : mettre à jour aria-hidden pour les screen readers
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) menuOverlay.setAttribute('aria-hidden', 'true');
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// SPA â€” GESTION DES PAGES
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
+// SPA — GESTION DES PAGES
+// ─────────────────────────────────────
 function initSPA() {
     document.querySelectorAll('.page').forEach(p => {
         p.classList.remove('is-active');
@@ -415,6 +418,7 @@ function showPage(pageId, animate = true) {
     if (!inEl) return;
 
     currentPage = pageId;
+
     const backBtn = document.getElementById('header-back-btn');
     if (backBtn) {
         if (pageId.startsWith('project-')) {
@@ -424,7 +428,7 @@ function showPage(pageId, animate = true) {
         }
     }
 
-    // DÃ©truire le Lenis de l'ancienne page
+    // Détruire le Lenis de l'ancienne page
     if (lenis) { lenis.destroy(); lenis = null; }
 
     if (!animate || !outEl) {
@@ -471,7 +475,7 @@ function showPage(pageId, animate = true) {
     });
 }
 
-// Quand on revient sur la page home, remettre le hero logo en Ã©tat initial
+// Quand on revient sur la page home, remettre le hero logo en état initial
 function resetHomeHero(pageId) {
     if (pageId !== 'home') return;
     const heroLogoWrap = document.getElementById('hero-logo-wrap');
@@ -484,9 +488,9 @@ function resetHomeHero(pageId) {
     }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// LOGO BANDEAU â€” APPARAÃŽT AU SCROLL SUR HOME
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
+// LOGO BANDEAU — APPARAÎT AU SCROLL SUR HOME
+// ─────────────────────────────────────
 function updateHeaderLogo(pageId) {
     const headerLogo = document.getElementById('header-logo');
     if (!headerLogo) return;
@@ -500,9 +504,9 @@ function updateHeaderLogo(pageId) {
     }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 // LENIS SCROLL PAR PAGE
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 function initPageLenis(scrollContainer) {
     if (typeof Lenis === 'undefined') return;
 
@@ -511,7 +515,7 @@ function initPageLenis(scrollContainer) {
     const lenisOptions = {
         wrapper: scrollContainer,
         eventsTarget: scrollContainer,  // FIX: cible le container de la page, pas le document entier
-        duration: 1.0,                  // FIX: rÃ©duit de 1.15 â†’ 1.0 pour un scroll plus rÃ©actif
+        duration: 1.0,                  // FIX: réduit de 1.15 → 1.0 pour un scroll plus réactif
         easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smooth: true,
         wheelMultiplier: 1.0,           // FIX: remplace mouseMultiplier (API Lenis v2)
@@ -530,8 +534,8 @@ function initPageLenis(scrollContainer) {
 
     lenis.on('scroll', ScrollTrigger.update);
 
-    // BUG-04 FIX : stocker la rÃ©fÃ©rence du ticker pour pouvoir le supprimer plus tard
-    // et Ã©viter l'accumulation de tickers Ã  chaque navigation entre pages.
+    // BUG-04 FIX : stocker la référence du ticker pour pouvoir le supprimer plus tard
+    // et éviter l'accumulation de tickers à chaque navigation entre pages.
     if (window._lenisTickerFn) {
         gsap.ticker.remove(window._lenisTickerFn);
     }
@@ -553,7 +557,7 @@ function initPageLenis(scrollContainer) {
             if (scroll > threshold && !logoInHeader) {
                 logoInHeader = true;
 
-                // Hero logo disparaÃ®t vers le haut
+                // Hero logo disparaît vers le haut
                 gsap.to(heroLogoWrap, {
                     y: -50, opacity: 0,
                     duration: 0.5, ease: 'power3.in',
@@ -580,16 +584,16 @@ function initPageLenis(scrollContainer) {
     window._lenis = lenis;
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 // CARROUSEL HORIZONTAL (PHOTOS)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 function initCarousel() {
     // Carousel is now static wrapped grid layout, no-op
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// LIGNES DE CAHIER ALÃ‰ATOIRES
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
+// LIGNES DE CAHIER ALÉATOIRES
+// ─────────────────────────────────────
 function initNotebookLines() {
     const container = document.getElementById('notebook-lines');
     if (!container) return;
@@ -601,7 +605,7 @@ function initNotebookLines() {
     });
     observer.observe(container.parentElement);
 
-    // GÃ©nÃ©ration immÃ©diate aussi
+    // Génération immédiate aussi
     setTimeout(() => generateLines(container), 200);
 }
 
@@ -618,7 +622,7 @@ function generateLines(container) {
         const line = document.createElement('div');
         line.className = 'nb-line';
 
-        // Longueurs alÃ©atoires : dÃ©but et fin varient
+        // Longueurs aléatoires : début et fin varient
         const leftOffset  = 4 + Math.random() * 20;   // 4-24px
         const rightOffset = 6 + Math.random() * 35;   // 6-41px
         const opacity     = 0.18 + Math.random() * 0.12; // 0.18-0.30
@@ -632,9 +636,9 @@ function generateLines(container) {
     }
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// FLÃˆCHES "SUIVANT" â†’ PAGE SUIVANTE
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
+// FLÈCHES "SUIVANT" → PAGE SUIVANTE
+// ─────────────────────────────────────
 function initNextPageLinks() {
     document.querySelectorAll('.page-next, .showcase-projects-btn').forEach(link => {
         link.addEventListener('click', e => {
@@ -760,7 +764,7 @@ function initContactAnimation() {
         const email = emailEl.value.trim();
         const msg   = msgEl.value.trim();
 
-        // Nettoyage des erreurs prÃ©cÃ©dentes
+        // Nettoyage des erreurs précédentes
         [nameEl, emailEl, msgEl].forEach(el => el.classList.remove('fi-error'));
         feedback.className = 'form-feedback';
         feedback.textContent = '';
@@ -770,7 +774,7 @@ function initContactAnimation() {
         
         if (!name) { nameEl.classList.add('fi-error'); hasError = true; }
         
-        // Validation basique pour autoriser les emails Ã©tranges (ex: sans .com)
+        // Validation basique pour autoriser les emails étranges (ex: sans .com)
         if (!email || !/^[^\s@]+@[^\s@]+$/.test(email)) {
             emailEl.classList.add('fi-error'); 
             hasError = true;
@@ -789,7 +793,7 @@ function initContactAnimation() {
             return;
         }
 
-        // Soumission AJAX Ã  Formspree
+        // Soumission AJAX à Formspree
         const formData = new FormData(form);
         const submitBtn = document.getElementById('contact-submit');
         const originalBtnText = submitBtn.innerHTML;
@@ -806,8 +810,8 @@ function initContactAnimation() {
         }).then(response => {
             if (response.ok) {
                 const successMsg = currentLang === 'fr'
-                    ? 'âœ“ Message envoyÃ© avec succÃ¨s !'
-                    : 'âœ“ Message sent successfully!';
+                    ? '✓ Message envoyé avec succès !'
+                    : '✓ Message sent successfully!';
                 feedback.textContent = successMsg;
                 feedback.classList.add('form-feedback--success');
                 gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.4 });
@@ -817,7 +821,7 @@ function initContactAnimation() {
             }
         }).catch(error => {
             const errorMsg = currentLang === 'fr'
-                ? 'Erreur lors de l\'envoi. Veuillez rÃ©essayer.'
+                ? 'Erreur lors de l\'envoi. Veuillez réessayer.'
                 : 'Error sending message. Please try again.';
             feedback.textContent = errorMsg;
             feedback.classList.add('form-feedback--error');
@@ -834,9 +838,9 @@ function initContactAnimation() {
 }
 
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// CARROUSEL BANDE DESSINÃ‰E (BD)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
+// CARROUSEL BANDE DESSINÉE (BD)
+// ─────────────────────────────────────
 function initBDCarousel() {
     const containers = document.querySelectorAll('.bd-carousel-section');
     if (!containers.length) return;
@@ -881,12 +885,12 @@ function initBDCarousel() {
                 indicator.textContent = `${currentIndex + 1} / ${slides.length}`;
             }
 
-            // LAZY PDF : rendre le PDF du slide qui devient actif s'il n'est pas encore chargÃ©
+            // LAZY PDF : rendre le PDF du slide qui devient actif s'il n'est pas encore chargé
             const activeSlide = slides[currentIndex];
             if (activeSlide) {
                 const canvas = activeSlide.querySelector('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)');
                 if (canvas) renderSingleCanvas(canvas);
-                // PrÃ©-charger aussi le slide suivant (sans attendre)
+                // Pré-charger aussi le slide suivant (sans attendre)
                 const nextIdx = (currentIndex + 1) % slides.length;
                 const nextCanvas = slides[nextIdx] ? slides[nextIdx].querySelector('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)') : null;
                 if (nextCanvas) setTimeout(() => renderSingleCanvas(nextCanvas), 300);
@@ -988,19 +992,19 @@ function initBDCarousel() {
     });
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// RENDU PDF INLINE â€” LAZY + OPTIMISÃ‰
-// Charge seulement le slide visible en premier, puis les autres en diffÃ©rÃ©
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
+// RENDU PDF INLINE — LAZY + OPTIMISÉ
+// Charge seulement le slide visible en premier, puis les autres en différé
+// ─────────────────────────────────────
 let _pdfLib = null;
-let _pdfCache = {}; // Cache des documents PDF dÃ©jÃ  chargÃ©s
+let _pdfCache = {}; // Cache des documents PDF déjà chargés
 
 async function getPdfLib() {
     if (_pdfLib) return _pdfLib;
     if (typeof pdfjsLib !== 'undefined') _pdfLib = pdfjsLib;
     else if (window.pdfjsLib) _pdfLib = window.pdfjsLib;
-    if (!_pdfLib) { console.error('PDF.js non chargÃ©.'); return null; }
-    // Toujours utiliser le worker CDN correspondant Ã  la mÃªme version que pdf.min.js
+    if (!_pdfLib) { console.error('PDF.js non chargé.'); return null; }
+    // Toujours utiliser le worker CDN correspondant à la même version que pdf.min.js
     // (version mismatch ou chemin relatif = crash silencieux sur mobile)
     _pdfLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     return _pdfLib;
@@ -1020,16 +1024,16 @@ async function renderSingleCanvas(canvas) {
     canvas.parentElement.classList.add('pdf-shimmer');
 
     try {
-        // Utiliser le cache pour Ã©viter de re-tÃ©lÃ©charger le mÃªme fichier
+        // Utiliser le cache pour éviter de re-télécharger le même fichier
         if (!_pdfCache[url]) {
             // Charger le PDF directement via URL (streaming, compatible mobile)
-        // encodeURI pour gÃ©rer les espaces et caractÃ¨res spÃ©ciaux dans les noms de fichiers
+        // encodeURI pour gérer les espaces et caractères spéciaux dans les noms de fichiers
         _pdfCache[url] = await pdfLib.getDocument(encodeURI(url)).promise;
         }
         const pdf = _pdfCache[url];
         const page = await pdf.getPage(1);
 
-        // Ã‰chelle rÃ©duite pour les miniatures du carrousel (performance)
+        // Échelle réduite pour les miniatures du carrousel (performance)
         // 1.8 au lieu de 2.5 = 52% moins de pixels, rendu bien plus rapide
         const thumbScale = 1.8;
         const viewport = page.getViewport({ scale: thumbScale });
@@ -1056,7 +1060,7 @@ async function renderSingleCanvas(canvas) {
         console.error('Erreur PDF :', url, err);
         canvas.parentElement.classList.remove('pdf-shimmer');
         canvas.classList.remove('pdf-loading');
-        // Afficher un placeholder Ã©lÃ©gant en cas d'erreur
+        // Afficher un placeholder élégant en cas d'erreur
         canvas.parentElement.innerHTML = `
             <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1a1a1a;color:rgba(255,255,255,0.4);font-family:var(--font-body);font-size:0.85rem;gap:8px;">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
@@ -1070,7 +1074,7 @@ async function renderInlinePDFs() {
     const allCanvases = Array.from(document.querySelectorAll('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)'));
     if (!allCanvases.length) return;
 
-    // PRIORITÃ‰ 1 : Rendre d'abord les slides actifs/visibles
+    // PRIORITÉ 1 : Rendre d'abord les slides actifs/visibles
     const visibleCanvases = allCanvases.filter(c => {
         const slide = c.closest('.bd-slide');
         const stackItem = c.closest('.stack-item');
@@ -1080,68 +1084,68 @@ async function renderInlinePDFs() {
 
     const deferredCanvases = allCanvases.filter(c => !visibleCanvases.includes(c));
 
-    // Rendre les visibles en premier (en parallÃ¨le limitÃ©e)
+    // Rendre les visibles en premier (en parallèle limitée)
     await Promise.allSettled(visibleCanvases.map(c => renderSingleCanvas(c)));
 
-    // RafraÃ®chir Lenis aprÃ¨s le premier batch
+    // Rafraîchir Lenis après le premier batch
     if (window._lenis) window._lenis.resize();
     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
 
-    // Rendre les non-visibles en diffÃ©rÃ© (avec dÃ©lais entre chaque pour ne pas bloquer le thread)
+    // Rendre les non-visibles en différé (avec délais entre chaque pour ne pas bloquer le thread)
     for (const canvas of deferredCanvases) {
         await renderSingleCanvas(canvas);
         await new Promise(r => setTimeout(r, 80)); // respiration entre chaque
     }
 
-    // RafraÃ®chir une derniÃ¨re fois
+    // Rafraîchir une dernière fois
     if (window._lenis) window._lenis.resize();
     if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 // CONFIGURATION ET RENDU PDF.JS DESSINS
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 const allDrawings = [
     {
         url: "dessin/Cartographie-1.png",
         title: "CARTOGRAPHIE",
-        desc: "Dessin technique & Relief â€” A4",
+        desc: "Dessin technique & Relief — A4",
         orient: "portrait"
     },
     {
-        url: "dessin/A la maniÃ¨re de-1.png",
-        title: "Ã€ LA MANIÃˆRE DE...",
-        desc: "Ã‰tude de style & Graphite â€” A4",
+        url: "dessin/A la manière de-1.png",
+        title: "À LA MANIÈRE DE...",
+        desc: "Étude de style & Graphite — A4",
         orient: "landscape"
     },
     {
         url: "dessin/NOIR ET BLANC Even-1.png",
         title: "NOIR ET BLANC",
-        desc: "Encre de Chine & Graphisme â€” A4",
+        desc: "Encre de Chine & Graphisme — A4",
         orient: "portrait"
     },
     {
         url: "dessin/BD page 1-1.png",
-        title: "BANDE DESSINÃ‰E â€” Page 1",
-        desc: "A4 â€” Portrait",
+        title: "BANDE DESSINÉE — Page 1",
+        desc: "A4 — Portrait",
         orient: "portrait"
     },
     {
         url: "dessin/BD page 2-1.png",
-        title: "BANDE DESSINÃ‰E â€” Page 2",
-        desc: "A4 â€” Portrait",
+        title: "BANDE DESSINÉE — Page 2",
+        desc: "A4 — Portrait",
         orient: "portrait"
     },
     {
         url: "dessin/BD page 3-1.png",
-        title: "BANDE DESSINÃ‰E â€” Page 3",
-        desc: "A4 â€” Portrait",
+        title: "BANDE DESSINÉE — Page 3",
+        desc: "A4 — Portrait",
         orient: "portrait"
     },
     {
         url: "dessin/BD page 4-1.png",
-        title: "BANDE DESSINÃ‰E â€” Page 4",
-        desc: "A4 â€” Portrait",
+        title: "BANDE DESSINÉE — Page 4",
+        desc: "A4 — Portrait",
         orient: "portrait"
     }
 ];
@@ -1158,15 +1162,15 @@ const diplomePlans = [
 
 const diplomeCoupes = [
     { url: 'PDF/coupe nord loingtaine.pdf', title: 'Coupe Lointaine' },
-    { url: 'PDF/coupe nord texturÃ©.pdf', title: 'Coupe Nord' },
-    { url: 'PDF/coupe ouest texturÃ©.pdf', title: 'Coupe Ouest' },
-    { url: 'PDF/coupe sud texturÃ©.pdf', title: 'Coupe Sud' }
+    { url: 'PDF/coupe nord texturé.pdf', title: 'Coupe Nord' },
+    { url: 'PDF/coupe ouest texturé.pdf', title: 'Coupe Ouest' },
+    { url: 'PDF/coupe sud texturé.pdf', title: 'Coupe Sud' }
 ];
 
 const diplomeAnalyses = [
     { url: 'PDF/plan masse.pdf', title: 'Plan Masse' },
     { url: 'PDF/trame.pdf', title: 'Trame' },
-    { url: 'PDF/zooning batiment.pdf', title: 'Zoning BÃ¢timent' },
+    { url: 'PDF/zooning batiment.pdf', title: 'Zoning Bâtiment' },
     { url: 'PDF/zooning circulation.pdf', title: 'Zoning Circulation' }
 ];
 
@@ -1178,9 +1182,9 @@ const galleriesMap = {
 
 // Removed PDF.js rendering logic
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// LIGHTBOX ULTRA-Ã‰PURÃ‰E (STYLE FORTICHE)
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
+// LIGHTBOX ULTRA-ÉPURÉE (STYLE FORTICHE)
+// ─────────────────────────────────────
 function initDrawingLightbox() {
     const lightbox = document.getElementById('drawing-lightbox');
     if (!lightbox) return;
@@ -1221,7 +1225,7 @@ function initDrawingLightbox() {
         }
     }
 
-    // â”€â”€ CrÃ©er les points indicateurs â”€â”€
+    // ── Créer les points indicateurs ──
     function generateDots() {
         if (!dotsWrap) return;
         dotsWrap.innerHTML = '';
@@ -1242,7 +1246,7 @@ function initDrawingLightbox() {
         });
     }
 
-    // â”€â”€ Auto-masquage des contrÃ´les â”€â”€
+    // ── Auto-masquage des contrôles ──
     function showControls() {
         lightbox.classList.remove('controls-hidden');
         clearTimeout(hideTimer);
@@ -1254,7 +1258,7 @@ function initDrawingLightbox() {
     lightbox.addEventListener('mousemove', showControls);
     lightbox.addEventListener('touchstart', showControls);
 
-    // â”€â”€ Afficher un dessin â”€â”€
+    // ── Afficher un dessin ──
     async function showDrawing(index) {
         current = index;
         isZoomed = false;
@@ -1265,7 +1269,7 @@ function initDrawingLightbox() {
         updateTransform();
         lightbox.classList.remove('zoomed');
 
-        // Mettre Ã  jour le compteur
+        // Mettre à jour le compteur
         if (counterEl) {
             if (isSingleMode) {
                 counterEl.style.display = 'none';
@@ -1286,7 +1290,7 @@ function initDrawingLightbox() {
             updateDots();
         }
 
-        // PrÃ©parer l'image
+        // Préparer l'image
         if (canvasWrap) canvasWrap.innerHTML = '';
         if (loader) loader.classList.add('active');
 
@@ -1393,7 +1397,7 @@ function initDrawingLightbox() {
         showControls();
     }
 
-    // â”€â”€ Ouvrir / Fermer â”€â”€
+    // ── Ouvrir / Fermer ──
     function openLightbox(index) {
         isSingleMode = false;
         lightbox.setAttribute('aria-hidden', 'false');
@@ -1403,7 +1407,7 @@ function initDrawingLightbox() {
         showDrawing(index);
     }
 
-    // â”€â”€ API globale pour ouvrir avec une galerie spÃ©cifique â”€â”€
+    // ── API globale pour ouvrir avec une galerie spécifique ──
     window._openDrawingGallery = function(gallery, index) {
         currentGallery = gallery;
         openLightbox(index || 0);
@@ -1438,7 +1442,7 @@ function initDrawingLightbox() {
         document.body.style.overflow = '';
     }
 
-    // â”€â”€ Clic sur les dessins de la galerie et les slides BD â”€â”€
+    // ── Clic sur les dessins de la galerie et les slides BD ──
     document.querySelectorAll('.drawing-item .frame-wrap, #page-drawings .bd-slide .drawing-sheet-wrap').forEach((item) => {
         item.addEventListener('click', () => {
             const parentItem = item.closest('.drawing-item, .bd-slide');
@@ -1455,7 +1459,7 @@ function initDrawingLightbox() {
         });
     });
 
-    // â”€â”€ Clic sur les PDF des carrousels Projets â”€â”€
+    // ── Clic sur les PDF des carrousels Projets ──
     document.querySelectorAll('#page-projects .bd-slide .drawing-sheet-wrap').forEach((wrap) => {
         wrap.addEventListener('click', () => {
             const parentSlide = wrap.closest('.bd-slide');
@@ -1488,7 +1492,7 @@ function initDrawingLightbox() {
         });
     });
 
-    // â”€â”€ Clic sur le scan du diplÃ´me (Mode image unique) â”€â”€
+    // ── Clic sur le scan du diplôme (Mode image unique) ──
     document.querySelectorAll('.single-lightbox-trigger').forEach(trigger => {
         trigger.addEventListener('click', () => {
             const src = trigger.getAttribute('src');
@@ -1497,10 +1501,10 @@ function initDrawingLightbox() {
         });
     });
 
-    // â”€â”€ Fermeture â”€â”€
+    // ── Fermeture ──
     if (closeBtn) closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
 
-    // â”€â”€ Outils (Zoom & Fullscreen) â”€â”€
+    // ── Outils (Zoom & Fullscreen) ──
     function toggleZoom() {
         isZoomed = !isZoomed;
         lightbox.classList.toggle('zoomed', isZoomed);
@@ -1525,14 +1529,14 @@ function initDrawingLightbox() {
             } else if (scale === 1 && isZoomed) {
                 translateX = 0;
                 translateY = 0;
-                // On ne retire pas la classe .zoomed ici pour Ã©viter que 
+                // On ne retire pas la classe .zoomed ici pour éviter que 
                 // la barre ne disparaisse sous le clic de l'utilisateur, ce qui 
-                // dÃ©clencherait un clic sur le fond et fermerait la fenÃªtre.
+                // déclencherait un clic sur le fond et fermerait la fenêtre.
             }
             updateTransform();
         });
 
-        // L'Ã©vÃ©nement 'change' se dÃ©clenche quand on relÃ¢che le clic sur la barre
+        // L'événement 'change' se déclenche quand on relâche le clic sur la barre
         zoomRange.addEventListener('change', (e) => {
             if (scale <= 1 && isZoomed) {
                 isZoomed = false;
@@ -1567,7 +1571,7 @@ function initDrawingLightbox() {
         }
     });
 
-    // Boutons Suivant / PrÃ©cÃ©dent
+    // Boutons Suivant / Précédent
     if (prevBtn) prevBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if (!isSingleMode) showDrawing((current - 1 + currentGallery.length) % currentGallery.length);
@@ -1577,7 +1581,7 @@ function initDrawingLightbox() {
         if (!isSingleMode) showDrawing((current + 1) % currentGallery.length);
     });
 
-    // Clic en dehors de l'image = fermer, clic sur l'image = zoom (si non zoomÃ©)
+    // Clic en dehors de l'image = fermer, clic sur l'image = zoom (si non zoomé)
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox || e.target.classList.contains('lb-canvas-wrap')) {
             closeLightbox();
@@ -1586,7 +1590,7 @@ function initDrawingLightbox() {
         }
     });
 
-    // â”€â”€ Pan & Zoom Pointer Events â”€â”€
+    // ── Pan & Zoom Pointer Events ──
     if (canvasWrap) {
         canvasWrap.addEventListener('pointerdown', (e) => {
             if (!isZoomed || (e.target.tagName.toLowerCase() !== 'img' && e.target.tagName.toLowerCase() !== 'canvas')) return;
@@ -1653,7 +1657,7 @@ function initDrawingLightbox() {
         }, { passive: false });
     }
 
-    // â”€â”€ Touch : Pinch-to-zoom et Swipe â”€â”€
+    // ── Touch : Pinch-to-zoom et Swipe ──
     let lbTouchStartX = 0;
     let lbTouchStartY = 0;
     let initialPinchDistance = null;
@@ -1728,16 +1732,16 @@ function initDrawingLightbox() {
     }, { passive: false });
 }
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// ANIMATIONS AU SCROLL â€” MOBILE TOUCH
+// ─────────────────────────────────────
+// ─────────────────────────────────────
+// ANIMATIONS AU SCROLL — MOBILE TOUCH
 // Remplace les effets de survol sur les appareils tactiles
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────
 function initScrollAnimationsMobile() {
     // Uniquement sur les appareils sans hover (mobile, tablette tactile)
     if (!window.matchMedia('(hover: none)').matches) return;
 
-    // SÃ©lecteurs Ã  observer â€” mÃªme liste que les Ã©lÃ©ments animÃ©s en CSS
+    // Sélecteurs à observer — même liste que les éléments animés en CSS
     const SELECTORS = [
         '.drawing-item',
         '.project-item',
@@ -1748,12 +1752,12 @@ function initScrollAnimationsMobile() {
         '.home-projects-shortcut',
     ].join(', ');
 
-    // BUG ANDROID FIX : Le scroll se fait Ã  l'intÃ©rieur des Ã©lÃ©ments .page
+    // BUG ANDROID FIX : Le scroll se fait à l'intérieur des éléments .page
     // (overflow-y: auto), pas dans le viewport du navigateur.
-    // Il faut donc crÃ©er un IntersectionObserver PAR PAGE avec root = la page,
-    // sinon le navigateur considÃ¨re que tout est "dans le viewport" car .page
-    // couvre tout l'Ã©cran en position: absolute.
-    const pageObservers = new Map(); // page element â†’ IntersectionObserver
+    // Il faut donc créer un IntersectionObserver PAR PAGE avec root = la page,
+    // sinon le navigateur considère que tout est "dans le viewport" car .page
+    // couvre tout l'écran en position: absolute.
+    const pageObservers = new Map(); // page element → IntersectionObserver
 
     function createObserverForPage(page) {
         if (pageObservers.has(page)) return pageObservers.get(page);
@@ -1774,7 +1778,7 @@ function initScrollAnimationsMobile() {
         return observer;
     }
 
-    // Observer tous les Ã©lÃ©ments d'une page donnÃ©e
+    // Observer tous les éléments d'une page donnée
     function observeInPage(page) {
         const observer = createObserverForPage(page);
         page.querySelectorAll(SELECTORS).forEach(el => {
@@ -1785,21 +1789,21 @@ function initScrollAnimationsMobile() {
         });
     }
 
-    // Lancement initial sur la page home (dÃ©jÃ  active au moment de l'appel)
+    // Lancement initial sur la page home (déjà active au moment de l'appel)
     const homePage = document.getElementById('page-home');
     if (homePage) {
-        // LÃ©ger dÃ©lai pour s'assurer que showPage() a bien ajoutÃ© is-active
-        // et que le layout est statisÃ©
+        // Léger délai pour s'assurer que showPage() a bien ajouté is-active
+        // et que le layout est statisé
         setTimeout(() => observeInPage(homePage), 300);
     }
 
-    // Pour chaque autre page : observer dÃ¨s qu'elle devient active (navigation SPA)
+    // Pour chaque autre page : observer dès qu'elle devient active (navigation SPA)
     document.querySelectorAll('.page').forEach(page => {
-        if (page.id === 'page-home') return; // dÃ©jÃ  gÃ©rÃ© ci-dessus
+        if (page.id === 'page-home') return; // déjà géré ci-dessus
 
         const mutObserver = new MutationObserver(() => {
             if (page.classList.contains('is-active')) {
-                // DÃ©lai pour laisser la transition de page se terminer
+                // Délai pour laisser la transition de page se terminer
                 setTimeout(() => observeInPage(page), 450);
             }
         });
@@ -1808,7 +1812,7 @@ function initScrollAnimationsMobile() {
 }
 
 /* ==========================================================================
-   COUPE CLICK â†’ Open in Drawing Lightbox (reuses the same viewer)
+   COUPE CLICK → Open in Drawing Lightbox (reuses the same viewer)
    ========================================================================== */
 (function initCoupeClicks() {
     const coupeItems = document.querySelectorAll('[data-coupe-gallery] .stack-item[data-coupe-index]');
@@ -1830,7 +1834,7 @@ function initScrollAnimationsMobile() {
     const favicon = document.getElementById('favicon');
     if (!favicon) return;
     
-    // Attendre que la police soit chargÃ©e
+    // Attendre que la police soit chargée
     document.fonts.ready.then(() => {
         const canvas = document.createElement('canvas');
         canvas.width = 100;
