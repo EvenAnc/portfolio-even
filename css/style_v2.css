@@ -3771,3 +3771,63 @@ textarea:focus-visible,
         width: min(320px, calc(100vw - 92px));
     }
 }
+
+/* ── 7. En-tete : le retour recouvrait le logo ─────────────────────
+   Mesure sur Pixel 8a (412px) : bouton retour a 94-204, logo centre a
+   130-282 — 74px de recouvrement, les deux textes s'ecrivaient l'un
+   par-dessus l'autre. Il n'y a pas la place pour les deux sur un
+   telephone : sur une page projet le retour prime, le logo s'efface.
+   Le logo reste present sur toutes les autres pages. */
+@media (max-width: 768px) {
+    body.a-bouton-retour .header-logo {
+        opacity: 0 !important;
+        pointer-events: none;
+    }
+}
+
+/* ── 8. Pages projet : les panneaux jusqu'au bord ──────────────────
+   .project-detail-page portait 30px de padding horizontal. Les
+   panneaux, leur fond colore et les traits dechires — tous des
+   pseudo-elements calques sur la largeur du panneau — s'arretaient
+   donc a 30px des bords : le trait ne rejoignait jamais le bord de
+   l'ecran et le changement de fond laissait deux bandes noires.
+   Sur telephone on retire ce padding : les panneaux vont d'un bord a
+   l'autre, et leur propre padding interne (20px) garde le contenu a
+   distance des bords. */
+@media (max-width: 768px) {
+    .page.project-detail-page {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    /* le contenu hors panneau garde sa respiration */
+    .project-detail-page .project-title-wrap,
+    .project-detail-page .project-desc-sheet-wrap,
+    .project-detail-page .page-next {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+/* ── 9. Diplome : le tampon mordait sur le titre ───────────────────
+   Mesure sur Pixel 8a : tampon « CERTIFIED » a 241-374, titre
+   « CERTIFICATION RNCP » a 69-343 — 102px de recouvrement, et le
+   tampon debordait de 12px hors de la carte (qui s'arrete a 362).
+   Sur grand ecran la carte est assez large pour que les deux
+   cohabitent ; sur telephone le titre court jusque sous le tampon.
+
+   On rentre le tampon dans la carte et on reserve sa largeur au
+   titre, qui passe alors a la ligne au lieu de disparaitre dessous.
+   Le chevauchement volontaire avec la BORDURE de la carte est
+   conserve, c'est le parti pris d'origine. */
+@media (max-width: 768px) {
+    .diploma-cert-stamp {
+        top: -10px;
+        right: -8px;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        border-width: 2.5px;
+    }
+    .diploma-cert-title {
+        padding-right: 96px;   /* largeur du tampon incline + garde */
+    }
+}
