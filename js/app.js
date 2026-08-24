@@ -671,11 +671,12 @@ function showPage(pageId, animate = true, updateHistory = true) {
 
     const backBtn = document.getElementById('header-back-btn');
     if (backBtn) {
-        if (pageId.startsWith('project-')) {
-            backBtn.style.display = 'flex';
-        } else {
-            backBtn.style.display = 'none';
-        }
+        const surProjet = pageId.startsWith('project-');
+        backBtn.style.display = surProjet ? 'flex' : 'none';
+        // Sur telephone le bouton retour et le logo centre se chevauchent
+        // (mesure : 74px de recouvrement sur un ecran de 412px). La CSS
+        // s'appuie sur cette classe pour masquer le logo dans ce cas.
+        document.body.classList.toggle('a-bouton-retour', surProjet);
     }
 
     // Détruire le Lenis de l'ancienne page
