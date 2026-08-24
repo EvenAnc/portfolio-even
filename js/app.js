@@ -1249,43 +1249,43 @@ async function renderInlinePDFs() {
 // ─────────────────────────────────────
 const allDrawings = [
     {
-        url: "dessin/Cartographie-1.png",
+        url: "dessin/opt/cartographie@2x.webp",
         title: "CARTOGRAPHIE",
         desc: "Dessin technique & Relief — A4",
         orient: "portrait"
     },
     {
-        url: "dessin/A_la_maniere_de-1.png",
+        url: "dessin/opt/a-la-maniere-de@2x.webp",
         title: "À LA MANIÈRE DE...",
         desc: "Étude de style & Graphite — A4",
         orient: "landscape"
     },
     {
-        url: "dessin/NOIR ET BLANC Even-1.png",
+        url: "dessin/opt/noir-et-blanc@2x.webp",
         title: "NOIR ET BLANC",
         desc: "Encre de Chine & Graphisme — A4",
         orient: "portrait"
     },
     {
-        url: "dessin/BD page 1-1.png",
+        url: "dessin/opt/bd-page-1@2x.webp",
         title: "BANDE DESSINÉE — Page 1",
         desc: "A4 — Portrait",
         orient: "portrait"
     },
     {
-        url: "dessin/BD page 2-1.png",
+        url: "dessin/opt/bd-page-2@2x.webp",
         title: "BANDE DESSINÉE — Page 2",
         desc: "A4 — Portrait",
         orient: "portrait"
     },
     {
-        url: "dessin/BD page 3-1.png",
+        url: "dessin/opt/bd-page-3@2x.webp",
         title: "BANDE DESSINÉE — Page 3",
         desc: "A4 — Portrait",
         orient: "portrait"
     },
     {
-        url: "dessin/BD page 4-1.png",
+        url: "dessin/opt/bd-page-4@2x.webp",
         title: "BANDE DESSINÉE — Page 4",
         desc: "A4 — Portrait",
         orient: "portrait"
