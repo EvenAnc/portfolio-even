@@ -1,4 +1,4 @@
-# https://evenanc.github.io/portfolio-even/
+# https://even-anc.com/
 User-agent: *
 Allow: /
 
@@ -7,4 +7,4 @@ Disallow: /dessin/*.pdf$
 Disallow: /photo/
 Disallow: /fonts/
 
-Sitemap: https://evenanc.github.io/portfolio-even/sitemap.xml
+Sitemap: https://even-anc.com/sitemap.xml
