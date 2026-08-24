@@ -1507,7 +1507,7 @@ function ecouterGestes() {
 }
 
 function canvasParPriorite() {
-    const tous = Array.from(document.querySelectorAll('canvas.pdf-inline-render'));
+    const tous = Array.from(document.querySelectorAll('.pdf-inline-render'));
     const prioritaire = c => c.closest('.stack-item')
         || (c.closest('.bd-slide') && c.closest('.bd-slide').classList.contains('active'));
     return [...tous.filter(prioritaire), ...tous.filter(c => !prioritaire(c))];
@@ -1518,7 +1518,12 @@ function demarrerPrechargeFond() {
     _prechargeDemarree = true;
     ecouterGestes();
 
-    const liste = canvasParPriorite();
+    // Les plans sont desormais de simples images : le prechargement se
+    // resume a les demander au reseau. Le navigateur les decode ensuite
+    // hors du fil principal, ce qui ne peut plus faire saccader la page.
+    const liste = canvasParPriorite()
+        .map(el => el.getAttribute('src'))
+        .filter(Boolean);
     let i = 0;
 
     const planifier = (delai) => {
@@ -1526,22 +1531,21 @@ function demarrerPrechargeFond() {
         if (typeof requestIdleCallback === 'function') {
             requestIdleCallback(lancer, { timeout: 4000 });
         } else {
-            setTimeout(lancer, delai || 300);
+            setTimeout(lancer, delai || 250);
         }
     };
 
     const etape = () => {
-        if (i >= liste.length) return;                       // tout est pret
+        if (i >= liste.length) return;                       // tout est en cache
         if (document.visibilityState !== 'visible') return planifier(2000);
-        // le visiteur vient de bouger : on le laisse tranquille
         if (Date.now() - _dernierGeste < REPOS_APRES_INTERACTION) return planifier(500);
 
-        const c = liste[i];
-        if (c.classList.contains('pdf-loaded') || c.dataset.pdfEnFile === '1') {
-            i++; return planifier(60);
-        }
-        i++;
-        mettreEnFile(c).then(() => planifier(120));
+        const url = liste[i++];
+        const img = new Image();
+        img.decoding = 'async';
+        // on enchaine des que l'image est en cache, succes ou non
+        img.onload = img.onerror = () => planifier(80);
+        img.src = url;
     };
 
     planifier();
@@ -1966,7 +1970,9 @@ function initDrawingLightbox() {
             const parentPage = wrap.closest('.page');
             if (parentPage && !parentPage.classList.contains('is-active')) return;
 
-            const canvas = wrap.querySelector('canvas.pdf-inline-render');
+            // .pdf-inline-render sans prefixe : marche pour l'image comme
+            // pour l'ancien canvas, si jamais il en restait un quelque part.
+            const canvas = wrap.querySelector('.pdf-inline-render');
             if (canvas) {
                 const url = canvas.dataset.pdfUrl;
                 

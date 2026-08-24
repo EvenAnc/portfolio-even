@@ -3610,3 +3610,17 @@ textarea:focus-visible,
         transform: translateY(-36px) scale(1) !important;
     }
 }
+
+/* ── PLANS EN IMAGE (remplacent les rendus PDF a la volee) ─────────
+   .drawing-sheet img applique un zoom de 18% et un recadrage « cover »,
+   pensé pour les dessins a main levee dont on coupe les marges blanches.
+   Applique a un plan cote, il rognerait les cotations. On neutralise. */
+.drawing-sheet img.pdf-img,
+.stack-item img.pdf-img {
+    transform: none;
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #fff;
+}
