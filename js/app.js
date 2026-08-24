@@ -1120,11 +1120,11 @@ function initBDCarousel() {
             const activeSlide = slides[currentIndex];
             if (activeSlide) {
                 const canvas = activeSlide.querySelector('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)');
-                if (canvas) renderSingleCanvas(canvas);
+                if (canvas) mettreEnFile(canvas);
                 // Pré-charger aussi le slide suivant (sans attendre)
                 const nextIdx = (currentIndex + 1) % slides.length;
                 const nextCanvas = slides[nextIdx] ? slides[nextIdx].querySelector('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)') : null;
-                if (nextCanvas) setTimeout(() => renderSingleCanvas(nextCanvas), 300);
+                if (nextCanvas) setTimeout(() => mettreEnFile(nextCanvas), 300);
             }
 
             if (isPlaying) {
@@ -1281,6 +1281,61 @@ async function getPdfLib() {
     return _pdfLib;
 }
 
+// PERF-02 : les rendus partaient tous en parallele. Sur un processeur
+// modeste, lancer 4 decodages PDF simultanes sature le thread principal et
+// fige la page pendant plusieurs secondes.
+//
+// Ordonnanceur a 2 rendus simultanes maximum : assez pour occuper la machine
+// sans la saturer, et le travail total reste identique.
+//
+// Deux garde-fous, appris a la dure : une file strictement sequentielle se
+// bloque entierement si UN rendu ne se termine jamais (fichier corrompu,
+// reseau coupe). D'ou la limite de temps par element, et la reprise de la
+// file quoi qu'il arrive.
+const RENDUS_SIMULTANES = 2;
+const DELAI_MAX_RENDU = 20000;
+let _enCours = 0;
+const _attente = [];
+
+function mettreEnFile(canvas) {
+    // Un canvas en attente n'a encore aucune classe d'etat : sans ce marqueur,
+    // chaque balayage le remettait en file. On montait a 57 entrees pour 15
+    // plans — autant de travail inutile.
+    if (canvas.dataset.pdfEnFile === '1') return Promise.resolve();
+    canvas.dataset.pdfEnFile = '1';
+    return new Promise(resolve => {
+        _attente.push({ canvas, resolve });
+        depilerRendus();
+    });
+}
+
+function depilerRendus() {
+    while (_enCours < RENDUS_SIMULTANES && _attente.length) {
+        const { canvas, resolve } = _attente.shift();
+        _enCours++;
+        let fini = false;
+        const terminer = () => {
+            if (fini) return;
+            fini = true;
+            _enCours--;
+            resolve();
+            depilerRendus();
+        };
+        // si un rendu s'eternise, on libere la place au lieu de bloquer tout
+        const secours = setTimeout(terminer, DELAI_MAX_RENDU);
+        Promise.resolve()
+            .then(() => renderSingleCanvas(canvas))
+            .catch(() => {})
+            .finally(() => {
+                clearTimeout(secours);
+                // en cas d'echec, on relache le marqueur : un futur balayage
+                // pourra retenter plutot que de laisser un cadre vide.
+                if (!canvas.classList.contains('pdf-loaded')) delete canvas.dataset.pdfEnFile;
+                terminer();
+            });
+    }
+}
+
 async function renderSingleCanvas(canvas) {
     if (!canvas || canvas.classList.contains('pdf-loaded') || canvas.classList.contains('pdf-loading')) return;
     canvas.classList.add('pdf-loading');
@@ -1304,9 +1359,27 @@ async function renderSingleCanvas(canvas) {
         const pdf = _pdfCache[url];
         const page = await pdf.getPage(1);
 
-        // Échelle réduite pour les miniatures du carrousel (performance)
-        // 1.8 au lieu de 2.5 = 52% moins de pixels, rendu bien plus rapide
-        const thumbScale = 1.8;
+        // PERF-01 : l'echelle etait fixee a 1.8 quelle que soit la taille
+        // d'affichage. Un plan montre en 1200px etait rendu en 2142px : 1,8x
+        // plus de pixels que ce que l'ecran peut afficher, donc autant de
+        // travail jete. On calcule desormais l'echelle a partir de la largeur
+        // reellement occupee, multipliee par la densite de l'ecran, avec 25%
+        // de marge pour rester net si le visiteur zoome au navigateur.
+        // Sur un ecran retina l'echelle monte automatiquement : c'est une
+        // adaptation, pas une reduction — le rendu reste net partout.
+        // On mesure le CONTENEUR, pas le canvas : tant qu'il n'est pas rendu,
+        // le canvas garde sa taille intrinseque par defaut (300px) et donnerait
+        // une echelle trop basse. Une fois rendu il occupe 100% du conteneur,
+        // c'est donc bien celui-ci qui dicte la taille d'affichage finale.
+        const conteneur = canvas.parentElement;
+        const largeurAffichee = conteneur ? conteneur.getBoundingClientRect().width : 0;
+        const base = page.getViewport({ scale: 1 }).width;
+        let thumbScale = 1.8;                       // repli si la mise en page n'est pas encore connue
+        if (largeurAffichee > 50 && base > 0) {
+            const dpr = window.devicePixelRatio || 1;
+            thumbScale = (largeurAffichee * dpr * 1.25) / base;
+            thumbScale = Math.max(0.8, Math.min(thumbScale, 3));   // bornes de securite
+        }
         const viewport = page.getViewport({ scale: thumbScale });
 
         const cropTopPercent = parseFloat(canvas.dataset.pdfCropTop || '0');
@@ -1340,10 +1413,68 @@ async function renderSingleCanvas(canvas) {
     }
 }
 
+// PERF-03 : les 15 plans etaient tous rendus des l'ouverture de la page,
+// alors que 4 seulement se trouvent pres de l'ecran — 17 millions de pixels
+// dessines d'un coup, dont les trois quarts pour rien tant qu'on n'a pas
+// fait defiler. On ne declenche desormais le rendu qu'a l'approche, avec
+// 700px d'avance pour qu'un plan soit pret avant d'etre atteint.
+// Aucune perte de qualite : c'est le meme rendu, simplement plus tard.
+//
+// Choix volontaire de NE PAS utiliser IntersectionObserver : il depend du
+// moteur de rendu, ce qui le rend invérifiable sur banc de test et delicat
+// a diagnostiquer si un plan ne s'affiche pas. Un calcul de position direct
+// fait le meme travail, se teste partout, et n'a aucune dependance.
+const MARGE_PRECHARGE = 700;   // px d'avance avant l'entree a l'ecran
+let _balayagePdfActif = false;
+let _balayageTimer = null;
+
+function canvasProcheEcran(canvas) {
+    const r = canvas.getBoundingClientRect();
+    if (!r.height && !r.width) return false;
+    return r.bottom > -MARGE_PRECHARGE && r.top < window.innerHeight + MARGE_PRECHARGE;
+}
+
+function balayerCanvasPdf() {
+    const restants = Array.from(document.querySelectorAll(
+        'canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)'));
+    if (!restants.length) { arreterBalayagePdf(); return; }
+    restants.filter(canvasProcheEcran).forEach(c => {
+        mettreEnFile(c).then(() => { if (window._lenis) window._lenis.resize(); });
+    });
+}
+
+function planifierBalayage() {
+    clearTimeout(_balayageTimer);
+    _balayageTimer = setTimeout(balayerCanvasPdf, 120);
+}
+
+function demarrerBalayagePdf(racine) {
+    balayerCanvasPdf();                       // premiere passe immediate
+    if (_balayagePdfActif) return;
+    _balayagePdfActif = true;
+    if (racine) racine.addEventListener('scroll', planifierBalayage, { passive: true });
+    window.addEventListener('resize', planifierBalayage, { passive: true });
+    if (window._lenis) window._lenis.on('scroll', planifierBalayage);
+    // filet : si un evenement de defilement manque a l'appel, on repasse
+    // quelques fois pendant les premieres secondes.
+    let essais = 0;
+    const filet = setInterval(() => {
+        balayerCanvasPdf();
+        if (++essais >= 6) clearInterval(filet);
+    }, 1000);
+}
+
+function arreterBalayagePdf() {
+    clearTimeout(_balayageTimer);
+}
+
 async function renderInlinePDFs() {
     // Trouver tous les canvas non rendus
     const allCanvases = Array.from(document.querySelectorAll('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)'));
     if (!allCanvases.length) return;
+
+    demarrerBalayagePdf(document.querySelector('.page.is-active'));
+    return;
 
     // PRIORITÉ 1 : Rendre d'abord les slides actifs/visibles
     const visibleCanvases = allCanvases.filter(c => {
