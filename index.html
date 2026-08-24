@@ -60,9 +60,17 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
 
+    <!-- Skribblugh porte l'identite du site : sans prechargement, le texte
+         s'affiche d'abord dans une police de substitution puis saute. -->
+    <link rel="preload" href="fonts/SkribblughRegular-XGW02.woff" as="font" type="font/woff" crossorigin>
+
     <link rel="stylesheet" href="css/style_v2.css">
 </head>
 <body ontouchstart="">
+
+    <!-- Lien d'evitement : premier element atteint par la tabulation, il
+         permet de sauter le header et le menu pour aller au contenu. -->
+    <a class="skip-link" href="#page-wrapper">Aller au contenu</a>
 
     <!-- SVG FILTRES INVISIBLES -->
     <svg width="0" height="0" style="position:absolute;overflow:hidden;">
@@ -123,9 +131,9 @@
 
             <div class="header-right">
                 <div class="lang-switcher">
-                    <button class="lang-btn active" data-lang="fr">FR</button>
+                    <button class="lang-btn active" data-lang="fr" aria-label="Afficher le site en francais" lang="fr">FR</button>
                     <span class="lang-sep">/</span>
-                    <button class="lang-btn" data-lang="en">EN</button>
+                    <button class="lang-btn" data-lang="en" aria-label="Display the site in English" lang="en">EN</button>
                 </div>
                 <nav class="social-nav">
                     <a href="https://www.instagram.com/even.anc/" target="_blank" rel="noopener noreferrer" class="social-lnk" aria-label="Instagram">
@@ -207,7 +215,7 @@
     <!-- =========================================================================================================
          CONTENEUR SPA
     ========================================================================================================= -->
-    <div id="page-wrapper">
+    <div id="page-wrapper" role="main">
 
         <!-- ─── PAGE 01 : ACCUEIL ─── -->
         <section class="page" id="page-home" data-page="home">
@@ -1178,7 +1186,7 @@
     </div>
 
     <!-- Lightbox ultra-épurée (style Fortiche) -->
-    <div id="drawing-lightbox" class="drawing-lightbox" aria-hidden="true">
+    <div id="drawing-lightbox" class="drawing-lightbox" role="dialog" aria-modal="true" aria-label="Visionneuse d'images" aria-hidden="true">
 
         <!-- Logo centré en haut -->
         <span class="lb-logo font-sketch">EVEN ANICET</span>

@@ -3519,3 +3519,94 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     opacity: 0 !important;
 }
 
+/* ═════════════════════════════════════════════════════════════════
+   CORRECTIFS FINAUX — accessibilite clavier et debordements mobile
+   Place en fin de fichier : ces regles sont des surcharges, elles
+   doivent gagner dans la cascade.
+   ═════════════════════════════════════════════════════════════════ */
+
+/* ── Lien d'evitement ──────────────────────────────────────────────
+   Invisible tant qu'on ne tabule pas, il apparait au premier Tab et
+   permet de sauter le header pour aller droit au contenu. */
+.skip-link {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -120%);
+    z-index: 200;
+    padding: 14px 26px;
+    background: var(--red);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: transform var(--dur-fast) var(--ease-out);
+}
+.skip-link:focus {
+    transform: translate(-50%, 0);
+}
+
+/* ── Focus clavier visible ─────────────────────────────────────────
+   Uniquement :focus-visible : la bordure n'apparait donc jamais au
+   clic souris, seulement lors d'une navigation au clavier. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+/* ── FIX R-03 : deux blocs sortaient du cadre ──────────────────────
+   .ref-photo-wrap etait epingle a right:-110px et
+   .animation-explosion-detail a 285px a gauche du centre : des
+   valeurs fixes, calees pour le bureau, qui debordaient sous 992px.
+   Le debordement etant masque par overflow-x:hidden, le contenu
+   etait rogne SANS barre de defilement — donc invisible au test.
+   On rapatrie les deux dans le cadre en gardant le parti pris
+   « epingle de travers ». */
+@media (max-width: 991px) {
+    .ref-photo-wrap {
+        right: -18px;
+        top: -8px;
+        width: 96px;
+    }
+    /* L'element porte une rotation de 45deg : sa boite englobante depasse
+       de largeur x 0,207 de chaque cote (~25px pour 120px). La marge doit
+       donc etre superieure a ce debord, sinon il ressort a gauche. */
+    .animation-explosion-detail {
+        left: 0;
+        margin-left: 44px;   /* debord mesure de la boite tournee : 38px par cote */
+        width: 120px;
+        height: 120px;
+    }
+    /* La signature manuscrite etait calee a left:95% puis decalee vers la
+       droite et agrandie : elle sortait du cadre. On l'ancre a droite, en
+       reservant la marge que prend l'agrandissement (scale 1,2). */
+    .notebook-signature {
+        left: auto !important;
+        right: 22px !important;
+        transform: translateY(-40px) scale(1.2) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .ref-photo-wrap {
+        right: -6px;
+        width: 78px;
+    }
+    .animation-explosion-detail {
+        width: 96px;
+        height: 96px;
+        margin-left: 36px;   /* debord proportionnel : ~30px par cote */
+        bottom: -24px;
+    }
+    .notebook-signature {
+        right: 16px !important;
+        transform: translateY(-36px) scale(1) !important;
+    }
+}
