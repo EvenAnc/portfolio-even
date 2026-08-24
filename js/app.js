@@ -250,6 +250,7 @@ let currentLang = 'fr';
 let currentPage = 'home';
 let isMenuOpen  = false;
 let lenis       = null;
+let _historyInitialised = false;
 
 // ─────────────────────────────────────
 // INIT
@@ -274,8 +275,55 @@ document.addEventListener('DOMContentLoaded', () => {
     initDrawingLightbox();
     initCopyEmail();
 
-    // Révéler la page home avec animation d'entrée
-    showPage('home', false);
+    // Révéler la page correspondant à l'adresse demandée (accueil par défaut).
+    // Un fragment inconnu retombe sur l'accueil plutôt que sur une page blanche.
+    const demandee = pageFromHash();
+    const pageInitiale = (demandee && demandee !== 'contact') ? demandee : 'home';
+    // updateHistory=false pour #contact : showPage remettrait l'adresse a
+    // celle de l'accueil et effacerait le fragment, si bien qu'un
+    // rafraichissement ne ramenerait plus au bloc contact.
+    showPage(pageInitiale, false, demandee !== 'contact');
+    if (demandee === 'contact') {
+        history.replaceState({ page: 'contact' }, '', '#contact');
+    }
+
+    // Fragment inconnu (vieux lien, faute de frappe) : on est retombe sur
+    // l'accueil, on nettoie aussi la barre d'adresse pour ne pas laisser
+    // une adresse qui a l'air cassee.
+    if (demandee === null) {
+        history.replaceState({ page: 'home' }, '', location.pathname + location.search);
+    }
+
+    // Ouverture directe sur #contact : afficher l'accueil puis descendre.
+    if (demandee === 'contact') {
+        setTimeout(scrollToContactSection, 600);
+    }
+
+    // Boutons Précédent / Suivant du navigateur, et geste de retour sur mobile.
+    // updateHistory=false : on suit l'historique, on n'y ajoute rien.
+    window.addEventListener('popstate', () => {
+        const cible = pageFromHash();
+        if (cible === 'contact') {
+            if (currentPage !== 'home') showPage('home', true, false);
+            setTimeout(scrollToContactSection, currentPage === 'home' ? 100 : 750);
+            return;
+        }
+        showPage(cible || 'home', true, false);
+    });
+
+    // Adresse modifiée à la main dans la barre du navigateur.
+    window.addEventListener('hashchange', () => {
+        const cible = pageFromHash();
+        if (cible === null) {
+            // adresse inconnue saisie a la main : repli sur l'accueil
+            showPage('home', true, false);
+            history.replaceState({ page: 'home' }, '', location.pathname + location.search);
+            return;
+        }
+        if (cible !== 'contact' && cible !== currentPage) {
+            showPage(cible, true, false);
+        }
+    });
 
     // FIX R-01 : mesurer la barre de défilement une fois la page active.
     // ResizeObserver plutôt que l'événement 'resize' seul : la barre peut
@@ -431,25 +479,7 @@ function initMenu() {
 
             if (page === 'contact') {
                 // CONTACT → aller sur la page accueil puis scroller vers le bas
-                const wasOnHome = currentPage === 'home';
-                setTimeout(() => {
-                    if (!wasOnHome) {
-                        showPage('home', true);
-                    }
-                    // FIX: utiliser lenis.scrollTo au lieu de homeEl.scrollTo pour éviter le conflit
-                    const delay = wasOnHome ? 100 : 750;
-                    setTimeout(() => {
-                        const contactEl = document.getElementById('home-contact');
-                        if (contactEl) {
-                            if (window._lenis) {
-                                window._lenis.scrollTo(contactEl, { offset: -40, duration: 1.2 });
-                            } else {
-                                const homeEl = document.getElementById('page-home');
-                                if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - 40, behavior: 'smooth' });
-                            }
-                        }
-                    }, delay);
-                }, 420);
+                goToContact(420);
             } else {
                 setTimeout(() => showPage(page), 420);
             }
@@ -532,7 +562,76 @@ function initSPA() {
     });
 }
 
-function showPage(pageId, animate = true) {
+// ─────────────────────────────────────
+// FIX Q-03 — ADRESSES PARTAGEABLES ET BOUTON RETOUR
+// Avant : une seule URL pour tout le site. Le bouton Retour du
+// navigateur (et le geste de retour sur mobile, le plus utilise de
+// tous) faisait SORTIR du site, impossible d'envoyer un lien vers un
+// projet precis, et un rafraichissement ramenait toujours a l'accueil.
+//
+// Routage par fragment (#dessins) et non par chemin (/dessins) : sur
+// un hebergement statique comme GitHub Pages, un chemin exigerait une
+// redirection via 404.html, avec un clignotement a chaque ouverture.
+// Le fragment fonctionne partout, sans configuration serveur.
+//
+// La logique est placee DANS showPage() : les points d'appel existants
+// (menu, fleches page suivante, logo, bouton retour) en beneficient
+// sans etre modifies.
+// ─────────────────────────────────────
+const PAGE_SLUGS = {
+    'home':            '',
+    'projects':        'projets',
+    'project-diploma': 'projet-diplome',
+    'project-2':       'projet-paterr-suisse',
+    'project-3':       'projet-03',
+    'drawings':        'dessins',
+    'diploma':         'diplome',
+    'hobbies':         'hobbies',
+};
+const SLUG_TO_PAGE = Object.fromEntries(
+    Object.entries(PAGE_SLUGS).filter(([, slug]) => slug).map(([id, slug]) => [slug, id])
+);
+
+// Lit le fragment courant. Renvoie null si l'adresse ne correspond a rien
+// de connu, pour qu'un vieux lien casse retombe proprement sur l'accueil.
+function pageFromHash() {
+    const raw = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim();
+    if (!raw) return 'home';
+    if (raw === 'contact') return 'contact';
+    return SLUG_TO_PAGE[raw] || null;
+}
+
+function urlForPage(pageId) {
+    const slug = PAGE_SLUGS[pageId];
+    return slug ? '#' + slug : location.pathname + location.search;
+}
+
+// Amene le visiteur au bloc Contact, en bas de la page d'accueil.
+// Extrait ici parce que trois chemins y menent : le menu, les fleches
+// « page suivante », et desormais l'ouverture directe sur #contact.
+function scrollToContactSection() {
+    const contactEl = document.getElementById('home-contact');
+    if (!contactEl) return;
+    if (window._lenis) {
+        window._lenis.scrollTo(contactEl, { offset: -40, duration: 1.2 });
+    } else {
+        const homeEl = document.getElementById('page-home');
+        if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - 40, behavior: 'smooth' });
+    }
+}
+
+function goToContact(outerDelay) {
+    const wasOnHome = currentPage === 'home';
+    setTimeout(() => {
+        if (!wasOnHome) showPage('home', true);
+        setTimeout(scrollToContactSection, wasOnHome ? 100 : 750);
+    }, outerDelay);
+    if (location.hash !== '#contact') {
+        history.pushState({ page: 'contact' }, '', '#contact');
+    }
+}
+
+function showPage(pageId, animate = true, updateHistory = true) {
     if (pageId === currentPage && animate) return;
 
     const outEl = document.getElementById(`page-${currentPage}`);
@@ -540,6 +639,15 @@ function showPage(pageId, animate = true) {
     if (!inEl) return;
 
     currentPage = pageId;
+
+    // Synchronise l'adresse. replaceState au tout premier affichage pour ne
+    // pas creer une entree d'historique fantome avant meme la 1re navigation.
+    if (updateHistory) {
+        const url = urlForPage(pageId);
+        const method = _historyInitialised ? 'pushState' : 'replaceState';
+        history[method]({ page: pageId }, '', url);
+        _historyInitialised = true;
+    }
 
     const backBtn = document.getElementById('header-back-btn');
     if (backBtn) {
@@ -779,24 +887,7 @@ function initNextPageLinks() {
             e.preventDefault();
             const nextPage = link.dataset.next;
             if (nextPage === 'contact') {
-                const wasOnHome = currentPage === 'home';
-                setTimeout(() => {
-                    if (!wasOnHome) {
-                        showPage('home', true);
-                    }
-                    const delay = wasOnHome ? 100 : 750;
-                    setTimeout(() => {
-                        const contactEl = document.getElementById('home-contact');
-                        if (contactEl) {
-                            if (window._lenis) {
-                                window._lenis.scrollTo(contactEl, { offset: -40, duration: 1.2 });
-                            } else {
-                                const homeEl = document.getElementById('page-home');
-                                if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - 40, behavior: 'smooth' });
-                            }
-                        }
-                    }, delay);
-                }, 300);
+                goToContact(300);
             } else if (nextPage) {
                 showPage(nextPage);
             }
