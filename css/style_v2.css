@@ -2360,7 +2360,9 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
    de survol sont remplacées par des animations déclenchées
    au scroll via la classe .is-inview ajoutée par JS.
 ───────────────────────────────────── */
-@media (hover: none) {
+/* meme critere que REQUETE_TACTILE dans app.js : le second cas
+   rattrape les appareils tactiles qui se declarent avec survol */
+@media (hover: none), (pointer: coarse) {
 
     /* ── Cadres : rectangle rouge se dessine au clic/touch (active) ── */
     .frame-wrap > .sketch-rect-svg {
@@ -3650,5 +3652,92 @@ textarea:focus-visible,
     .diploma-placeholder .media-frame-inner.diploma-card-inner {
         aspect-ratio: auto;
         min-height: 141.4cqw;   /* 1 / 1,414 exprime en largeur de conteneur */
+    }
+}
+
+/* ═════════════════════════════════════════════════════════════════
+   PASSE MOBILE / TABLETTE
+   Objectif : tout ce qui a ete pense pour le grand ecran doit rester
+   utilisable au doigt, sans qu'un seul pixel dessine ne change.
+   ═════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Commandes de carrousel : surfaces de contact ───────────────
+   Mesure sur iPhone 390px : fleches 32x44, lecture/pause 30x36,
+   pastilles 10x10. Le minimum recommande est 44x44.
+   On agrandit la SURFACE DE CONTACT par pseudo-element transparent :
+   le dessin reste identique, seule la zone tactile grandit. */
+.bd-nav-btn, .bd-play-pause-btn, .bd-dot { position: relative; }
+.bd-nav-btn::after,
+.bd-play-pause-btn::after {
+    content: '';
+    position: absolute;
+    inset: -10px;
+}
+/* Les pastilles ne sont espacees que de 22px d'axe en axe. Etendre
+   naivement leur zone de contact les ferait se chevaucher : on
+   taperait la diapo voisine. On les ecarte donc d'abord sur tactile,
+   puis on etend jusqu'a la moitie du nouvel ecart — les zones se
+   touchent sans jamais empieter l'une sur l'autre. */
+@media (hover: none), (pointer: coarse) {
+    .bd-dots { gap: 30px; }
+    .bd-dot::after {
+        content: '';
+        position: absolute;
+        inset: -14px -13px;   /* laisse 2px de garde entre deux zones */
+    }
+}
+
+/* ── 2. Lisibilite des petits textes sur telephone ─────────────────
+   Mesure : mentions legales 12px, code RNCP 12,8px. Sous 14px la
+   lecture devient penible sur un ecran tenu a bout de bras. */
+@media (max-width: 768px) {
+    .footer-legal          { font-size: 0.875rem; line-height: 1.75; }
+    .footer-bottom,
+    .footer-bottom a,
+    .footer-sep            { font-size: 0.8125rem; }
+    .footer-year           { font-size: 0.875rem; }
+    .diploma-cert-code,
+    .diploma-cert-authority { font-size: 0.875rem; }
+}
+
+/* ── 3. iPhone : encoche et barre d'accueil ────────────────────────
+   Avec viewport-fit=cover le fond sombre va jusqu'au bord de la
+   dalle, mais le contenu doit rester en dehors des zones systeme.
+   Les valeurs safe-area valent 0 partout ailleurs : aucun effet sur
+   les autres appareils ni sur le bureau. */
+.site-header {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+}
+.menu-overlay {
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(30px, env(safe-area-inset-bottom));
+}
+.footer-inner {
+    padding-bottom: max(40px, calc(40px + env(safe-area-inset-bottom)));
+}
+.drawing-lightbox .lb-close {
+    top: max(18px, calc(18px + env(safe-area-inset-top)));
+}
+
+/* ── 4. Confort tactile general ────────────────────────────────────
+   Sur iOS un appui long fait apparaitre un menu de copie d'image et
+   un cadre de selection : penible sur une galerie ou l'on fait
+   surtout defiler et glisser. */
+/* meme critere que REQUETE_TACTILE dans app.js : le second cas
+   rattrape les appareils tactiles qui se declarent avec survol */
+@media (hover: none), (pointer: coarse) {
+    .media-frame-img,
+    .pdf-img,
+    .bd-slide img,
+    .polaroid-img {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+    /* Retire le voile bleu d'appui sur Android */
+    a, button, .stack-item, .drawing-sheet-wrap {
+        -webkit-tap-highlight-color: transparent;
     }
 }
