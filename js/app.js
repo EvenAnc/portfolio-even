@@ -325,6 +325,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // CACHE-01 : cache longue durée via un service worker.
+    // GitHub Pages force un cache de 10 minutes seulement, non modifiable :
+    // passé ce délai un visiteur qui revient retélécharge tout. Le service
+    // worker garde les médias sur son disque et les ressert instantanément.
+    // Enregistré après le chargement pour ne pas concurrencer l'affichage.
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(err => {
+                // Un échec ici n'a aucune conséquence : le site fonctionne
+                // exactement comme avant, simplement sans cache longue durée.
+                console.warn('[portfolio] cache longue durée indisponible :', err.message);
+            });
+        });
+    }
+
     // PERF-04 : préparer les plans en fond, une fois l'accueil installé.
     // 2,5 s de délai pour ne pas concurrencer l'affichage initial.
     setTimeout(demarrerPrechargeFond, 2500);
