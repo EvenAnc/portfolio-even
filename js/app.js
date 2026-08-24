@@ -4,6 +4,12 @@
  * Rectangle SVG dessiné main + Menu habillé + Carrousel inertie
  */
 
+// Un appareil est considere tactile s'il n'a pas de survol OU si son
+// pointeur est grossier (doigt). Le second critere rattrape les tablettes
+// et PC tactiles qui se declarent a tort comme ayant un survol : sans lui
+// ils n'avaient NI le survol reel, NI l'equivalent tactile.
+const REQUETE_TACTILE = '(hover: none), (pointer: coarse)';
+
 // ─────────────────────────────────────
 // TRADUCTIONS FR / EN
 // ─────────────────────────────────────
@@ -1751,6 +1757,11 @@ function initDrawingLightbox() {
     function showControls() {
         lightbox.classList.remove('controls-hidden');
         clearTimeout(hideTimer);
+        // A la souris, le moindre mouvement rappelle les commandes : les
+        // masquer au bout de 2,5s est confortable. Au doigt il n'y a pas de
+        // mouvement — la croix de fermeture disparaissait et le visiteur se
+        // retrouvait bloque devant l'image. Sur tactile, elles restent.
+        if (window.matchMedia(REQUETE_TACTILE).matches) return;
         hideTimer = setTimeout(() => {
             lightbox.classList.add('controls-hidden');
         }, 2500);
@@ -2106,6 +2117,11 @@ function initDrawingLightbox() {
         if (e.target === lightbox || e.target.classList.contains('lb-canvas-wrap')) {
             closeLightbox();
         } else if (e.target.tagName.toLowerCase() === 'img' || e.target.tagName.toLowerCase() === 'canvas') {
+            // Au doigt, un simple appui declenchait ce zoom sans qu'on l'ait
+            // demande. Sur tactile le geste naturel est le pincement, et le
+            // bouton de zoom reste disponible : on reserve donc le zoom au
+            // clic a la souris.
+            if (window.matchMedia(REQUETE_TACTILE).matches) return;
             if (!isZoomed) toggleZoom();
         }
     });
@@ -2261,12 +2277,6 @@ function initDrawingLightbox() {
 const TACTILE_SEUIL  = 0.35;   // l'element doit etre franchement a l'ecran
 const TACTILE_MARGE  = '0px 0px -12% 0px';
 const TACTILE_DELAI  = 160;    // ms : laisse le temps de poser le regard
-
-// Un appareil est considere tactile s'il n'a pas de survol OU si son
-// pointeur est grossier (doigt). Le second critere rattrape les tablettes
-// et PC tactiles qui se declarent a tort comme ayant un survol : sans lui
-// ils n'avaient NI le survol reel, NI l'equivalent tactile.
-const REQUETE_TACTILE = '(hover: none), (pointer: coarse)';
 
 function initScrollAnimationsMobile() {
     const mq = window.matchMedia(REQUETE_TACTILE);
