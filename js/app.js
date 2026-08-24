@@ -638,6 +638,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
     const inEl  = document.getElementById(`page-${pageId}`);
     if (!inEl) return;
 
+    const pageAvant = currentPage;
     currentPage = pageId;
 
     // Synchronise l'adresse. replaceState au tout premier affichage pour ne
@@ -660,6 +661,11 @@ function showPage(pageId, animate = true, updateHistory = true) {
 
     // Détruire le Lenis de l'ancienne page
     if (lenis) { lenis.destroy(); lenis = null; }
+
+    // FIX MEM-01 : libérer les documents PDF en quittant la page qui les porte
+    if (pageAvant === 'project-diploma' && pageId !== 'project-diploma') {
+        releasePdfCache();
+    }
 
     if (!animate || !outEl) {
         if (outEl) {
@@ -1232,6 +1238,38 @@ function initBDCarousel() {
 let _pdfLib = null;
 let _pdfCache = {}; // Cache des documents PDF déjà chargés
 
+// FIX MEM-01 : les documents PDF restaient ouverts indéfiniment. Mesure sur
+// le site : 3 Mo de mémoire sur l'accueil, 66 Mo après ouverture de la page
+// projet diplôme, et toujours 66 Mo après l'avoir quittée. Sur un téléphone
+// d'entrée de gamme, c'est le seuil où le système ferme l'onglet.
+//
+// Les canvas déjà rendus gardent leur image : ce sont des bitmaps, ils ne
+// dépendent plus du document PDF. Et comme renderSingleCanvas ignore les
+// canvas marqués .pdf-loaded, revenir sur la page ne re-télécharge rien.
+function releasePdfCache(essai = 0) {
+    const urls = Object.keys(_pdfCache);
+    if (!urls.length) return;
+
+    // Garde-fou : si un rendu est encore en cours, detruire son document le
+    // ferait echouer, et le gestionnaire d'erreur remplace alors le canvas
+    // par un cadre « fichier introuvable » — definitivement. On patiente
+    // plutot que de casser un rendu en vol. Au-dela de 10 essais (20 s) on
+    // libere quand meme : un rendu bloque ne doit pas retenir la memoire.
+    if (document.querySelector('canvas.pdf-inline-render.pdf-loading') && essai < 10) {
+        setTimeout(() => releasePdfCache(essai + 1), 2000);
+        return;
+    }
+    urls.forEach(u => {
+        try {
+            const doc = _pdfCache[u];
+            if (doc && typeof doc.destroy === 'function') {
+                Promise.resolve(doc.destroy()).catch(() => {});
+            }
+        } catch (e) { /* document déjà libéré */ }
+    });
+    _pdfCache = {};
+}
+
 async function getPdfLib() {
     if (_pdfLib) return _pdfLib;
     if (typeof pdfjsLib !== 'undefined') _pdfLib = pdfjsLib;
@@ -1562,7 +1600,12 @@ function initDrawingLightbox() {
                     loadingTaskPromise = pdfLib.getDocument(encodeURI(url)).promise;
                 }
                 
+                // FIX MEM-02 : le document ouvert ici n'était jamais libéré.
+                // On le garde le temps du rendu, puis on le relâche : le canvas
+                // conserve son image, le document n'a plus d'utilité.
+                let docOuvert = null;
                 loadingTaskPromise.then(pdf => {
+                    docOuvert = pdf;
                     return pdf.getPage(1);
                 }).then(page => {
                     const pixelRatio = window.devicePixelRatio || 1;
@@ -1594,7 +1637,15 @@ function initDrawingLightbox() {
                         }
                         if (loader) loader.classList.remove('active');
                     }
+                    if (docOuvert) {
+                        Promise.resolve(docOuvert.destroy()).catch(() => {});
+                        docOuvert = null;
+                    }
                 }).catch(err => {
+                    if (docOuvert) {
+                        Promise.resolve(docOuvert.destroy()).catch(() => {});
+                        docOuvert = null;
+                    }
                     if (renderId === currentRenderId) {
                         if (loader) loader.classList.remove('active');
                         console.error('Erreur lors du chargement du PDF:', err);
