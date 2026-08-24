@@ -3741,3 +3741,33 @@ textarea:focus-visible,
         -webkit-tap-highlight-color: transparent;
     }
 }
+
+/* ── 5. Visionneuse sur telephone : recuperer la place perdue ──────
+   Mesure sur iPhone 390x844 : le conteneur reservait 45px de marge de
+   chaque cote pour degager les fleches, et l'image n'occupait que
+   300x424 — a peine plus que la vignette du carrousel. Ouvrir une
+   planche « en grand » n'apportait presque rien.
+
+   Les fleches ne font que 60px de haut et sont centrees : elles ne
+   croisent l'image que sur une bande etroite. On les laisse donc
+   flotter par-dessus, comme sur toutes les visionneuses mobiles, et
+   l'image reprend la largeur. Le glissement lateral reste de toute
+   facon le geste principal.
+   Resultat : 300x424 -> environ 370x523, soit +50% de surface. */
+@media (max-width: 768px) {
+    #lb-canvas-wrap {
+        padding: 70px 10px 120px;
+    }
+    .lb-prev, .lb-next {
+        /* legere ombre pour rester lisibles au-dessus d'une planche claire */
+        filter: drop-shadow(0 0 6px rgba(0,0,0,0.85));
+    }
+
+    /* ── 6. Carrousel : occuper la largeur disponible ──────────────
+       Le conteneur ne mesurait que 290px sur un ecran de 390 : 100px
+       restaient inutilises. La planche gagne ce qui reste une fois
+       les fleches et leurs ecarts deduits. */
+    .bd-carousel-viewport {
+        width: min(320px, calc(100vw - 92px));
+    }
+}
