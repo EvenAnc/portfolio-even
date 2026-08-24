@@ -325,6 +325,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // PERF-04 : préparer les plans en fond, une fois l'accueil installé.
+    // 2,5 s de délai pour ne pas concurrencer l'affichage initial.
+    setTimeout(demarrerPrechargeFond, 2500);
+
     // FIX R-01 : mesurer la barre de défilement une fois la page active.
     // ResizeObserver plutôt que l'événement 'resize' seul : la barre peut
     // apparaître ou disparaître sans redimensionnement de fenêtre (contenu
@@ -1466,6 +1470,81 @@ function demarrerBalayagePdf(racine) {
 
 function arreterBalayagePdf() {
     clearTimeout(_balayageTimer);
+}
+
+// ─────────────────────────────────────
+// PERF-04 — PRECHARGEMENT DE FOND, PENDANT LA VISITE
+// Constat d'Even : en arrivant sur la page des plans, les 4 coupes du bas
+// ne se dessinaient qu'apres avoir fait defiler, et ca saccadait pendant.
+//
+// Un visiteur ne fonce pas sur « Projets » en une seconde : il regarde
+// l'accueil, cherche la navigation. On met ce temps a profit pour preparer
+// les plans en fond, de sorte qu'ils soient deja prets a l'arrivee.
+//
+// Ordre de priorite :
+//   1. les 6 visibles d'emblee (2 diapos actives du carrousel + 4 coupes)
+//   2. les 9 diapos masquees, ensuite et sans se presser
+//
+// Trois regles pour ne JAMAIS faire saccader la page :
+//   - on ne travaille que pendant les temps morts du navigateur
+//     (requestIdleCallback), donc jamais en concurrence avec le visiteur ;
+//   - on ne DEMARRE pas un rendu si le visiteur vient d'interagir
+//     (defilement, molette, doigt) — un rendu lance ne peut plus etre
+//     interrompu, il faut donc choisir le bon moment pour le lancer ;
+//   - un seul rendu a la fois en fond, contre deux a la demande.
+// ─────────────────────────────────────
+const REPOS_APRES_INTERACTION = 450;   // ms de calme exiges avant de relancer
+let _dernierGeste = 0;
+let _prechargeDemarree = false;
+
+function marquerGeste() { _dernierGeste = Date.now(); }
+
+function ecouterGestes() {
+    ['wheel', 'touchmove', 'pointerdown', 'keydown'].forEach(ev =>
+        window.addEventListener(ev, marquerGeste, { passive: true }));
+    document.querySelectorAll('.page').forEach(pg =>
+        pg.addEventListener('scroll', marquerGeste, { passive: true }));
+}
+
+function canvasParPriorite() {
+    const tous = Array.from(document.querySelectorAll('canvas.pdf-inline-render'));
+    const prioritaire = c => c.closest('.stack-item')
+        || (c.closest('.bd-slide') && c.closest('.bd-slide').classList.contains('active'));
+    return [...tous.filter(prioritaire), ...tous.filter(c => !prioritaire(c))];
+}
+
+function demarrerPrechargeFond() {
+    if (_prechargeDemarree) return;
+    _prechargeDemarree = true;
+    ecouterGestes();
+
+    const liste = canvasParPriorite();
+    let i = 0;
+
+    const planifier = (delai) => {
+        const lancer = () => etape();
+        if (typeof requestIdleCallback === 'function') {
+            requestIdleCallback(lancer, { timeout: 4000 });
+        } else {
+            setTimeout(lancer, delai || 300);
+        }
+    };
+
+    const etape = () => {
+        if (i >= liste.length) return;                       // tout est pret
+        if (document.visibilityState !== 'visible') return planifier(2000);
+        // le visiteur vient de bouger : on le laisse tranquille
+        if (Date.now() - _dernierGeste < REPOS_APRES_INTERACTION) return planifier(500);
+
+        const c = liste[i];
+        if (c.classList.contains('pdf-loaded') || c.dataset.pdfEnFile === '1') {
+            i++; return planifier(60);
+        }
+        i++;
+        mettreEnFile(c).then(() => planifier(120));
+    };
+
+    planifier();
 }
 
 async function renderInlinePDFs() {
