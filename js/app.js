@@ -2256,9 +2256,32 @@ function initDrawingLightbox() {
 // ANIMATIONS AU SCROLL — MOBILE TOUCH
 // Remplace les effets de survol sur les appareils tactiles
 // ─────────────────────────────────────
+// Reglages du declenchement tactile — voir initScrollAnimationsMobile
+const TACTILE_SEUIL  = 0.35;   // l'element doit etre franchement a l'ecran
+const TACTILE_MARGE  = '0px 0px -12% 0px';
+const TACTILE_DELAI  = 160;    // ms : laisse le temps de poser le regard
+
+// Un appareil est considere tactile s'il n'a pas de survol OU si son
+// pointeur est grossier (doigt). Le second critere rattrape les tablettes
+// et PC tactiles qui se declarent a tort comme ayant un survol : sans lui
+// ils n'avaient NI le survol reel, NI l'equivalent tactile.
+const REQUETE_TACTILE = '(hover: none), (pointer: coarse)';
+
 function initScrollAnimationsMobile() {
-    // Uniquement sur les appareils sans hover (mobile, tablette tactile)
-    if (!window.matchMedia('(hover: none)').matches) return;
+    const mq = window.matchMedia(REQUETE_TACTILE);
+    if (!mq.matches) {
+        // Le mode peut changer en cours de route : tablette dont on detache
+        // le clavier, fenetre passee sur un ecran tactile. On reessaie alors
+        // au lieu d'abandonner definitivement.
+        const relancer = () => {
+            if (mq.matches) {
+                mq.removeEventListener('change', relancer);
+                initScrollAnimationsMobile();
+            }
+        };
+        mq.addEventListener('change', relancer);
+        return;
+    }
 
     // Sélecteurs à observer — même liste que les éléments animés en CSS
     const SELECTORS = [
@@ -2283,14 +2306,33 @@ function initScrollAnimationsMobile() {
 
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
+                const el = entry.target;
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('is-inview');
+                    // Micro-delai avant de declencher : si le visiteur fait
+                    // defiler vite, l'animation est annulee plutot que de
+                    // clignoter au passage. S'il s'arrete, elle demarre sous
+                    // ses yeux — c'est l'equivalent tactile du survol.
+                    if (el._minuteurVue) return;
+                    el._minuteurVue = setTimeout(() => {
+                        el.classList.add('is-inview');
+                        el._minuteurVue = null;
+                    }, TACTILE_DELAI);
                 } else {
-                    entry.target.classList.remove('is-inview');
+                    // Sorti de l'ecran : on annule un declenchement en attente
+                    // et on retire l'etat, pour que l'element rejoue son
+                    // animation au prochain passage — comme un survol repete.
+                    if (el._minuteurVue) {
+                        clearTimeout(el._minuteurVue);
+                        el._minuteurVue = null;
+                    }
+                    el.classList.remove('is-inview');
                 }
             });
         }, {
-            threshold: 0.05
+            // Seuil releve : a 0,05 l'animation partait alors que l'element
+            // affleurait a peine le bas de l'ecran, souvent hors du regard.
+            threshold: TACTILE_SEUIL,
+            rootMargin: TACTILE_MARGE
         });
 
         pageObservers.set(page, observer);
