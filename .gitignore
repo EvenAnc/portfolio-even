@@ -1,0 +1,75 @@
+# ─────────────────────────────────────────────────────────────
+# Portfolio Even ANICET — fichiers exclus de la publication
+#
+# Le depot sert AUSSI d'hebergement (GitHub Pages) : tout fichier
+# suivi ici est publiquement telechargeable. On ne publie donc que
+# ce dont le site a reellement besoin.
+#
+# Les fichiers listes ci-dessous restent sur le disque local, ils
+# sont seulement retires du suivi Git.
+# ─────────────────────────────────────────────────────────────
+
+# ── Anciennes versions et sauvegardes manuelles ──────────────
+index_backup_*.html
+index_clean.html
+index_backup*.html
+old_index.html
+old_style.css
+new_projects.html
+patchwork_clean.html
+temp_clean_test.html
+css/style_v2_backup_*.css
+css/style.css
+js/app_backup_*.js
+*_backup_PERFECT.*
+
+# ── Notes internes et consignes de travail ───────────────────
+# (ne doivent pas etre publiques sur un portfolio)
+PROJECT_MEMORY.md
+.agents/
+
+# ── Scripts et sorties d'outillage ───────────────────────────
+*.ps1
+*.exe
+*.cs
+fix.py
+inject.js
+recovered.json
+recovery_script.ps1
+ps_scripts.json
+matches*.json
+3d_immersion.json
+3d_recovery.txt
+view_file_history.txt
+
+# ── Fragments et fichiers temporaires ────────────────────────
+*.txt
+!robots.txt
+temp_html*.txt
+html_chunk*.txt
+html_recovery.txt
+best_html.txt
+chunks.txt
+extracted_v1.txt
+script.txt
+
+# ── Bibliotheques dupliquees localement ──────────────────────
+# pdf.js est charge depuis le CDN : les copies locales sont inutiles
+pdf.min.js
+js/pdf.min.js
+js/pdf.worker.min.js
+js/dessins_base64.js
+
+# ── Sources de polices non servies ───────────────────────────
+fonts/temp_skribblugh/
+fonts/*.zip
+fonts/example.html
+
+# ── Favicons alternatifs non utilises ────────────────────────
+favicon_2.svg
+favicon_3.svg
+
+# ── Systeme ──────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini

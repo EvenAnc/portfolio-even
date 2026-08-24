@@ -1,0 +1,10 @@
+# https://evenanc.github.io/portfolio-even/
+User-agent: *
+Allow: /
+
+# Fichiers de travail et originaux pleine resolution : inutiles a l'indexation
+Disallow: /dessin/*.pdf$
+Disallow: /photo/
+Disallow: /fonts/
+
+Sitemap: https://evenanc.github.io/portfolio-even/sitemap.xml
