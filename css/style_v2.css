@@ -3624,3 +3624,31 @@ textarea:focus-visible,
     display: block;
     background: #fff;
 }
+
+/* ── FIX DIPLOME : la carte de certification rognait son pied ──────
+   .diploma-card-inner etait verrouillee au format A4 (aspect-ratio
+   1/1.414) avec overflow:hidden. A 1280px la boite fait 633px alors
+   que le contenu en reclame 676 en francais : les 43px du bas — le
+   code RNCP et « Enregistre par France Competences » — etaient
+   purement et simplement coupes. Deja 23px de trop en anglais ; le
+   francais, plus long, ne faisait qu'aggraver un defaut existant.
+
+   Le format A4 devient un PLANCHER au lieu d'une contrainte : la
+   carte garde ses proportions quand le contenu tient, et s'allonge
+   juste ce qu'il faut sinon. Plus rien ne peut etre rogne, quelle
+   que soit la langue ou la longueur d'un futur texte.
+
+   Sous @supports : les navigateurs sans unites de conteneur gardent
+   le comportement actuel, sans regression. */
+@supports (min-height: 1cqw) {
+    .diploma-placeholder {
+        container-type: inline-size;
+    }
+    /* Selecteur volontairement long : .diploma-placeholder .media-frame-inner
+       impose deja le rapport A4 avec une specificite superieure. Un simple
+       .diploma-card-inner perdait la cascade sans rien changer. */
+    .diploma-placeholder .media-frame-inner.diploma-card-inner {
+        aspect-ratio: auto;
+        min-height: 141.4cqw;   /* 1 / 1,414 exprime en largeur de conteneur */
+    }
+}
