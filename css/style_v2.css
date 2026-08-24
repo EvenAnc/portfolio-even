@@ -115,6 +115,34 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 
 .lang-switcher { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; }
 .lang-btn { opacity: 0.35; transition: opacity var(--dur-fast); }
+
+/* ── FIX R-02 : zones tactiles conformes ───────────────────────────
+   Les pastilles ci-dessous agrandissent UNIQUEMENT la surface cliquable
+   via un pseudo-element transparent. Aucun pixel dessine ne bouge.
+   Les debordements horizontaux s'arretent au milieu du gap : deux
+   cibles voisines se touchent sans jamais se chevaucher. */
+.lang-btn { position: relative; }
+.lang-btn::after {
+    content: '';
+    position: absolute;
+    inset: -14px -6px;
+    /* pas de background : purement une surface de contact */
+}
+/* Les icones sociales sont trop rapprochees pour s'elargir des deux cotes
+   sans se chevaucher. On elargit donc largement vers l'exterieur (aucun
+   voisin) et seulement jusqu'au milieu du gap vers l'interieur. */
+.social-lnk::before {
+    content: '';
+    position: absolute;
+    inset: -14px -4px;
+}
+.social-lnk:first-child::before  { inset: -14px -4px -14px -11px; }
+.social-lnk:last-child::before   { inset: -14px -11px -14px -4px; }
+.burger-btn::after {
+    content: '';
+    position: absolute;
+    inset: -11px -6px;
+}
 .lang-btn.active { opacity: 1; }
 .lang-btn:hover { opacity: 0.75; }
 .lang-sep { opacity: 0.2; }
@@ -219,6 +247,33 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
 .page.is-active { opacity: 1; pointer-events: auto; }
 .page:not(.is-active) * { pointer-events: none !important; }
+
+/* ── FIX P-01 : masquage REEL des pages inactives ──────────────────
+   Avant : opacity:0 seul. Le navigateur continuait a mettre en page,
+   peindre et animer les 7 pages invisibles (61 animations infinies et
+   46 filtres feTurbulence tournaient dans le vide), et le
+   loading="lazy" des images etait neutralise -> 47,5 Mo au chargement.
+
+   visibility:hidden       -> retire du flux de tabulation clavier (21 elements)
+   content-visibility:hidden -> le navigateur saute entierement le rendu
+                                du sous-arbre, donc les images lazy ne se
+                                telechargent plus tant que la page n'est pas ouverte.
+
+   Les navigateurs anciens (Safari < 15.4, Firefox < 125) ignorent
+   content-visibility et retombent sur visibility:hidden : degradation
+   propre, aucun element casse.
+
+   contain-intrinsic-size reserve une hauteur plausible pour que la
+   barre de defilement ne saute pas a l'ouverture de la page. */
+.page:not(.is-active) {
+    visibility: hidden;
+    content-visibility: hidden;
+    contain-intrinsic-size: auto 100vh;
+}
+.page.is-active {
+    visibility: visible;
+    content-visibility: visible;
+}
 .page::-webkit-scrollbar { width: 4px; }
 .page::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 
@@ -226,7 +281,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
    7. HERO
 ───────────────────────────────────── */
 .hero-screen {
-    width: 100%; min-height: 100vh;
+    width: 100%; min-height: 100vh; min-height: 100dvh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 80px 40px 60px; position: relative;
     /* FIX: évite que le hero capture les événements de scroll/click en dehors des zones interactives */
@@ -1042,11 +1097,14 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     padding-right: 60px;
     position: relative;
     clear: both;
-    width: 100vw;
+    /* FIX R-01 : 100vw inclut la barre de defilement de .page (4px),
+       ce qui faisait deborder le footer de ~5px sur toutes les pages.
+       --sbw est mesure au runtime par app.js ; 0px = comportement d'avant. */
+    width: calc(100vw - var(--sbw, 0px));
     left: 50%;
     right: 50%;
-    margin-left: -50vw !important;
-    margin-right: -50vw !important;
+    margin-left: calc(-50vw + var(--sbw, 0px) / 2) !important;
+    margin-right: calc(-50vw + var(--sbw, 0px) / 2) !important;
     box-sizing: border-box;
 }
 .footer-inner { max-width: 1200px; margin: 0 auto; padding: 50px 60px 40px; }

@@ -180,6 +180,72 @@ const i18n = {
     }
 };
 
+// ─────────────────────────────────────
+// FIX Q-07 — FILET DE SECURITE CDN
+// GSAP, ScrollTrigger, Lenis et PDF.js viennent de CDN externes.
+// Si l'un d'eux ne repond pas, le premier appel gsap.* levait une
+// erreur et TOUT le JavaScript s'arretait : site fige sur le hero,
+// menu compris. Ce shim n'est installe QUE si gsap est absent ; il
+// applique instantanement l'etat final de chaque animation.
+// Resultat : le site reste entierement navigable, simplement sans
+// transitions. Quand le CDN repond normalement, ce bloc ne fait rien.
+// ─────────────────────────────────────
+if (typeof window.gsap === 'undefined') {
+    console.warn('[portfolio] GSAP indisponible — mode degrade sans animations.');
+
+    const TWEEN_KEYS = ['duration', 'ease', 'delay', 'onComplete', 'onStart',
+                        'onUpdate', 'stagger', 'overwrite', 'repeat', 'yoyo', 'paused'];
+
+    const toElements = (targets) => {
+        if (!targets) return [];
+        if (typeof targets === 'string') return [...document.querySelectorAll(targets)];
+        if (targets instanceof Element) return [targets];
+        if (targets.length !== undefined) return [...targets];
+        return [];
+    };
+
+    const applyVars = (targets, vars) => {
+        vars = vars || {};
+        toElements(targets).forEach(el => {
+            if (!el || !el.style) return;
+            const transform = [];
+            for (const key in vars) {
+                if (TWEEN_KEYS.indexOf(key) !== -1) continue;
+                const v = vars[key];
+                if (key === 'x')            transform.push('translateX(' + (typeof v === 'number' ? v + 'px' : v) + ')');
+                else if (key === 'y')       transform.push('translateY(' + (typeof v === 'number' ? v + 'px' : v) + ')');
+                else if (key === 'scale')   transform.push('scale(' + v + ')');
+                else if (key === 'rotation')transform.push('rotate(' + v + 'deg)');
+                else if (key === 'opacity') el.style.opacity = v;
+                else if (key in el.style)   el.style[key] = typeof v === 'number' && key !== 'zIndex' ? v + 'px' : v;
+            }
+            if (transform.length) el.style.transform = transform.join(' ');
+        });
+        if (typeof vars.onComplete === 'function') {
+            try { vars.onComplete(); } catch (e) { console.error(e); }
+        }
+        return { kill() {}, pause() {}, play() {}, progress() { return 1; } };
+    };
+
+    const chainable = () => {
+        const api = {};
+        ['to', 'from', 'fromTo', 'set', 'add', 'call', 'pause', 'play', 'kill', 'clear']
+            .forEach(m => { api[m] = () => api; });
+        return api;
+    };
+
+    window.gsap = {
+        to:     (t, vars) => applyVars(t, vars),
+        set:    (t, vars) => applyVars(t, vars),
+        from:   (t, vars) => applyVars(t, {}),
+        fromTo: (t, from, to) => applyVars(t, to),
+        timeline: chainable,
+        ticker: { add() {}, remove() {}, lagSmoothing() {} },
+        registerPlugin() {},
+        utils: { toArray: toElements }
+    };
+}
+
 let currentLang = 'fr';
 let currentPage = 'home';
 let isMenuOpen  = false;
@@ -210,6 +276,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Révéler la page home avec animation d'entrée
     showPage('home', false);
+
+    // FIX R-01 : mesurer la barre de défilement une fois la page active.
+    // ResizeObserver plutôt que l'événement 'resize' seul : la barre peut
+    // apparaître ou disparaître sans redimensionnement de fenêtre (contenu
+    // qui grandit, images qui se chargent, rotation d'écran sur mobile).
+    updateScrollbarWidth();
+    if (typeof ResizeObserver !== 'undefined') {
+        const sbwObserver = new ResizeObserver(() => updateScrollbarWidth());
+        document.querySelectorAll('.page').forEach(pg => sbwObserver.observe(pg));
+    }
+    let _sbwTimer = null;
+    window.addEventListener('resize', () => {
+        clearTimeout(_sbwTimer);
+        _sbwTimer = setTimeout(updateScrollbarWidth, 150);
+    }, { passive: true });
 
     // Animations au scroll pour les appareils tactiles (mobile)
     // Appelé APRÈS showPage pour que is-active soit bien présent
@@ -255,6 +336,47 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// ─────────────────────────────────────
+// FIX P-01c — REVEIL DES IMAGES A L'OUVERTURE D'UNE PAGE
+// Les pages inactives sont en content-visibility:hidden : le navigateur
+// saute entierement leur rendu, ce qui est precisement l'effet recherche
+// (c'est ce qui fait tomber le chargement initial de 47,5 Mo a 1,5 Mo).
+// Corollaire : le declenchement de loading="lazy" repose sur le calcul
+// d'intersection, qui n'a pas lieu dans un sous-arbre non rendu. On ne
+// laisse donc pas au navigateur le soin de rattraper le coup : a
+// l'ouverture d'une page, on bascule explicitement SES images en
+// chargement immediat. Chaque page ne charge ainsi que ses propres
+// images, et seulement quand on l'ouvre.
+// ─────────────────────────────────────
+function hydratePageImages(pageEl) {
+    if (!pageEl) return;
+    pageEl.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        img.loading = 'eager';
+        // relance le telechargement si le navigateur l'avait mis de cote
+        if (!img.complete || img.naturalWidth === 0) {
+            const src = img.getAttribute('src');
+            if (src) { img.setAttribute('src', src); }
+        }
+    });
+}
+
+// ─────────────────────────────────────
+// FIX R-01 — LARGEUR REELLE DE LA BARRE DE DEFILEMENT
+// Le footer pleine largeur utilise 100vw, qui INCLUT la barre de
+// defilement de .page (4px) : il debordait donc de ~5px sur les 8
+// pages, a toutes les tailles d'ecran. On mesure la valeur reelle
+// (elle varie : 4px sur Chrome via ::-webkit-scrollbar, autre chose
+// sur Firefox « thin », 0px sur les overlay scrollbars de macOS/mobile)
+// et la CSS s'en sert via var(--sbw). Valeur de repli : 0px, ce qui
+// redonne exactement le comportement d'avant.
+// ─────────────────────────────────────
+function updateScrollbarWidth() {
+    const page = document.querySelector('.page.is-active') || document.querySelector('.page');
+    if (!page) return;
+    const sbw = Math.max(0, Math.round(page.offsetWidth - page.clientWidth));
+    document.documentElement.style.setProperty('--sbw', sbw + 'px');
+}
 
 // ─────────────────────────────────────
 // LANGUE
@@ -444,7 +566,15 @@ function showPage(pageId, animate = true) {
         if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
         updateHeaderLogo(pageId);
         
-        if (pageId === 'projects') renderInlinePDFs();
+        hydratePageImages(inEl);
+        // FIX P-01d : les 15 canvas PDF sont TOUS sur la page « projet diplome ».
+        // Avant, ils etaient rendus depuis le hub « projets », donc pendant que
+        // leur propre page etait invisible : 9 Mo telecharges pour une page pas
+        // forcement ouverte, et un rendu canvas dans un sous-arbre non affiche.
+        // On declenche desormais a l'ouverture reelle de la page concernee :
+        // le shimmer de chargement deja prevu prend le relais.
+        if (pageId === 'project-diploma') renderInlinePDFs();
+        updateScrollbarWidth();
         return;
     }
 
@@ -470,7 +600,9 @@ function showPage(pageId, animate = true) {
             if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
             updateHeaderLogo(pageId);
 
-            if (pageId === 'projects') renderInlinePDFs();
+            hydratePageImages(inEl);
+            if (pageId === 'project-diploma') renderInlinePDFs();  // voir FIX P-01d
+            updateScrollbarWidth();
         }
     });
 }
@@ -532,7 +664,9 @@ function initPageLenis(scrollContainer) {
 
     lenis = new Lenis(lenisOptions);
 
-    lenis.on('scroll', ScrollTrigger.update);
+    // FIX Q-07 : garde — si le CDN GSAP/ScrollTrigger n'a pas repondu,
+    // cette ligne levait une erreur et stoppait tout le JS de la page.
+    if (typeof ScrollTrigger !== 'undefined') lenis.on('scroll', ScrollTrigger.update);
 
     // BUG-04 FIX : stocker la référence du ticker pour pouvoir le supprimer plus tard
     // et éviter l'accumulation de tickers à chaque navigation entre pages.
@@ -955,9 +1089,17 @@ function initBDCarousel() {
             });
         }
 
-        startAutoplay();
-
+        // FIX P-01b : le carrousel demarrait TOUJOURS a l'init, meme quand sa
+        // page etait invisible. Le MutationObserver ci-dessous ne reagit qu'aux
+        // CHANGEMENTS de classe : comme l'etat initial (inactif) n'est pas un
+        // changement, l'autoplay du carrousel de la page « projet diplome »
+        // tournait dans le vide et telechargeait un PDF toutes les 5 secondes
+        // depuis la page d'accueil. On ne demarre donc que si la page est active ;
+        // l'observer prend le relais des qu'elle s'ouvre.
         const parentPage = container.closest('.page');
+        const pageIsActive = !parentPage || parentPage.classList.contains('is-active');
+        if (pageIsActive) startAutoplay();
+
         if (parentPage) {
             let wasActive = parentPage.classList.contains('is-active');
             const pageObserver = new MutationObserver(() => {
@@ -1883,10 +2025,40 @@ function initScrollAnimationsMobile() {
             frames.push(canvas.toDataURL('image/png'));
         }
 
+        // FIX Q-02 : la boucle tournait a 8 img/s indefiniment, y compris
+        // onglet en arriere-plan (batterie mobile + main thread reveille en
+        // permanence). Elle est desormais suspendue des que l'onglet n'est
+        // plus visible, et desactivee si l'utilisateur demande moins d'animation.
+        // Comportement a l'ecran, onglet au premier plan : strictement identique.
+        const reduceMotion = window.matchMedia
+            && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         let currentFrame = 0;
-        setInterval(() => {
+        let faviconTimer = null;
+
+        const stepFavicon = () => {
             favicon.href = frames[currentFrame];
             currentFrame = (currentFrame + 1) % 3;
-        }, 120);
+        };
+
+        const startFavicon = () => {
+            if (faviconTimer !== null || reduceMotion) return;
+            faviconTimer = setInterval(stepFavicon, 120);
+        };
+        const stopFavicon = () => {
+            if (faviconTimer === null) return;
+            clearInterval(faviconTimer);
+            faviconTimer = null;
+        };
+
+        document.addEventListener('visibilitychange', () => {
+            document.visibilityState === 'visible' ? startFavicon() : stopFavicon();
+        });
+
+        if (reduceMotion) {
+            favicon.href = frames[0];   // une frame fixe, pas d'animation
+        } else if (document.visibilityState === 'visible') {
+            startFavicon();
+        }
     });
 })();
