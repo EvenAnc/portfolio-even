@@ -3831,3 +3831,58 @@ textarea:focus-visible,
         padding-right: 96px;   /* largeur du tampon incline + garde */
     }
 }
+
+/* ── 10. Polaroids : le titre remontait sur l'image ────────────────
+   .polaroid-card reserve 60px en bas (padding) et .polaroid-label est
+   pose en absolu par-dessus, tandis que .polaroid-img-wrap (flex:1)
+   occupe TOUTE la hauteur restante. Tant que le titre tient sur une
+   ligne, l'illusion fonctionne. Sur un ecran de 412px il passe a deux
+   lignes : mesure 85px de haut pour 60px reserves, soit 25px qui
+   remontent sur l'image — « PROJET 01 : » s'ecrivait sur la photo et
+   « DIPLOME » sur la marge blanche.
+
+   On remet l'etiquette DANS LE FLUX sur telephone : l'image, etant en
+   flex:1, cede exactement la place qu'il faut. Le probleme ne peut
+   plus revenir, quelle que soit la longueur d'un futur titre.
+   Les corps sont aussi ramenes a une echelle de telephone : a 40px le
+   titre partait a la ligne pour rien. */
+@media (max-width: 768px) {
+    .polaroid-card {
+        padding-bottom: 14px;
+    }
+    .polaroid-label {
+        position: static;
+        margin-top: 10px;
+        padding: 0 4px;
+    }
+    .polaroid-label .pl-text,
+    .prio-1 .polaroid-label .pl-text {
+        font-size: 1.55rem;
+        line-height: 1.05;
+    }
+    .polaroid-label .pl-num,
+    .prio-1 .polaroid-label .pl-num {
+        font-size: 2.2rem;
+    }
+}
+
+/* ── 11. Polaroid « a suivre » : l'icone passait sous le ruban ─────
+   La carte 3 n'a pas de photo : son cadre se dimensionne sur son seul
+   contenu et tombait a 126px de haut sur telephone. L'icone occupait
+   alors le haut du cadre (y = 3 a 54) alors que le ruban adhesif
+   descend jusqu'a y = 20 : elle apparaissait coupee.
+
+   On lui donne une hauteur proche de celle des cartes voisines, et on
+   degage le haut pour laisser passer le ruban. Ciblage par l'absence
+   d'image, ce qui evite de toucher au HTML. */
+@media (max-width: 768px) {
+    .polaroid-img-wrap:not(:has(img)) {
+        min-height: 190px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        padding: 34px 12px 16px;   /* 34px en haut : le ruban s'arrete a 20px */
+        box-sizing: border-box;
+    }
+}
