@@ -1112,8 +1112,14 @@ function initBDCarousel() {
         const playPauseBtn = container.querySelector('.bd-play-pause-btn');
         const iconPause = playPauseBtn ? playPauseBtn.querySelector('.icon-pause') : null;
         const iconPlay = playPauseBtn ? playPauseBtn.querySelector('.icon-play') : null;
-        const progressBar = container.querySelector('.progress-bar');
-        const indicator = container.querySelector('.bd-carousel-pagination');
+        // Deux carrousels, deux jeux de noms de classes historiques :
+        //   pages projet -> .progress-bar        + .bd-carousel-pagination
+        //   page dessins -> .bd-progress-bar     + .bd-page-indicator
+        // Le code ne connaissait que le premier jeu : sur la page dessins,
+        // le compteur restait fige sur « 1 / 4 » et la barre de progression
+        // ne bougeait jamais. On accepte les deux noms.
+        const progressBar = container.querySelector('.progress-bar, .bd-progress-bar');
+        const indicator = container.querySelector('.bd-carousel-pagination, .bd-page-indicator');
 
         let currentIndex = 0;
         let isPlaying = true;

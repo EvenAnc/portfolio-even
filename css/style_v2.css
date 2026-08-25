@@ -3907,26 +3907,44 @@ textarea:focus-visible,
     .lb-next { right: 14px; }
 }
 
-/* ── 13. Carrousels des pages projet : fleches hors ecran ──────────
-   Regression de mon propre correctif : en retirant le padding
-   horizontal de .project-detail-page pour que les panneaux aillent au
-   bord, le conteneur du carrousel s'est elargi et a pousse les
-   fleches dehors — mesure -22px a gauche, 402 a droite sur un ecran
-   de 412. Elles etaient invisibles.
+/* ── 13. Carrousels des pages projet : fleches ramenees sous la planche
+   Deux etats successifs, tous deux mauvais :
+     - avant : le conteneur elargi les poussait a -22px et 402px, on
+       n'en voyait qu'un liseré collé au bord de l'ecran ;
+     - apres mon premier correctif : posees sur les bords de la
+       planche, elles se confondaient avec le dessin.
+   Even tranche : elles doivent descendre dans la rangee du bas, une a
+   gauche, une a droite, sur le fond noir de la page.
 
-   On les ramene en surimpression sur les bords de la planche, avec
-   une ombre portee pour rester lisibles au-dessus d'un plan clair. */
+   Ancrage sur .bd-carousel-container plutot que sur la section : sa
+   hauteur suit celle de la planche, qui varie d'un panneau a l'autre
+   (paysage / portrait). top: calc(100% + 48px) = 30px de marge de la
+   rangee + la moitie de sa bande de contenu (36px). La fleche reste
+   donc centree sur le compteur quelle que soit la planche affichee.
+
+   La rangee recoit 56px de retrait de chaque cote pour que le
+   compteur et la barre de progression ne passent pas dessous. */
 @media (max-width: 768px) {
     .panel-section .bd-carousel-container {
         position: relative;
     }
     .panel-section .bd-nav-btn {
         position: absolute;
-        top: 50%;
+        top: calc(100% + 48px);
+        bottom: auto;
         transform: translateY(-50%);
+        margin: 0;
         z-index: 25;
-        filter: drop-shadow(0 0 6px rgba(0,0,0,0.9));
     }
-    .panel-section .bd-nav-btn.prev-btn { left: 2px; right: auto; }
-    .panel-section .bd-nav-btn.next-btn { right: 2px; left: auto; }
+    .panel-section .bd-nav-btn.prev-btn { left: 0; right: auto; }
+    .panel-section .bd-nav-btn.next-btn { right: 0; left: auto; }
+
+    .panel-section .bd-carousel-ui {
+        padding-left: 56px;
+        padding-right: 56px;
+        gap: 12px;
+    }
+    .panel-section .bd-carousel-progress {
+        margin-left: 0;
+    }
 }
