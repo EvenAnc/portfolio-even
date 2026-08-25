@@ -4120,3 +4120,48 @@ textarea:focus-visible,
         transition: stroke-dashoffset 0.40s var(--ease-out);
     }
 }
+
+/* ── 17. La barre du haut n'avait pas de fond utilisable ────────
+
+   Le fond existait bien — un degrade de rgba(26,26,26,0.85) vers le
+   transparent — mais il s'eteignait sur la hauteur de l'entete, alors
+   que TOUT le contenu est centre verticalement dedans.
+   Mesure : le logo occupe 8 -> 63px sur 72, soit le milieu exact ; a
+   cet endroit le degrade ne vaut plus que 0,44 d'opacite. Le texte de
+   la page passait donc a moitie au travers, et les deux devenaient
+   illisibles. Sur PC le probleme est identique, simplement moins
+   frequent : l'ecran etant large, peu de textes passent derriere.
+
+   Correction : le fond descend maintenant 30px SOUS l'entete. Le
+   fondu se joue dans ce debord, hors de la zone qui porte le texte,
+   au lieu de se jouer par-dessus. La bande reste douce a l'oeil — pas
+   de bord net — mais le logo, les pastilles de langue et les icones
+   reposent desormais sur un fond a 0,96.
+
+   Pose en ::before plutot que sur l'entete elle-meme : il faut pouvoir
+   deborder sans changer la hauteur de la barre, qui sert de reference
+   au bouton retour et aux marges hautes des pages.
+
+   Pas de backdrop-filter volontairement : un flou permanent sur une
+   bande toujours visible coute cher au defilement sur les appareils
+   modestes, et le degrade suffit a rendre le texte lisible. */
+.site-header {
+    background: none;
+}
+
+.site-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -30px;      /* le fondu se joue ici, sous le texte */
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+        rgba(26, 26, 26, 0.97) 0%,
+        rgba(26, 26, 26, 0.96) 60%,
+        rgba(26, 26, 26, 0.86) 74%,
+        rgba(26, 26, 26, 0.45) 88%,
+        rgba(26, 26, 26, 0) 100%);
+}
