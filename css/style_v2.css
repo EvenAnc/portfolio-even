@@ -2545,11 +2545,24 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
         transform: translateY(0) scale(1) rotate(5deg) !important;
     }
 
-    /* ── Dessin Noir et Blanc (3ème) : rétrécissement pour faire de la place ── */
-    .drawing-item:nth-child(3).is-inview .frame-wrap {
-        transform: scale(0.70) translateX(-18%);
-        transition: transform 0.8s var(--ease-out) 0.1s;
-    }
+    /* ── Dessin Noir et Blanc (3eme) ─────────────────────────
+       Il y avait ici un « retrecissement pour faire de la place » :
+       scale(0.70) translateX(-18%), declenche a l'entree a l'ecran et
+       sur tactile uniquement. Il faisait passer la planche de 368 a
+       258px et la decalait de 46px vers la gauche — c'est le dessin
+       « mal cadre » signale par Even, et le « il s'agrandit quand je
+       scroll » (l'observateur retire .is-inview quand l'element sort
+       de l'ecran, la planche revient a 100% en 0,8s).
+
+       La place a gagner etait celle de la photo de reference, alors
+       epinglee a right: -110px. Elle est depuis rapatriee dans le
+       cadre (right: -6px) : le retrecissement ne servait plus a rien,
+       il ne faisait plus que du degat. Supprime.
+
+       Il etait invisible dans mon navigateur d'essai pour deux raisons
+       cumulees : .is-inview n'y est jamais pose (l'observateur ne
+       repond pas) et la transition y est gelee, donc meme en posant la
+       classe a la main on ne lit que la valeur de depart. */
 
     /* Disable hover rules for mobile on extras when not in view */
     .drawing-item:not(.is-inview):hover .ref-photo { opacity: 0; }
