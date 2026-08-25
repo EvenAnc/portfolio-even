@@ -4018,3 +4018,61 @@ textarea:focus-visible,
         right: -6px;
     }
 }
+
+/* ── 15. Le dessin changeait de cadrage sous le doigt ────────────
+
+   Even : « toujours mal cadre le dessin en noir et blanc sur telephone,
+   mais quand je scroll vers le haut j'ai l'impression qu'il s'agrandit ».
+   Les deux phrases decrivent le meme defaut, vu a deux instants.
+
+   Les planches portent un recadrage de base : .drawing-sheet img est
+   agrandi de 18% pour manger les marges blanches du scan.
+
+   Trois regles ecrasent ce recadrage au lieu de s'y ajouter, parce
+   qu'elles reecrivent « transform » en entier :
+     .frame-wrap:active ... { transform: scale(1.04) }  (retour tactile)
+     .frame-wrap:hover  ... { transform: none }         (annulation mobile)
+     .torn-frame:hover  ... { transform: none }
+
+   La coupable principale est :active. Elle est active TANT QUE LE
+   DOIGT EST POSE — donc pendant tout un geste de defilement. L'image
+   retombait alors de 118% a 104% : les marges blanches du scan
+   revenaient dans le cadre, d'ou le dessin « mal cadre ». Doigt leve,
+   retour a 118% en 0,2s : c'est le « il s'agrandit quand je scroll ».
+   Invisible sur PC, ou l'on ne maintient jamais le clic sur une image.
+
+   On ne supprime pas le retour tactile — Even y tient — on le calcule
+   a partir du recadrage au lieu de le remplacer : 1,18 x 1,04 = 1,23.
+   Le survol colle, lui, ne doit rien changer du tout : il revient a la
+   valeur de repos.
+
+   :not(.pdf-img) est indispensable : les plans cotes ont deliberement
+   transform: none pour ne pas rogner leurs cotations.
+
+   Vaut pour les dessins de la galerie ET pour les planches de bande
+   dessinee : meme structure, meme defaut. */
+@media (max-width: 768px) {
+    .frame-wrap:hover .torn-frame .drawing-sheet img:not(.pdf-img),
+    .torn-frame:hover .drawing-sheet img:not(.pdf-img),
+    .drawing-sheet:hover img:not(.pdf-img) {
+        transform: scale(1.18);
+    }
+    .frame-wrap:active .torn-frame .drawing-sheet img:not(.pdf-img),
+    .drawing-sheet:active img:not(.pdf-img) {
+        transform: scale(1.23);
+    }
+}
+
+/* Le meme defaut existe sur grand ecran, en plus discret : au survol,
+   .torn-frame:hover remplace le recadrage de 1,18 par 1,04, donc le
+   dessin RETRECIT au lieu de zoomer legerement — l'inverse de ce que
+   la regle voulait faire. On ne le remarque pas parce que la carte
+   entiere grandit de 8% en meme temps. Meme correction, meme calcul.
+   Enferme dans (hover: hover) pour ne pas repasser devant la regle
+   tactile ci-dessus. */
+@media (hover: hover) {
+    .frame-wrap:hover .torn-frame .drawing-sheet img:not(.pdf-img),
+    .torn-frame:hover .drawing-sheet img:not(.pdf-img) {
+        transform: scale(1.23);
+    }
+}
