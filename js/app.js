@@ -10,6 +10,38 @@
 // ils n'avaient NI le survol reel, NI l'equivalent tactile.
 const REQUETE_TACTILE = '(hover: none), (pointer: coarse)';
 
+// Au doigt, un appui ouvre la visionneuse instantanement : le rectangle
+// rouge n'a pas le temps de se dessiner, et Even ne voit jamais
+// l'animation qu'il voit pourtant a la souris. On retient donc
+// l'ouverture juste assez pour la laisser se jouer en entier.
+//
+// 1,5 s (la duree du trace a la souris) serait insupportable sur un
+// appui. Le trace est donc accelere a 0,40 s cote CSS, et l'ouverture
+// attend 0,46 s : l'animation se termine, puis la visionneuse s'ouvre.
+// En dessous de ~0,3 s on ne percoit rien ; au-dela de ~0,5 s l'appui
+// commence a sembler ignore.
+const TACTILE_TRACE = 460;
+
+// Joue le trace du cadre rouge, puis execute l'action. A la souris —
+// ou si l'element n'a pas de cadre a dessiner — rien n'est retarde.
+function tracerPuis(element, action) {
+    if (!window.matchMedia(REQUETE_TACTILE).matches) { action(); return; }
+
+    const cadre = element.closest('.frame-wrap');
+    if (!cadre || !cadre.querySelector('.sketch-rect-svg')) { action(); return; }
+
+    // Un second appui pendant l'animation ne doit pas ouvrir deux fois.
+    if (cadre.dataset.traceEnCours) return;
+    cadre.dataset.traceEnCours = '1';
+    cadre.classList.add('trace-tactile');
+
+    setTimeout(() => {
+        cadre.classList.remove('trace-tactile');
+        delete cadre.dataset.traceEnCours;
+        action();
+    }, TACTILE_TRACE);
+}
+
 // ─────────────────────────────────────
 // TRADUCTIONS FR / EN
 // ─────────────────────────────────────
@@ -2014,8 +2046,10 @@ function initDrawingLightbox() {
             const allElements = Array.from(document.querySelectorAll('.drawing-item, #page-drawings .bd-slide'));
             const idx = allElements.indexOf(parentItem);
             if (idx !== -1) {
-                currentGallery = allDrawings;
-                openLightbox(idx);
+                tracerPuis(item, () => {
+                    currentGallery = allDrawings;
+                    openLightbox(idx);
+                });
             }
         });
     });
@@ -2045,12 +2079,14 @@ function initDrawingLightbox() {
                     }
                 }
 
-                if (foundGallery && foundIndex !== -1) {
-                    currentGallery = foundGallery;
-                    openLightbox(foundIndex);
-                } else {
-                    openSingleImage(url, "Plan Architecture");
-                }
+                tracerPuis(wrap, () => {
+                    if (foundGallery && foundIndex !== -1) {
+                        currentGallery = foundGallery;
+                        openLightbox(foundIndex);
+                    } else {
+                        openSingleImage(url, "Plan Architecture");
+                    }
+                });
             }
         });
     });
@@ -2060,7 +2096,7 @@ function initDrawingLightbox() {
         trigger.addEventListener('click', () => {
             const src = trigger.getAttribute('src');
             const alt = trigger.getAttribute('alt');
-            if (src) openSingleImage(src, alt);
+            if (src) tracerPuis(trigger, () => openSingleImage(src, alt));
         });
     });
 
@@ -2427,7 +2463,7 @@ function initScrollAnimationsMobile() {
             const idx = parseInt(item.getAttribute('data-coupe-index'), 10);
             // Use the drawing lightbox with diplomeCoupes gallery
             if (typeof window._openDrawingGallery === 'function') {
-                window._openDrawingGallery(diplomeCoupes, idx);
+                tracerPuis(item, () => window._openDrawingGallery(diplomeCoupes, idx));
             }
         });
     });
