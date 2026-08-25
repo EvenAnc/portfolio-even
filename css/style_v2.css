@@ -4123,27 +4123,39 @@ textarea:focus-visible,
 
 /* ── 17. La barre du haut n'avait pas de fond utilisable ────────
 
-   Le fond existait bien — un degrade de rgba(26,26,26,0.85) vers le
-   transparent — mais il s'eteignait sur la hauteur de l'entete, alors
-   que TOUT le contenu est centre verticalement dedans.
+   Even : « la barre du haut n'a pas de fond, quand du texte passe
+   derriere ca devient illisible » — et le meme souci sur PC, juste
+   moins visible parce que l'ecran est plus large.
+
+   Un fond existait pourtant : un degrade de rgba(26,26,26,0.85) vers
+   le transparent. Mais il s'eteignait sur la hauteur de l'entete,
+   alors que TOUT son contenu est centre verticalement dedans.
    Mesure : le logo occupe 8 -> 63px sur 72, soit le milieu exact ; a
-   cet endroit le degrade ne vaut plus que 0,44 d'opacite. Le texte de
-   la page passait donc a moitie au travers, et les deux devenaient
-   illisibles. Sur PC le probleme est identique, simplement moins
-   frequent : l'ecran etant large, peu de textes passent derriere.
+   cette hauteur le degrade ne valait plus que 0,44.
 
-   Correction : le fond descend maintenant 30px SOUS l'entete. Le
-   fondu se joue dans ce debord, hors de la zone qui porte le texte,
-   au lieu de se jouer par-dessus. La bande reste douce a l'oeil — pas
-   de bord net — mais le logo, les pastilles de langue et les icones
-   reposent desormais sur un fond a 0,96.
+   Le fond descend donc maintenant 40px SOUS l'entete : le fondu se
+   joue dans ce debord, en dehors de la zone qui porte le texte.
 
-   Pose en ::before plutot que sur l'entete elle-meme : il faut pouvoir
-   deborder sans changer la hauteur de la barre, qui sert de reference
-   au bouton retour et aux marges hautes des pages.
+   POURQUOI AUTANT DE PALIERS
+   Ma premiere version n'en avait que cinq, et Even a vu « un genre de
+   trait dans le degrade ». Ce n'etait pas un defaut d'affichage mais
+   de courbe : la pente changeait brutalement d'un palier a l'autre
+   (x42 a 60%, x4 a 74%). L'oeil ne voit pas une valeur, il voit une
+   RUPTURE de pente — c'est l'effet de bande de Mach, et il dessine un
+   trait la ou il n'y en a aucun.
+   Les paliers ci-dessous suivent une courbe « smootherstep », dont la
+   pente est nulle aux deux extremites et varie continument entre les
+   deux. Saut de pente maximal par pixel : 0,0217 avant, 0,0044 apres
+   — cinq fois moins — et reparti sur trente paliers au lieu d'etre
+   concentre sur deux. Trente paliers ne coutent rien : le navigateur
+   rasterise le degrade une seule fois.
 
-   Pas de backdrop-filter volontairement : un flou permanent sur une
-   bande toujours visible coute cher au defilement sur les appareils
+   Pose en ::before et non sur l'entete elle-meme : il faut pouvoir
+   deborder vers le bas sans changer la hauteur de la barre, qui sert
+   de reference au bouton retour et aux marges hautes des pages.
+
+   Pas de backdrop-filter, volontairement : un flou permanent sur une
+   bande toujours a l'ecran coute cher au defilement sur les appareils
    modestes, et le degrade suffit a rendre le texte lisible. */
 .site-header {
     background: none;
@@ -4155,13 +4167,38 @@ textarea:focus-visible,
     top: 0;
     left: 0;
     right: 0;
-    bottom: -30px;      /* le fondu se joue ici, sous le texte */
+    bottom: -40px;      /* le fondu se joue ici, sous le texte */
     z-index: -1;
     pointer-events: none;
     background: linear-gradient(180deg,
         rgba(26, 26, 26, 0.97) 0%,
-        rgba(26, 26, 26, 0.96) 60%,
-        rgba(26, 26, 26, 0.86) 74%,
-        rgba(26, 26, 26, 0.45) 88%,
+        rgba(26, 26, 26, 0.97) 60%,
+        rgba(26, 26, 26, 0.9696) 61.43%,
+        rgba(26, 26, 26, 0.9668) 62.86%,
+        rgba(26, 26, 26, 0.9599) 64.29%,
+        rgba(26, 26, 26, 0.9474) 65.71%,
+        rgba(26, 26, 26, 0.9285) 67.14%,
+        rgba(26, 26, 26, 0.9026) 68.57%,
+        rgba(26, 26, 26, 0.8696) 70%,
+        rgba(26, 26, 26, 0.8296) 71.43%,
+        rgba(26, 26, 26, 0.7832) 72.86%,
+        rgba(26, 26, 26, 0.731) 74.29%,
+        rgba(26, 26, 26, 0.674) 75.71%,
+        rgba(26, 26, 26, 0.6132) 77.14%,
+        rgba(26, 26, 26, 0.5497) 78.57%,
+        rgba(26, 26, 26, 0.485) 80%,
+        rgba(26, 26, 26, 0.4203) 81.43%,
+        rgba(26, 26, 26, 0.3568) 82.86%,
+        rgba(26, 26, 26, 0.296) 84.29%,
+        rgba(26, 26, 26, 0.239) 85.71%,
+        rgba(26, 26, 26, 0.1868) 87.14%,
+        rgba(26, 26, 26, 0.1404) 88.57%,
+        rgba(26, 26, 26, 0.1004) 90%,
+        rgba(26, 26, 26, 0.0674) 91.43%,
+        rgba(26, 26, 26, 0.0415) 92.86%,
+        rgba(26, 26, 26, 0.0226) 94.29%,
+        rgba(26, 26, 26, 0.0101) 95.71%,
+        rgba(26, 26, 26, 0.0032) 97.14%,
+        rgba(26, 26, 26, 0.0004) 98.57%,
         rgba(26, 26, 26, 0) 100%);
 }
