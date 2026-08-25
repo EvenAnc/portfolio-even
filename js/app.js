@@ -1148,22 +1148,7 @@ function initBDCarousel() {
                 indicator.textContent = `${currentIndex + 1} / ${slides.length}`;
             }
 
-            // LAZY PDF : rendre le PDF du slide qui devient actif s'il n'est pas encore chargé
-            const activeSlide = slides[currentIndex];
-            if (activeSlide) {
-                const canvas = activeSlide.querySelector('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)');
-                if (canvas) mettreEnFile(canvas);
-                // Pré-charger aussi le slide suivant (sans attendre)
-                const nextIdx = (currentIndex + 1) % slides.length;
-                const nextCanvas = slides[nextIdx] ? slides[nextIdx].querySelector('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)') : null;
-                if (nextCanvas) setTimeout(() => mettreEnFile(nextCanvas), 300);
-            }
-
-            if (isPlaying) {
-                startAutoplay();
-            } else if (progressBar) {
-                progressBar.style.width = '0%';
-            }
+            majAutoplay();
         }
 
 
@@ -1200,7 +1185,7 @@ function initBDCarousel() {
             if (isPlaying) {
                 if(iconPause) iconPause.style.display = 'block';
                 if(iconPlay) iconPlay.style.display = 'none';
-                startAutoplay();
+                majAutoplay();
             } else {
                 if(iconPause) iconPause.style.display = 'none';
                 if(iconPlay) iconPlay.style.display = 'block';
@@ -1218,28 +1203,61 @@ function initBDCarousel() {
             });
         }
 
-        // FIX P-01b : le carrousel demarrait TOUJOURS a l'init, meme quand sa
-        // page etait invisible. Le MutationObserver ci-dessous ne reagit qu'aux
-        // CHANGEMENTS de classe : comme l'etat initial (inactif) n'est pas un
-        // changement, l'autoplay du carrousel de la page « projet diplome »
-        // tournait dans le vide et telechargeait un PDF toutes les 5 secondes
-        // depuis la page d'accueil. On ne demarre donc que si la page est active ;
-        // l'observer prend le relais des qu'elle s'ouvre.
+        // ── Quand le carrousel a-t-il le droit de defiler ? ──────────────
+        //
+        // Deux conditions, et non plus une seule :
+        //   la page doit etre ouverte  ET  le carrousel doit etre a l'ecran.
+        //
+        // Avant, il suffisait que la page soit ouverte. Le carrousel de la
+        // bande dessinee se trouvant tout en bas de la page Dessins, il
+        // defilait pendant qu'Even lisait le haut de la page : le temps
+        // d'arriver dessus, il en etait deja a la planche 3. Meme chose sur
+        // les pages projet, ou les panneaux s'enchainent.
+        //
+        // Une seule fonction decide desormais, et tout le monde passe par
+        // elle — c'est ce qui garantit qu'on ne puisse plus laisser le
+        // carrousel dans un etat fige par accident.
         const parentPage = container.closest('.page');
-        const pageIsActive = !parentPage || parentPage.classList.contains('is-active');
-        if (pageIsActive) startAutoplay();
+        let pageOuverte = !parentPage || parentPage.classList.contains('is-active');
+        let aLEcran = false;
+
+        function majAutoplay() {
+            if (isPlaying && pageOuverte && aLEcran) startAutoplay();
+            else stopAutoplay();
+        }
+
+        if ('IntersectionObserver' in window) {
+            let observateurARepondu = false;
+            new IntersectionObserver(entrees => {
+                observateurARepondu = true;
+                aLEcran = entrees[0].isIntersecting;
+                majAutoplay();
+            }, { threshold: 0.3 }).observe(container);
+
+            // Filet de securite. Un navigateur qui gere IntersectionObserver
+            // repond dans la foulee, meme pour dire « pas visible » : le
+            // minuteur ne sert alors a rien. Mais si l'API existe sans
+            // fonctionner, le carrousel resterait fige pour toujours — et
+            // c'est precisement le defaut qu'on est en train de corriger. On
+            // repasse donc en marche par defaut au bout de 4 secondes de
+            // silence complet.
+            setTimeout(() => {
+                if (!observateurARepondu) {
+                    aLEcran = true;
+                    majAutoplay();
+                }
+            }, 4000);
+        } else {
+            aLEcran = true;
+            majAutoplay();
+        }
 
         if (parentPage) {
-            let wasActive = parentPage.classList.contains('is-active');
             const pageObserver = new MutationObserver(() => {
-                const isPageActive = parentPage.classList.contains('is-active');
-                if (isPageActive !== wasActive) {
-                    wasActive = isPageActive;
-                    if (!isPageActive && isPlaying) {
-                        stopAutoplay();
-                    } else if (isPageActive && isPlaying) {
-                        startAutoplay();
-                    }
+                const ouverte = parentPage.classList.contains('is-active');
+                if (ouverte !== pageOuverte) {
+                    pageOuverte = ouverte;
+                    majAutoplay();
                 }
             });
             pageObserver.observe(parentPage, { attributes: true, attributeFilter: ['class'] });
@@ -1252,13 +1270,21 @@ function initBDCarousel() {
                 bdTouchStartX = e.changedTouches[0].clientX;
                 stopAutoplay();
             }, { passive: true });
+            // Le simple fait de poser le doigt coupait le defilement — et
+            // rien ne le relancait. Or on pose le doigt sur l'image des qu'on
+            // fait defiler la page : le carrousel restait donc fige tant
+            // qu'on n'avait pas appuye sur une fleche. On relance apres
+            // chaque contact qui n'etait pas un balayage.
             bdViewport.addEventListener('touchend', e => {
                 const dx = e.changedTouches[0].clientX - bdTouchStartX;
                 if (Math.abs(dx) > 40) {
                     if (dx < 0) nextSlide();
                     else prevSlide();
+                } else {
+                    majAutoplay();
                 }
             }, { passive: true });
+            bdViewport.addEventListener('touchcancel', () => majAutoplay(), { passive: true });
         }
     });
 }

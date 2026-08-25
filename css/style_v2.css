@@ -3899,12 +3899,29 @@ textarea:focus-visible,
 @media (max-width: 768px) {
     .lb-arrow {
         top: auto;
-        bottom: 44px;
+        /* Meme ancrage EXACT que .lb-tools. J'avais ecrit 44px tout court :
+           sur un telephone a barre de gestes, env(safe-area-inset-bottom)
+           vaut une trentaine de pixels, la barre d'outils remontait
+           d'autant et les fleches restaient en bas. Invisible sur mon
+           navigateur de test, ou cette valeur vaut zero. */
+        bottom: calc(44px + env(safe-area-inset-bottom, 0px));
         height: 70px;
+        min-height: 70px;
         transform: none;
     }
     .lb-prev { left: 14px; }
     .lb-next { right: 14px; }
+
+    /* Au doigt, l'etat :hover reste colle apres l'appui. Le survol
+       reappliquait translateY(-50%), heritee de la disposition bureau ou
+       la fleche est centree verticalement : la fleche touchee sautait de
+       35px vers le haut et se desalignait de sa voisine. On ne garde que
+       l'eclaircissement de la couleur. */
+    .lb-arrow:hover,
+    .lb-arrow:focus,
+    .lb-arrow:active {
+        transform: none;
+    }
 }
 
 /* ── 13. Carrousels des pages projet : fleches ramenees sous la planche
@@ -3946,5 +3963,58 @@ textarea:focus-visible,
     }
     .panel-section .bd-carousel-progress {
         margin-left: 0;
+    }
+}
+
+/* ── 14. Page Dessins sur telephone ───────────────────────────
+
+   a) LES DESSINS SONT TROP PETITS
+   La page reserve 30px de marge et .page-inner 20px de plus : 50px de
+   chaque cote, soit 312px utiles sur les 412 de l'ecran. Pour un dessin
+   a l'encre charge en details, c'est un quart de la surface perdu.
+   La galerie ressort de ces marges (elle seule : le titre et le chapeau
+   de page gardent leur alignement) et passe a 368px, soit +18%.
+
+   b) LA PHOTO DE REFERENCE ETAIT MINUSCULE ET MAL RECADREE
+   Deux defauts distincts. La vignette tombait a 78px de large, dont 20
+   de marge blanche : il restait 58px d'image. Et son cadre etait force
+   au carre (aspect-ratio: 1/1) alors que la photo source est un
+   portrait 600x800 — un quart de la hauteur etait coupe.
+   On l'agrandit et on lui rend ses proportions : plus rien n'est rogne.
+
+   c) LE TITRE TOMBAIT TROP LOIN SOUS LE DESSIN
+   18px mesures, mais le bord dechire de la feuille creuse encore
+   l'ecart a l'oeil. Resserre a 10px. */
+@media (max-width: 768px) {
+    .drawings-gallery {
+        margin-left: -28px;
+        margin-right: -28px;
+    }
+    .drawing-item {
+        gap: 10px;
+    }
+}
+
+@media (max-width: 991px) {
+    .ref-photo .media-frame-img {
+        aspect-ratio: 3 / 4;   /* proportions reelles de la photo source */
+    }
+    .ref-photo .media-frame-inner {
+        padding: 7px 7px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .ref-photo-wrap {
+        width: 116px;
+        right: -10px;
+        top: -12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ref-photo-wrap {
+        width: 104px;
+        right: -6px;
     }
 }
