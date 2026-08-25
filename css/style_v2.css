@@ -4089,3 +4089,34 @@ textarea:focus-visible,
         transform: scale(1.23);
     }
 }
+
+/* ── 16. Le cadre rouge n'avait pas le temps de se dessiner ──────
+
+   A la souris, survoler un cadre dessine le rectangle rouge en 1,5 s.
+   Au doigt, l'equivalent est :active — qui ne dure que le temps de
+   l'appui, une centaine de millisecondes — et la visionneuse s'ouvrait
+   dans la foulee. Even voyait donc le rouge apparaitre puis disparaitre
+   aussitot, sans jamais voir le trace : « j'ai l'impression que le
+   doigt ne marche pas ».
+
+   tracerPuis() dans app.js pose la classe ci-dessous, attend 460 ms,
+   puis ouvre. Ici on accelere le trace a 0,40 s pour qu'il tienne
+   entierement dans ce delai — a 1,5 s on n'en verrait qu'un quart.
+
+   Selecteur en descendance et non en enfant direct : le cadre des
+   carrousels (.bd-frame-svg) est bien un enfant direct, mais rien ne
+   garantit que ce soit toujours le cas.
+
+   Vaut pour tous les appareils tactiles, Android comme iPhone : le
+   declencheur est un evenement « click », que les deux emettent, et
+   non un evenement de survol propre a l'un ou a l'autre. */
+@media (hover: none), (pointer: coarse) {
+    .frame-wrap.trace-tactile .sketch-rect-svg {
+        opacity: 1;
+        transition-delay: 0s;
+    }
+    .frame-wrap.trace-tactile .sketch-rect-svg .sketch-rect-path {
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 0.40s var(--ease-out);
+    }
+}
