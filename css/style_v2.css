@@ -4413,123 +4413,183 @@ textarea:focus-visible,
     }
 }
 
-/* ── 22. La citation de fin du projet diplome ───────────────
+/* ── 22. La citation de fin, et la page qui respire autour ──────
 
-   Demande d'Even : l'inverse de l'animation du logo. La ou le grand
-   logo retrecit et disparait quand on descend, ici un petit rectangle
-   noir s'ouvre jusqu'a occuper tout l'ecran, avec la phrase au centre
-   et l'auteur en bas. Puis le noir se retire et la page reprend.
+   Premiere version : un panneau noir plein ecran, colle, qui recouvrait
+   tout. Even : « je veux quelque chose de plus fin, plus smooth [...]
+   pas un gros rectangle noir qui en plus reste gros une fois que je
+   suis passe ».
 
-   PRINCIPE : une piste de defilement de 230vh, dans laquelle un
-   panneau colle a l'ecran (position: sticky) pendant qu'on la
-   traverse. Le noir est un clip-path qui s'ouvre. Aucune bibliotheque,
-   aucun script.
+   Ce qu'il decrit est plus juste et plus beau : les vides au-dessus et
+   au-dessous de la phrase sont serres quand elle est loin, et s'ouvrent
+   a mesure qu'elle approche du centre de l'ecran. Puis ils se
+   referment. La page respire une fois, autour d'elle.
 
-   Le defilement de ce site se fait DANS l'element .page, pas dans la
-   fenetre. C'est lui le conteneur de reference, aussi bien pour le
-   collage que pour la piste d'animation.
+   TROIS CHOSES SE FONT ENSEMBLE, sur la meme courbe :
+     les deux vides passent de 5vh a 27vh
+     la phrase monte de 0,32 a 1 d'opacite
+     le fond s'assombrit de 0 a 1
+   Rien ne subsiste apres le passage, tout revient a son etat de repos.
 
-   DEGRADATION : l'etat par defaut, ecrit hors de toute condition, est
-   l'etat FINAL, citation lisible sur fond noir. L'animation ne fait
-   que l'amener. Un navigateur qui ignore les animations liees au
-   defilement affiche donc une belle citation fixe, jamais une page
-   cassee. Meme chose si le visiteur a demande moins d'animations. */
+   LA COURBE : sin^2(pi*t). Sa pente est nulle aux deux extremites et
+   varie continument entre les deux. Aucune cassure au depart ni a
+   l'arrivee, c'est ce qui fait la fluidite. Quinze paliers, comme pour
+   le fond de l'en-tete, et pour la meme raison : l'oeil lit les
+   ruptures de pente, pas les valeurs.
 
-.quote-stage {
+   LE PIEGE EVITE : faire grandir un element modifie la hauteur de la
+   page, donc la position de cet element, donc l'avancement de sa propre
+   animation. Boucle. On ancre donc la piste sur .qb-body, dont la
+   taille ne bouge JAMAIS, et les vides s'y referent par un nom.
+   D'ou view-timeline-name et timeline-scope.
+
+   Mise en page reprise de la page de fin du dossier de diplome : la
+   phrase entre guillemets au centre, le nom juste en dessous en
+   italique, rien d'autre. */
+
+.quote-band {
     position: relative;
-    height: 230vh;          /* la piste que l'on traverse */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* rend le nom de piste visible aux enfants */
+    timeline-scope: --citation;
 }
 
-.quote-sticky {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100dvh;         /* sur telephone, la barre d'adresse ne triche plus */
-    overflow: hidden;
-    display: grid;
-    place-items: center;
-    /* au-dessus de l'en-tete (z-index 100) : Even veut « rien d'autre »
-       a l'ecran pendant ce moment. */
-    z-index: 200;
-}
-
-.quote-veil {
+/* Le fond : un degrade qui s'eteint en haut et en bas, pour qu'aucun
+   bord net ne dessine un rectangle. */
+.quote-band::before {
+    content: '';
     position: absolute;
     inset: 0;
-    background: #0a0a0a;
-    /* Etat par defaut : deja ouvert. L'animation part d'un petit
-       rectangle et vient jusqu'ici. */
-    clip-path: inset(0);
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(180deg,
+        rgba(10, 10, 10, 0) 0%,
+        rgba(10, 10, 10, 0.85) 24%,
+        rgba(10, 10, 10, 0.85) 76%,
+        rgba(10, 10, 10, 0) 100%);
 }
 
-.quote-body {
-    position: relative;
-    z-index: 1;
+.qb-air {
+    height: 16vh;      /* etat de repos ; l'animation prend le relais */
+    flex: none;
+}
+
+.qb-body {
+    /* taille fixe : c'est elle qui sert de reference a la piste */
+    view-timeline-name: --citation;
+    view-timeline-axis: block;
     margin: 0;
     padding: 0 32px;
-    max-width: 40rem;
+    max-width: 44rem;
     text-align: center;
 }
 
-.quote-text {
+.qb-text {
     margin: 0;
     font-family: var(--font-body);
     font-weight: 300;
-    font-size: clamp(1.35rem, 3.6vw, 2.35rem);
-    line-height: 1.45;
-    letter-spacing: 0.005em;
+    font-size: clamp(1.2rem, 2.9vw, 1.9rem);
+    line-height: 1.5;
     color: var(--white);
     text-wrap: balance;
     quotes: none;
 }
 
-.quote-author {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: max(52px, calc(38px + env(safe-area-inset-bottom, 0px)));
-    margin: 0;
-    font-family: var(--font-display);
+.qb-text::before { content: '\00AB\00A0'; }
+.qb-text::after  { content: '\00A0\00BB'; }
+
+.qb-author {
+    margin: 22px 0 0;
+    font-family: var(--font-body);
     font-weight: 300;
-    font-size: clamp(0.78rem, 1.8vw, 0.95rem);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--red);
-    white-space: nowrap;
+    font-style: italic;
+    font-size: clamp(0.86rem, 1.7vw, 1rem);
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.5);
 }
 
-/* — L'ouverture, liee au defilement —————————————————
-   Natif, calcule par le navigateur, sans une ligne de script. Enferme
-   dans @supports : la ou ce n'est pas gere, l'etat par defaut ci-dessus
-   reste en place et la citation s'affiche simplement. */
-@supports (animation-timeline: view()) {
+/* — La respiration, liee au defilement ———————————————
+   Natif, sans une ligne de script. Enferme dans @supports : la ou ce
+   n'est pas gere, l'etat de repos ci-dessus reste en place et la
+   citation s'affiche simplement, bien mise en page. */
+@supports (animation-timeline: view()) and (timeline-scope: --x) {
     @media (prefers-reduced-motion: no-preference) {
-        .quote-veil {
-            animation: ouvrir-le-noir linear both;
-            animation-timeline: view();
-            animation-range: entry 10% cover 62%;
+        .qb-air {
+            animation: qb-respirer linear both;
+            animation-timeline: --citation;
+            animation-range: cover 0% cover 100%;
         }
-        .quote-body {
-            animation: venir-la-phrase linear both;
-            animation-timeline: view();
-            animation-range: entry 40% cover 55%;
+        .qb-body {
+            animation: qb-monter linear both;
+            animation-timeline: --citation;
+            animation-range: cover 0% cover 100%;
+        }
+        .quote-band::before {
+            animation: qb-assombrir linear both;
+            animation-timeline: --citation;
+            animation-range: cover 0% cover 100%;
         }
     }
 }
 
-@keyframes ouvrir-le-noir {
-    from { clip-path: inset(47% 44% 47% 44%); }
-    to   { clip-path: inset(0% 0% 0% 0%); }
+@keyframes qb-respirer {
+        0% { height: 5vh; }
+        7.1% { height: 6.089vh; }
+        14.3% { height: 9.142vh; }
+        21.4% { height: 13.552vh; }
+        28.6% { height: 18.448vh; }
+        35.7% { height: 22.858vh; }
+        42.9% { height: 25.911vh; }
+        50% { height: 27vh; }
+        57.1% { height: 25.911vh; }
+        64.3% { height: 22.858vh; }
+        71.4% { height: 18.448vh; }
+        78.6% { height: 13.552vh; }
+        85.7% { height: 9.142vh; }
+        92.9% { height: 6.089vh; }
+        100% { height: 5vh; }
 }
 
-@keyframes venir-la-phrase {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
+@keyframes qb-monter {
+        0% { opacity: 0.32; }
+        7.1% { opacity: 0.354; }
+        14.3% { opacity: 0.448; }
+        21.4% { opacity: 0.584; }
+        28.6% { opacity: 0.736; }
+        35.7% { opacity: 0.872; }
+        42.9% { opacity: 0.966; }
+        50% { opacity: 1; }
+        57.1% { opacity: 0.966; }
+        64.3% { opacity: 0.872; }
+        71.4% { opacity: 0.736; }
+        78.6% { opacity: 0.584; }
+        85.7% { opacity: 0.448; }
+        92.9% { opacity: 0.354; }
+        100% { opacity: 0.32; }
+}
+
+@keyframes qb-assombrir {
+        0% { opacity: 0; }
+        7.1% { opacity: 0.05; }
+        14.3% { opacity: 0.188; }
+        21.4% { opacity: 0.389; }
+        28.6% { opacity: 0.611; }
+        35.7% { opacity: 0.812; }
+        42.9% { opacity: 0.95; }
+        50% { opacity: 1; }
+        57.1% { opacity: 0.95; }
+        64.3% { opacity: 0.812; }
+        71.4% { opacity: 0.611; }
+        78.6% { opacity: 0.389; }
+        85.7% { opacity: 0.188; }
+        92.9% { opacity: 0.05; }
+        100% { opacity: 0; }
 }
 
 @media (max-width: 768px) {
-    .quote-stage { height: 200vh; }
-    .quote-body { padding: 0 24px; max-width: 26rem; }
-    .quote-text { line-height: 1.5; }
-    .quote-author { letter-spacing: 0.16em; bottom: max(40px, calc(28px + env(safe-area-inset-bottom, 0px))); }
+    .qb-body { padding: 0 24px; max-width: 28rem; }
+    .qb-text { line-height: 1.55; }
+    .qb-author { margin-top: 18px; }
 }

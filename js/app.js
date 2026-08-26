@@ -49,7 +49,7 @@ const i18n = {
     fr: {
         choice_text2: "Restait à le rendre viable. Installer une station essence en zone inflammable, juste à côté d'une oliveraie, ça ne va pas de soi. Ce sont ces contraintes qui ont fini par donner au projet ses lignes directrices et qui l'ont rendu réalisable.",
         quote_text: "Quand les détails réussissent, ils ne distraient pas et n'amusent pas. Ils conduisent à la compréhension de l'ensemble dont ils font partie.",
-        quote_author: "Peter Zumthor, architecte",
+        quote_author: "Peter Zumthor",
         tools_zooning: "InDesign · Procreate",
         tools_plans: "ArchiCAD · Photoshop",
         tools_coupes: "ArchiCAD · Photoshop",
@@ -149,7 +149,7 @@ const i18n = {
     en: {
         choice_text2: "Then it had to be made workable. Putting a filling station in a fire-prone area, right next to an olive grove, is not obvious. Those constraints ended up giving the project its guiding lines, and made it buildable.",
         quote_text: "When details succeed, they do not distract or entertain. They lead to an understanding of the whole of which they are an inherent part.",
-        quote_author: "Peter Zumthor, architect",
+        quote_author: "Peter Zumthor",
         tools_zooning: "InDesign · Procreate",
         tools_plans: "ArchiCAD · Photoshop",
         tools_coupes: "ArchiCAD · Photoshop",
