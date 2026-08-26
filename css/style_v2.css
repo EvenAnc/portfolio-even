@@ -4432,3 +4432,18 @@ textarea:focus-visible,
     .pf-grid { grid-template-columns: repeat(3, 1fr); }
     .pf-item:nth-child(4) { grid-column: 1 / 3; }
 }
+
+/* La visionneuse s'ouvre normalement en fondu sur 0,35s. Pendant une
+   transition de vue, ce fondu est nuisible : au moment ou le navigateur
+   photographie l'image d'arrivee, l'opacite vaut encore 0 et la planche
+   grandit vers du vide. On la rend visible d'un coup — l'animation, c'est
+   la transition qui la fait. La classe est retiree juste apres, pour que
+   la fermeture retrouve son fondu.
+   Meme poids que .drawing-lightbox[aria-hidden="false"], mais posee plus
+   loin dans le fichier : c'est elle qui l'emporte. */
+.drawing-lightbox.sans-fondu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: none;
+}
