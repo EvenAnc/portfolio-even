@@ -4161,59 +4161,38 @@ textarea:focus-visible,
    Pas de backdrop-filter, volontairement : un flou permanent sur une
    bande toujours a l'ecran coute cher au defilement sur les appareils
    modestes, et le degrade suffit a rendre le texte lisible. */
-/* La couleur du bandeau doit suivre celle de la page. Les pages projet
-   sont en rgb(17,17,17), tout le reste du site en rgb(26,26,26) : fige
-   sur la seconde valeur, le bandeau apparaissait en gris clair au-dessus
-   des pages projet. Le corps porte deja la classe a-bouton-retour sur
-   ces pages, on s'en sert. */
-:root { --entete-rgb: 26, 26, 26; }
-body.a-bouton-retour { --entete-rgb: 17, 17, 17; }
+/* — Le bandeau ne peint plus, il floute ———————————————
+   Il portait une couleur fixe, puis une couleur par page. Even : « vu
+   que j'ai des changements de couleur ca rend mal, mets-le en
+   transparent et fais juste un effet de flou, comme ca plus de soucis
+   de couleur vu que ca prendra la couleur qui est derriere ». C'est la
+   bonne reponse : un flou n'a pas de teinte propre, il reprend
+   forcement ce qu'il y a dessous.
 
-.site-header {
-    background: none;
-}
+   Le voile noir a 0,3 qui l'accompagne n'est pas une couleur mais un
+   assombrissement. Il ne peut pas jurer avec le fond puisqu'il ne fait
+   que le foncer, et il garantit la lisibilite du logo blanc quand un
+   plan clair passe derriere. Le flou seul ne suffirait pas : il
+   melange les couleurs sans les assombrir.
 
+   Le masque fait disparaitre flou et voile ensemble vers le bas, pour
+   qu'aucun bord net ne trahisse la bande. */
 .site-header::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    bottom: -40px;      /* le fondu se joue ici, sous le texte */
+    bottom: -40px;
     z-index: -1;
     pointer-events: none;
-    background: linear-gradient(180deg,
-        rgba(var(--entete-rgb), 0.97) 0%,
-        rgba(var(--entete-rgb), 0.97) 60%,
-        rgba(var(--entete-rgb), 0.9696) 61.43%,
-        rgba(var(--entete-rgb), 0.9668) 62.86%,
-        rgba(var(--entete-rgb), 0.9599) 64.29%,
-        rgba(var(--entete-rgb), 0.9474) 65.71%,
-        rgba(var(--entete-rgb), 0.9285) 67.14%,
-        rgba(var(--entete-rgb), 0.9026) 68.57%,
-        rgba(var(--entete-rgb), 0.8696) 70%,
-        rgba(var(--entete-rgb), 0.8296) 71.43%,
-        rgba(var(--entete-rgb), 0.7832) 72.86%,
-        rgba(var(--entete-rgb), 0.731) 74.29%,
-        rgba(var(--entete-rgb), 0.674) 75.71%,
-        rgba(var(--entete-rgb), 0.6132) 77.14%,
-        rgba(var(--entete-rgb), 0.5497) 78.57%,
-        rgba(var(--entete-rgb), 0.485) 80%,
-        rgba(var(--entete-rgb), 0.4203) 81.43%,
-        rgba(var(--entete-rgb), 0.3568) 82.86%,
-        rgba(var(--entete-rgb), 0.296) 84.29%,
-        rgba(var(--entete-rgb), 0.239) 85.71%,
-        rgba(var(--entete-rgb), 0.1868) 87.14%,
-        rgba(var(--entete-rgb), 0.1404) 88.57%,
-        rgba(var(--entete-rgb), 0.1004) 90%,
-        rgba(var(--entete-rgb), 0.0674) 91.43%,
-        rgba(var(--entete-rgb), 0.0415) 92.86%,
-        rgba(var(--entete-rgb), 0.0226) 94.29%,
-        rgba(var(--entete-rgb), 0.0101) 95.71%,
-        rgba(var(--entete-rgb), 0.0032) 97.14%,
-        rgba(var(--entete-rgb), 0.0004) 98.57%,
-        rgba(var(--entete-rgb), 0) 100%);
+    background: rgba(0, 0, 0, 0.30);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
 }
+
 
 /* ── 18. Ce qu'Even cherche, dit des la premiere seconde ────────
 
@@ -4480,6 +4459,14 @@ EUR DE LA PAGE en plein
     flex-direction: column;
     align-items: center;
     padding-block: 6vh;     /* l'ecart au repos, fixe */
+    /* MESURE : il manquait 374px de defilement pour que l'animation
+       atteigne sa fin. Elle restait donc bloquee a 65%, et le pied de
+       page restait pousse 142px trop bas, hors d'atteinte a la molette.
+       Cette reserve donne au defilement de quoi aller jusqu'au bout.
+       Elle n'est pas animee : c'est de la place, pas un effet.
+       48vh et non 40 : sur un ecran haut, un ultra-large par exemple,
+       il ne restait que 94px de marge avant la fin de course. */
+    margin-bottom: 48vh;
 }
 
 /* Le fond s'etend au-dela du bloc pour suivre l'ecart qui s'ouvre.
@@ -4490,11 +4477,41 @@ EUR DE LA PAGE en plein
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: linear-gradient(180deg,
+    /* Deux couches. Le bruit d'abord, tres faible : un degrade aussi
+       sombre se quantifie sur 8 bits et ses paliers se voient en
+       travers de l'ecran, ce qu'Even a repere tout de suite. Le bruit
+       les casse. Ensuite le degrade lui-meme, en 21 paliers suivant la
+       meme courbe sin^2 que le reste, pour qu'aucune rupture de pente
+       ne dessine de trait. */
+    background-image:
+        url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='160'><filter%20id='b'><feTurbulence%20type='fractalNoise'%20baseFrequency='0.8'%20numOctaves='4'%20stitchTiles='stitch'/></filter><rect%20width='160'%20height='160'%20filter='url%28%23b%29'%20opacity='0.42'/></svg>"),
+        linear-gradient(180deg,
         rgba(10, 10, 10, 0) 0%,
-        rgba(10, 10, 10, 0.85) 26%,
-        rgba(10, 10, 10, 0.85) 74%,
+        rgba(10, 10, 10, 0.0201) 5%,
+        rgba(10, 10, 10, 0.0783) 10%,
+        rgba(10, 10, 10, 0.169) 15%,
+        rgba(10, 10, 10, 0.2833) 20%,
+        rgba(10, 10, 10, 0.41) 25%,
+        rgba(10, 10, 10, 0.5367) 30%,
+        rgba(10, 10, 10, 0.651) 35%,
+        rgba(10, 10, 10, 0.7417) 40%,
+        rgba(10, 10, 10, 0.7999) 45%,
+        rgba(10, 10, 10, 0.82) 50%,
+        rgba(10, 10, 10, 0.7999) 55%,
+        rgba(10, 10, 10, 0.7417) 60%,
+        rgba(10, 10, 10, 0.651) 65%,
+        rgba(10, 10, 10, 0.5367) 70%,
+        rgba(10, 10, 10, 0.41) 75%,
+        rgba(10, 10, 10, 0.2833) 80%,
+        rgba(10, 10, 10, 0.169) 85%,
+        rgba(10, 10, 10, 0.0783) 90%,
+        rgba(10, 10, 10, 0.0201) 95%,
         rgba(10, 10, 10, 0) 100%);
+    background-repeat: repeat, no-repeat;
+    background-size: 160px 160px, 100% 100%;
+    /* le bruit s'applique en fondu sur le noir, il ne l'eclaircit pas */
+    mix-blend-mode: normal;
+    opacity: 1;
 }
 
 .qb-body {
@@ -4540,26 +4557,40 @@ EUR DE LA PAGE en plein
    mise en page, et rien ne bouge. */
 @supports (animation-timeline: view()) and (timeline-scope: --x) {
     @media (prefers-reduced-motion: no-preference) {
+        /* PLAGE : de 25% a 75% de la traversee, et non de 0 a 100.
+           Deux raisons.
+           Le sommet reste exactement au centre — c'est le milieu de la
+           plage, quelle qu'elle soit.
+           Et surtout la fin devient ATTEIGNABLE : aller jusqu'a 100%
+           demanderait que la citation sorte entierement par le haut,
+           ce que la page ne permet pas puisqu'il ne reste presque rien
+           en dessous. Mesure : il manquait 374px, puis 14px apres la
+           reserve. En s'arretant a 75%, l'animation revient a zero
+           bien avant la fin de course, sur toutes les hauteurs
+           d'ecran, y compris un ultra-large. */
         #page-project-diploma .panel-choice {
             animation: qb-ecarter-haut linear both;
             animation-timeline: --citation;
-            animation-range: cover 0% cover 100%;
+            animation-range: cover 25% cover 75%;
         }
-        #page-project-diploma .page-next,
-        #page-project-diploma .site-footer {
+        /* Le pied de page n'est deliberement PAS de la partie. S'il
+           etait deplace et que l'animation n'allait pas jusqu'au bout,
+           il resterait pousse vers le bas et une partie deviendrait
+           inaccessible. C'est exactement ce qui s'est produit. */
+        #page-project-diploma .page-next {
             animation: qb-ecarter-bas linear both;
             animation-timeline: --citation;
-            animation-range: cover 0% cover 100%;
+            animation-range: cover 25% cover 75%;
         }
         .qb-body {
             animation: qb-monter linear both;
             animation-timeline: --citation;
-            animation-range: cover 0% cover 100%;
+            animation-range: cover 25% cover 75%;
         }
         .quote-band::before {
             animation: qb-assombrir linear both;
             animation-timeline: --citation;
-            animation-range: cover 0% cover 100%;
+            animation-range: cover 25% cover 75%;
         }
     }
 }
