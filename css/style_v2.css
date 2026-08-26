@@ -4458,15 +4458,15 @@ EUR DE LA PAGE en plein
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-block: 6vh;     /* l'ecart au repos, fixe */
-    /* MESURE : il manquait 374px de defilement pour que l'animation
-       atteigne sa fin. Elle restait donc bloquee a 65%, et le pied de
-       page restait pousse 142px trop bas, hors d'atteinte a la molette.
-       Cette reserve donne au defilement de quoi aller jusqu'au bout.
-       Elle n'est pas animee : c'est de la place, pas un effet.
-       48vh et non 40 : sur un ecran haut, un ultra-large par exemple,
-       il ne restait que 94px de marge avant la fin de course. */
-    margin-bottom: 48vh;
+    /* Les deux ecarts doivent etre EGAUX quand la citation est centree.
+       Mesure : 204px au-dessus, 836px en dessous. Les 632px d'ecart
+       venaient de la reserve de defilement, que j'avais posee juste
+       sous la citation. Elle est deplacee sous « suivant », ou elle ne
+       se voit pas ; il reste ici a rattraper les 40px d'ecart entre le
+       bas du panneau du dessus (120px) et la marge de « suivant »
+       (80px), deux valeurs fixes. */
+    padding-top: 6vh;
+    padding-bottom: calc(6vh + 40px);
 }
 
 /* Le fond s'etend au-dela du bloc pour suivre l'ecart qui s'ouvre.
@@ -4549,6 +4549,16 @@ EUR DE LA PAGE en plein
     font-size: clamp(0.8rem, 1vw, 0.9rem);
     letter-spacing: 0.04em;
     color: rgba(255, 255, 255, 0.5);
+}
+
+/* La reserve de defilement dont l'animation a besoin pour aller
+   jusqu'au bout. Posee ici, entre « suivant » et le pied de page,
+   elle ne creuse plus l'ecart sous la citation. Elle n'est pas animee :
+   c'est de la place, pas un effet. 48vh et non 40 : sur un ecran haut,
+   un ultra-large par exemple, il ne restait que 94px de marge avant la
+   fin de course. */
+#page-project-diploma .page-next {
+    margin-bottom: 48vh;
 }
 
 /* — L'ecartement, lie au defilement ————————————————
@@ -4668,7 +4678,15 @@ EUR DE LA PAGE en plein
 }
 
 @media (max-width: 768px) {
-    .quote-band { padding-block: 5vh; }
+    /* Meme calcul qu'au-dessus, mais les marges des blocs voisins ne
+       sont pas les memes a cette taille. Mesure a 412px : 257px
+       au-dessus contre 118 en dessous, soit 139 a rattraper.
+       A reverifier si le rembourrage de .panel-choice ou de .page-next
+       change un jour, ce sont eux que ces valeurs compensent. */
+    .quote-band {
+        padding-top: 5vh;
+        padding-bottom: calc(5vh + 139px);
+    }
     .qb-body { padding: 0 26px; max-width: 30rem; }
     .qb-text { font-size: 1rem; line-height: 1.65; }
     .qb-author { margin-top: 15px; }
