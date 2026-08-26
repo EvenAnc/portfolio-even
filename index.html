@@ -1305,6 +1305,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/app.js"></script>
 
+
+    <!-- ── Mesure d'audience ───────────────────────────────────
+         Cloudflare Web Analytics. Sans cookie et sans identifiant : rien
+         n'est ecrit sur l'appareil du visiteur, donc aucun bandeau de
+         consentement a lui imposer.
+         Consequence assumee : on ne peut pas reconnaitre le meme visiteur
+         d'un jour a l'autre. On sait combien de visites, quelles pages,
+         dans quel ordre, combien de temps et d'ou elles viennent.
+
+         Place ici, en dernier, et en type="module" : un module est differe
+         d'office, il ne s'execute qu'une fois la page analysee et affichee.
+         S'il ne se charge pas du tout, le site est strictement identique.
+
+         fetchpriority="low" en plus : le navigateur telecharge le fichier
+         en parallele de la page, et sans cet attribut il le ferait au meme
+         rang que les images du site. Mesure : le telechargement demarrait
+         a 33 ms, avant meme que la page ne soit affichee (119 ms). Il ne
+         BLOQUAIT rien — un module ne bloque jamais l'affichage — mais il
+         disputait la bande passante. En priorite basse, il attend que le
+         reste soit servi.
+
+         Cloudflare n'est PAS devant le site — le domaine est chez IONOS et
+         pointe sur GitHub Pages. Aucune page de verification anti-robot ne
+         peut donc apparaitre : ce fichier est un simple compteur charge par
+         le navigateur, pas un filtre place sur le chemin.
+
+         Pas d'attribut integrity : Cloudflare met ce fichier a jour sans
+         prevenir, une empreinte figee le ferait echouer au premier
+         changement. Le jeton, lui, n'est pas un secret — il figure dans le
+         code de toutes les pages qui utilisent ce service. -->
+    <script type="module" fetchpriority="low" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "b3319e6ffcba481591e31f55c9d81cdc"}'></script>
 </body>
 
 </html>
