@@ -2587,20 +2587,47 @@ function initScrollAnimationsMobile() {
    visiteur a demande moins d'animations, on ouvre normalement.
    ========================================================================== */
 function souleverLaPlanche(source, ouvrir) {
-    const vignette = source.querySelector('img');
-    const bandeau = document.getElementById('lb-canvas-wrap');
+    const vignette   = source.querySelector('img');
+    const bandeau    = document.getElementById('lb-canvas-wrap');
+    const visionneuse = document.getElementById('drawing-lightbox');
 
-    if (!document.startViewTransition || !vignette || !bandeau ||
+    if (!document.startViewTransition || !vignette || !bandeau || !visionneuse ||
         window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
         ouvrir();
         return;
     }
 
     const NOM = 'planche-ouverte';
+
+    function nettoyer() {
+        vignette.style.viewTransitionName = '';
+        visionneuse.classList.remove('sans-fondu');
+        bandeau.querySelectorAll('img').forEach(i => { i.style.viewTransitionName = ''; });
+    }
+
+    // Image de depart : la vignette, a sa place dans la page.
     vignette.style.viewTransitionName = NOM;
 
     const transition = document.startViewTransition(() => {
-        ouvrir();   // vide le bandeau et lance le rendu du PDF
+        // PREMIERE FAUTE CORRIGEE. Un nom de transition ne peut etre porte
+        // que par UN SEUL element a la fois. En laissant le nom sur la
+        // vignette tout en le posant sur le relais, ils etaient deux dans
+        // l'image d'arrivee — et le navigateur refusait toute la transition
+        // (« Transition was aborted because of invalid state »). L'image de
+        // depart, elle, est deja prise : on peut retirer le nom sans risque.
+        vignette.style.viewTransitionName = '';
+
+        ouvrir();
+
+        // SECONDE FAUTE CORRIGEE. La visionneuse s'ouvre en fondu sur 0,35s.
+        // Au moment ou le navigateur photographie l'image d'arrivee, le
+        // fondu vient de commencer : elle est encore a opacite 0, et la
+        // planche grandissait donc vers quelque chose d'invisible.
+        // Pendant la transition on la rend visible d'un coup — c'est la
+        // transition elle-meme qui fait l'animation, le fondu ferait double
+        // emploi.
+        visionneuse.classList.add('sans-fondu');
+
         const relais = vignette.cloneNode();
         relais.removeAttribute('id');
         relais.style.viewTransitionName = NOM;
@@ -2611,12 +2638,7 @@ function souleverLaPlanche(source, ouvrir) {
         bandeau.appendChild(relais);
     });
 
-    // Les deux noms doivent disparaitre ensuite : deux elements portant le
-    // meme nom de transition en meme temps annulent l'effet la fois suivante.
-    transition.finished.catch(() => {}).finally(() => {
-        vignette.style.viewTransitionName = '';
-        bandeau.querySelectorAll('img').forEach(i => { i.style.viewTransitionName = ''; });
-    });
+    transition.finished.catch(() => {}).finally(nettoyer);
 }
 
 /* ==========================================================================
