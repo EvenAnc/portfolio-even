@@ -4290,3 +4290,145 @@ textarea:focus-visible,
         animation: none !important;
     }
 }
+
+/* ── 20. L'ossature de recit du projet de diplome ─────────────
+
+   La page presentait de belles planches mises bout a bout. Un
+   professionnel ne lit pas des planches, il lit un raisonnement : la
+   commande, le site, la contrainte, l'arbitrage. Ces emplacements
+   attendent ce texte-la.
+
+   Tout est cale sur la charte existante : Bebas pour les etiquettes,
+   Space Grotesk pour la lecture, le rouge en pointe. Aucun nouvel
+   element ne doit avoir l'air rapporte. */
+
+/* — Fiche projet : le cartouche d'un dossier d'archi ————————— */
+.project-facts {
+    /* .fortiche-projects-board est un conteneur flex : sans width, la fiche
+       se reduisait a la largeur de son contenu (368px mesures sur 1430
+       disponibles) au lieu de s'etendre. */
+    width: 100%;
+    max-width: 1200px;
+    margin: 46px auto 10px;
+    padding: 0 20px;
+    box-sizing: border-box;
+}
+
+.pf-grid {
+    display: grid;
+    /* Cinq champs, cinq colonnes : « auto-fit » en fabriquait sept sur un
+       grand ecran, dont deux vides — le cartouche paraissait tronque. */
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    margin: 0;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.pf-item {
+    background: var(--bg);
+    padding: 16px 18px;
+}
+
+.pf-item dt {
+    font-family: var(--font-display);
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 6px;
+}
+
+.pf-item dd {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 0.98rem;
+    line-height: 1.35;
+    color: var(--white);
+    margin: 0;
+}
+
+/* — Chapeau sous le titre d'un panneau ———————————————— */
+.panel-lede {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: clamp(0.98rem, 2vw, 1.08rem);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.72);
+    max-width: 62ch;          /* longueur de ligne confortable a la lecture */
+    margin: 4px auto 30px;
+    padding: 0 20px;
+}
+
+.panel-light .panel-lede { color: rgba(255, 255, 255, 0.78); }
+
+/* — L'arbitrage : le bloc que cherche un professionnel —————— */
+.panel-choice {
+    padding-top: 70px;
+    padding-bottom: 70px;
+}
+
+.choice-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 34px 30px 34px 34px;
+    border-left: 3px solid var(--red);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.choice-eyebrow {
+    display: block;
+    font-size: 1.6rem;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 14px;
+    transform: rotate(-1.5deg);   /* la main, comme partout ailleurs */
+    transform-origin: left center;
+}
+
+.choice-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.35rem, 3.6vw, 2rem);
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    color: var(--white);
+    margin: 0 0 16px;
+    text-wrap: balance;
+}
+
+.choice-text {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: clamp(0.98rem, 2vw, 1.06rem);
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+    max-width: 62ch;
+}
+
+/* — Marqueur des textes provisoires ——————————————————
+   Ces emplacements attendent le texte d'Even. Le trait pointille rouge
+   les signale sans les rendre illisibles : impossible de publier en les
+   ayant oublies. Retirer la classe « a-remplir » suffit a les valider. */
+.a-remplir {
+    border-bottom: 1px dashed rgba(255, 54, 74, 0.55);
+    padding-bottom: 2px;
+}
+
+@media (max-width: 768px) {
+    .project-facts { margin-top: 34px; padding: 0 14px; }
+    .pf-grid { grid-template-columns: repeat(2, 1fr); }
+    /* Le dernier champ se retrouve seul sur sa ligne : on le laisse
+       occuper toute la largeur plutot que la moitie. */
+    .pf-item:last-child { grid-column: 1 / -1; }
+    .pf-item { padding: 13px 14px; }
+    .panel-lede { margin-bottom: 24px; padding: 0 14px; }
+    .choice-inner { padding: 26px 20px 26px 22px; }
+    .panel-choice { padding-top: 48px; padding-bottom: 48px; }
+}
+
+@media (min-width: 769px) and (max-width: 1100px) {
+    .pf-grid { grid-template-columns: repeat(3, 1fr); }
+    .pf-item:nth-child(4) { grid-column: 1 / 3; }
+}
