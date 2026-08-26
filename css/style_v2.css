@@ -4256,3 +4256,37 @@ textarea:focus-visible,
         margin-top: 0.55em;
     }
 }
+
+/* ── 19. Le rythme de la planche qui se souleve ───────────────
+
+   Sans ces regles le navigateur applique sa duree par defaut a tout,
+   fond compris, et le mouvement se noie dans le fondu general.
+   On donne le premier role a la planche — un peu plus lente, avec une
+   courbe qui decelere franchement, comme une feuille qu'on souleve — et
+   on abrege le fondu du reste pour qu'il ne la concurrence pas.
+
+   La regle « reduced motion » est deja assuree cote script, qui ouvre
+   sans transition ; celle-ci est une ceinture de plus. */
+@media (prefers-reduced-motion: no-preference) {
+    ::view-transition-group(planche-ouverte) {
+        animation-duration: 460ms;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    ::view-transition-old(planche-ouverte),
+    ::view-transition-new(planche-ouverte) {
+        animation-duration: 460ms;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration: 240ms;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}
