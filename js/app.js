@@ -2533,6 +2533,59 @@ function initScrollAnimationsMobile() {
 }
 
 /* ==========================================================================
+   LA PLANCHE QUI SE SOULEVE
+   ==========================================================================
+   Aujourd'hui la coupe disparait et la visionneuse la remplace. Ici elle
+   grandit depuis sa place jusqu'a occuper l'ecran : c'est le navigateur
+   qui fait le lien entre les deux images, on lui dit seulement « ces deux
+   la sont la meme chose » en leur donnant le meme nom de transition.
+
+   Une difficulte : les coupes sont des PDF, et leur rendu prend quelques
+   centaines de millisecondes. Au moment ou la transition demarre, la
+   visionneuse est donc vide — il n'y a rien vers quoi grandir.
+   On y glisse la vignette WebP deja affichee et deja decodee. Elle sert
+   de cible au mouvement, puis le rendu PDF la remplace quand il arrive.
+   Effet secondaire heureux : la visionneuse n'est plus jamais vide, on
+   voit la planche tout de suite, en moins net, avant qu'elle ne
+   s'affine.
+
+   Si le navigateur ne connait pas les transitions de vue, ou si le
+   visiteur a demande moins d'animations, on ouvre normalement.
+   ========================================================================== */
+function souleverLaPlanche(source, ouvrir) {
+    const vignette = source.querySelector('img');
+    const bandeau = document.getElementById('lb-canvas-wrap');
+
+    if (!document.startViewTransition || !vignette || !bandeau ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        ouvrir();
+        return;
+    }
+
+    const NOM = 'planche-ouverte';
+    vignette.style.viewTransitionName = NOM;
+
+    const transition = document.startViewTransition(() => {
+        ouvrir();   // vide le bandeau et lance le rendu du PDF
+        const relais = vignette.cloneNode();
+        relais.removeAttribute('id');
+        relais.style.viewTransitionName = NOM;
+        relais.style.maxWidth = '100%';
+        relais.style.maxHeight = '100%';
+        relais.style.objectFit = 'contain';
+        relais.style.transform = 'none';   // la vignette porte un recadrage
+        bandeau.appendChild(relais);
+    });
+
+    // Les deux noms doivent disparaitre ensuite : deux elements portant le
+    // meme nom de transition en meme temps annulent l'effet la fois suivante.
+    transition.finished.catch(() => {}).finally(() => {
+        vignette.style.viewTransitionName = '';
+        bandeau.querySelectorAll('img').forEach(i => { i.style.viewTransitionName = ''; });
+    });
+}
+
+/* ==========================================================================
    COUPE CLICK → Open in Drawing Lightbox (reuses the same viewer)
    ========================================================================== */
 (function initCoupeClicks() {
@@ -2544,7 +2597,8 @@ function initScrollAnimationsMobile() {
             const idx = parseInt(item.getAttribute('data-coupe-index'), 10);
             // Use the drawing lightbox with diplomeCoupes gallery
             if (typeof window._openDrawingGallery === 'function') {
-                tracerPuis(item, () => window._openDrawingGallery(diplomeCoupes, idx));
+                tracerPuis(item, () => souleverLaPlanche(item,
+                    () => window._openDrawingGallery(diplomeCoupes, idx)));
             }
         });
     });
