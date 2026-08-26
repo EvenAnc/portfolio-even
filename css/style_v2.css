@@ -4161,6 +4161,14 @@ textarea:focus-visible,
    Pas de backdrop-filter, volontairement : un flou permanent sur une
    bande toujours a l'ecran coute cher au defilement sur les appareils
    modestes, et le degrade suffit a rendre le texte lisible. */
+/* La couleur du bandeau doit suivre celle de la page. Les pages projet
+   sont en rgb(17,17,17), tout le reste du site en rgb(26,26,26) : fige
+   sur la seconde valeur, le bandeau apparaissait en gris clair au-dessus
+   des pages projet. Le corps porte deja la classe a-bouton-retour sur
+   ces pages, on s'en sert. */
+:root { --entete-rgb: 26, 26, 26; }
+body.a-bouton-retour { --entete-rgb: 17, 17, 17; }
+
 .site-header {
     background: none;
 }
@@ -4175,36 +4183,36 @@ textarea:focus-visible,
     z-index: -1;
     pointer-events: none;
     background: linear-gradient(180deg,
-        rgba(26, 26, 26, 0.97) 0%,
-        rgba(26, 26, 26, 0.97) 60%,
-        rgba(26, 26, 26, 0.9696) 61.43%,
-        rgba(26, 26, 26, 0.9668) 62.86%,
-        rgba(26, 26, 26, 0.9599) 64.29%,
-        rgba(26, 26, 26, 0.9474) 65.71%,
-        rgba(26, 26, 26, 0.9285) 67.14%,
-        rgba(26, 26, 26, 0.9026) 68.57%,
-        rgba(26, 26, 26, 0.8696) 70%,
-        rgba(26, 26, 26, 0.8296) 71.43%,
-        rgba(26, 26, 26, 0.7832) 72.86%,
-        rgba(26, 26, 26, 0.731) 74.29%,
-        rgba(26, 26, 26, 0.674) 75.71%,
-        rgba(26, 26, 26, 0.6132) 77.14%,
-        rgba(26, 26, 26, 0.5497) 78.57%,
-        rgba(26, 26, 26, 0.485) 80%,
-        rgba(26, 26, 26, 0.4203) 81.43%,
-        rgba(26, 26, 26, 0.3568) 82.86%,
-        rgba(26, 26, 26, 0.296) 84.29%,
-        rgba(26, 26, 26, 0.239) 85.71%,
-        rgba(26, 26, 26, 0.1868) 87.14%,
-        rgba(26, 26, 26, 0.1404) 88.57%,
-        rgba(26, 26, 26, 0.1004) 90%,
-        rgba(26, 26, 26, 0.0674) 91.43%,
-        rgba(26, 26, 26, 0.0415) 92.86%,
-        rgba(26, 26, 26, 0.0226) 94.29%,
-        rgba(26, 26, 26, 0.0101) 95.71%,
-        rgba(26, 26, 26, 0.0032) 97.14%,
-        rgba(26, 26, 26, 0.0004) 98.57%,
-        rgba(26, 26, 26, 0) 100%);
+        rgba(var(--entete-rgb), 0.97) 0%,
+        rgba(var(--entete-rgb), 0.97) 60%,
+        rgba(var(--entete-rgb), 0.9696) 61.43%,
+        rgba(var(--entete-rgb), 0.9668) 62.86%,
+        rgba(var(--entete-rgb), 0.9599) 64.29%,
+        rgba(var(--entete-rgb), 0.9474) 65.71%,
+        rgba(var(--entete-rgb), 0.9285) 67.14%,
+        rgba(var(--entete-rgb), 0.9026) 68.57%,
+        rgba(var(--entete-rgb), 0.8696) 70%,
+        rgba(var(--entete-rgb), 0.8296) 71.43%,
+        rgba(var(--entete-rgb), 0.7832) 72.86%,
+        rgba(var(--entete-rgb), 0.731) 74.29%,
+        rgba(var(--entete-rgb), 0.674) 75.71%,
+        rgba(var(--entete-rgb), 0.6132) 77.14%,
+        rgba(var(--entete-rgb), 0.5497) 78.57%,
+        rgba(var(--entete-rgb), 0.485) 80%,
+        rgba(var(--entete-rgb), 0.4203) 81.43%,
+        rgba(var(--entete-rgb), 0.3568) 82.86%,
+        rgba(var(--entete-rgb), 0.296) 84.29%,
+        rgba(var(--entete-rgb), 0.239) 85.71%,
+        rgba(var(--entete-rgb), 0.1868) 87.14%,
+        rgba(var(--entete-rgb), 0.1404) 88.57%,
+        rgba(var(--entete-rgb), 0.1004) 90%,
+        rgba(var(--entete-rgb), 0.0674) 91.43%,
+        rgba(var(--entete-rgb), 0.0415) 92.86%,
+        rgba(var(--entete-rgb), 0.0226) 94.29%,
+        rgba(var(--entete-rgb), 0.0101) 95.71%,
+        rgba(var(--entete-rgb), 0.0032) 97.14%,
+        rgba(var(--entete-rgb), 0.0004) 98.57%,
+        rgba(var(--entete-rgb), 0) 100%);
 }
 
 /* ── 18. Ce qu'Even cherche, dit des la premiere seconde ────────
@@ -4415,49 +4423,67 @@ textarea:focus-visible,
 
 /* ── 22. La citation de fin, et la page qui respire autour ──────
 
-   Premiere version : un panneau noir plein ecran, colle, qui recouvrait
-   tout. Even : « je veux quelque chose de plus fin, plus smooth [...]
-   pas un gros rectangle noir qui en plus reste gros une fois que je
-   suis passe ».
+   Even a valide le mouvement : « le deroulement est parfait, HYPER
+   fluide, ca agrandit bien ». Mais il bloquait : « une fois centree,
+   je ne peux pas descendre plus bas, la molette ne marche plus ».
 
-   Ce qu'il decrit est plus juste et plus beau : les vides au-dessus et
-   au-dessous de la phrase sont serres quand elle est loin, et s'ouvrent
-   a mesure qu'elle approche du centre de l'ecran. Puis ils se
-   referment. La page respire une fois, autour d'elle.
+   POURQUOI CA BLOQUAIT
+   Les deux vides qui s'ouvraient etaient de vrais elements de mise en
+   page. Les faire grandir changeait la         0% { transform: translateY(-0vh); }
+        7.1% { transform: translateY(-0.99vh); }
+        14.3% { transform: translateY(-3.765vh); }
+        21.4% { transform: translateY(-7.775vh); }
+        28.6% { transform: translateY(-12.225vh); }
+        35.7% { transform: translateY(-16.235vh); }
+        42.9% { transform: translateY(-19.01vh); }
+        50% { transform: translateY(-20vh); }
+        57.1% { transform: translateY(-19.01vh); }
+        64.3% { transform: translateY(-16.235vh); }
+        71.4% { transform: translateY(-12.225vh); }
+        78.6% { transform: translateY(-7.775vh); }
+        85.7% { transform: translateY(-3.765vh); }
+        92.9% { transform: translateY(-0.99vh); }
+        100% { transform: translateY(-0vh); }
+EUR DE LA PAGE en plein
+   defilement. Deux consequences, chacune suffisante :
+     Lenis, qui pilote le defilement, garde en memoire la hauteur
+     maximale atteignable. Elle devenait fausse a chaque image, et il
+     bloquait sur l'ancienne.
+     Le vide du haut poussait la citation vers le bas exactement
+     pendant qu'on essayait de la depasser. Mesure : la phrase ne
+     montait plus qu'a 43% de la vitesse du doigt.
 
-   TROIS CHOSES SE FONT ENSEMBLE, sur la meme courbe :
-     les deux vides passent de 5vh a 27vh
-     la phrase monte de 0,32 a 1 d'opacite
-     le fond s'assombrit de 0 a 1
-   Rien ne subsiste apres le passage, tout revient a son etat de repos.
+   CE QUI CHANGE
+   Plus rien ne touche a la mise en page. L'ecart est cree en
+   DEPLACANT les blocs voisins : le bloc du dessus monte, celui du
+   dessous descend, chacun jusqu'a 20vh. Une transformation ne change
+   ni la hauteur de la page ni la position de quoi que ce soit dans le
+   flux. Lenis ne voit rien, il n'a plus rien a recalculer, et le
+   defilement reste exactement aussi fluide qu'ailleurs.
+   Bonus : une transformation est calculee par la carte graphique,
+   c'est moins cher qu'un changement de mise en page a chaque image.
 
-   LA COURBE : sin^2(pi*t). Sa pente est nulle aux deux extremites et
-   varie continument entre les deux. Aucune cassure au depart ni a
-   l'arrivee, c'est ce qui fait la fluidite. Quinze paliers, comme pour
-   le fond de l'en-tete, et pour la meme raison : l'oeil lit les
-   ruptures de pente, pas les valeurs.
+   La citation, elle, ne bouge plus d'un pixel. C'est ce qui permet
+   d'ancrer la piste d'animation sur elle sans aucune boucle.
 
-   LE PIEGE EVITE : faire grandir un element modifie la hauteur de la
-   page, donc la position de cet element, donc l'avancement de sa propre
-   animation. Boucle. On ancre donc la piste sur .qb-body, dont la
-   taille ne bouge JAMAIS, et les vides s'y referent par un nom.
-   D'ou view-timeline-name et timeline-scope.
+   Meme courbe qu'avant, sin^2(pi*t), que Even a trouvee juste :
+   pente nulle aux deux bouts, sommet au centre, quinze paliers. */
 
-   Mise en page reprise de la page de fin du dossier de diplome : la
-   phrase entre guillemets au centre, le nom juste en dessous en
-   italique, rien d'autre. */
+#page-project-diploma .page-inner {
+    /* rend le nom de piste visible aux voisins de la citation */
+    timeline-scope: --citation;
+}
 
 .quote-band {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* rend le nom de piste visible aux enfants */
-    timeline-scope: --citation;
+    padding-block: 6vh;     /* l'ecart au repos, fixe */
 }
 
-/* Le fond : un degrade qui s'eteint en haut et en bas, pour qu'aucun
-   bord net ne dessine un rectangle. */
+/* Le fond s'etend au-dela du bloc pour suivre l'ecart qui s'ouvre.
+   Positionne en absolu, il ne compte pas dans la mise en page. */
 .quote-band::before {
     content: '';
     position: absolute;
@@ -4466,23 +4492,18 @@ textarea:focus-visible,
     pointer-events: none;
     background: linear-gradient(180deg,
         rgba(10, 10, 10, 0) 0%,
-        rgba(10, 10, 10, 0.85) 24%,
-        rgba(10, 10, 10, 0.85) 76%,
+        rgba(10, 10, 10, 0.85) 26%,
+        rgba(10, 10, 10, 0.85) 74%,
         rgba(10, 10, 10, 0) 100%);
 }
 
-.qb-air {
-    height: 16vh;      /* etat de repos ; l'animation prend le relais */
-    flex: none;
-}
-
 .qb-body {
-    /* taille fixe : c'est elle qui sert de reference a la piste */
+    /* taille et position fixes : c'est la reference de la piste */
     view-timeline-name: --citation;
     view-timeline-axis: block;
     margin: 0;
-    padding: 0 32px;
-    max-width: 44rem;
+    padding: 0 40px;
+    max-width: 80rem;       /* assez large pour tenir sur une ligne */
     text-align: center;
 }
 
@@ -4490,8 +4511,11 @@ textarea:focus-visible,
     margin: 0;
     font-family: var(--font-body);
     font-weight: 300;
-    font-size: clamp(1.2rem, 2.9vw, 1.9rem);
-    line-height: 1.5;
+    /* Corps volontairement discret : Even trouvait la phrase deja tres
+       lisible, et une ligne unique demande de la retenue. */
+    font-size: clamp(0.9rem, 1.2vw, 1.06rem);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
     color: var(--white);
     text-wrap: balance;
     quotes: none;
@@ -4501,23 +4525,29 @@ textarea:focus-visible,
 .qb-text::after  { content: '\00A0\00BB'; }
 
 .qb-author {
-    margin: 22px 0 0;
+    margin: 18px 0 0;
     font-family: var(--font-body);
     font-weight: 300;
     font-style: italic;
-    font-size: clamp(0.86rem, 1.7vw, 1rem);
+    font-size: clamp(0.8rem, 1vw, 0.9rem);
     letter-spacing: 0.04em;
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* — La respiration, liee au defilement ———————————————
-   Natif, sans une ligne de script. Enferme dans @supports : la ou ce
-   n'est pas gere, l'etat de repos ci-dessus reste en place et la
-   citation s'affiche simplement, bien mise en page. */
+/* — L'ecartement, lie au defilement ————————————————
+   Natif, sans une ligne de script. Hors de @supports, l'etat de repos
+   ci-dessus reste en place : la citation s'affiche simplement, bien
+   mise en page, et rien ne bouge. */
 @supports (animation-timeline: view()) and (timeline-scope: --x) {
     @media (prefers-reduced-motion: no-preference) {
-        .qb-air {
-            animation: qb-respirer linear both;
+        #page-project-diploma .panel-choice {
+            animation: qb-ecarter-haut linear both;
+            animation-timeline: --citation;
+            animation-range: cover 0% cover 100%;
+        }
+        #page-project-diploma .page-next,
+        #page-project-diploma .site-footer {
+            animation: qb-ecarter-bas linear both;
             animation-timeline: --citation;
             animation-range: cover 0% cover 100%;
         }
@@ -4534,22 +4564,40 @@ textarea:focus-visible,
     }
 }
 
-@keyframes qb-respirer {
-        0% { height: 5vh; }
-        7.1% { height: 6.089vh; }
-        14.3% { height: 9.142vh; }
-        21.4% { height: 13.552vh; }
-        28.6% { height: 18.448vh; }
-        35.7% { height: 22.858vh; }
-        42.9% { height: 25.911vh; }
-        50% { height: 27vh; }
-        57.1% { height: 25.911vh; }
-        64.3% { height: 22.858vh; }
-        71.4% { height: 18.448vh; }
-        78.6% { height: 13.552vh; }
-        85.7% { height: 9.142vh; }
-        92.9% { height: 6.089vh; }
-        100% { height: 5vh; }
+@keyframes qb-ecarter-haut {
+        0% { transform: translateY(-0vh); }
+        7.1% { transform: translateY(-0.99vh); }
+        14.3% { transform: translateY(-3.765vh); }
+        21.4% { transform: translateY(-7.775vh); }
+        28.6% { transform: translateY(-12.225vh); }
+        35.7% { transform: translateY(-16.235vh); }
+        42.9% { transform: translateY(-19.01vh); }
+        50% { transform: translateY(-20vh); }
+        57.1% { transform: translateY(-19.01vh); }
+        64.3% { transform: translateY(-16.235vh); }
+        71.4% { transform: translateY(-12.225vh); }
+        78.6% { transform: translateY(-7.775vh); }
+        85.7% { transform: translateY(-3.765vh); }
+        92.9% { transform: translateY(-0.99vh); }
+        100% { transform: translateY(-0vh); }
+}
+
+@keyframes qb-ecarter-bas {
+        0% { transform: translateY(0vh); }
+        7.1% { transform: translateY(0.99vh); }
+        14.3% { transform: translateY(3.765vh); }
+        21.4% { transform: translateY(7.775vh); }
+        28.6% { transform: translateY(12.225vh); }
+        35.7% { transform: translateY(16.235vh); }
+        42.9% { transform: translateY(19.01vh); }
+        50% { transform: translateY(20vh); }
+        57.1% { transform: translateY(19.01vh); }
+        64.3% { transform: translateY(16.235vh); }
+        71.4% { transform: translateY(12.225vh); }
+        78.6% { transform: translateY(7.775vh); }
+        85.7% { transform: translateY(3.765vh); }
+        92.9% { transform: translateY(0.99vh); }
+        100% { transform: translateY(0vh); }
 }
 
 @keyframes qb-monter {
@@ -4571,25 +4619,26 @@ textarea:focus-visible,
 }
 
 @keyframes qb-assombrir {
-        0% { opacity: 0; }
-        7.1% { opacity: 0.05; }
-        14.3% { opacity: 0.188; }
-        21.4% { opacity: 0.389; }
-        28.6% { opacity: 0.611; }
-        35.7% { opacity: 0.812; }
-        42.9% { opacity: 0.95; }
-        50% { opacity: 1; }
-        57.1% { opacity: 0.95; }
-        64.3% { opacity: 0.812; }
-        71.4% { opacity: 0.611; }
-        78.6% { opacity: 0.389; }
-        85.7% { opacity: 0.188; }
-        92.9% { opacity: 0.05; }
-        100% { opacity: 0; }
+        0% { opacity: 0; inset: -0vh 0; }
+        7.1% { opacity: 0.05; inset: -1vh 0; }
+        14.3% { opacity: 0.188; inset: -3.76vh 0; }
+        21.4% { opacity: 0.389; inset: -7.78vh 0; }
+        28.6% { opacity: 0.611; inset: -12.22vh 0; }
+        35.7% { opacity: 0.812; inset: -16.24vh 0; }
+        42.9% { opacity: 0.95; inset: -19vh 0; }
+        50% { opacity: 1; inset: -20vh 0; }
+        57.1% { opacity: 0.95; inset: -19vh 0; }
+        64.3% { opacity: 0.812; inset: -16.24vh 0; }
+        71.4% { opacity: 0.611; inset: -12.22vh 0; }
+        78.6% { opacity: 0.389; inset: -7.78vh 0; }
+        85.7% { opacity: 0.188; inset: -3.76vh 0; }
+        92.9% { opacity: 0.05; inset: -1vh 0; }
+        100% { opacity: 0; inset: -0vh 0; }
 }
 
 @media (max-width: 768px) {
-    .qb-body { padding: 0 24px; max-width: 28rem; }
-    .qb-text { line-height: 1.55; }
-    .qb-author { margin-top: 18px; }
+    .quote-band { padding-block: 5vh; }
+    .qb-body { padding: 0 26px; max-width: 30rem; }
+    .qb-text { font-size: 1rem; line-height: 1.65; }
+    .qb-author { margin-top: 15px; }
 }
