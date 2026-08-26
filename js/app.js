@@ -50,6 +50,7 @@ const i18n = {
         meta_title:          "Even ANICET — Architecte d'intérieur",
         meta_desc:           "Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.",
         home_subtitle:       "Architecte d'intérieur",
+        home_seeking:        "Recherche un contrat en Suisse romande",
         home_scroll:         "Défilez",
         menu_01: "ACCUEIL",  menu_02: "PROJETS", menu_03: "DESSINS",
         menu_04: "DIPLÔME",  menu_05: "HOBBIES", menu_06: "CONTACT",
@@ -135,6 +136,7 @@ const i18n = {
         meta_title:          "Even ANICET — Interior Architect",
         meta_desc:           "Portfolio of Even ANICET, interior architect from MJM Graphic Design Toulouse.",
         home_subtitle:       "Interior Architect",
+        home_seeking:        "Seeking a contract in French-speaking Switzerland",
         home_scroll:         "Scroll",
         menu_01: "HOME",     menu_02: "PROJECTS", menu_03: "DRAWINGS",
         menu_04: "DIPLOMA",  menu_05: "HOBBIES",  menu_06: "CONTACT",
@@ -290,14 +292,77 @@ let isMenuOpen  = false;
 let lenis       = null;
 let _historyInitialised = false;
 
+// ───────────────────────────────────
+// TITRES ET DESCRIPTIONS PAR PAGE
+//
+// Le titre d'onglet et la description ne changeaient qu'avec la LANGUE :
+// toutes les pages portaient ceux de l'accueil. Quand Even colle
+// even-anc.com/#projet-diplome dans une candidature, l'onglet, le favori
+// et Google doivent parler de ce projet, pas du site en general.
+//
+// A savoir : les cartes d'apercu de Discord, LinkedIn ou WhatsApp ne
+// changeront pas pour autant. Ces robots ne lisent que le HTML livre,
+// sans executer le moindre script. Les faire varier par page demande un
+// vrai fichier HTML par page — un autre chantier.
+// ───────────────────────────────────
+const META_PAGES = {
+    fr: {
+        'home':            ["Even ANICET — Architecte d'intérieur",
+                            "Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse. Recherche un contrat en Suisse romande."],
+        'projects':        ["Projets — Even ANICET",
+                            "Les projets d'architecture d'intérieur d'Even ANICET : conception d'espaces, plans techniques et perspectives."],
+        'project-diploma': ["Projet de diplôme — Even ANICET",
+                            "Complexe automobile multifonctionnel : zoning, plans de niveaux, coupes architecturales et matériauthèque. Projet de diplôme, MJM Toulouse."],
+        'project-2':       ["Paterr Suisse — Even ANICET",
+                            "Projet Paterr Suisse, par Even ANICET, architecte d'intérieur."],
+        'project-3':       ["Projet 03 — Even ANICET",
+                            "Troisième projet d'architecture d'intérieur d'Even ANICET."],
+        'drawings':        ["Dessins — Even ANICET",
+                            "Dessins à main levée : cartographie, étude de style au graphite, encre de Chine et bande dessinée."],
+        'diploma':         ["Diplôme — Even ANICET",
+                            "Titre RNCP de niveau 6 en architecture d'intérieur, MJM Graphic Design Toulouse. Équivalence 180 crédits ECTS."],
+        'hobbies':         ["Hobbies — Even ANICET",
+                            "Moto, projets personnels et travaux hors école d'Even ANICET."]
+    },
+    en: {
+        'home':            ["Even ANICET — Interior Architect",
+                            "Portfolio of Even ANICET, interior architect from MJM Graphic Design Toulouse. Seeking a contract in French-speaking Switzerland."],
+        'projects':        ["Projects — Even ANICET",
+                            "Interior architecture projects by Even ANICET: spatial design, technical drawings and perspectives."],
+        'project-diploma': ["Graduation Project — Even ANICET",
+                            "Multi-purpose automotive complex: zoning, floor plans, sections and material library. Graduation project, MJM Toulouse."],
+        'project-2':       ["Paterr Suisse — Even ANICET",
+                            "Paterr Suisse project by Even ANICET, interior architect."],
+        'project-3':       ["Project 03 — Even ANICET",
+                            "Third interior architecture project by Even ANICET."],
+        'drawings':        ["Drawings — Even ANICET",
+                            "Freehand drawings: cartography, graphite style study, Indian ink and comic art."],
+        'diploma':         ["Diploma — Even ANICET",
+                            "French RNCP level 6 qualification in interior architecture, MJM Graphic Design Toulouse. 180 ECTS credits."],
+        'hobbies':         ["Hobbies — Even ANICET",
+                            "Motorcycling, personal projects and work outside school by Even ANICET."]
+    }
+};
+
+function majMetaPage(pageId) {
+    const table = META_PAGES[currentLang] || META_PAGES.fr;
+    const paire = table[pageId] || table['home'];
+    document.title = paire[0];
+    const balise = document.querySelector('meta[name="description"]');
+    if (balise) balise.content = paire[1];
+}
+
 // ─────────────────────────────────────
 // INIT
 // ─────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
 
+    // Priorite : l'adresse (un lien partage impose sa langue), puis le
+    // choix precedent du visiteur, puis la langue de son navigateur.
+    const langueDemandee = new URLSearchParams(location.search).get('lang');
     const saved = localStorage.getItem('lang');
-    currentLang = (saved === 'fr' || saved === 'en')
-        ? saved
+    currentLang = (langueDemandee === 'fr' || langueDemandee === 'en') ? langueDemandee
+        : (saved === 'fr' || saved === 'en') ? saved
         : (navigator.language || '').startsWith('fr') ? 'fr' : 'en';
 
     applyLang(currentLang);
@@ -421,6 +486,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 { opacity: 1, y: 0, letterSpacing: '0.25em', duration: 0.9, ease: 'power2.out', delay: 0.55 }
             );
         }
+        const seeking = document.querySelector('.hero-seeking');
+        if (seeking) {
+            gsap.fromTo(seeking,
+                { opacity: 0, y: 12 },
+                { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.85 }
+            );
+        }
         if (scrollInv) {
             gsap.fromTo(scrollInv,
                 { opacity: 0 },
@@ -490,10 +562,15 @@ function applyLang(lang) {
     currentLang = lang;
     localStorage.setItem('lang', lang);
     document.documentElement.setAttribute('lang', lang);
-    document.title = i18n[lang].meta_title;
+    majMetaPage(typeof currentPage === 'string' ? currentPage : 'home');
 
-    const desc = document.querySelector('meta[name="description"]');
-    if (desc) desc.content = i18n[lang].meta_desc;
+    // La langue vit dans l'adresse : c'est ce qui permet d'envoyer un lien
+    // qui s'ouvrira en anglais, et ce qui donne un sens aux balises
+    // hreflang. Le francais reste l'adresse nue.
+    const adresse = new URL(location.href);
+    if (lang === 'en') adresse.searchParams.set('lang', 'en');
+    else adresse.searchParams.delete('lang');
+    if (adresse.href !== location.href) history.replaceState(history.state, '', adresse.href);
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
@@ -660,7 +737,10 @@ function pageFromHash() {
 
 function urlForPage(pageId) {
     const slug = PAGE_SLUGS[pageId];
-    return slug ? '#' + slug : location.pathname + location.search;
+    // location.search est conserve : sans lui, naviguer depuis /?lang=en
+    // ramenait silencieusement le visiteur au francais.
+    const base = location.pathname + location.search;
+    return slug ? base + '#' + slug : base;
 }
 
 // Amene le visiteur au bloc Contact, en bas de la page d'accueil.
@@ -697,6 +777,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
 
     const pageAvant = currentPage;
     currentPage = pageId;
+    majMetaPage(pageId);
 
     // Synchronise l'adresse. replaceState au tout premier affichage pour ne
     // pas creer une entree d'historique fantome avant meme la 1re navigation.
