@@ -4412,3 +4412,124 @@ textarea:focus-visible,
         padding: 0 14px;
     }
 }
+
+/* ── 22. La citation de fin du projet diplome ───────────────
+
+   Demande d'Even : l'inverse de l'animation du logo. La ou le grand
+   logo retrecit et disparait quand on descend, ici un petit rectangle
+   noir s'ouvre jusqu'a occuper tout l'ecran, avec la phrase au centre
+   et l'auteur en bas. Puis le noir se retire et la page reprend.
+
+   PRINCIPE : une piste de defilement de 230vh, dans laquelle un
+   panneau colle a l'ecran (position: sticky) pendant qu'on la
+   traverse. Le noir est un clip-path qui s'ouvre. Aucune bibliotheque,
+   aucun script.
+
+   Le defilement de ce site se fait DANS l'element .page, pas dans la
+   fenetre. C'est lui le conteneur de reference, aussi bien pour le
+   collage que pour la piste d'animation.
+
+   DEGRADATION : l'etat par defaut, ecrit hors de toute condition, est
+   l'etat FINAL, citation lisible sur fond noir. L'animation ne fait
+   que l'amener. Un navigateur qui ignore les animations liees au
+   defilement affiche donc une belle citation fixe, jamais une page
+   cassee. Meme chose si le visiteur a demande moins d'animations. */
+
+.quote-stage {
+    position: relative;
+    height: 230vh;          /* la piste que l'on traverse */
+}
+
+.quote-sticky {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;         /* sur telephone, la barre d'adresse ne triche plus */
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    /* au-dessus de l'en-tete (z-index 100) : Even veut « rien d'autre »
+       a l'ecran pendant ce moment. */
+    z-index: 200;
+}
+
+.quote-veil {
+    position: absolute;
+    inset: 0;
+    background: #0a0a0a;
+    /* Etat par defaut : deja ouvert. L'animation part d'un petit
+       rectangle et vient jusqu'ici. */
+    clip-path: inset(0);
+}
+
+.quote-body {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 0 32px;
+    max-width: 40rem;
+    text-align: center;
+}
+
+.quote-text {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: clamp(1.35rem, 3.6vw, 2.35rem);
+    line-height: 1.45;
+    letter-spacing: 0.005em;
+    color: var(--white);
+    text-wrap: balance;
+    quotes: none;
+}
+
+.quote-author {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: max(52px, calc(38px + env(safe-area-inset-bottom, 0px)));
+    margin: 0;
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: clamp(0.78rem, 1.8vw, 0.95rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+    white-space: nowrap;
+}
+
+/* — L'ouverture, liee au defilement —————————————————
+   Natif, calcule par le navigateur, sans une ligne de script. Enferme
+   dans @supports : la ou ce n'est pas gere, l'etat par defaut ci-dessus
+   reste en place et la citation s'affiche simplement. */
+@supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+        .quote-veil {
+            animation: ouvrir-le-noir linear both;
+            animation-timeline: view();
+            animation-range: entry 10% cover 62%;
+        }
+        .quote-body {
+            animation: venir-la-phrase linear both;
+            animation-timeline: view();
+            animation-range: entry 40% cover 55%;
+        }
+    }
+}
+
+@keyframes ouvrir-le-noir {
+    from { clip-path: inset(47% 44% 47% 44%); }
+    to   { clip-path: inset(0% 0% 0% 0%); }
+}
+
+@keyframes venir-la-phrase {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .quote-stage { height: 200vh; }
+    .quote-body { padding: 0 24px; max-width: 26rem; }
+    .quote-text { line-height: 1.5; }
+    .quote-author { letter-spacing: 0.16em; bottom: max(40px, calc(28px + env(safe-area-inset-bottom, 0px))); }
+}
