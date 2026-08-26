@@ -4202,3 +4202,53 @@ textarea:focus-visible,
         rgba(26, 26, 26, 0.0004) 98.57%,
         rgba(26, 26, 26, 0) 100%);
 }
+
+/* ── 18. Ce qu'Even cherche, dit des la premiere seconde ────────
+
+   Un recruteur accorde quelques secondes avant de decider s'il continue.
+   Rien sur le site ne disait ce qu'Even cherche : c'etait la premiere
+   information manquante, avant toute question de technique.
+
+   Volontairement discret : la ligne ne doit pas concurrencer le logo,
+   qui reste le morceau de bravoure de la page. Corps petit, capitales
+   espacees, blanc attenue — et un tiret rouge pour l'accrocher a la
+   charte sans crier. Elle entre avec le reste du hero, apres la
+   profession, pour ne pas alourdir la premiere seconde. */
+.hero-seeking {
+    font-family: var(--font-body);
+    font-size: clamp(0.68rem, 1.5vw, 0.82rem);
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.62);
+    margin-top: 22px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;              /* l'entree est animee, comme la profession */
+}
+
+.hero-seeking::before {
+    content: '';
+    width: 26px;
+    height: 2px;
+    background: var(--red);
+    flex: none;
+}
+
+@media (max-width: 768px) {
+    .hero-seeking {
+        margin-top: 16px;
+        gap: 9px;
+        letter-spacing: 0.11em;
+        /* Sur telephone la phrase passe a deux lignes : le tiret doit
+           rester en face de la premiere, pas se centrer sur le bloc. */
+        align-items: flex-start;
+        text-align: left;
+        max-width: 30ch;
+    }
+    .hero-seeking::before {
+        width: 18px;
+        margin-top: 0.55em;
+    }
+}
