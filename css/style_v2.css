@@ -4293,7 +4293,11 @@ textarea:focus-visible,
     font-size: clamp(0.98rem, 2vw, 1.08rem);
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.72);
-    max-width: 62ch;          /* longueur de ligne confortable a la lecture */
+    /* 43rem = les 62 caracteres visés, mais exprimes dans une unite qui
+       ne depend pas de la police. .panel-tools, ecrit en Bebas, doit
+       partager EXACTEMENT cette largeur pour s'aligner dessus : en « ch »
+       il obtenait une boite plus etroite, donc un bord gauche decale. */
+    max-width: 43rem;
     margin: 4px auto 30px;
     padding: 0 20px;
 }
@@ -4365,4 +4369,41 @@ textarea:focus-visible,
     visibility: visible;
     pointer-events: auto;
     transition: none;
+}
+
+/* ── 21. Les logiciels employes, sous chaque serie de planches ───
+
+   Even les avait notes entre parentheses dans ses textes. Sortis de la
+   phrase et poses en dessous, ils deviennent lisibles d'un coup d'oeil :
+   un professionnel qui recrute cherche precisement cette information, et
+   ne devrait pas avoir a la pecher au milieu d'un paragraphe.
+
+   Traitement de legende technique : petites capitales espacees, gris
+   attenue. Ca ne doit pas concurrencer le texte, seulement se laisser
+   trouver. Aligne sur le chapeau, meme largeur de colonne. */
+.panel-tools {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.42);
+    max-width: 43rem;          /* meme largeur que .panel-lede, voir plus haut */
+    margin: -18px auto 30px;   /* remonte contre le chapeau qu'il complete */
+    padding: 0 20px;
+}
+
+/* Le second paragraphe du bloc « problematiques » : meme corps, un
+   ecart franc pour marquer le retournement du recit. */
+.choice-text + .choice-text {
+    margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+    .panel-tools {
+        font-size: 0.74rem;
+        letter-spacing: 0.14em;
+        margin: -14px auto 24px;
+        padding: 0 14px;
+    }
 }
