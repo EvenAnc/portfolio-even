@@ -8,7 +8,11 @@
 ───────────────────────────────────── */
 @font-face {
     font-family: 'Skribblugh';
-    src: url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
+    /* woff2 d'abord : 11 Ko de moins, et c'est la premiere police que
+       le visiteur voit — le logo. Le woff reste en secours pour les
+       navigateurs anciens, qui ignorent simplement la premiere source. */
+    src: url('../fonts/SkribblughRegular-XGW02.woff2') format('woff2'),
+         url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
