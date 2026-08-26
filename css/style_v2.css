@@ -4378,18 +4378,23 @@ textarea:focus-visible,
    un professionnel qui recrute cherche precisement cette information, et
    ne devrait pas avoir a la pecher au milieu d'un paragraphe.
 
-   Traitement de legende technique : petites capitales espacees, gris
-   attenue. Ca ne doit pas concurrencer le texte, seulement se laisser
-   trouver. Aligne sur le chapeau, meme largeur de colonne. */
+   Traitement de legende technique : petites capitales espacees, en
+   rouge et centrees sous le paragraphe qu'elles completent — le rouge
+   est la couleur d'accent du site, il signale l'information sans avoir
+   besoin d'un cadre ni d'un intitule.
+   Centrees dans la COLONNE DE TEXTE, pas dans la page : d'ou la meme
+   largeur maximale que .panel-lede, sinon la ligne se centrerait par
+   rapport a l'ecran et flotterait a cote du texte. */
 .panel-tools {
     font-family: var(--font-display);
     font-size: 0.82rem;
     font-weight: 300;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.42);
+    color: var(--red);
+    text-align: center;        /* centre dans la colonne de texte, pas dans la page */
     max-width: 43rem;          /* meme largeur que .panel-lede, voir plus haut */
-    margin: -18px auto 30px;   /* remonte contre le chapeau qu'il complete */
+    margin: -14px auto 30px;   /* remonte contre le chapeau qu'il complete */
     padding: 0 20px;
 }
 
@@ -4403,7 +4408,7 @@ textarea:focus-visible,
     .panel-tools {
         font-size: 0.74rem;
         letter-spacing: 0.14em;
-        margin: -14px auto 24px;
+        margin: -10px auto 24px;
         padding: 0 14px;
     }
 }
