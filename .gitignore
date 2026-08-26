@@ -62,6 +62,7 @@ js/dessins_base64.js
 
 # ── Sources de polices non servies ───────────────────────────
 fonts/temp_skribblugh/
+fonts/style.css
 fonts/*.zip
 fonts/example.html
 
@@ -73,3 +74,17 @@ favicon_3.svg
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ── Originaux haute definition ───────────────────────────────
+# Le depot sert d'hebergement : tout fichier suivi est
+# publiquement telechargeable. Ces sources ne sont jamais
+# affichees par le site — seules les versions /opt/ le sont.
+# Elles restent sur le disque d'Even, simplement plus publiees.
+# 80,9 Mo retires de la publication.
+#
+# Attention : les PDF de PDF/ NE sont PAS ici. Ils servent
+# encore, ce sont eux que la visionneuse ouvre pour le zoom
+# pleine resolution.
+dessin/*.png
+dessin/*.pdf
+photo/DIPLOME ARCHI/
