@@ -4462,6 +4462,16 @@ EUR DE LA PAGE en plein
     display: flex;
     flex-direction: column;
     align-items: center;
+    /* Pleine largeur. Sans ca, la bande s'arrete a la largeur du contenu
+       (1200px) et son fond dessine un rectangle aux bords verticaux
+       nets, tres visible sur la page Dessins ou le fond de page est plus
+       clair que celui de la bande. Meme procede que le pied de page :
+       --sbw est mesure au runtime, sinon la barre de defilement de .page
+       ferait deborder de quelques pixels. */
+    width: calc(100vw - var(--sbw, 0px));
+    margin-left: calc(-50vw + var(--sbw, 0px) / 2 + 50%);
+    margin-right: calc(-50vw + var(--sbw, 0px) / 2 + 50%);
+    box-sizing: border-box;
     /* Rembourrage SYMETRIQUE, et c'est important.
        Rattraper l'ecart des blocs voisins par le rembourrage du bas
        donnait bien deux ecarts egaux, mais decalait le texte vers le
@@ -4526,7 +4536,12 @@ EUR DE LA PAGE en plein
     background-repeat: repeat;
     background-size: 180px 180px;
     mix-blend-mode: soft-light;
-    opacity: 0.5;
+    /* 0,08 et non 0,5. Un tramage doit casser les paliers du degrade
+       sans jamais se voir. A 0,5 il devenait une texture, nettement
+       visible en fond : c'est ce qu'Even a repere sur la page Dessins.
+       Combine a l'opacite du motif lui-meme, la trame pese desormais
+       environ 3% — l'ordre de grandeur habituel. */
+    opacity: 0.08;
     -webkit-mask-image: linear-gradient(180deg,
         rgba(0, 0, 0, 0) 0%,
         rgba(0, 0, 0, 0.0245) 5%,
