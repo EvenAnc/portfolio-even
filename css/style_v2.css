@@ -4615,34 +4615,26 @@ EUR DE LA PAGE en plein
    Aucune reserve de defilement ici : Even veut « suivant » colle au
    pied de page. Ce qui rend la fin de l'animation atteignable, c'est
    la plage resserree, pas de l'espace ajoute. */
-/* Les deux blocs qui encadrent la citation doivent lui laisser
-   EXACTEMENT la meme marge, sinon le texte ne peut pas etre a la fois
-   centre et a egale distance des deux.
-   40px de chaque cote : le rembourrage de la bande fait le reste, et il
-   est symetrique. Un ecart de depart serre est aussi ce qui rend
-   l'animation lisible — c'est la remarque d'Even, l'amplitude etant la
-   meme, plus l'ecart de depart est grand moins le mouvement se voit. */
+/* Le bas du panneau du dessus : 40px, serre. C'est la demande d'Even,
+   et c'est ce qui rend l'animation lisible — son amplitude etant fixe,
+   plus l'ecart de depart est grand moins le mouvement se voit. */
 #page-project-diploma .panel-choice {
     padding-bottom: 40px;
 }
 
+/* En dessous, l'inverse : Even veut de la place entre la citation et
+   « suivant », et « suivant » colle au pied de page.
+   Cette reserve sert donc deux fois. Elle donne l'air qu'il veut sous
+   la citation, et elle fournit la course dont l'animation a besoin
+   pour redescendre — la citation etant le dernier bloc de la page, il
+   ne reste sinon presque plus rien a defiler une fois qu'elle est
+   centree.
+   32vh : le minimum pour tenir 864px de course sur un ultra-large, qui
+   est le cas le plus contraint. Les 40px du bas remettent « suivant »
+   contre le pied de page. */
 #page-project-diploma .page-next {
-    margin-top: 40px;
-    /* L'ARBITRAGE, ecrit noir sur blanc parce qu'il n'a pas de bonne
-       reponse. La citation est le dernier bloc de la page : une fois
-       qu'elle est centree, il ne reste presque plus rien a defiler.
-       Or il faut de la course APRES ce moment pour que l'animation
-       redescende. D'ou un choix entre deux defauts.
-         peu de place ici -> l'animation se joue en 150px de
-         defilement, soit trois crans de molette. C'est ce qu'Even a
-         vu : « la citation apparait une milliseconde et disparait ».
-         de la place ici -> la course dure 685px, le mouvement est
-         lisible, mais un vide subsiste sous « suivant ».
-       Le second defaut est de loin le moindre : un vide se regarde,
-       une animation invisible ne sert a rien.
-       26vh : le minimum pour que la course tienne sur 685px sur un
-       ultra-large, qui est le cas le plus contraint. */
-    margin-bottom: 26vh;
+    margin-top: 32vh;
+    margin-bottom: 40px;
 }
 
 /* — L'ecartement, lie au defilement ————————————————
@@ -4665,7 +4657,7 @@ EUR DE LA PAGE en plein
         #page-project-diploma .panel-choice {
             animation: qb-ecarter-haut linear both;
             animation-timeline: --citation;
-            animation-range: cover 27% cover 73%;
+            animation-range: cover 21% cover 79%;
         }
         /* Le pied de page n'est deliberement PAS de la partie. S'il
            etait deplace et que l'animation n'allait pas jusqu'au bout,
@@ -4674,18 +4666,18 @@ EUR DE LA PAGE en plein
         #page-project-diploma .page-next {
             animation: qb-ecarter-bas linear both;
             animation-timeline: --citation;
-            animation-range: cover 27% cover 73%;
+            animation-range: cover 21% cover 79%;
         }
         .qb-body {
             animation: qb-monter linear both;
             animation-timeline: --citation;
-            animation-range: cover 27% cover 73%;
+            animation-range: cover 21% cover 79%;
         }
         .quote-band::before,
         .quote-band::after {
             animation: qb-assombrir linear both;
             animation-timeline: --citation;
-            animation-range: cover 27% cover 73%;
+            animation-range: cover 21% cover 79%;
         }
     }
 }
