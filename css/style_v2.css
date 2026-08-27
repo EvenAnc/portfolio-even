@@ -4448,8 +4448,12 @@ EUR DE LA PAGE en plein
    Meme courbe qu'avant, sin^2(pi*t), que Even a trouvee juste :
    pente nulle aux deux bouts, sommet au centre, quinze paliers. */
 
-#page-project-diploma .page-inner {
-    /* rend le nom de piste visible aux voisins de la citation */
+/* Le nom de piste doit etre visible aux voisins de la citation. Les
+   deux pages qui en portent une ont leur propre portee : chaque
+   .page-inner resout son --citation dans son sous-arbre, sans que les
+   deux se melangent. */
+#page-project-diploma .page-inner,
+#page-drawings .page-inner {
     timeline-scope: --citation;
 }
 
@@ -4618,7 +4622,8 @@ EUR DE LA PAGE en plein
 /* Le bas du panneau du dessus : 40px, serre. C'est la demande d'Even,
    et c'est ce qui rend l'animation lisible — son amplitude etant fixe,
    plus l'ecart de depart est grand moins le mouvement se voit. */
-#page-project-diploma .panel-choice {
+#page-project-diploma .panel-choice,
+#page-drawings .bd-carousel-section {
     padding-bottom: 40px;
 }
 
@@ -4632,7 +4637,8 @@ EUR DE LA PAGE en plein
    32vh : le minimum pour tenir 864px de course sur un ultra-large, qui
    est le cas le plus contraint. Les 40px du bas remettent « suivant »
    contre le pied de page. */
-#page-project-diploma .page-next {
+#page-project-diploma .page-next,
+#page-drawings .page-next {
     margin-top: 32vh;
     margin-bottom: 40px;
 }
@@ -4654,7 +4660,8 @@ EUR DE LA PAGE en plein
            reserve. En s'arretant a 75%, l'animation revient a zero
            bien avant la fin de course, sur toutes les hauteurs
            d'ecran, y compris un ultra-large. */
-        #page-project-diploma .panel-choice {
+        #page-project-diploma .panel-choice,
+        #page-drawings .bd-carousel-section {
             animation: qb-ecarter-haut linear both;
             animation-timeline: --citation;
             animation-range: cover 21% cover 79%;
@@ -4663,7 +4670,8 @@ EUR DE LA PAGE en plein
            etait deplace et que l'animation n'allait pas jusqu'au bout,
            il resterait pousse vers le bas et une partie deviendrait
            inaccessible. C'est exactement ce qui s'est produit. */
-        #page-project-diploma .page-next {
+        #page-project-diploma .page-next,
+        #page-drawings .page-next {
             animation: qb-ecarter-bas linear both;
             animation-timeline: --citation;
             animation-range: cover 21% cover 79%;
