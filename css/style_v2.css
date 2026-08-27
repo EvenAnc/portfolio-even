@@ -4458,15 +4458,15 @@ EUR DE LA PAGE en plein
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Les deux ecarts doivent etre EGAUX quand la citation est centree.
-       Mesure : 204px au-dessus, 836px en dessous. Les 632px d'ecart
-       venaient de la reserve de defilement, que j'avais posee juste
-       sous la citation. Elle est deplacee sous « suivant », ou elle ne
-       se voit pas ; il reste ici a rattraper les 40px d'ecart entre le
-       bas du panneau du dessus (120px) et la marge de « suivant »
-       (80px), deux valeurs fixes. */
-    padding-top: 6vh;
-    padding-bottom: calc(6vh + 40px);
+    /* Rembourrage SYMETRIQUE, et c'est important.
+       Rattraper l'ecart des blocs voisins par le rembourrage du bas
+       donnait bien deux ecarts egaux, mais decalait le texte vers le
+       haut de la moitie du rattrapage. Les deux exigences d'Even —
+       ecarts egaux ET texte centre — sont incompatibles tant que les
+       marges des voisins different. On les egalise donc a la source
+       (voir .page-next plus bas), et ici tout redevient symetrique. */
+    padding-top: 30vh;
+    padding-bottom: 30vh;
 }
 
 /* Le fond s'etend au-dela du bloc pour suivre l'ecart qui s'ouvre.
@@ -4477,14 +4477,7 @@ EUR DE LA PAGE en plein
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    /* Deux couches. Le bruit d'abord, tres faible : un degrade aussi
-       sombre se quantifie sur 8 bits et ses paliers se voient en
-       travers de l'ecran, ce qu'Even a repere tout de suite. Le bruit
-       les casse. Ensuite le degrade lui-meme, en 21 paliers suivant la
-       meme courbe sin^2 que le reste, pour qu'aucune rupture de pente
-       ne dessine de trait. */
     background-image:
-        url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20width='160'%20height='160'><filter%20id='b'><feTurbulence%20type='fractalNoise'%20baseFrequency='0.8'%20numOctaves='4'%20stitchTiles='stitch'/></filter><rect%20width='160'%20height='160'%20filter='url%28%23b%29'%20opacity='0.42'/></svg>"),
         linear-gradient(180deg,
         rgba(10, 10, 10, 0) 0%,
         rgba(10, 10, 10, 0.0201) 5%,
@@ -4507,11 +4500,73 @@ EUR DE LA PAGE en plein
         rgba(10, 10, 10, 0.0783) 90%,
         rgba(10, 10, 10, 0.0201) 95%,
         rgba(10, 10, 10, 0) 100%);
-    background-repeat: repeat, no-repeat;
-    background-size: 160px 160px, 100% 100%;
     /* le bruit s'applique en fondu sur le noir, il ne l'eclaircit pas */
-    mix-blend-mode: normal;
-    opacity: 1;
+}
+
+/* Le bruit de tramage, dans sa propre couche.
+   Il etait une seconde couche de fond du degrade. Une couche de fond ne
+   suit pas l'alpha de celle du dessous : il se peignait donc aussi la ou
+   le degrade est transparent, en haut et en bas de la bande, et ses
+   pixels clairs se voyaient sur le noir. C'est le point blanc qu'Even a
+   repere sur son telephone.
+   Ici il porte son PROPRE masque, au meme profil que le degrade : il
+   s'eteint exactement ou le degrade s'eteint. Desature et pose en
+   incrustation, il ne peut qu'attenuer les paliers, jamais eclaircir. */
+.quote-band::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'><filter%20id='b'><feTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='4'%20stitchTiles='stitch'/><feColorMatrix%20type='saturate'%20values='0'/></filter><rect%20width='180'%20height='180'%20filter='url%28%23b%29'%20opacity='0.5'/></svg>");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+    mix-blend-mode: soft-light;
+    opacity: 0.5;
+    -webkit-mask-image: linear-gradient(180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.0245) 5%,
+        rgba(0, 0, 0, 0.0955) 10%,
+        rgba(0, 0, 0, 0.2061) 15%,
+        rgba(0, 0, 0, 0.3455) 20%,
+        rgba(0, 0, 0, 0.5) 25%,
+        rgba(0, 0, 0, 0.6545) 30%,
+        rgba(0, 0, 0, 0.7939) 35%,
+        rgba(0, 0, 0, 0.9045) 40%,
+        rgba(0, 0, 0, 0.9755) 45%,
+        rgba(0, 0, 0, 1) 50%,
+        rgba(0, 0, 0, 0.9755) 55%,
+        rgba(0, 0, 0, 0.9045) 60%,
+        rgba(0, 0, 0, 0.7939) 65%,
+        rgba(0, 0, 0, 0.6545) 70%,
+        rgba(0, 0, 0, 0.5) 75%,
+        rgba(0, 0, 0, 0.3455) 80%,
+        rgba(0, 0, 0, 0.2061) 85%,
+        rgba(0, 0, 0, 0.0955) 90%,
+        rgba(0, 0, 0, 0.0245) 95%,
+        rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(180deg,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.0245) 5%,
+        rgba(0, 0, 0, 0.0955) 10%,
+        rgba(0, 0, 0, 0.2061) 15%,
+        rgba(0, 0, 0, 0.3455) 20%,
+        rgba(0, 0, 0, 0.5) 25%,
+        rgba(0, 0, 0, 0.6545) 30%,
+        rgba(0, 0, 0, 0.7939) 35%,
+        rgba(0, 0, 0, 0.9045) 40%,
+        rgba(0, 0, 0, 0.9755) 45%,
+        rgba(0, 0, 0, 1) 50%,
+        rgba(0, 0, 0, 0.9755) 55%,
+        rgba(0, 0, 0, 0.9045) 60%,
+        rgba(0, 0, 0, 0.7939) 65%,
+        rgba(0, 0, 0, 0.6545) 70%,
+        rgba(0, 0, 0, 0.5) 75%,
+        rgba(0, 0, 0, 0.3455) 80%,
+        rgba(0, 0, 0, 0.2061) 85%,
+        rgba(0, 0, 0, 0.0955) 90%,
+        rgba(0, 0, 0, 0.0245) 95%,
+        rgba(0, 0, 0, 0) 100%);
 }
 
 .qb-body {
@@ -4551,14 +4606,17 @@ EUR DE LA PAGE en plein
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* La reserve de defilement dont l'animation a besoin pour aller
-   jusqu'au bout. Posee ici, entre « suivant » et le pied de page,
-   elle ne creuse plus l'ecart sous la citation. Elle n'est pas animee :
-   c'est de la place, pas un effet. 48vh et non 40 : sur un ecran haut,
-   un ultra-large par exemple, il ne restait que 94px de marge avant la
-   fin de course. */
+
+/* Les marges des deux blocs qui encadrent la citation doivent etre
+   EGALES, sinon le texte ne peut pas etre a la fois centre et a egale
+   distance des deux. Mesure : le bas du panneau du dessus vaut 120px
+   sur grand ecran et 219 sur telephone, la marge haute de « suivant »
+   valait 80 dans les deux cas. On l'aligne.
+   Aucune reserve de defilement ici : Even veut « suivant » colle au
+   pied de page. Ce qui rend la fin de l'animation atteignable, c'est
+   la plage resserree, pas de l'espace ajoute. */
 #page-project-diploma .page-next {
-    margin-bottom: 48vh;
+    margin-top: 120px;
 }
 
 /* — L'ecartement, lie au defilement ————————————————
@@ -4581,7 +4639,7 @@ EUR DE LA PAGE en plein
         #page-project-diploma .panel-choice {
             animation: qb-ecarter-haut linear both;
             animation-timeline: --citation;
-            animation-range: cover 25% cover 75%;
+            animation-range: cover 40% cover 60%;
         }
         /* Le pied de page n'est deliberement PAS de la partie. S'il
            etait deplace et que l'animation n'allait pas jusqu'au bout,
@@ -4590,17 +4648,18 @@ EUR DE LA PAGE en plein
         #page-project-diploma .page-next {
             animation: qb-ecarter-bas linear both;
             animation-timeline: --citation;
-            animation-range: cover 25% cover 75%;
+            animation-range: cover 40% cover 60%;
         }
         .qb-body {
             animation: qb-monter linear both;
             animation-timeline: --citation;
-            animation-range: cover 25% cover 75%;
+            animation-range: cover 40% cover 60%;
         }
-        .quote-band::before {
+        .quote-band::before,
+        .quote-band::after {
             animation: qb-assombrir linear both;
             animation-timeline: --citation;
-            animation-range: cover 25% cover 75%;
+            animation-range: cover 40% cover 60%;
         }
     }
 }
@@ -4678,15 +4737,11 @@ EUR DE LA PAGE en plein
 }
 
 @media (max-width: 768px) {
-    /* Meme calcul qu'au-dessus, mais les marges des blocs voisins ne
-       sont pas les memes a cette taille. Mesure a 412px : 257px
-       au-dessus contre 118 en dessous, soit 139 a rattraper.
-       A reverifier si le rembourrage de .panel-choice ou de .page-next
-       change un jour, ce sont eux que ces valeurs compensent. */
     .quote-band {
-        padding-top: 5vh;
-        padding-bottom: calc(5vh + 139px);
+        padding-top: 24vh;
+        padding-bottom: 24vh;
     }
+    #page-project-diploma .page-next { margin-top: 219px; }
     .qb-body { padding: 0 26px; max-width: 30rem; }
     .qb-text { font-size: 1rem; line-height: 1.65; }
     .qb-author { margin-top: 15px; }
