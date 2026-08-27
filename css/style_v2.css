@@ -4457,6 +4457,20 @@ EUR DE LA PAGE en plein
     timeline-scope: --citation;
 }
 
+/* PAS DE FOND SOUS LA CITATION, ET C'EST UN CHOIX.
+   Il y en avait un : un degrade qui assombrissait la bande a l'approche
+   du centre. Il a produit deux defauts visuels de suite.
+     D'abord des bandes horizontales. Un degrade aussi sombre ne dispose
+     que d'une douzaine de valeurs sur 8 bits, etalees sur 600px : les
+     paliers se voient, quelle que soit la finesse de la courbe.
+     Puis, en voulant les casser avec un bruit de tramage, des nuages.
+     Mon bruit avait quatre octaves, il fabriquait donc des structures a
+     grande echelle — exactement l'inverse d'un tramage, qui doit etre
+     un grain fin et rien d'autre.
+   Le fond est donc supprime. L'effet repose sur les deux choses
+   qu'Even a validees des le debut : les ecarts qui s'ouvrent et le
+   texte qui s'eclaircit. Aucun artefact possible, puisqu'il n'y a plus
+   rien a rendre. */
 .quote-band {
     position: relative;
     display: flex;
@@ -4485,108 +4499,7 @@ EUR DE LA PAGE en plein
 
 /* Le fond s'etend au-dela du bloc pour suivre l'ecart qui s'ouvre.
    Positionne en absolu, il ne compte pas dans la mise en page. */
-.quote-band::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background-image:
-        linear-gradient(180deg,
-        rgba(10, 10, 10, 0) 0%,
-        rgba(10, 10, 10, 0.0201) 5%,
-        rgba(10, 10, 10, 0.0783) 10%,
-        rgba(10, 10, 10, 0.169) 15%,
-        rgba(10, 10, 10, 0.2833) 20%,
-        rgba(10, 10, 10, 0.41) 25%,
-        rgba(10, 10, 10, 0.5367) 30%,
-        rgba(10, 10, 10, 0.651) 35%,
-        rgba(10, 10, 10, 0.7417) 40%,
-        rgba(10, 10, 10, 0.7999) 45%,
-        rgba(10, 10, 10, 0.82) 50%,
-        rgba(10, 10, 10, 0.7999) 55%,
-        rgba(10, 10, 10, 0.7417) 60%,
-        rgba(10, 10, 10, 0.651) 65%,
-        rgba(10, 10, 10, 0.5367) 70%,
-        rgba(10, 10, 10, 0.41) 75%,
-        rgba(10, 10, 10, 0.2833) 80%,
-        rgba(10, 10, 10, 0.169) 85%,
-        rgba(10, 10, 10, 0.0783) 90%,
-        rgba(10, 10, 10, 0.0201) 95%,
-        rgba(10, 10, 10, 0) 100%);
-    /* le bruit s'applique en fondu sur le noir, il ne l'eclaircit pas */
-}
 
-/* Le bruit de tramage, dans sa propre couche.
-   Il etait une seconde couche de fond du degrade. Une couche de fond ne
-   suit pas l'alpha de celle du dessous : il se peignait donc aussi la ou
-   le degrade est transparent, en haut et en bas de la bande, et ses
-   pixels clairs se voyaient sur le noir. C'est le point blanc qu'Even a
-   repere sur son telephone.
-   Ici il porte son PROPRE masque, au meme profil que le degrade : il
-   s'eteint exactement ou le degrade s'eteint. Desature et pose en
-   incrustation, il ne peut qu'attenuer les paliers, jamais eclaircir. */
-.quote-band::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml,<svg%20xmlns='http://www.w3.org/2000/svg'%20width='180'%20height='180'><filter%20id='b'><feTurbulence%20type='fractalNoise'%20baseFrequency='0.85'%20numOctaves='4'%20stitchTiles='stitch'/><feColorMatrix%20type='saturate'%20values='0'/></filter><rect%20width='180'%20height='180'%20filter='url%28%23b%29'%20opacity='0.5'/></svg>");
-    background-repeat: repeat;
-    background-size: 180px 180px;
-    mix-blend-mode: soft-light;
-    /* 0,08 et non 0,5. Un tramage doit casser les paliers du degrade
-       sans jamais se voir. A 0,5 il devenait une texture, nettement
-       visible en fond : c'est ce qu'Even a repere sur la page Dessins.
-       Combine a l'opacite du motif lui-meme, la trame pese desormais
-       environ 3% — l'ordre de grandeur habituel. */
-    opacity: 0.08;
-    -webkit-mask-image: linear-gradient(180deg,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0.0245) 5%,
-        rgba(0, 0, 0, 0.0955) 10%,
-        rgba(0, 0, 0, 0.2061) 15%,
-        rgba(0, 0, 0, 0.3455) 20%,
-        rgba(0, 0, 0, 0.5) 25%,
-        rgba(0, 0, 0, 0.6545) 30%,
-        rgba(0, 0, 0, 0.7939) 35%,
-        rgba(0, 0, 0, 0.9045) 40%,
-        rgba(0, 0, 0, 0.9755) 45%,
-        rgba(0, 0, 0, 1) 50%,
-        rgba(0, 0, 0, 0.9755) 55%,
-        rgba(0, 0, 0, 0.9045) 60%,
-        rgba(0, 0, 0, 0.7939) 65%,
-        rgba(0, 0, 0, 0.6545) 70%,
-        rgba(0, 0, 0, 0.5) 75%,
-        rgba(0, 0, 0, 0.3455) 80%,
-        rgba(0, 0, 0, 0.2061) 85%,
-        rgba(0, 0, 0, 0.0955) 90%,
-        rgba(0, 0, 0, 0.0245) 95%,
-        rgba(0, 0, 0, 0) 100%);
-    mask-image: linear-gradient(180deg,
-        rgba(0, 0, 0, 0) 0%,
-        rgba(0, 0, 0, 0.0245) 5%,
-        rgba(0, 0, 0, 0.0955) 10%,
-        rgba(0, 0, 0, 0.2061) 15%,
-        rgba(0, 0, 0, 0.3455) 20%,
-        rgba(0, 0, 0, 0.5) 25%,
-        rgba(0, 0, 0, 0.6545) 30%,
-        rgba(0, 0, 0, 0.7939) 35%,
-        rgba(0, 0, 0, 0.9045) 40%,
-        rgba(0, 0, 0, 0.9755) 45%,
-        rgba(0, 0, 0, 1) 50%,
-        rgba(0, 0, 0, 0.9755) 55%,
-        rgba(0, 0, 0, 0.9045) 60%,
-        rgba(0, 0, 0, 0.7939) 65%,
-        rgba(0, 0, 0, 0.6545) 70%,
-        rgba(0, 0, 0, 0.5) 75%,
-        rgba(0, 0, 0, 0.3455) 80%,
-        rgba(0, 0, 0, 0.2061) 85%,
-        rgba(0, 0, 0, 0.0955) 90%,
-        rgba(0, 0, 0, 0.0245) 95%,
-        rgba(0, 0, 0, 0) 100%);
-}
 
 .qb-body {
     /* taille et position fixes : c'est la reference de la piste */
@@ -4696,12 +4609,6 @@ EUR DE LA PAGE en plein
             animation-timeline: --citation;
             animation-range: cover 21% cover 79%;
         }
-        .quote-band::before,
-        .quote-band::after {
-            animation: qb-assombrir linear both;
-            animation-timeline: --citation;
-            animation-range: cover 21% cover 79%;
-        }
     }
 }
 
@@ -4757,24 +4664,6 @@ EUR DE LA PAGE en plein
         85.7% { opacity: 0.448; }
         92.9% { opacity: 0.354; }
         100% { opacity: 0.32; }
-}
-
-@keyframes qb-assombrir {
-        0% { opacity: 0; inset: -0vh 0; }
-        7.1% { opacity: 0.05; inset: -1vh 0; }
-        14.3% { opacity: 0.188; inset: -3.76vh 0; }
-        21.4% { opacity: 0.389; inset: -7.78vh 0; }
-        28.6% { opacity: 0.611; inset: -12.22vh 0; }
-        35.7% { opacity: 0.812; inset: -16.24vh 0; }
-        42.9% { opacity: 0.95; inset: -19vh 0; }
-        50% { opacity: 1; inset: -20vh 0; }
-        57.1% { opacity: 0.95; inset: -19vh 0; }
-        64.3% { opacity: 0.812; inset: -16.24vh 0; }
-        71.4% { opacity: 0.611; inset: -12.22vh 0; }
-        78.6% { opacity: 0.389; inset: -7.78vh 0; }
-        85.7% { opacity: 0.188; inset: -3.76vh 0; }
-        92.9% { opacity: 0.05; inset: -1vh 0; }
-        100% { opacity: 0; inset: -0vh 0; }
 }
 
 @media (max-width: 768px) {
