@@ -4465,8 +4465,8 @@ EUR DE LA PAGE en plein
        ecarts egaux ET texte centre — sont incompatibles tant que les
        marges des voisins different. On les egalise donc a la source
        (voir .page-next plus bas), et ici tout redevient symetrique. */
-    padding-top: 30vh;
-    padding-bottom: 30vh;
+    padding-top: 14vh;
+    padding-bottom: 14vh;
 }
 
 /* Le fond s'etend au-dela du bloc pour suivre l'ecart qui s'ouvre.
@@ -4615,8 +4615,28 @@ EUR DE LA PAGE en plein
    Aucune reserve de defilement ici : Even veut « suivant » colle au
    pied de page. Ce qui rend la fin de l'animation atteignable, c'est
    la plage resserree, pas de l'espace ajoute. */
+/* Les deux blocs qui encadrent la citation doivent lui laisser
+   EXACTEMENT la meme marge, sinon le texte ne peut pas etre a la fois
+   centre et a egale distance des deux.
+   40px de chaque cote : le rembourrage de la bande fait le reste, et il
+   est symetrique. Un ecart de depart serre est aussi ce qui rend
+   l'animation lisible — c'est la remarque d'Even, l'amplitude etant la
+   meme, plus l'ecart de depart est grand moins le mouvement se voit. */
+#page-project-diploma .panel-choice {
+    padding-bottom: 40px;
+}
+
 #page-project-diploma .page-next {
-    margin-top: 120px;
+    margin-top: 40px;
+    /* 140px sous « suivant », et pas zero. Calcul : pour que
+       l'animation revienne a zero avant la fin de course, il faut
+       (hauteur de la bande + contenu en dessous) >= 0,56 x (hauteur
+       d'ecran + hauteur de la bande). Sur un ultra-large il manquait
+       86px, et « suivant » restait alors decale de 269px vers le bas,
+       en plein dans le pied de page.
+       Rien a voir avec les 672px qu'Even trouvait excessifs : c'est le
+       minimum vital, arrondi avec un peu de marge. */
+    margin-bottom: 140px;
 }
 
 /* — L'ecartement, lie au defilement ————————————————
@@ -4639,7 +4659,7 @@ EUR DE LA PAGE en plein
         #page-project-diploma .panel-choice {
             animation: qb-ecarter-haut linear both;
             animation-timeline: --citation;
-            animation-range: cover 40% cover 60%;
+            animation-range: cover 44% cover 56%;
         }
         /* Le pied de page n'est deliberement PAS de la partie. S'il
            etait deplace et que l'animation n'allait pas jusqu'au bout,
@@ -4648,18 +4668,18 @@ EUR DE LA PAGE en plein
         #page-project-diploma .page-next {
             animation: qb-ecarter-bas linear both;
             animation-timeline: --citation;
-            animation-range: cover 40% cover 60%;
+            animation-range: cover 44% cover 56%;
         }
         .qb-body {
             animation: qb-monter linear both;
             animation-timeline: --citation;
-            animation-range: cover 40% cover 60%;
+            animation-range: cover 44% cover 56%;
         }
         .quote-band::before,
         .quote-band::after {
             animation: qb-assombrir linear both;
             animation-timeline: --citation;
-            animation-range: cover 40% cover 60%;
+            animation-range: cover 44% cover 56%;
         }
     }
 }
@@ -4738,10 +4758,10 @@ EUR DE LA PAGE en plein
 
 @media (max-width: 768px) {
     .quote-band {
-        padding-top: 24vh;
-        padding-bottom: 24vh;
+        padding-top: 12vh;
+        padding-bottom: 12vh;
     }
-    #page-project-diploma .page-next { margin-top: 219px; }
+
     .qb-body { padding: 0 26px; max-width: 30rem; }
     .qb-text { font-size: 1rem; line-height: 1.65; }
     .qb-author { margin-top: 15px; }
