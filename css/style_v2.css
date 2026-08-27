@@ -4628,15 +4628,21 @@ EUR DE LA PAGE en plein
 
 #page-project-diploma .page-next {
     margin-top: 40px;
-    /* 140px sous « suivant », et pas zero. Calcul : pour que
-       l'animation revienne a zero avant la fin de course, il faut
-       (hauteur de la bande + contenu en dessous) >= 0,56 x (hauteur
-       d'ecran + hauteur de la bande). Sur un ultra-large il manquait
-       86px, et « suivant » restait alors decale de 269px vers le bas,
-       en plein dans le pied de page.
-       Rien a voir avec les 672px qu'Even trouvait excessifs : c'est le
-       minimum vital, arrondi avec un peu de marge. */
-    margin-bottom: 140px;
+    /* L'ARBITRAGE, ecrit noir sur blanc parce qu'il n'a pas de bonne
+       reponse. La citation est le dernier bloc de la page : une fois
+       qu'elle est centree, il ne reste presque plus rien a defiler.
+       Or il faut de la course APRES ce moment pour que l'animation
+       redescende. D'ou un choix entre deux defauts.
+         peu de place ici -> l'animation se joue en 150px de
+         defilement, soit trois crans de molette. C'est ce qu'Even a
+         vu : « la citation apparait une milliseconde et disparait ».
+         de la place ici -> la course dure 685px, le mouvement est
+         lisible, mais un vide subsiste sous « suivant ».
+       Le second defaut est de loin le moindre : un vide se regarde,
+       une animation invisible ne sert a rien.
+       26vh : le minimum pour que la course tienne sur 685px sur un
+       ultra-large, qui est le cas le plus contraint. */
+    margin-bottom: 26vh;
 }
 
 /* — L'ecartement, lie au defilement ————————————————
@@ -4659,7 +4665,7 @@ EUR DE LA PAGE en plein
         #page-project-diploma .panel-choice {
             animation: qb-ecarter-haut linear both;
             animation-timeline: --citation;
-            animation-range: cover 44% cover 56%;
+            animation-range: cover 27% cover 73%;
         }
         /* Le pied de page n'est deliberement PAS de la partie. S'il
            etait deplace et que l'animation n'allait pas jusqu'au bout,
@@ -4668,18 +4674,18 @@ EUR DE LA PAGE en plein
         #page-project-diploma .page-next {
             animation: qb-ecarter-bas linear both;
             animation-timeline: --citation;
-            animation-range: cover 44% cover 56%;
+            animation-range: cover 27% cover 73%;
         }
         .qb-body {
             animation: qb-monter linear both;
             animation-timeline: --citation;
-            animation-range: cover 44% cover 56%;
+            animation-range: cover 27% cover 73%;
         }
         .quote-band::before,
         .quote-band::after {
             animation: qb-assombrir linear both;
             animation-timeline: --citation;
-            animation-range: cover 44% cover 56%;
+            animation-range: cover 27% cover 73%;
         }
     }
 }
