@@ -4408,22 +4408,7 @@ textarea:focus-visible,
 
    POURQUOI CA BLOQUAIT
    Les deux vides qui s'ouvraient etaient de vrais elements de mise en
-   page. Les faire grandir changeait la         0% { transform: translateY(-0vh); }
-        7.1% { transform: translateY(-0.99vh); }
-        14.3% { transform: translateY(-3.765vh); }
-        21.4% { transform: translateY(-7.775vh); }
-        28.6% { transform: translateY(-12.225vh); }
-        35.7% { transform: translateY(-16.235vh); }
-        42.9% { transform: translateY(-19.01vh); }
-        50% { transform: translateY(-20vh); }
-        57.1% { transform: translateY(-19.01vh); }
-        64.3% { transform: translateY(-16.235vh); }
-        71.4% { transform: translateY(-12.225vh); }
-        78.6% { transform: translateY(-7.775vh); }
-        85.7% { transform: translateY(-3.765vh); }
-        92.9% { transform: translateY(-0.99vh); }
-        100% { transform: translateY(-0vh); }
-EUR DE LA PAGE en plein
+   page. Les faire grandir changeait la HAUTEUR DE LA PAGE en plein
    defilement. Deux consequences, chacune suffisante :
      Lenis, qui pilote le defilement, garde en memoire la hauteur
      maximale atteignable. Elle devenait fausse a chaque image, et il
@@ -4675,4 +4660,65 @@ EUR DE LA PAGE en plein
     .qb-body { padding: 0 26px; max-width: 30rem; }
     .qb-text { font-size: 1rem; line-height: 1.65; }
     .qb-author { margin-top: 15px; }
+}
+
+
+/* ── 23. Safari (Mac, iPhone, iPad) : le meme rendu que Chrome ──
+
+   Un ami d'Even a ouvert le site sous Safari sur un Mac M1 : planches
+   geantes qui debordent du cadre rouge, barre de progression par-dessus
+   l'image, et lag. Reproduit a l'identique dans WebKit, le moteur de
+   Safari, pilote depuis Windows. Chrome et le Pixel n'avaient rien, et
+   ces regles ne changent pas un pixel chez eux : verifie par captures
+   comparees pixel a pixel, avant et apres, en ultra-large, portable et
+   format Pixel 8a.
+
+   1. LES PLANCHES DU PROJET DIPLOME
+   La fenetre du carrousel demandait height:100% a un parent dont la
+   hauteur vient d'un aspect-ratio borne par max-height:65vh. Chrome
+   considere cette hauteur comme connue (533px sur un portable). Safari
+   la considere comme inconnue, abandonne le 100% et prend la hauteur
+   naturelle de l'image, 849px. La planche depassait donc du cadre rouge
+   de 316px et passait sous la barre de progression.
+   Le parent est un conteneur flex en ligne : sans hauteur imposee,
+   l'enfant s'etire sur toute la hauteur du parent, et les deux moteurs
+   font ce calcul de la meme facon. */
+.carousel-landscape .bd-carousel-viewport {
+    height: auto !important;
+    align-self: stretch !important;
+}
+
+/* 2. LA PHOTO DE REFERENCE (page Dessins)
+   Meme famille de desaccord. Le cadre polaroid tire sa hauteur d'un
+   aspect-ratio et porte un rembourrage. Avec height:100% sur la photo,
+   Chrome compte le 100% sans le rembourrage (124px) et Safari avec
+   (170px) : la photo sortait par le bas du cadre blanc.
+   En colonne flex, la photo prend exactement la place qui reste entre
+   les rembourrages, dans les deux moteurs : 124px, 116px sur
+   telephone. */
+.ref-photo .media-frame-inner {
+    display: flex;
+    flex-direction: column;
+}
+.ref-photo .media-frame-img {
+    height: auto;
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+/* 3. LE PAPIER DU CAHIER, PRECALCULE
+   Voir initPapierSafari() dans app.js : sur Safari seulement, le filtre
+   de papier dechire est dessine une fois dans une image. Ces regles ne
+   s'appliquent qu'une fois cette image posee, donc jamais sur Chrome.
+   Les deux traits de la marge rouge sont dans l'image, les pseudo-
+   elements d'origine se retirent pour ne pas les doubler. */
+.notebook-bg-sheet.papier-precalcule {
+    filter: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+.notebook-bg-sheet.papier-precalcule::before,
+.notebook-bg-sheet.papier-precalcule::after {
+    display: none;
 }

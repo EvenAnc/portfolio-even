@@ -403,6 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSPA();
     initCarousel();
     initNotebookLines();
+    initPapierSafari();
     initNextPageLinks();
     initContactAnimation();
     initBDCarousel();
@@ -1008,6 +1009,63 @@ function initPageLenis(scrollContainer) {
 // ─────────────────────────────────────
 function initCarousel() {
     // Carousel is now static wrapped grid layout, no-op
+}
+
+// ─────────────────────────────────────
+// SAFARI : LE PAPIER DECHIRE CALCULE UNE SEULE FOIS
+// ─────────────────────────────────────
+// La feuille du cahier porte filter:url(#paper-tear), un bruit
+// feTurbulence a 3 octaves sur toute la section. Chrome le garde en
+// memoire. Safari le recalcule sur le processeur a chaque image des
+// qu'une animation bouge ailleurs sur la page (logo qui tremble...).
+// Mesure dans WebKit : 2,5 images par seconde au repos sur l'accueil,
+// c'etait le lag du Mac.
+//
+// Sur Safari seulement, on dessine la meme feuille UNE fois dans une
+// image SVG : meme filtre, memes coordonnees, meme graine, donc memes
+// dechirures et meme marge rouge ondulee. Safari la garde en cache
+// comme n'importe quelle image : 40 images par seconde au repos.
+//
+// -webkit-hyphens n'est reconnu que par WebKit (Safari Mac, iPhone,
+// iPad). Chrome ne passe jamais ici : son rendu ne change pas d'un pixel.
+function initPapierSafari() {
+    if (!(window.CSS && CSS.supports('-webkit-hyphens', 'none'))) return;
+    const feuille = document.querySelector('#notebook-section .notebook-bg-sheet');
+    const filtre  = document.getElementById('paper-tear');
+    if (!feuille || !filtre || typeof ResizeObserver === 'undefined' || typeof XMLSerializer === 'undefined') return;
+
+    const definition = new XMLSerializer().serializeToString(filtre);
+    let empreinte = '';
+
+    // Les deux traits de la marge rouge (::before et ::after) sont relus
+    // dans la feuille de style : ils changent de place sur mobile.
+    function trait(pseudo, h) {
+        const s = getComputedStyle(feuille, pseudo);
+        if (s.content === 'none') return '';
+        return '<rect x="' + parseFloat(s.left) + '" y="0" width="' + parseFloat(s.width) +
+               '" height="' + h + '" fill="' + s.backgroundColor + '"/>';
+    }
+
+    function peindre() {
+        const w = feuille.offsetWidth, h = feuille.offsetHeight;
+        if (!w || !h) return;
+        const fond  = getComputedStyle(feuille).getPropertyValue('--notebook-bg').trim() || '#f2f0eb';
+        const marge = trait('::before', h) + trait('::after', h);
+        const cle = w + 'x' + h + '|' + fond + '|' + marge;
+        if (cle === empreinte) return;   // meme taille, rien a redessiner
+        empreinte = cle;
+        const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h +
+                    '" viewBox="0 0 ' + w + ' ' + h + '"><defs>' + definition + '</defs>' +
+                    '<g filter="url(#paper-tear)"><rect width="' + w + '" height="' + h +
+                    '" fill="' + fond + '"/>' + marge + '</g></svg>';
+        feuille.style.backgroundImage = 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
+        feuille.classList.add('papier-precalcule');
+    }
+
+    // Redessine si la feuille change de taille (rotation, changement de
+    // langue qui rallonge le texte, chargement des polices).
+    new ResizeObserver(peindre).observe(feuille);
+    peindre();
 }
 
 // ─────────────────────────────────────
