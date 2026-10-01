@@ -918,8 +918,17 @@ function showPage(pageId, animate = true, updateHistory = true) {
 
             hydratePageImages(inEl);
             updateScrollbarWidth();
+            focusPage(inEl);
         }
     });
+}
+
+// Pages scroll inside their own box: unless focus sits in the visible one,
+// Space and PageDown scroll nothing after a navigation. Not done on the
+// first display, where focus must stay at the top of the document.
+function focusPage(pageEl) {
+    if (!pageEl.hasAttribute('tabindex')) pageEl.setAttribute('tabindex', '-1');
+    pageEl.focus({ preventScroll: true });
 }
 
 // Quand on revient sur la page home, remettre le hero logo en état initial
