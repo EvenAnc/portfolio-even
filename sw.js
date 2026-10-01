@@ -7,9 +7,10 @@
  *
  * Deux strategies, volontairement differentes :
  *
- *   MEDIAS (images, plans, polices, PDF) — cache d'abord.
- *   Ils ne changent quasiment jamais. Servis instantanement depuis le
- *   disque du visiteur, sans aucun aller-retour reseau.
+ *   MEDIA (images, plans, fonts, PDF) — stale-while-revalidate.
+ *   Served at once from the visitor's disk, then refreshed in the
+ *   background: a file replaced under the same name shows up on the
+ *   following visit instead of staying frozen forever.
  *
  *   CODE (HTML, CSS, JS) — reseau d'abord, cache en secours.
  *   C'est ce qui evite le piege classique du service worker : un site
@@ -20,7 +21,7 @@
  * Pour forcer le renouvellement de tous les medias : incrementer VERSION.
  */
 
-const VERSION = 'v1';
+const VERSION = 'v2';
 const CACHE_MEDIAS = 'even-medias-' + VERSION;
 const CACHE_CODE   = 'even-code-' + VERSION;
 
@@ -52,27 +53,37 @@ self.addEventListener('fetch', event => {
     if (url.origin !== self.location.origin) return;
 
     if (EXT_MEDIAS.test(url.pathname)) {
-        event.respondWith(cacheDAbord(req));
+        event.respondWith(staleWhileRevalidate(event));
     } else {
         event.respondWith(reseauDAbord(req));
     }
 });
 
-// Medias : on sert le cache immediatement s'il existe.
-async function cacheDAbord(req) {
+// Only complete same-origin answers are stored: a partial (206) or error
+// response kept in the cache would be served again on every later visit.
+function isCacheable(response) {
+    return Boolean(response) && response.status === 200 && response.type === 'basic';
+}
+
+// Media: answer from the cache when possible and refresh it behind the
+// visitor's back. The refresh goes through the HTTP cache, so a file is
+// re-requested at most once per freshness window (10 minutes on the host).
+async function staleWhileRevalidate(event) {
+    const req = event.request;
     const cache = await caches.open(CACHE_MEDIAS);
-    const enCache = await cache.match(req);
-    if (enCache) return enCache;
-    try {
-        const reponse = await fetch(req);
-        // On ne met en cache que les reponses completes et valides.
-        if (reponse && reponse.status === 200 && reponse.type === 'basic') {
-            cache.put(req, reponse.clone());
-        }
-        return reponse;
-    } catch (e) {
-        return enCache || Response.error();
-    }
+    const cached = await cache.match(req);
+
+    const refresh = fetch(req).then(async response => {
+        if (isCacheable(response)) await cache.put(req, response.clone());
+        return response;
+    });
+
+    if (!cached) return refresh;
+
+    // Keeps the worker alive until the refresh is stored; a failed refresh
+    // only means the cached copy stays in use.
+    event.waitUntil(refresh.catch(() => {}));
+    return cached;
 }
 
 // Code : le reseau fait foi, le cache n'est qu'un filet hors ligne.
@@ -80,7 +91,7 @@ async function reseauDAbord(req) {
     const cache = await caches.open(CACHE_CODE);
     try {
         const reponse = await fetch(req);
-        if (reponse && reponse.status === 200 && reponse.type === 'basic') {
+        if (isCacheable(reponse)) {
             cache.put(req, reponse.clone());
         }
         return reponse;
