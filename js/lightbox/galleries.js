@@ -80,3 +80,16 @@ export const diplomeAnalyses = [
     { url: 'PDF/zooning-batiment.pdf', title: 'Zoning Bâtiment', altKey: 'alt_zoning_building' },
     { url: 'PDF/zooning-circulation.pdf', title: 'Zoning Circulations', altKey: 'alt_zoning_circulation' }
 ];
+
+/**
+ * Finds the plan gallery that holds a given sheet.
+ * @param {string} url
+ * @returns {{gallery: Array, index: number}|null}
+ */
+export function findGalleryByUrl(url) {
+    for (const gallery of [diplomePlans, diplomeCoupes, diplomeAnalyses]) {
+        const index = gallery.findIndex(item => item.url === url);
+        if (index !== -1) return { gallery, index };
+    }
+    return null;
+}
