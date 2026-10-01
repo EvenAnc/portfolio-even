@@ -86,6 +86,13 @@
         @keyframes spin-slow { 100% { transform: rotate(360deg); } }
         @keyframes pulse-opacity { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
     </style>
+
+    <!-- Deferred: the libraries run in document order, then the application. -->
+    <script defer src="vendor/gsap-3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"></script>
+    <script defer src="vendor/gsap-3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"></script>
+    <script defer src="vendor/lenis-1.0.42/lenis.min.js" integrity="sha384-li4UtcFCH6QeUqR4JyV58/VgTprMuz9aauj+oWtew7V4Y7ZVjnvz5px9Y3UCG0Ea"></script>
+    <script defer src="vendor/pdfjs-3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e"></script>
+    <script defer src="js/app.js"></script>
 </head>
 <body ontouchstart="">
 
@@ -1298,13 +1305,6 @@
         <!-- Points indicateurs en bas -->
         <div class="lb-dots"></div>
     </div>
-
-    <!-- Scripts -->
-    <script src="vendor/gsap-3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"></script>
-    <script src="vendor/gsap-3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"></script>
-    <script src="vendor/lenis-1.0.42/lenis.min.js" integrity="sha384-li4UtcFCH6QeUqR4JyV58/VgTprMuz9aauj+oWtew7V4Y7ZVjnvz5px9Y3UCG0Ea"></script>
-    <script src="vendor/pdfjs-3.11.174/pdf.min.js" integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e"></script>
-    <script src="js/app.js"></script>
 
 
     <!-- ── Mesure d'audience ───────────────────────────────────

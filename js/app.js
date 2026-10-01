@@ -473,7 +473,7 @@ function majMetaPage(pageId) {
 // ─────────────────────────────────────
 // INIT
 // ─────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+function init() {
     initCoupeClicks();
     animateFavicon();
 
@@ -566,13 +566,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // worker garde les médias sur son disque et les ressert instantanément.
     // Enregistré après le chargement pour ne pas concurrencer l'affichage.
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
+        const registerServiceWorker = () => {
             navigator.serviceWorker.register('sw.js').catch(err => {
                 // Un échec ici n'a aucune conséquence : le site fonctionne
                 // exactement comme avant, simplement sans cache longue durée.
                 console.warn('[portfolio] cache longue durée indisponible :', err.message);
             });
-        });
+        };
+        if (document.readyState === 'complete') registerServiceWorker();
+        else window.addEventListener('load', registerServiceWorker);
     }
 
     // PERF-04 : préparer les plans en fond, une fois l'accueil installé.
@@ -644,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
             );
         }
     });
-});
+}
 
 // ─────────────────────────────────────
 // FIX P-01c — REVEIL DES IMAGES A L'OUVERTURE D'UNE PAGE
@@ -3055,4 +3057,13 @@ function animateFavicon() {
             startFavicon();
         }
     });
+}
+
+// Last statement of the file: every declaration above must exist before
+// init runs. Deferred scripts run once the document is parsed; the guard also covers a
+// late injection, when DOMContentLoaded has already fired.
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
 }
