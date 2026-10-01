@@ -1763,9 +1763,19 @@ function initDrawingLightbox() {
         canvasWrap.innerHTML = '';
     }
 
+    // A zoomed image may travel only as far as it overflows the frame on
+    // each side, so it can never be dragged out of view.
+    function clampTranslation(item) {
+        const maxX = Math.max(0, (item.offsetWidth * scale - canvasWrap.clientWidth) / 2);
+        const maxY = Math.max(0, (item.offsetHeight * scale - canvasWrap.clientHeight) / 2);
+        translateX = Math.min(maxX, Math.max(-maxX, translateX));
+        translateY = Math.min(maxY, Math.max(-maxY, translateY));
+    }
+
     function updateTransform() {
         const item = canvasWrap.querySelector('img, canvas');
-        if (item) item.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        if (item) clampTranslation(item);
+        if (item) item.style.transform =`translate(${translateX}px, ${translateY}px) scale(${scale})`;
         
         if (sliderRedPath && zoomRange) {
             const percent = (scale - zoomRange.min) / (zoomRange.max - zoomRange.min);
