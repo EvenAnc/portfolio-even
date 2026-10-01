@@ -727,6 +727,453 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 @keyframes scrollPulse { 0% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(0); opacity: 0; } }
 
 
+/* Frame */
+
+.frame-wrap {
+    position: relative;
+}
+
+.torn-frame {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    clip-path: url(#torn-1);
+    /* Webkit prefix pour compatibilité maximale */
+    -webkit-clip-path: url(#torn-1);
+}
+
+.torn-frame.torn-alt {
+    clip-path: url(#torn-2);
+    -webkit-clip-path: url(#torn-2);
+}
+
+.media-frame-inner {
+    position: relative; 
+    width: 100%; 
+    overflow: hidden; 
+    line-height: 0;
+}
+
+.media-frame-img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.7s var(--ease-out);
+}
+
+.torn-frame:hover .media-frame-img,
+.frame-wrap:hover .torn-frame .media-frame-img {
+    transform: scale(1.04);
+}
+
+.sketch-rect-svg {
+    position: absolute;
+    top: -2.5%;
+    left: -2.5%;
+    width: 105%;
+    height: 105%;
+    z-index: 10;
+    pointer-events: none;
+    transform: rotate(2deg);
+    opacity: 0;
+    transition: opacity 0.2s var(--ease-out); /* Révélation rapide pour voir le tracé dès le début */
+}
+
+.sketch-rect-path {
+    stroke-dasharray: 1800;
+    stroke-dashoffset: 1800;
+    transition: stroke-dashoffset 1.5s var(--ease-out); /* Dessin progressif en 1.5s */
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+/* Rotations et vitesses de dessin alternées pour casser la répétition visuelle */
+.drawing-item:nth-child(2n) .sketch-rect-svg { transform: rotate(-1.5deg); }
+
+.drawing-item:nth-child(2n) .sketch-rect-path { transition: stroke-dashoffset 1.3s var(--ease-out); }
+
+/* Hover sur le frame-wrap → dessine le rectangle */
+.frame-wrap:hover > .sketch-rect-svg {
+    opacity: 1;
+}
+
+.frame-wrap:hover > .sketch-rect-svg .sketch-rect-path {
+    stroke-dashoffset: 0;
+}
+
+/* Variante bouton */
+.btn-wrap {
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.btn-rect {
+    top: -5%;
+    left: -3%;
+    width: 106%;
+    height: 110%;
+    transform: rotate(1deg);
+}
+
+.btn-wrap:hover > .sketch-rect-svg { opacity: 1; }
+.btn-wrap:hover > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
+
+/* Red Scribble Integration */
+.polaroid-card .sketch-rect-svg {
+    pointer-events: none;
+    z-index: 20;
+    width: 106%;
+    height: 106%;
+    left: -3%;
+    top: -3%;
+}
+
+.patchwork-item:hover .sketch-rect-svg {
+    opacity: 1;
+}
+
+.patchwork-item:hover .sketch-rect-svg .sketch-rect-path {
+    stroke-dashoffset: 0;
+}
+
+/* Curseur "loupe" uniquement quand la page Dessins est active et visible */
+.page.is-active .drawing-item .frame-wrap,
+.page.is-active .bd-slide.active .drawing-sheet-wrap {
+    cursor: zoom-in;
+}
+
+.drawing-sheet-wrap .media-frame-inner { background: white; padding: 0; }
+.drawing-item.orient-portrait .media-frame-inner { aspect-ratio: 1 / 1.414; }
+.drawing-item.orient-landscape .media-frame-inner { aspect-ratio: 1.414 / 1; }
+
+/* BD frame SVG sits exactly on the viewport, not the wider frame-wrap */
+.bd-frame-svg {
+    top: -3%;
+    left: -3%;
+    width: 106%;
+    height: 106%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.frame-wrap:hover .bd-frame-svg {
+    opacity: 1;
+}
+
+.frame-wrap:hover .bd-frame-svg .sketch-rect-path {
+    stroke-dashoffset: 0;
+}
+
+.bd-slide .media-frame-inner {
+    padding: 0 !important;
+    /* removed transparent */
+}
+
+.school-img-wrap .media-frame-inner { aspect-ratio: 4/3; }
+
+.bd-carousel-container .frame-wrap {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.carousel-landscape .bd-carousel-container .frame-wrap {
+    width: 100%;
+    max-width: 1200px;
+    max-height: 65vh;
+    aspect-ratio: 1.414 / 1;
+}
+
+@supports (min-height: 1cqw) {
+    /* Selecteur volontairement long : .diploma-placeholder .media-frame-inner
+           impose deja le rapport A4 avec une specificite superieure. Un simple
+           .diploma-card-inner perdait la cascade sans rien changer. */
+    .diploma-placeholder .media-frame-inner.diploma-card-inner {
+        aspect-ratio: auto;
+        min-height: 141.4cqw;   /* 1 / 1,414 exprime en largeur de conteneur */
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1365px) {
+    /* Mid-size screens: let the board give up the width the two arrows need,
+       so they stay inside the viewport instead of overflowing the container. */
+    .carousel-landscape .bd-carousel-container .frame-wrap {
+        flex: 0 1 auto;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-landscape .bd-carousel-container .frame-wrap {
+        max-height: 50vh;
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* meme critere que REQUETE_TACTILE dans app.js : le second cas
+       rattrape les appareils tactiles qui se declarent avec survol */
+    /* ── Cadres : rectangle rouge se dessine au clic/touch (active) ── */
+    .frame-wrap > .sketch-rect-svg {
+        transition: opacity 0.15s 0.1s var(--ease-out); /* Délai de 0.1s pour éviter le flash au scroll */
+    }
+
+    .frame-wrap:active > .sketch-rect-svg {
+        opacity: 1;
+        transition-delay: 0s;
+    }
+
+    .frame-wrap:active > .sketch-rect-svg .sketch-rect-path {
+        stroke-dashoffset: 0;
+    }
+
+    /* ── Cadres : image légèrement zoomée au touch ── */
+    .frame-wrap .torn-frame .media-frame-img {
+        transition: transform 0.2s 0.1s ease;
+    }
+
+    .frame-wrap:active .torn-frame .media-frame-img {
+        transform: scale(1.04);
+        transition-delay: 0s;
+    }
+
+    /* ── Bouton ENVOYER : rect rouge au touch ── */
+    .btn-wrap:active > .sketch-rect-svg { opacity: 1; }
+
+    .btn-wrap:active > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
+
+    /* ── Désactiver les hover visuels sur mobile (ils ne font rien
+           mais laissent un état intermédiaire bloqué sur certains OS) ── */
+    .frame-wrap:hover .torn-frame .media-frame-img { transform: none; }
+
+    .torn-frame:hover .media-frame-img { transform: none; }
+
+    /* ── 4. Confort tactile general ────────────────────────────────────
+       Sur iOS un appui long fait apparaitre un menu de copie d'image et
+       un cadre de selection : penible sur une galerie ou l'on fait
+       surtout defiler et glisser. */
+    /* meme critere que REQUETE_TACTILE dans app.js : le second cas
+       rattrape les appareils tactiles qui se declarent avec survol */
+    .media-frame-img,
+    .pdf-img,
+    .bd-slide img,
+    .polaroid-img {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    /* ── 16. Le cadre rouge n'avait pas le temps de se dessiner ──────
+
+       A la souris, survoler un cadre dessine le rectangle rouge en 1,5 s.
+       Au doigt, l'equivalent est :active — qui ne dure que le temps de
+       l'appui, une centaine de millisecondes — et la visionneuse s'ouvrait
+       dans la foulee. Even voyait donc le rouge apparaitre puis disparaitre
+       aussitot, sans jamais voir le trace : « j'ai l'impression que le
+       doigt ne marche pas ».
+
+       tracerPuis() dans app.js pose la classe ci-dessous, attend 460 ms,
+       puis ouvre. Ici on accelere le trace a 0,40 s pour qu'il tienne
+       entierement dans ce delai — a 1,5 s on n'en verrait qu'un quart.
+
+       Selecteur en descendance et non en enfant direct : le cadre des
+       carrousels (.bd-frame-svg) est bien un enfant direct, mais rien ne
+       garantit que ce soit toujours le cas.
+
+       Vaut pour tous les appareils tactiles, Android comme iPhone : le
+       declencheur est un evenement « click », que les deux emettent, et
+       non un evenement de survol propre a l'un ou a l'autre. */
+    .frame-wrap.trace-tactile .sketch-rect-svg {
+        opacity: 1;
+        transition-delay: 0s;
+    }
+
+    .frame-wrap.trace-tactile .sketch-rect-svg .sketch-rect-path {
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 0.40s var(--ease-out);
+    }
+}
+
+@keyframes rectWobble {
+    0%,33%   { filter: url(#sketch-1); }
+    34%,66%  { filter: url(#sketch-2); }
+    67%,100% { filter: url(#sketch-3); }
+}
+
+
+/* Projects hub */
+
+.projects-patchwork {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    padding: 20px 0 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.patchwork-item {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.patchwork-item:hover {
+    transform: scale(1.02) rotate(-1deg);
+    z-index: 10;
+}
+
+@media (min-width: 992px) {
+    .projects-patchwork {
+        grid-template-columns: repeat(12, 1fr);
+        grid-auto-rows: 100px;
+        grid-auto-flow: dense;
+    }
+
+    .patchwork-item.prio-1 { grid-column: span 6; grid-row: span 5; }
+    .patchwork-item.prio-2 { grid-column: span 5; grid-row: span 4; }
+    .patchwork-item.prio-3 { grid-column: span 4; grid-row: span 3; }
+}
+
+
+/* Polaroid */
+
+/* Polaroid Design */
+.polaroid-card {
+    background: #e8e8e8; /* Off-white slightly textured look */
+    padding: 12px 12px 60px 12px;
+    border-radius: 2px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 2px 10px rgba(0,0,0,0.1);
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.polaroid-img-wrap {
+    flex: 1;
+    overflow: hidden;
+    background: #111;
+    position: relative;
+    border-radius: 2px;
+}
+
+.polaroid-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+
+.patchwork-item:hover .polaroid-img {
+    transform: scale(1.05);
+}
+
+/* Tape */
+.polaroid-tape {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 120px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    backdrop-filter: blur(4px);
+    z-index: 5;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.patchwork-item:nth-child(even) .polaroid-tape {
+    transform: translateX(-50%) rotate(3deg);
+    top: -10px;
+}
+
+/* Polaroid Text Label */
+.polaroid-label {
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #111;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 10px;
+}
+
+.polaroid-label .pl-num {
+    color: var(--red);
+    font-size: 2.8rem;
+    line-height: 1;
+    transform: rotate(-8deg) translateY(-2px);
+}
+
+.polaroid-label .pl-text {
+    font-size: 1.8rem;
+    line-height: 1;
+    letter-spacing: 0.05em;
+}
+
+.prio-1 .polaroid-label .pl-num { font-size: 3.5rem; }
+.prio-1 .polaroid-label .pl-text { font-size: 2.5rem; }
+
+@media (max-width: 768px) {
+    /* ── 10. Polaroids : le titre remontait sur l'image ────────────────
+       .polaroid-card reserve 60px en bas (padding) et .polaroid-label est
+       pose en absolu par-dessus, tandis que .polaroid-img-wrap (flex:1)
+       occupe TOUTE la hauteur restante. Tant que le titre tient sur une
+       ligne, l'illusion fonctionne. Sur un ecran de 412px il passe a deux
+       lignes : mesure 85px de haut pour 60px reserves, soit 25px qui
+       remontent sur l'image — « PROJET 01 : » s'ecrivait sur la photo et
+       « DIPLOME » sur la marge blanche.
+
+       On remet l'etiquette DANS LE FLUX sur telephone : l'image, etant en
+       flex:1, cede exactement la place qu'il faut. Le probleme ne peut
+       plus revenir, quelle que soit la longueur d'un futur titre.
+       Les corps sont aussi ramenes a une echelle de telephone : a 40px le
+       titre partait a la ligne pour rien. */
+    .polaroid-card {
+        padding-bottom: 14px;
+    }
+
+    .polaroid-label {
+        position: static;
+        margin-top: 10px;
+        padding: 0 4px;
+    }
+
+    .polaroid-label .pl-text,
+    .prio-1 .polaroid-label .pl-text {
+        font-size: 1.55rem;
+        line-height: 1.05;
+    }
+
+    .polaroid-label .pl-num,
+    .prio-1 .polaroid-label .pl-num {
+        font-size: 2.2rem;
+    }
+
+    /* ── 11. Polaroid « a suivre » : l'icone passait sous le ruban ─────
+       La carte 3 n'a pas de photo : son cadre se dimensionne sur son seul
+       contenu et tombait a 126px de haut sur telephone. L'icone occupait
+       alors le haut du cadre (y = 3 a 54) alors que le ruban adhesif
+       descend jusqu'a y = 20 : elle apparaissait coupee.
+
+       On lui donne une hauteur proche de celle des cartes voisines, et on
+       degage le haut pour laisser passer le ruban. Ciblage par l'absence
+       d'image, ce qui evite de toucher au HTML. */
+    .polaroid-img-wrap:not(:has(img)) {
+        min-height: 190px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        padding: 34px 12px 16px;   /* 34px en haut : le ruban s'arrete a 20px */
+        box-sizing: border-box;
+    }
+}
+
+
 /* Notebook */
 
 .notebook-section {
@@ -1201,339 +1648,7 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 }
 
 
-/* Not yet reorganised */
-
-.menu-overlay {
-    position: fixed; inset: 0; z-index: 90;
-    background: var(--bg);
-    display: flex; flex-direction: column;
-    padding: 0 60px 50px;
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
-    overflow-y: auto;
-}
-
-body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
-.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
-
-.menu-logo {
-    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
-    animation: logoWobbleMini 0.3s steps(1) infinite;
-}
-
-/* Items alignés, espacement vertical régulier */
-.menu-nav {
-    display: flex; flex-direction: column;
-    gap: 18px;
-    flex: 1;
-    justify-content: center;
-}
-
-.menu-nav-item {
-    display: flex; align-items: baseline; gap: 18px;
-    width: fit-content; padding: 10px 0;
-    position: relative;
-}
-
-.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
-
-.mn-label {
-    font-family: var(--font-display);
-    font-size: clamp(2.8rem, 6vw, 4.8rem);
-    line-height: 1; letter-spacing: 0.02em;
-    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
-}
-
-.mn-deco {
-    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
-    color: var(--red); opacity: 0;
-    transform: translateX(-8px) rotate(-3deg);
-    transition: opacity 0.3s, transform 0.4s var(--ease-out);
-    white-space: nowrap;
-}
-
-.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
-.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
-
-.menu-scribble {
-    position: absolute; top: 110px; right: 60px;
-    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
-}
-
-.menu-footer {
-    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
-    display: flex; align-items: center; gap: 40px;
-}
-
-.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
-.menu-mail:hover { opacity: 1; color: var(--red); }
-.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
-.menu-footer-social a { transition: color var(--dur-fast); }
-.menu-footer-social a:hover { color: var(--red); }
-
-.frame-wrap {
-    position: relative;
-}
-
-.torn-frame {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    clip-path: url(#torn-1);
-    /* Webkit prefix pour compatibilité maximale */
-    -webkit-clip-path: url(#torn-1);
-}
-
-.torn-frame.torn-alt {
-    clip-path: url(#torn-2);
-    -webkit-clip-path: url(#torn-2);
-}
-
-.media-frame-inner {
-    position: relative; 
-    width: 100%; 
-    overflow: hidden; 
-    line-height: 0;
-}
-
-.media-frame-img {
-    width: 100%; height: 100%; object-fit: cover; display: block;
-    transition: transform 0.7s var(--ease-out);
-}
-
-.torn-frame:hover .media-frame-img,
-.frame-wrap:hover .torn-frame .media-frame-img {
-    transform: scale(1.04);
-}
-
-.sketch-rect-svg {
-    position: absolute;
-    top: -2.5%;
-    left: -2.5%;
-    width: 105%;
-    height: 105%;
-    z-index: 10;
-    pointer-events: none;
-    transform: rotate(2deg);
-    opacity: 0;
-    transition: opacity 0.2s var(--ease-out); /* Révélation rapide pour voir le tracé dès le début */
-}
-
-.sketch-rect-path {
-    stroke-dasharray: 1800;
-    stroke-dashoffset: 1800;
-    transition: stroke-dashoffset 1.5s var(--ease-out); /* Dessin progressif en 1.5s */
-    animation: rectWobble 0.3s steps(1) infinite;
-}
-
-/* Rotations et vitesses de dessin alternées pour casser la répétition visuelle */
-.drawing-item:nth-child(2n) .sketch-rect-svg { transform: rotate(-1.5deg); }
-
-.drawing-item:nth-child(2n) .sketch-rect-path { transition: stroke-dashoffset 1.3s var(--ease-out); }
-
-@keyframes rectWobble {
-    0%,33%   { filter: url(#sketch-1); }
-    34%,66%  { filter: url(#sketch-2); }
-    67%,100% { filter: url(#sketch-3); }
-}
-
-/* Hover sur le frame-wrap → dessine le rectangle */
-.frame-wrap:hover > .sketch-rect-svg {
-    opacity: 1;
-}
-
-.frame-wrap:hover > .sketch-rect-svg .sketch-rect-path {
-    stroke-dashoffset: 0;
-}
-
-/* Variante bouton */
-.btn-wrap {
-    display: inline-block;
-    align-self: flex-start;
-}
-
-.btn-rect {
-    top: -5%;
-    left: -3%;
-    width: 106%;
-    height: 110%;
-    transform: rotate(1deg);
-}
-
-.btn-wrap:hover > .sketch-rect-svg { opacity: 1; }
-.btn-wrap:hover > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
-
-.projects-patchwork {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 40px;
-    padding: 20px 0 60px;
-    max-width: 1400px;
-    margin: 0 auto;
-}
-
-@media (min-width: 992px) {
-    .projects-patchwork {
-        grid-template-columns: repeat(12, 1fr);
-        grid-auto-rows: 100px;
-        grid-auto-flow: dense;
-    }
-
-    .patchwork-item.prio-1 { grid-column: span 6; grid-row: span 5; }
-    .patchwork-item.prio-2 { grid-column: span 5; grid-row: span 4; }
-    .patchwork-item.prio-3 { grid-column: span 4; grid-row: span 3; }
-}
-
-.patchwork-item {
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.patchwork-item:hover {
-    transform: scale(1.02) rotate(-1deg);
-    z-index: 10;
-}
-
-/* Polaroid Design */
-.polaroid-card {
-    background: #e8e8e8; /* Off-white slightly textured look */
-    padding: 12px 12px 60px 12px;
-    border-radius: 2px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 2px 10px rgba(0,0,0,0.1);
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.polaroid-img-wrap {
-    flex: 1;
-    overflow: hidden;
-    background: #111;
-    position: relative;
-    border-radius: 2px;
-}
-
-.polaroid-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
-}
-
-.patchwork-item:hover .polaroid-img {
-    transform: scale(1.05);
-}
-
-/* Tape */
-.polaroid-tape {
-    position: absolute;
-    top: -15px;
-    left: 50%;
-    transform: translateX(-50%) rotate(-2deg);
-    width: 120px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    backdrop-filter: blur(4px);
-    z-index: 5;
-    border: 1px solid rgba(255,255,255,0.05);
-}
-
-.patchwork-item:nth-child(even) .polaroid-tape {
-    transform: translateX(-50%) rotate(3deg);
-    top: -10px;
-}
-
-/* Polaroid Text Label */
-.polaroid-label {
-    position: absolute;
-    bottom: 5px;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    color: #111;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 0 10px;
-}
-
-.polaroid-label .pl-num {
-    color: var(--red);
-    font-size: 2.8rem;
-    line-height: 1;
-    transform: rotate(-8deg) translateY(-2px);
-}
-
-.polaroid-label .pl-text {
-    font-size: 1.8rem;
-    line-height: 1;
-    letter-spacing: 0.05em;
-}
-
-.prio-1 .polaroid-label .pl-num { font-size: 3.5rem; }
-.prio-1 .polaroid-label .pl-text { font-size: 2.5rem; }
-
-/* Red Scribble Integration */
-.polaroid-card .sketch-rect-svg {
-    pointer-events: none;
-    z-index: 20;
-    width: 106%;
-    height: 106%;
-    left: -3%;
-    top: -3%;
-}
-
-.patchwork-item:hover .sketch-rect-svg {
-    opacity: 1;
-}
-
-.patchwork-item:hover .sketch-rect-svg .sketch-rect-path {
-    stroke-dashoffset: 0;
-}
-
-.page-next {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 80px;
-    margin-bottom: 40px;
-    float: right;
-    clear: both;
-    padding: 10px 0;
-    transition: transform 0.3s var(--ease-out);
-}
-
-.page-next:hover {
-    transform: translateX(10px);
-}
-
-.page-next-label {
-    font-family: var(--font-sketch);
-    font-size: 3.5rem;
-    text-transform: lowercase;
-    letter-spacing: 0.03em;
-    color: var(--white);
-    transition: color 0.3s;
-}
-
-.page-next:hover .page-next-label {
-    color: var(--red);
-}
-
-.page-next-arrow {
-    width: 60px;
-    height: 30px;
-    animation: rectWobble 0.3s steps(1) infinite;
-}
-
-.page-next-arrow path {
-    stroke: var(--red);
-}
+/* Drawings */
 
 .drawings-gallery { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 40px; align-items: end; }
 
@@ -1545,30 +1660,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     position: relative;
     z-index: 1;
 }
-
-@media (hover: hover) {
-    .drawings-gallery:hover .drawing-item {
-        filter: blur(4px) grayscale(50%);
-        opacity: 0.5;
-    }
-
-    .drawings-gallery .drawing-item:hover {
-        filter: none;
-        opacity: 1;
-        transform: scale(1.08);
-        z-index: 20;
-    }
-}
-
-/* Curseur "loupe" uniquement quand la page Dessins est active et visible */
-.page.is-active .drawing-item .frame-wrap,
-.page.is-active .bd-slide.active .drawing-sheet-wrap {
-    cursor: zoom-in;
-}
-
-.drawing-sheet-wrap .media-frame-inner { background: white; padding: 0; }
-.drawing-item.orient-portrait .media-frame-inner { aspect-ratio: 1 / 1.414; }
-.drawing-item.orient-landscape .media-frame-inner { aspect-ratio: 1.414 / 1; }
 
 .drawing-sheet img,
 .drawing-sheet object {
@@ -1602,18 +1693,30 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
 }
 
+/* 2. LA PHOTO DE REFERENCE (page Dessins)
+   Meme famille de desaccord. Le cadre polaroid tire sa hauteur d'un
+   aspect-ratio et porte un rembourrage. Avec height:100% sur la photo,
+   Chrome compte le 100% sans le rembourrage (124px) et Safari avec
+   (170px) : la photo sortait par le bas du cadre blanc.
+   En colonne flex, la photo prend exactement la place qui reste entre
+   les rembourrages, dans les deux moteurs : 124px, 116px sur
+   telephone. */
 .ref-photo .media-frame-inner {
     padding: 10px 10px 36px 10px;
     background: #fdfdfd;
     border-radius: 2px;
+    display: flex;
+    flex-direction: column;
 }
 
 .ref-photo .media-frame-img {
     aspect-ratio: 1 / 1;
     object-fit: cover;
     width: 100%;
-    height: 100%;
     display: block;
+    height: auto;
+    flex: 1 1 0;
+    min-height: 0;
 }
 
 .drawing-item:hover .ref-photo {
@@ -1694,6 +1797,354 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 .drawing-item:hover .map-pin-text {
     opacity: 1;
     transform: rotate(-15deg) scale(1);
+}
+
+.bd-slide .drawing-sheet-wrap,
+.bd-slide .media-frame-inner {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+/* Animation hover sur les plans avant (même style que les coupes) */
+.bd-slide .drawing-sheet-wrap {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bd-slide .drawing-sheet-wrap:hover {
+    transform: scale(1.02);
+    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
+}
+
+/* Professional Document Styling (replaces torn paper) */
+.drawing-sheet-wrap {
+    border-radius: 8px !important;
+    overflow: hidden;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+    border: none !important;                   /* FIX: retire le bord gris/blanc */
+    position: relative;
+}
+
+.panel-light .drawing-sheet-wrap {
+    box-shadow: 8px 8px 24px rgba(0,0,0,0.15);
+}
+
+.cut-stack .stack-item .drawing-sheet-wrap {
+    aspect-ratio: auto;
+    background: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none !important;                   /* FIX: retire bord blanc des coupes */
+    position: relative;
+    overflow: hidden;
+}
+
+.cut-stack .stack-item .drawing-sheet-wrap:hover {
+    transform: scale(1.02);
+    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
+}
+
+.cut-stack .stack-item .drawing-sheet-wrap .drawing-sheet {
+    width: 100%;
+    height: auto;
+}
+
+.cut-stack .stack-item .drawing-sheet-wrap canvas {
+    height: auto !important;
+}
+
+@media (hover: hover) {
+    .drawings-gallery:hover .drawing-item {
+        filter: blur(4px) grayscale(50%);
+        opacity: 0.5;
+    }
+
+    .drawings-gallery .drawing-item:hover {
+        filter: none;
+        opacity: 1;
+        transform: scale(1.08);
+        z-index: 20;
+    }
+}
+
+@media (max-width: 991px) {
+    /* ── FIX R-03 : deux blocs sortaient du cadre ──────────────────────
+       .ref-photo-wrap etait epingle a right:-110px et
+       .animation-explosion-detail a 285px a gauche du centre : des
+       valeurs fixes, calees pour le bureau, qui debordaient sous 992px.
+       Le debordement etant masque par overflow-x:hidden, le contenu
+       etait rogne SANS barre de defilement — donc invisible au test.
+       On rapatrie les deux dans le cadre en gardant le parti pris
+       « epingle de travers ». */
+    .ref-photo-wrap {
+        right: -18px;
+        top: -8px;
+        width: 96px;
+    }
+
+    .ref-photo .media-frame-img {
+        aspect-ratio: 3 / 4;   /* proportions reelles de la photo source */
+    }
+
+    .ref-photo .media-frame-inner {
+        padding: 7px 7px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .cut-stack .stack-item .drawing-sheet-wrap {
+        aspect-ratio: auto;
+    }
+
+    /* ── 14. Page Dessins sur telephone ───────────────────────────
+
+       a) LES DESSINS SONT TROP PETITS
+       La page reserve 30px de marge et .page-inner 20px de plus : 50px de
+       chaque cote, soit 312px utiles sur les 412 de l'ecran. Pour un dessin
+       a l'encre charge en details, c'est un quart de la surface perdu.
+       La galerie ressort de ces marges (elle seule : le titre et le chapeau
+       de page gardent leur alignement) et passe a 368px, soit +18%.
+
+       b) LA PHOTO DE REFERENCE ETAIT MINUSCULE ET MAL RECADREE
+       Deux defauts distincts. La vignette tombait a 78px de large, dont 20
+       de marge blanche : il restait 58px d'image. Et son cadre etait force
+       au carre (aspect-ratio: 1/1) alors que la photo source est un
+       portrait 600x800 — un quart de la hauteur etait coupe.
+       On l'agrandit et on lui rend ses proportions : plus rien n'est rogne.
+
+       c) LE TITRE TOMBAIT TROP LOIN SOUS LE DESSIN
+       18px mesures, mais le bord dechire de la feuille creuse encore
+       l'ecart a l'oeil. Resserre a 10px. */
+    /* ── Galerie Dessins ── */
+    .drawings-gallery {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        margin-left: -28px;
+        margin-right: -28px;
+    }
+
+    .drawing-item {
+        gap: 10px;
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* ── Galerie dessins : désactiver le blur global au hover
+           et animer chaque item individuellement à son entrée ── */
+    .drawings-gallery:hover .drawing-item {
+        filter: none;
+        opacity: 1;
+        transform: none;
+    }
+
+    .drawing-item {
+        opacity: 0;
+        transform: translateY(24px);
+        transition: opacity 0.6s var(--ease-out),
+                    transform 0.6s var(--ease-out);
+    }
+
+    .drawing-item.is-inview {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Délais en cascade pour les dessins */
+    .drawing-item:nth-child(1) { transition-delay: 0s; }
+
+    .drawing-item:nth-child(2) { transition-delay: 0.1s; }
+    .drawing-item:nth-child(3) { transition-delay: 0.2s; }
+    .drawings-gallery .drawing-item:hover { transform: none; filter: none; }
+    .ref-photo { transform: translateY(-40px) scale(1.2) !important; }
+    .ref-arrow { transform: translateY(-40px) scale(1.2) !important; }
+
+    /* ── Extras sur dessins (mobile au scroll) ── */
+    .drawing-item.is-inview .ref-photo {
+        opacity: 1 !important;
+        transform: rotate(15deg) translateY(0) scale(1) !important;
+    }
+
+    .drawing-item.is-inview .ref-arrow {
+        opacity: 1 !important;
+        transform: translateY(0) scale(1) !important;
+    }
+
+    .drawing-item.is-inview .ref-arrow-path {
+        stroke-dashoffset: 0 !important;
+        transition: stroke-dashoffset 0.6s var(--ease-out) 0.8s !important;
+    }
+
+    .drawing-item.is-inview .map-pin-icon {
+        opacity: 1 !important;
+        transform: translateY(0) scale(1) !important;
+        transition-delay: 0.8s !important;
+    }
+
+    .drawing-item.is-inview .map-pin-text {
+        opacity: 1 !important;
+        transform: rotate(-15deg) scale(1) !important;
+        transition-delay: 0.9s !important;
+    }
+
+    /* ── Dessin Noir et Blanc (3eme) ─────────────────────────
+           Il y avait ici un « retrecissement pour faire de la place » :
+           scale(0.70) translateX(-18%), declenche a l'entree a l'ecran et
+           sur tactile uniquement. Il faisait passer la planche de 368 a
+           258px et la decalait de 46px vers la gauche — c'est le dessin
+           « mal cadre » signale par Even, et le « il s'agrandit quand je
+           scroll » (l'observateur retire .is-inview quand l'element sort
+           de l'ecran, la planche revient a 100% en 0,8s).
+
+           La place a gagner etait celle de la photo de reference, alors
+           epinglee a right: -110px. Elle est depuis rapatriee dans le
+           cadre (right: -6px) : le retrecissement ne servait plus a rien,
+           il ne faisait plus que du degat. Supprime.
+
+           Il etait invisible dans mon navigateur d'essai pour deux raisons
+           cumulees : .is-inview n'y est jamais pose (l'observateur ne
+           repond pas) et la transition y est gelee, donc meme en posant la
+           classe a la main on ne lit que la valeur de depart. */
+    /* Disable hover rules for mobile on extras when not in view */
+    .drawing-item:not(.is-inview):hover .ref-photo { opacity: 0; }
+
+    .drawing-item:not(.is-inview):hover .ref-arrow { opacity: 0; }
+    .drawing-item:not(.is-inview):hover .map-pin-icon { opacity: 0; }
+    .drawing-item:not(.is-inview):hover .map-pin-text { opacity: 0; }
+}
+
+@media (min-width: 992px) and (max-width: 1328px) {
+    /* Between the desktop and narrow layouts the gallery's right edge is less
+       than 110px from the screen edge, so the pinned reference photo stuck out
+       of the screen and was cut off. Pull it back inside. The offset keeps 8px
+       in hand over the bare geometry: the photo is tilted, so its painted box
+       is wider than its slot, and the page scrollbar takes its share too. */
+    .ref-photo-wrap {
+        right: max(-110px, min(-38px, calc(562px - 50vw)));
+    }
+}
+
+@media (max-width: 768px) {
+    .ref-photo-wrap {
+        width: 116px;
+        right: -10px;
+        top: -12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ref-photo-wrap {
+        width: 104px;
+        right: -6px;
+    }
+}
+
+
+/* Not yet reorganised */
+
+.menu-overlay {
+    position: fixed; inset: 0; z-index: 90;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    padding: 0 60px 50px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
+    overflow-y: auto;
+}
+
+body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
+.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
+
+.menu-logo {
+    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+/* Items alignés, espacement vertical régulier */
+.menu-nav {
+    display: flex; flex-direction: column;
+    gap: 18px;
+    flex: 1;
+    justify-content: center;
+}
+
+.menu-nav-item {
+    display: flex; align-items: baseline; gap: 18px;
+    width: fit-content; padding: 10px 0;
+    position: relative;
+}
+
+.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
+
+.mn-label {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1; letter-spacing: 0.02em;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+}
+
+.mn-deco {
+    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+    color: var(--red); opacity: 0;
+    transform: translateX(-8px) rotate(-3deg);
+    transition: opacity 0.3s, transform 0.4s var(--ease-out);
+    white-space: nowrap;
+}
+
+.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
+.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
+
+.menu-scribble {
+    position: absolute; top: 110px; right: 60px;
+    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
+}
+
+.menu-footer {
+    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 40px;
+}
+
+.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
+.menu-mail:hover { opacity: 1; color: var(--red); }
+.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
+.menu-footer-social a { transition: color var(--dur-fast); }
+.menu-footer-social a:hover { color: var(--red); }
+
+.page-next {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 80px;
+    margin-bottom: 40px;
+    float: right;
+    clear: both;
+    padding: 10px 0;
+    transition: transform 0.3s var(--ease-out);
+}
+
+.page-next:hover {
+    transform: translateX(10px);
+}
+
+.page-next-label {
+    font-family: var(--font-sketch);
+    font-size: 3.5rem;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    transition: color 0.3s;
+}
+
+.page-next:hover .page-next-label {
+    color: var(--red);
+}
+
+.page-next-arrow {
+    width: 60px;
+    height: 30px;
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+.page-next-arrow path {
+    stroke: var(--red);
 }
 
 .bd-carousel-section {
@@ -1787,24 +2238,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     }
 }
 
-/* BD frame SVG sits exactly on the viewport, not the wider frame-wrap */
-.bd-frame-svg {
-    top: -3%;
-    left: -3%;
-    width: 106%;
-    height: 106%;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-
-.frame-wrap:hover .bd-frame-svg {
-    opacity: 1;
-}
-
-.frame-wrap:hover .bd-frame-svg .sketch-rect-path {
-    stroke-dashoffset: 0;
-}
-
 .bd-carousel-container {
     display: flex;
     align-items: center;
@@ -1866,28 +2299,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     transform: scale(1) translateY(0);
     pointer-events: auto;
     z-index: 2;
-}
-
-.bd-slide .drawing-sheet-wrap,
-.bd-slide .media-frame-inner {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-/* Animation hover sur les plans avant (même style que les coupes) */
-.bd-slide .drawing-sheet-wrap {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.bd-slide .drawing-sheet-wrap:hover {
-    transform: scale(1.02);
-    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
-}
-
-.bd-slide .media-frame-inner {
-    padding: 0 !important;
-    /* removed transparent */
 }
 
 .bd-nav-btn { z-index: 20;
@@ -1991,7 +2402,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 .school-name-wrap { margin-bottom: 28px; }
 .school-name { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1; }
 .school-city { font-size: 2.3rem; color: var(--red); margin-left: 8px; }
-.school-img-wrap .media-frame-inner { aspect-ratio: 4/3; }
 .study-list { list-style: none; margin-top: 30px; display: flex; flex-direction: column; gap: 22px; font-size: 0.95rem; line-height: 1.6; }
 .study-list strong { display: block; font-family: var(--font-display); font-size: 1.15rem; text-transform: uppercase; margin-bottom: 3px; }
 .study-year { color: var(--red); font-weight: 600; }
@@ -2486,9 +2896,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
     .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
 
-    /* ── Galerie Dessins ── */
-    .drawings-gallery { grid-template-columns: 1fr; gap: 28px; }
-
     /* ── Diplôme ── */
     .diploma-layout { grid-template-columns: 1fr; }
 
@@ -2605,127 +3012,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     }
 
     .lb-dot { width: 10px; height: 10px; }
-}
-
-@media (hover: none), (pointer: coarse) {
-    /* meme critere que REQUETE_TACTILE dans app.js : le second cas
-       rattrape les appareils tactiles qui se declarent avec survol */
-    /* ── Cadres : rectangle rouge se dessine au clic/touch (active) ── */
-    .frame-wrap > .sketch-rect-svg {
-        transition: opacity 0.15s 0.1s var(--ease-out); /* Délai de 0.1s pour éviter le flash au scroll */
-    }
-
-    .frame-wrap:active > .sketch-rect-svg {
-        opacity: 1;
-        transition-delay: 0s;
-    }
-
-    .frame-wrap:active > .sketch-rect-svg .sketch-rect-path {
-        stroke-dashoffset: 0;
-    }
-
-    /* ── Cadres : image légèrement zoomée au touch ── */
-    .frame-wrap .torn-frame .media-frame-img {
-        transition: transform 0.2s 0.1s ease;
-    }
-
-    .frame-wrap:active .torn-frame .media-frame-img {
-        transform: scale(1.04);
-        transition-delay: 0s;
-    }
-
-    /* ── Bouton ENVOYER : rect rouge au touch ── */
-    .btn-wrap:active > .sketch-rect-svg { opacity: 1; }
-
-    .btn-wrap:active > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
-
-    /* ── Galerie dessins : désactiver le blur global au hover
-           et animer chaque item individuellement à son entrée ── */
-    .drawings-gallery:hover .drawing-item {
-        filter: none;
-        opacity: 1;
-        transform: none;
-    }
-
-    .drawing-item {
-        opacity: 0;
-        transform: translateY(24px);
-        transition: opacity 0.6s var(--ease-out),
-                    transform 0.6s var(--ease-out);
-    }
-
-    .drawing-item.is-inview {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    /* Délais en cascade pour les dessins */
-    .drawing-item:nth-child(1) { transition-delay: 0s; }
-
-    .drawing-item:nth-child(2) { transition-delay: 0.1s; }
-    .drawing-item:nth-child(3) { transition-delay: 0.2s; }
-
-    /* ── Désactiver les hover visuels sur mobile (ils ne font rien
-           mais laissent un état intermédiaire bloqué sur certains OS) ── */
-    .frame-wrap:hover .torn-frame .media-frame-img { transform: none; }
-
-    .torn-frame:hover .media-frame-img { transform: none; }
-    .drawings-gallery .drawing-item:hover { transform: none; filter: none; }
-    .ref-photo { transform: translateY(-40px) scale(1.2) !important; }
-    .ref-arrow { transform: translateY(-40px) scale(1.2) !important; }
-
-    /* ── Extras sur dessins (mobile au scroll) ── */
-    .drawing-item.is-inview .ref-photo {
-        opacity: 1 !important;
-        transform: rotate(15deg) translateY(0) scale(1) !important;
-    }
-
-    .drawing-item.is-inview .ref-arrow {
-        opacity: 1 !important;
-        transform: translateY(0) scale(1) !important;
-    }
-
-    .drawing-item.is-inview .ref-arrow-path {
-        stroke-dashoffset: 0 !important;
-        transition: stroke-dashoffset 0.6s var(--ease-out) 0.8s !important;
-    }
-
-    .drawing-item.is-inview .map-pin-icon {
-        opacity: 1 !important;
-        transform: translateY(0) scale(1) !important;
-        transition-delay: 0.8s !important;
-    }
-
-    .drawing-item.is-inview .map-pin-text {
-        opacity: 1 !important;
-        transform: rotate(-15deg) scale(1) !important;
-        transition-delay: 0.9s !important;
-    }
-
-    /* ── Dessin Noir et Blanc (3eme) ─────────────────────────
-           Il y avait ici un « retrecissement pour faire de la place » :
-           scale(0.70) translateX(-18%), declenche a l'entree a l'ecran et
-           sur tactile uniquement. Il faisait passer la planche de 368 a
-           258px et la decalait de 46px vers la gauche — c'est le dessin
-           « mal cadre » signale par Even, et le « il s'agrandit quand je
-           scroll » (l'observateur retire .is-inview quand l'element sort
-           de l'ecran, la planche revient a 100% en 0,8s).
-
-           La place a gagner etait celle de la photo de reference, alors
-           epinglee a right: -110px. Elle est depuis rapatriee dans le
-           cadre (right: -6px) : le retrecissement ne servait plus a rien,
-           il ne faisait plus que du degat. Supprime.
-
-           Il etait invisible dans mon navigateur d'essai pour deux raisons
-           cumulees : .is-inview n'y est jamais pose (l'observateur ne
-           repond pas) et la transition y est gelee, donc meme en posant la
-           classe a la main on ne lit que la valeur de depart. */
-    /* Disable hover rules for mobile on extras when not in view */
-    .drawing-item:not(.is-inview):hover .ref-photo { opacity: 0; }
-
-    .drawing-item:not(.is-inview):hover .ref-arrow { opacity: 0; }
-    .drawing-item:not(.is-inview):hover .map-pin-icon { opacity: 0; }
-    .drawing-item:not(.is-inview):hover .map-pin-text { opacity: 0; }
 }
 
 /* PROJECTS REDESIGN (FORTICHE STYLE) */
@@ -2988,41 +3274,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     box-shadow: 8px 8px 24px rgba(0,0,0,0.18);
 }
 
-.bd-carousel-container .frame-wrap {
-    flex: 0 0 auto;
-    display: flex;
-    justify-content: center;
-}
-
-.carousel-landscape .bd-carousel-container .frame-wrap {
-    width: 100%;
-    max-width: 1200px;
-    max-height: 65vh;
-    aspect-ratio: 1.414 / 1;
-}
-
-@media (min-width: 992px) and (max-width: 1365px) {
-    /* Mid-size screens: let the board give up the width the two arrows need,
-       so they stay inside the viewport instead of overflowing the container. */
-    .carousel-landscape .bd-carousel-container .frame-wrap {
-        flex: 0 1 auto;
-        min-width: 0;
-    }
-}
-
-/* Professional Document Styling (replaces torn paper) */
-.drawing-sheet-wrap {
-    border-radius: 8px !important;
-    overflow: hidden;
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-    border: none !important;                   /* FIX: retire le bord gris/blanc */
-    position: relative;
-}
-
-.panel-light .drawing-sheet-wrap {
-    box-shadow: 8px 8px 24px rgba(0,0,0,0.15);
-}
-
 /* Fix bd-carousel-container width so arrows aren't at extreme edges */
 .panel-section .bd-carousel-container { align-items: center;
     max-width: 1300px;
@@ -3182,29 +3433,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     position: relative;
 }
 
-.cut-stack .stack-item .drawing-sheet-wrap {
-    aspect-ratio: auto;
-    background: white;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: none !important;                   /* FIX: retire bord blanc des coupes */
-    position: relative;
-    overflow: hidden;
-}
-
-.cut-stack .stack-item .drawing-sheet-wrap:hover {
-    transform: scale(1.02);
-    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
-}
-
-.cut-stack .stack-item .drawing-sheet-wrap .drawing-sheet {
-    width: 100%;
-    height: auto;
-}
-
-.cut-stack .stack-item .drawing-sheet-wrap canvas {
-    height: auto !important;
-}
-
 /* Stack item labels — overlaid on the image */
 .stack-label {
     position: absolute;
@@ -3256,16 +3484,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
         align-self: center !important;
     }
 
-    .cut-stack .stack-item .drawing-sheet-wrap {
-        aspect-ratio: auto;
-    }
-
     .panel-section {
         padding: 80px 20px 40px;
-    }
-
-    .carousel-landscape .bd-carousel-container .frame-wrap {
-        max-height: 50vh;
     }
 
     .project-desc-sheet {
@@ -3338,20 +3558,6 @@ textarea:focus-visible,
 }
 
 @media (max-width: 991px) {
-    /* ── FIX R-03 : deux blocs sortaient du cadre ──────────────────────
-       .ref-photo-wrap etait epingle a right:-110px et
-       .animation-explosion-detail a 285px a gauche du centre : des
-       valeurs fixes, calees pour le bureau, qui debordaient sous 992px.
-       Le debordement etant masque par overflow-x:hidden, le contenu
-       etait rogne SANS barre de defilement — donc invisible au test.
-       On rapatrie les deux dans le cadre en gardant le parti pris
-       « epingle de travers ». */
-    .ref-photo-wrap {
-        right: -18px;
-        top: -8px;
-        width: 96px;
-    }
-
     /* L'element porte une rotation de 45deg : sa boite englobante depasse
            de largeur x 0,207 de chaque cote (~25px pour 120px). La marge doit
            donc etre superieure a ce debord, sinon il ressort a gauche. */
@@ -3363,23 +3569,7 @@ textarea:focus-visible,
     }
 }
 
-@media (min-width: 992px) and (max-width: 1328px) {
-    /* Between the desktop and narrow layouts the gallery's right edge is less
-       than 110px from the screen edge, so the pinned reference photo stuck out
-       of the screen and was cut off. Pull it back inside. The offset keeps 8px
-       in hand over the bare geometry: the photo is tilted, so its painted box
-       is wider than its slot, and the page scrollbar takes its share too. */
-    .ref-photo-wrap {
-        right: max(-110px, min(-38px, calc(562px - 50vw)));
-    }
-}
-
 @media (max-width: 480px) {
-    .ref-photo-wrap {
-        right: -6px;
-        width: 78px;
-    }
-
     .animation-explosion-detail {
         width: 96px;
         height: 96px;
@@ -3420,14 +3610,6 @@ textarea:focus-visible,
        le comportement actuel, sans regression. */
     .diploma-placeholder {
         container-type: inline-size;
-    }
-
-    /* Selecteur volontairement long : .diploma-placeholder .media-frame-inner
-           impose deja le rapport A4 avec une specificite superieure. Un simple
-           .diploma-card-inner perdait la cascade sans rien changer. */
-    .diploma-placeholder .media-frame-inner.diploma-card-inner {
-        aspect-ratio: auto;
-        min-height: 141.4cqw;   /* 1 / 1,414 exprime en largeur de conteneur */
     }
 }
 
@@ -3472,23 +3654,6 @@ textarea:focus-visible,
 
 .drawing-lightbox .lb-close {
     top: max(18px, calc(18px + env(safe-area-inset-top)));
-}
-
-@media (hover: none), (pointer: coarse) {
-    /* ── 4. Confort tactile general ────────────────────────────────────
-       Sur iOS un appui long fait apparaitre un menu de copie d'image et
-       un cadre de selection : penible sur une galerie ou l'on fait
-       surtout defiler et glisser. */
-    /* meme critere que REQUETE_TACTILE dans app.js : le second cas
-       rattrape les appareils tactiles qui se declarent avec survol */
-    .media-frame-img,
-    .pdf-img,
-    .bd-slide img,
-    .polaroid-img {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        user-select: none;
-    }
 }
 
 @media (max-width: 768px) {
@@ -3552,64 +3717,6 @@ textarea:focus-visible,
 
     .diploma-cert-title {
         padding-right: 96px;   /* largeur du tampon incline + garde */
-    }
-}
-
-@media (max-width: 768px) {
-    /* ── 10. Polaroids : le titre remontait sur l'image ────────────────
-       .polaroid-card reserve 60px en bas (padding) et .polaroid-label est
-       pose en absolu par-dessus, tandis que .polaroid-img-wrap (flex:1)
-       occupe TOUTE la hauteur restante. Tant que le titre tient sur une
-       ligne, l'illusion fonctionne. Sur un ecran de 412px il passe a deux
-       lignes : mesure 85px de haut pour 60px reserves, soit 25px qui
-       remontent sur l'image — « PROJET 01 : » s'ecrivait sur la photo et
-       « DIPLOME » sur la marge blanche.
-
-       On remet l'etiquette DANS LE FLUX sur telephone : l'image, etant en
-       flex:1, cede exactement la place qu'il faut. Le probleme ne peut
-       plus revenir, quelle que soit la longueur d'un futur titre.
-       Les corps sont aussi ramenes a une echelle de telephone : a 40px le
-       titre partait a la ligne pour rien. */
-    .polaroid-card {
-        padding-bottom: 14px;
-    }
-
-    .polaroid-label {
-        position: static;
-        margin-top: 10px;
-        padding: 0 4px;
-    }
-
-    .polaroid-label .pl-text,
-    .prio-1 .polaroid-label .pl-text {
-        font-size: 1.55rem;
-        line-height: 1.05;
-    }
-
-    .polaroid-label .pl-num,
-    .prio-1 .polaroid-label .pl-num {
-        font-size: 2.2rem;
-    }
-}
-
-@media (max-width: 768px) {
-    /* ── 11. Polaroid « a suivre » : l'icone passait sous le ruban ─────
-       La carte 3 n'a pas de photo : son cadre se dimensionne sur son seul
-       contenu et tombait a 126px de haut sur telephone. L'icone occupait
-       alors le haut du cadre (y = 3 a 54) alors que le ruban adhesif
-       descend jusqu'a y = 20 : elle apparaissait coupee.
-
-       On lui donne une hauteur proche de celle des cartes voisines, et on
-       degage le haut pour laisser passer le ruban. Ciblage par l'absence
-       d'image, ce qui evite de toucher au HTML. */
-    .polaroid-img-wrap:not(:has(img)) {
-        min-height: 190px;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 14px;
-        padding: 34px 12px 16px;   /* 34px en haut : le ruban s'arrete a 20px */
-        box-sizing: border-box;
     }
 }
 
@@ -3747,61 +3854,6 @@ textarea:focus-visible,
 }
 
 @media (max-width: 768px) {
-    /* ── 14. Page Dessins sur telephone ───────────────────────────
-
-       a) LES DESSINS SONT TROP PETITS
-       La page reserve 30px de marge et .page-inner 20px de plus : 50px de
-       chaque cote, soit 312px utiles sur les 412 de l'ecran. Pour un dessin
-       a l'encre charge en details, c'est un quart de la surface perdu.
-       La galerie ressort de ces marges (elle seule : le titre et le chapeau
-       de page gardent leur alignement) et passe a 368px, soit +18%.
-
-       b) LA PHOTO DE REFERENCE ETAIT MINUSCULE ET MAL RECADREE
-       Deux defauts distincts. La vignette tombait a 78px de large, dont 20
-       de marge blanche : il restait 58px d'image. Et son cadre etait force
-       au carre (aspect-ratio: 1/1) alors que la photo source est un
-       portrait 600x800 — un quart de la hauteur etait coupe.
-       On l'agrandit et on lui rend ses proportions : plus rien n'est rogne.
-
-       c) LE TITRE TOMBAIT TROP LOIN SOUS LE DESSIN
-       18px mesures, mais le bord dechire de la feuille creuse encore
-       l'ecart a l'oeil. Resserre a 10px. */
-    .drawings-gallery {
-        margin-left: -28px;
-        margin-right: -28px;
-    }
-
-    .drawing-item {
-        gap: 10px;
-    }
-}
-
-@media (max-width: 991px) {
-    .ref-photo .media-frame-img {
-        aspect-ratio: 3 / 4;   /* proportions reelles de la photo source */
-    }
-
-    .ref-photo .media-frame-inner {
-        padding: 7px 7px 24px;
-    }
-}
-
-@media (max-width: 768px) {
-    .ref-photo-wrap {
-        width: 116px;
-        right: -10px;
-        top: -12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .ref-photo-wrap {
-        width: 104px;
-        right: -6px;
-    }
-}
-
-@media (max-width: 768px) {
     /* ── 15. Le dessin changeait de cadrage sous le doigt ────────────
 
        Even : « toujours mal cadre le dessin en noir et blanc sur telephone,
@@ -3857,38 +3909,6 @@ textarea:focus-visible,
     .frame-wrap:hover .torn-frame .drawing-sheet img:not(.pdf-img),
     .torn-frame:hover .drawing-sheet img:not(.pdf-img) {
         transform: scale(1.23);
-    }
-}
-
-@media (hover: none), (pointer: coarse) {
-    /* ── 16. Le cadre rouge n'avait pas le temps de se dessiner ──────
-
-       A la souris, survoler un cadre dessine le rectangle rouge en 1,5 s.
-       Au doigt, l'equivalent est :active — qui ne dure que le temps de
-       l'appui, une centaine de millisecondes — et la visionneuse s'ouvrait
-       dans la foulee. Even voyait donc le rouge apparaitre puis disparaitre
-       aussitot, sans jamais voir le trace : « j'ai l'impression que le
-       doigt ne marche pas ».
-
-       tracerPuis() dans app.js pose la classe ci-dessous, attend 460 ms,
-       puis ouvre. Ici on accelere le trace a 0,40 s pour qu'il tienne
-       entierement dans ce delai — a 1,5 s on n'en verrait qu'un quart.
-
-       Selecteur en descendance et non en enfant direct : le cadre des
-       carrousels (.bd-frame-svg) est bien un enfant direct, mais rien ne
-       garantit que ce soit toujours le cas.
-
-       Vaut pour tous les appareils tactiles, Android comme iPhone : le
-       declencheur est un evenement « click », que les deux emettent, et
-       non un evenement de survol propre a l'un ou a l'autre. */
-    .frame-wrap.trace-tactile .sketch-rect-svg {
-        opacity: 1;
-        transition-delay: 0s;
-    }
-
-    .frame-wrap.trace-tactile .sketch-rect-svg .sketch-rect-path {
-        stroke-dashoffset: 0;
-        transition: stroke-dashoffset 0.40s var(--ease-out);
     }
 }
 
@@ -4304,23 +4324,4 @@ textarea:focus-visible,
 .carousel-landscape .bd-carousel-viewport {
     height: auto !important;
     align-self: stretch !important;
-}
-
-/* 2. LA PHOTO DE REFERENCE (page Dessins)
-   Meme famille de desaccord. Le cadre polaroid tire sa hauteur d'un
-   aspect-ratio et porte un rembourrage. Avec height:100% sur la photo,
-   Chrome compte le 100% sans le rembourrage (124px) et Safari avec
-   (170px) : la photo sortait par le bas du cadre blanc.
-   En colonne flex, la photo prend exactement la place qui reste entre
-   les rembourrages, dans les deux moteurs : 124px, 116px sur
-   telephone. */
-.ref-photo .media-frame-inner {
-    display: flex;
-    flex-direction: column;
-}
-
-.ref-photo .media-frame-img {
-    height: auto;
-    flex: 1 1 0;
-    min-height: 0;
 }
