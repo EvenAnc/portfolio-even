@@ -57,7 +57,7 @@ function init() {
             navigator.serviceWorker.register('sw.js').catch(err => {
                 // Un échec ici n'a aucune conséquence : le site fonctionne
                 // exactement comme avant, simplement sans cache longue durée.
-                console.warn('[portfolio] cache longue durée indisponible :', err.message);
+                console.warn('[portfolio] long-lived cache unavailable:', err.message);
             });
         };
         if (document.readyState === 'complete') registerServiceWorker();

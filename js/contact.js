@@ -65,7 +65,7 @@ export function initCopyEmail() {
                         feedback.style.transform = 'translateX(-10px)';
                     }, 2000);
                 }
-            }).catch(err => console.error('Erreur de copie', err));
+            }).catch(err => console.error('[portfolio] e-mail address could not be copied:', err));
         });
     });
 }
