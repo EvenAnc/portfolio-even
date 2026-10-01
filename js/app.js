@@ -2251,10 +2251,12 @@ function initDrawingLightbox() {
     let lbTouchStartY = 0;
     let initialPinchDistance = null;
     let initialPinchScale = 1;
+    let pinchInProgress = false;
 
     lightbox.addEventListener('touchstart', (e) => {
         if (e.touches.length === 2) {
             e.preventDefault();
+            pinchInProgress = true;
             const touch1 = e.touches[0];
             const touch2 = e.touches[1];
             initialPinchDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
@@ -2307,6 +2309,12 @@ function initDrawingLightbox() {
     lightbox.addEventListener('touchend', (e) => {
         if (e.touches.length < 2) {
             initialPinchDistance = null;
+        }
+        // Lifting the fingers of a pinch one after the other is not a swipe:
+        // the gesture only ends when the last finger leaves the screen.
+        if (pinchInProgress) {
+            if (e.touches.length === 0) pinchInProgress = false;
+            return;
         }
         if (e.changedTouches.length === 1 && !initialPinchDistance) {
             const dx = e.changedTouches[0].clientX - lbTouchStartX;
