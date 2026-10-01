@@ -45,6 +45,7 @@ view_file_history.txt
 # ── Fragments et fichiers temporaires ────────────────────────
 *.txt
 !robots.txt
+!.well-known/security.txt
 temp_html*.txt
 html_chunk*.txt
 html_recovery.txt
