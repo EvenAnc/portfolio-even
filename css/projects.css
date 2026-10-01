@@ -191,8 +191,7 @@
     right: clamp(20px, 5vw, 60px);
 }
 
-/* Staggered layout for the cut views. */
-/* Cut stack */
+/* Cut stack: staggered layout for the section views. */
 .cut-stack {
     margin-top: 30px;
     align-items: center;
@@ -256,7 +255,6 @@
     box-shadow: 15px 15px 40px rgba(0,0,0,0.7);
 }
 
-/* Sticker hover interaction (depth effect) */
 /* Base sticker styling */
 .sticker-title {
     font-family: var(--font-sketch);
@@ -278,7 +276,7 @@
     box-shadow: 12px 12px 0px #1a1a1a, 0 20px 40px rgba(0,0,0,0.4);
 }
 
-/* Cut stack aspect ratio */
+/* Cut stack item width. */
 .cut-stack .stack-item {
     width: 85%;
     max-width: 900px;
@@ -287,7 +285,7 @@
     position: relative;
 }
 
-/* Stack item labels — overlaid on the image */
+/* Stack item labels, overlaid on the image. */
 .stack-label {
     position: absolute;
     top: 12px;
@@ -307,10 +305,8 @@
     right: 12px;
 }
 
-/* Narrative skeleton of the diploma project: the page used to show boards end to end, but a
-   professional reads a line of reasoning (the brief, the site, the constraint, the trade-off).
-   Everything follows the existing charter: Bebas for labels, Space Grotesk for reading, red as the
-   accent. */
+/* Narrative skeleton of the diploma project (brief, site, constraint, trade-off), following the
+   existing charter: Bebas for labels, Space Grotesk for reading, red as the accent. */
 /* Panel lede */
 .panel-lede {
     font-family: var(--font-body);
@@ -318,9 +314,9 @@
     font-size: clamp(0.98rem, 2vw, 1.08rem);
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.72);
-    /* 43rem = the targeted 62 characters, in a unit that does not depend on the font. .panel-tools,
-       set in Bebas, must share exactly this width to line up with it; in ch it got a narrower box
-       and a shifted left edge. */
+    /* 43rem = the targeted 62 characters, in a unit independent of the font. .panel-tools, set
+       in Bebas, must share exactly this width to line up with it (in ch it got a narrower box
+       and a shifted left edge). */
     max-width: 43rem;
     margin: 4px auto 30px;
     padding: 0 20px;
@@ -367,9 +363,8 @@
     max-width: 62ch;
 }
 
-/* Software used, under each series of boards: small spaced capitals in red, centred in the text
-   column rather than the page (same maximum width as .panel-lede), so the line does not float
-   beside the text. */
+/* Software used, under each series of boards: small spaced red capitals, centred in the text
+   column (same maximum width as .panel-lede) so the line does not float beside the text. */
 .panel-tools {
     font-family: var(--font-display);
     font-size: 0.82rem;
@@ -383,15 +378,14 @@
     padding: 0 20px;
 }
 
-/* Second paragraph of the problems block: same size, a clear gap to mark the turn in the story. */
+/* Second paragraph of the problems block: a clear gap marks the turn in the story. */
 .choice-text + .choice-text {
     margin-top: 16px;
 }
 
-/* The margins of the two blocks around the quote must be equal, otherwise the text cannot be both
-   centred and equidistant from them. The panel above measured 120px on desktop and 219px on phones
-   against 80px for the next-page link; align them. No scroll reserve here: the link sits against
-   the footer. */
+/* The margins of the two blocks around the quote must be equal, otherwise the text cannot be
+   both centred and equidistant from them. No scroll reserve here: the link sits against the
+   footer. */
 /* Bottom of the panel above: a tight 40px. The animation amplitude is fixed, so the larger the
    starting gap, the less visible the movement. */
 #page-project-diploma .panel-choice,
@@ -400,7 +394,7 @@
 }
 
 @media (max-width: 900px) {
-    /* Keeps !important: must beat the staggered nth-child offsets. */
+    /* !important: must beat the staggered nth-child offsets. */
     .stack-item {
         width: 100%;
         align-self: center !important;
@@ -419,7 +413,7 @@
         padding: 10px 25px;
     }
 
-    /* Keeps !important: must beat the staggered nth-child offsets. */
+    /* !important: must beat the staggered nth-child offsets. */
     .cut-stack .stack-item {
         width: 100%;
         max-width: 100%;
@@ -446,8 +440,8 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    /* Scroll-linked opening of the gap: native, no script. Outside @supports the rest state above
-       stays in place and the quote is simply displayed. */
+    /* Scroll-linked opening of the gap: native, no script. Without support the rest state above
+       stays and the quote is simply displayed. */
     /* Range: 25% to 75% of the crossing rather than 0 to 100. The peak stays exactly centred, and
        the end becomes reachable: going to 100% would need the quote to leave through the top, which
        the page does not allow since almost nothing is left below it. */
@@ -479,39 +473,35 @@
 
 /* Quote band */
 
-/* No background behind the quote, on purpose: a gradient this dark has only a dozen 8-bit values
-   over 600px, so bands are visible whatever the curve, and a dithering noise with several octaves
-   produced clouds instead of fine grain. With no background there is no artefact to render. */
+/* No background behind the quote: a gradient this dark has only a dozen 8-bit values over 600px,
+   so banding shows whatever the curve, and dithering noise does not fix it. With no background
+   there is no artefact to render. */
 .quote-band {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Full width: otherwise the band stops at the content width (1200px) and its background draws a
-       rectangle with sharp vertical edges, very visible on the Drawings page. Same approach as the
-       footer: --sbw is measured at runtime, otherwise the scrollbar of .page would make it overflow
-       by a few pixels. */
+    /* Full width: otherwise the band stops at the content width (1200px). Same approach as the
+       footer: --sbw (measured at runtime) keeps the scrollbar of .page from causing overflow. */
     width: calc(100vw - var(--sbw, 0px));
     margin-left: calc(-50vw + var(--sbw, 0px) / 2 + 50%);
     margin-right: calc(-50vw + var(--sbw, 0px) / 2 + 50%);
     box-sizing: border-box;
-    /* Symmetric padding: catching up the neighbours' gap with bottom padding gave two equal gaps
-       but shifted the text up by half the catch-up. Equal gaps and centred text are incompatible
-       while the neighbours' margins differ, so they are equalised at the source (see .page-next)
-       and everything stays symmetric here. */
+    /* Symmetric padding: padding the bottom to catch up the neighbours' gap gives two equal gaps
+       but shifts the text up by half the difference. Equal gaps and centred text are only
+       compatible when the neighbours' margins are equal, so they are equalised at the source
+       (see .page-next). */
     padding-top: 14vh;
     padding-bottom: 14vh;
 }
 
-/* The background extends beyond the block to follow the opening gap; absolutely positioned, it does
-   not count in the layout. */
 .qb-body {
-    /* fixed size and position: the reference of the track */
+    /* Fixed size and position: the reference of the view timeline. */
     view-timeline-name: --citation;
     view-timeline-axis: block;
     margin: 0;
     padding: 0 40px;
-    max-width: 80rem;       /* wide enough to fit on one line */
+    max-width: 80rem;       /* Wide enough to fit on one line. */
     text-align: center;
 }
 
@@ -519,7 +509,7 @@
     margin: 0;
     font-family: var(--font-body);
     font-weight: 300;
-    /* Deliberately discreet body: a single line needs restraint. */
+    /* Discreet body: a single line needs restraint. */
     font-size: clamp(0.9rem, 1.2vw, 1.06rem);
     line-height: 1.6;
     letter-spacing: 0.01em;

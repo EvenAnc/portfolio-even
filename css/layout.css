@@ -51,9 +51,8 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 .header-right { display: flex; align-items: center; gap: 54px; pointer-events: auto; }
 .lang-switcher { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; }
 
-/* Touch targets: the transparent pseudo-element enlarges only the hit area, nothing drawn moves.
-   Horizontal overflow stops at the middle of the gap so neighbouring targets touch without
-   overlapping. */
+/* Language buttons: the ::after below enlarges only the hit area, nothing drawn moves. It stops
+   at the middle of the gap so neighbouring targets touch without overlapping. */
 .lang-btn {
     opacity: 0.35;
     transition: opacity var(--dur-fast);
@@ -64,11 +63,10 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     content: '';
     position: absolute;
     inset: -14px -6px;
-    /* contact surface only, no background */
 }
 
-/* Social icons are too close to widen both ways: extend far outwards (no neighbour) and only to the
-   gap middle inwards. */
+/* Social icons: the hit area extends far outwards (no neighbour) and only to the gap middle
+   inwards. */
 .social-lnk::before {
     content: '';
     position: absolute;
@@ -102,8 +100,7 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 .social-lnk:hover { opacity: 1; color: var(--red); transform: translateY(-2px); }
 .social-lnk:hover::after { width: 100%; }
 
-/* Keep content out of the notch and home-bar areas. Safe-area insets are 0 elsewhere, so other
-   devices are unaffected. */
+/* Keep content out of the notch and home-bar areas (safe-area insets are 0 elsewhere). */
 .site-header {
     position: fixed;
     top: 0;
@@ -118,9 +115,8 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     padding-top: env(safe-area-inset-top);
 }
 
-/* The header paints no colour of its own: a blur takes whatever lies behind it. The 0.30 black veil
-   only darkens, which keeps the white logo readable over light content; the mask fades blur and
-   veil out together so no hard edge shows. */
+/* The blur takes whatever lies behind the header. The 0.30 black veil keeps the white logo
+   readable over light content; the mask fades blur and veil out together so no hard edge shows. */
 .site-header::before {
     content: '';
     position: absolute;
@@ -145,8 +141,8 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     .social-icon { width: 15px; height: 15px; }
     .lang-switcher { gap: 4px; font-size: 0.75rem; }
 
-    /* On phones there is no room for both the back button and the centred logo: on a project page
-       the back button wins and the logo fades out. */
+    /* On phones the back button and the centred logo do not both fit: on a project page the logo
+       fades out. */
     body.a-bouton-retour .header-logo {
         opacity: 0;
         pointer-events: none;
@@ -154,9 +150,8 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 }
 
 @media (max-width: 303px) {
-    /* Narrowest phones (Galaxy Fold closed): the logo only gets half the header
-       and wrapped onto two lines. Shrink it onto one line and nudge it left so
-       it clears the language switcher. */
+    /* Narrowest phones (Galaxy Fold closed): shrink the logo onto one line and nudge it left to
+       clear the language switcher. */
     .header-logo {
         left: calc(50% - 28px);
         white-space: nowrap;
@@ -277,7 +272,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
 
-/* Keeps !important: an inactive page must never take pointer events, whatever its children declare. */
+/* An inactive page never takes pointer events, whatever its children declare. */
 .page:not(.is-active) * { pointer-events: none !important; }
 
 /* Inactive pages are really hidden, not just transparent. visibility:hidden removes them from the
@@ -362,8 +357,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     padding-right: 60px;
     position: relative;
     clear: both;
-    /* 100vw includes the 4px scrollbar of .page, which made the footer overflow by about 5px. --sbw
-       is measured at runtime by app.js. */
+    /* 100vw includes the scrollbar of .page; --sbw (set by js/page-scroll.js) subtracts it so
+       the footer does not overflow. */
     width: calc(100vw - var(--sbw, 0px));
     left: 50%;
     right: 50%;
@@ -471,8 +466,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    /* The footer is deliberately excluded: if it moved and the animation did not run to its end,
-       part of it would stay out of reach. */
+    /* The footer is excluded: if it moved and the animation did not reach its end, part of it
+       would stay out of reach. */
     #page-project-diploma .page-next,
     #page-drawings .page-next {
         animation: qb-ecarter-bas linear both;

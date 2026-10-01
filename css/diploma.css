@@ -179,10 +179,9 @@
 }
 
 @supports (min-height: 1cqw) {
-    /* The A4 ratio becomes a floor instead of a lock: the card keeps its proportions when the
-       content fits and grows just enough otherwise, so nothing (RNCP code, registration line) is
-       cropped whatever the language. Under @supports so browsers without container units keep the
-       previous behaviour. */
+    /* The A4 ratio is a floor, not a lock: the card keeps its proportions when the content fits
+       and grows just enough otherwise, so nothing (RNCP code, registration line) is cropped in
+       any language. Under @supports so browsers without container units keep the fixed ratio. */
     .diploma-placeholder {
         container-type: inline-size;
     }
@@ -201,7 +200,7 @@
     .diploma-cert-authority { font-size: 0.875rem; }
 
     /* Phones: the stamp is pulled inside the card and its width reserved from the title, which
-       wraps instead of running under it. The deliberate overlap with the card border is kept. */
+       wraps instead of running under it. The overlap with the card border is kept. */
     .diploma-cert-stamp {
         top: -10px;
         right: -8px;
@@ -211,7 +210,7 @@
     }
 
     .diploma-cert-title {
-        padding-right: 96px;   /* width of the tilted stamp plus a guard */
+        padding-right: 96px;   /* Width of the tilted stamp plus a guard. */
     }
 }
 

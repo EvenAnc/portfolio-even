@@ -54,7 +54,8 @@ textarea:focus-visible,
     border-radius: 0;
 }
 
-/* Reduced motion: !important is needed to beat running animations and the hover and touch transforms of the components. */
+/* Reduced motion: !important beats running animations and the hover and touch transforms of the
+   components. */
 @media (prefers-reduced-motion: reduce) {
     .hero-logo,
     .menu-logo,
