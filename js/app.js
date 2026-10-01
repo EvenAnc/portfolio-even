@@ -1342,7 +1342,12 @@ function initContactForm() {
             },
             signal: controller.signal
         }).then(response => {
-            if (response.ok) {
+            if (!response.ok) throw new Error('Network response was not ok.');
+            // A 200 answer can still carry a refusal in its body; an
+            // unreadable body is not one.
+            return response.json().catch(() => ({}));
+        }).then(result => {
+            if (result && result.success !== false) {
                 const successMsg = currentLang === 'fr'
                     ? '✓ Message envoyé avec succès !'
                     : '✓ Message sent successfully!';
@@ -1351,7 +1356,7 @@ function initContactForm() {
                 animateFeedback(0.4);
                 form.reset();
             } else {
-                throw new Error('Network response was not ok.');
+                throw new Error('The form service refused the message.');
             }
         }).catch(error => {
             const errorMsg = currentLang === 'fr'
