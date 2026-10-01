@@ -100,7 +100,7 @@
     stroke-dashoffset: 0;
 }
 
-/* Magnifier cursor only while the Drawings page is active and visible. */
+/* Magnifier cursor on the active page. */
 .page.is-active .drawing-item .frame-wrap,
 .page.is-active .bd-slide.active .drawing-sheet-wrap {
     cursor: zoom-in;
@@ -110,7 +110,7 @@
 .drawing-item.orient-portrait .media-frame-inner { aspect-ratio: 1 / 1.414; }
 .drawing-item.orient-landscape .media-frame-inner { aspect-ratio: 1.414 / 1; }
 
-/* BD frame SVG sits exactly on the viewport, not the wider frame-wrap */
+/* The carousel frame SVG sits exactly on the viewport, not on the wider frame-wrap. */
 .bd-frame-svg {
     top: -3%;
     left: -3%;
@@ -128,7 +128,7 @@
     stroke-dashoffset: 0;
 }
 
-/* Keeps !important: must beat the later, equally specific .ref-photo padding. */
+/* Carousel slides carry no padding. */
 .bd-slide .media-frame-inner {
     padding: 0 !important;
 }
@@ -149,8 +149,8 @@
 }
 
 @supports (min-height: 1cqw) {
-    /* Long selector on purpose: .diploma-placeholder .media-frame-inner already sets the A4 ratio
-       with higher specificity, so a bare .diploma-card-inner lost the cascade. */
+    /* Long selector: .diploma-placeholder .media-frame-inner sets the A4 ratio with higher
+       specificity. */
     .diploma-placeholder .media-frame-inner.diploma-card-inner {
         aspect-ratio: auto;
         min-height: 141.4cqw;
@@ -158,8 +158,8 @@
 }
 
 @media (min-width: 992px) and (max-width: 1365px) {
-    /* Mid-size screens: let the board give up the width the two arrows need,
-       so they stay inside the viewport instead of overflowing the container. */
+    /* Mid-size screens: the board gives up the width the two arrows need, so they stay inside
+       the viewport. */
     .carousel-landscape .bd-carousel-container .frame-wrap {
         flex: 0 1 auto;
         min-width: 0;
@@ -173,8 +173,7 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* Same criterion as REQUETE_TACTILE in app.js; the second query catches touch devices that
-       report hover. */
+    /* Touch devices (same query as TOUCH_MEDIA_QUERY in js/core/env.js). */
     /* Frames: the red rectangle draws on touch (:active). */
     .frame-wrap > .sketch-rect-svg {
         transition: opacity 0.15s 0.1s var(--ease-out); /* A 0.1s delay avoids a flash while scrolling. */
@@ -212,8 +211,6 @@
 
     /* On iOS a long press opens an image copy menu and a selection frame, which is a nuisance on
        galleries made for scrolling and swiping. */
-    /* Same criterion as REQUETE_TACTILE in app.js; the second query catches touch devices that
-       report hover. */
     .media-frame-img,
     .pdf-img,
     .bd-slide img,
@@ -223,10 +220,9 @@
         user-select: none;
     }
 
-    /* Touch: :active lasts about 100 ms and the viewer opens right after, so app.js sets this
-       class, waits 460 ms, then opens. The stroke is sped up to 0.40s to fit that delay. Descendant
-       selector: the carousel frame (.bd-frame-svg) is a direct child today but nothing guarantees
-       it. */
+    /* Touch: :active lasts about 100 ms and the viewer opens right after, so the lightbox
+       trigger adds this class and waits 460 ms before opening. The stroke speeds up to 0.40s to
+       fit. Descendant selector: the frame SVG may not be a direct child. */
     .frame-wrap.trace-tactile .sketch-rect-svg {
         opacity: 1;
         transition-delay: 0s;
@@ -382,10 +378,9 @@
 .prio-1 .polaroid-label .pl-text { font-size: 2.5rem; }
 
 @media (max-width: 768px) {
-    /* Phones: the label goes back into the flow. With the label absolutely positioned over a flex:1
-       image, a two-line title overflowed the 60px reserved for it and ran onto the photo. In the
-       flow, the image yields exactly the room needed whatever the title length. Sizes are scaled
-       down for phones. */
+    /* Phones: the label returns to the flow. Absolutely positioned over a flex:1 image, a two-
+       line title overflowed the 60px reserved for it and ran onto the photo; in the flow, the
+       image yields exactly the room needed. */
     .polaroid-card {
         padding-bottom: 14px;
     }
@@ -407,9 +402,9 @@
         font-size: 2.2rem;
     }
 
-    /* The third card has no photo, so its frame sized to its content alone (126px on phones) and
-       the icon was cut by the tape. Give it a height close to its neighbours and clear the top;
-       targeted by the absence of an image so the HTML stays untouched. */
+    /* The third card has no photo, so its frame would size to its content alone (126px on
+       phones) and the tape would cut the icon. Give it a height close to its neighbours and
+       clear the top; selected by the absence of an image. */
     .polaroid-img-wrap:not(:has(img)) {
         min-height: 190px;
         flex-direction: column;
@@ -490,10 +485,10 @@
     filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
 }
 
-/* Reference photo: the polaroid frame takes its height from an aspect-ratio and has padding. With
-   height:100% on the photo, Chrome ignores the padding (124px) and Safari includes it (170px), so
-   the photo overflowed the white frame. In a flex column the photo gets exactly the space left
-   between the paddings in both engines. */
+/* Reference photo: the polaroid frame takes its height from an aspect-ratio and has padding.
+   With height:100% on the photo, Chrome ignores the padding and Safari includes it, so the photo
+   overflowed the white frame. In a flex column both engines give it exactly the space between
+   the paddings. */
 .ref-photo .media-frame-inner {
     padding: 10px 10px 36px 10px;
     background: #fdfdfd;
@@ -607,8 +602,8 @@
     box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
 }
 
-/* Document style for the sheets (replaces the torn paper). */
-/* Keeps !important on the radius: must beat the focus ring radius. */
+/* Document style for the sheets. */
+/* !important: must beat the focus ring radius. */
 .drawing-sheet-wrap {
     border-radius: 8px !important;
     overflow: hidden;
@@ -659,9 +654,9 @@
 }
 
 @media (max-width: 991px) {
-    /* Fixed pixel offsets tuned for desktop made two blocks overflow below 992px. Because
-       overflow-x is hidden the content was clipped without a scrollbar. Both are pulled back into
-       the frame, keeping the pinned, crooked look. */
+    /* Fixed pixel offsets tuned for desktop pushed two blocks outside the frame below 992px,
+       where overflow-x: hidden clipped them without a scrollbar. Pull them back, keeping the
+       pinned, crooked look. */
     .ref-photo-wrap {
         right: -18px;
         top: -8px;
@@ -669,7 +664,7 @@
     }
 
     .ref-photo .media-frame-img {
-        aspect-ratio: 3 / 4;   /* real proportions of the source photo */
+        aspect-ratio: 3 / 4;   /* Real proportions of the source photo. */
     }
 
     .ref-photo .media-frame-inner {
@@ -682,9 +677,9 @@
         aspect-ratio: auto;
     }
 
-    /* Drawings on phones: the gallery breaks out of the page margins (it alone; title and intro
-       keep their alignment) to gain width. The reference photo is enlarged and keeps its portrait
-       proportions. The title sits closer under the drawing. */
+    /* Phones: the gallery breaks out of the page margins (title and intro keep their alignment)
+       to gain width. The reference photo is enlarged and keeps its portrait proportions; the
+       title sits closer under the drawing. */
     .drawings-gallery {
         grid-template-columns: 1fr;
         gap: 28px;
@@ -728,13 +723,11 @@
     .ref-arrow { transform: translateY(-40px) scale(1.2) !important; }
 
     /* Extras on the drawings (touch, on scroll). */
-    /* Touch: !important keeps the in-view state ahead of the hover rules. */
     .drawing-item.is-inview .ref-photo {
         opacity: 1 !important;
         transform: rotate(15deg) translateY(0) scale(1) !important;
     }
 
-    /* Touch: !important keeps the in-view state ahead of the hover rules. */
     .drawing-item.is-inview .ref-arrow {
         opacity: 1 !important;
         transform: translateY(0) scale(1) !important;
@@ -745,14 +738,12 @@
         transition: stroke-dashoffset 0.6s var(--ease-out) 0.8s;
     }
 
-    /* Touch: !important keeps the in-view state ahead of the hover rules. */
     .drawing-item.is-inview .map-pin-icon {
         opacity: 1 !important;
         transform: translateY(0) scale(1);
         transition-delay: 0.8s;
     }
 
-    /* Touch: !important keeps the in-view state ahead of the hover rules. */
     .drawing-item.is-inview .map-pin-text {
         opacity: 1 !important;
         transform: rotate(-15deg) scale(1);
@@ -768,11 +759,10 @@
 }
 
 @media (min-width: 992px) and (max-width: 1328px) {
-    /* Between the desktop and narrow layouts the gallery's right edge is less
-       than 110px from the screen edge, so the pinned reference photo stuck out
-       of the screen and was cut off. Pull it back inside. The offset keeps 8px
-       in hand over the bare geometry: the photo is tilted, so its painted box
-       is wider than its slot, and the page scrollbar takes its share too. */
+    /* Between desktop and narrow layouts the gallery's right edge is under 110px from the screen
+       edge, so the pinned reference photo stuck out. Pull it back inside, keeping 8px in hand:
+       the photo is tilted, so its painted box is wider than its slot, and the page scrollbar
+       takes its share. */
     .ref-photo-wrap {
         right: max(-110px, min(-38px, calc(562px - 50vw)));
     }
@@ -1006,10 +996,10 @@
 }
 
 /* Safari: the window asked for height:100% from a parent whose height comes from an aspect-ratio
-   bounded by max-height. Chrome treats it as definite, Safari falls back to the image's natural
+   bounded by max-height. Chrome treats it as definite; Safari falls back to the image's natural
    height and the sheet overflowed the frame. Without a forced height the flex child stretches to
-   the parent, which both engines compute the same way. */
-/* Keeps !important: must beat the id-scoped viewport width. */
+   the parent in both engines. */
+/* !important: must beat the id-scoped viewport width. */
 .carousel-landscape .bd-carousel-viewport {
     width: 100% !important;
     max-width: 100%;
@@ -1105,10 +1095,9 @@
 }
 
 @media (min-width: 769px) {
-    /* Drawings page, short windows: the board is a fixed A4 sheet taller than
-       the window, which pushed its dots and progress bar off screen. Cap its
-       width so board plus controls (143px: header, gaps, dots) fit the window
-       height; the cap only bites below about 737px of height. */
+    /* Short windows: the board is a fixed A4 sheet taller than the window, which pushed the dots
+       and progress bar off screen. Cap its width so board plus controls (143px: header, gaps,
+       dots) fit the window height; the cap only applies below about 737px of height. */
     #page-drawings .bd-carousel-viewport {
         width: min(420px, max(120px, calc((100vh - 143px) / 1.414)));
         width: min(420px, max(120px, calc((100dvh - 143px) / 1.414)));
@@ -1141,10 +1130,10 @@
         width: min(320px, calc(100vw - 92px));
     }
 
-    /* Project-page carousels: the arrows sit in the bottom row on the black background, where they
-       do not blend into the drawing. Anchored on .bd-carousel-container because its height follows
-       the board; top: calc(100% + 48px) centres each arrow on the counter whatever the board. The
-       row is inset 56px each side so the counter and progress bar pass clear. */
+    /* Project-page carousels: the arrows sit in the bottom row on the black background, where
+       they do not blend into the drawing. Anchored on .bd-carousel-container because its height
+       follows the board; top: calc(100% + 48px) centres each arrow on the counter. The row is
+       inset 56px each side so the counter and progress bar pass clear. */
     .panel-section .bd-carousel-container {
         position: relative;
     }
@@ -1171,10 +1160,10 @@
         margin-left: 0;
     }
 
-    /* Touch feedback is derived from the base crop instead of replacing it: sheets carry an 18%
-       zoom that crops the scan margins, and rewriting transform made the image fall back to 104%
-       while a finger was down (1.18 x 1.04 = 1.23). :not(.pdf-img) is required: dimensioned plans
-       keep transform: none. */
+    /* Touch feedback derives from the base crop instead of replacing it: sheets carry an 18%
+       zoom that crops the scan margins, and rewriting transform would drop the image to 104%
+       while a finger is down (1.18 x 1.04 = 1.23). :not(.pdf-img) keeps dimensioned plans at
+       transform: none. */
     .frame-wrap:hover .torn-frame .drawing-sheet img:not(.pdf-img),
     .torn-frame:hover .drawing-sheet img:not(.pdf-img),
     .drawing-sheet:hover img:not(.pdf-img) {
@@ -1201,9 +1190,9 @@
 }
 
 @media (hover: hover) {
-    /* The same defect exists on large screens: .torn-frame:hover replaces the 1.18 crop by 1.04, so
-       the drawing shrinks instead of zooming slightly. Same computation. Scoped to (hover: hover)
-       so it does not override the touch rule above. */
+    /* The same applies on large screens: .torn-frame:hover replaces the 1.18 crop by 1.04, so
+       the drawing would shrink. Same computation, scoped to (hover: hover) so it does not
+       override the touch rule above. */
     .frame-wrap:hover .torn-frame .drawing-sheet img:not(.pdf-img),
     .torn-frame:hover .drawing-sheet img:not(.pdf-img) {
         transform: scale(1.23);
@@ -1215,7 +1204,7 @@
        25px for 120px), so the margin must exceed that or it sticks out on the left. */
     .animation-explosion-detail {
         left: 0;
-        margin-left: 44px;   /* measured overflow of the rotated box: 38px per side */
+        margin-left: 44px;   /* Measured overflow of the rotated box: 38px per side. */
         width: 120px;
         height: 120px;
     }
@@ -1225,7 +1214,7 @@
     .animation-explosion-detail {
         width: 96px;
         height: 96px;
-        margin-left: 36px;   /* proportional overflow: about 30px per side */
+        margin-left: 36px;   /* Proportional overflow: about 30px per side. */
         bottom: -24px;
     }
 }

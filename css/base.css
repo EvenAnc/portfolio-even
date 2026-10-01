@@ -20,8 +20,8 @@
 
 @font-face {
     font-family: 'Skribblugh';
-    /* Serve woff2 first (11 KB lighter, and it is the first font the visitor sees: the logo).
-       Browsers without it fall back to woff. */
+    /* woff2 first: 11 KB lighter, and it is the logo font. Browsers without it fall back to
+       woff. */
     src: url('../fonts/SkribblughRegular-XGW02.woff2') format('woff2'),
          url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
     font-weight: normal;

@@ -202,7 +202,7 @@
 }
 
 .drawing-lightbox.zoomed .lb-canvas-wrap img.dragging,
-/* Keeps !important: a dragged image must follow the finger without easing. */
+/* !important: a dragged image follows the finger without easing. */
 .drawing-lightbox.zoomed .lb-canvas-wrap canvas.dragging {
     cursor: grabbing;
     transition: none !important;
@@ -283,10 +283,10 @@
     top: max(18px, calc(18px + env(safe-area-inset-top)));
 }
 
-/* The viewer normally fades in over 0.35s. During a view transition that fade is harmful: when the
-   browser snapshots the incoming image the opacity is still 0 and the sheet grows towards nothing.
-   This class makes it visible at once and is removed right after so closing keeps its fade. Same
-   weight as .drawing-lightbox[aria-hidden="false"] but declared later, so it wins. */
+/* The viewer normally fades in over 0.35s. During a view transition the fade hurts: the browser
+   snapshots the incoming image while opacity is still 0, and the sheet grows towards nothing.
+   This class shows the viewer at once and is removed right after, so closing keeps its fade.
+   Same weight as .drawing-lightbox[aria-hidden="false"], declared later so it wins. */
 .drawing-lightbox.sans-fondu {
     opacity: 1;
     visibility: visible;
@@ -295,11 +295,10 @@
 }
 
 @media (orientation: landscape) and (max-height: 500px) and (min-width: 769px) {
-    /* Phone held sideways: the viewer and its canvas each reserve room for the
-       controls, and the two stacked paddings leave about a fifth of a 393px-high
-       screen to the image. The canvas padding alone clears the logo, the counter
-       (top) and the dots (bottom). Narrower screens use the bottom toolbar layout
-       below and are left alone. */
+    /* Phone held sideways: the viewer and its canvas each reserve room for the controls, and the
+       two stacked paddings left about a fifth of a 393px-high screen to the image. The canvas
+       padding alone clears the logo, the counter (top) and the dots (bottom). Narrower screens
+       use the bottom toolbar layout below. */
     .drawing-lightbox {
         padding: 0;
     }
@@ -365,7 +364,7 @@
         min-height: 44px;
     }
 
-    /* Zoom slider: visible, in the bottom bar, full width. */
+    /* Zoom slider: visible, in the bottom bar. */
     .lb-zoom-slider-container {
         width: 90px;
         height: 36px;
@@ -390,15 +389,15 @@
     .lb-dot { width: 10px; height: 10px; }
 
     /* Phones: the container reserved 45px on each side for the arrows, so an enlarged board was
-       barely bigger than the carousel thumbnail. The arrows are only 60px tall and centred, so they
-       cross the image over a narrow band: let them float over it and give the width back to the
-       image (about +50% surface). Swiping stays the main gesture. */
+       barely bigger than the thumbnail. The arrows are only 60px tall and centred, so they cross
+       the image over a narrow band: they float over it and the width goes back to the image.
+       Swiping stays the main gesture. */
     #lb-canvas-wrap {
         padding: 70px 10px 120px;
     }
 
     .lb-prev, .lb-next {
-        /* slight shadow to stay legible over a light sheet */
+        /* Slight shadow to stay legible over a light sheet. */
         filter: drop-shadow(0 0 6px rgba(0,0,0,0.85));
     }
 
@@ -427,8 +426,7 @@
     }
 
     /* On touch, :hover sticks after a tap and re-applied the desktop translateY(-50%), so the
-       tapped arrow jumped 35px up and misaligned with its neighbour. Only the colour lightening is
-       kept. */
+       tapped arrow jumped 35px up. Only the colour change is kept. */
     .lb-arrow:hover,
     .lb-arrow:focus,
     .lb-arrow:active {
@@ -437,10 +435,9 @@
 }
 
 @media (orientation: landscape) and (max-height: 500px) and (max-width: 768px) {
-    /* Small phone held sideways: the logo, counter, dots and bottom toolbar
-       left under 45% of the screen height to the image. Put the dots and the
-       counter on the logo row, shrink the toolbar, and give the room to the
-       image. Close button and arrows stay on the bottom row. */
+    /* Small phone held sideways: logo, counter, dots and bottom toolbar left under 45% of the
+       screen height to the image. Put the dots and the counter on the logo row and shrink the
+       toolbar. Close button and arrows stay on the bottom row. */
     .lb-logo {
         top: 4px;
         font-size: 1.3rem;
@@ -472,9 +469,8 @@
 }
 
 @media (max-width: 341px) {
-    /* Very narrow phones: the toolbar (226px) is wider than the gap left
-       between the two arrows and slid under them. Tighten its spacing so it
-       fits between them; the buttons keep their 44px touch size. */
+    /* Very narrow phones: the toolbar (226px) is wider than the gap between the two arrows and
+       slid under them. Tighten its spacing; the buttons keep their 44px touch size. */
     .lb-tools {
         gap: 4px;
         padding: 10px 6px;
@@ -482,10 +478,9 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    /* View-transition timing: the browser's default duration applies to everything, which buries
-       the movement. The sheet gets the lead role (slower, with a strongly decelerating curve, like
-       lifting a sheet) and the rest fades out faster. Reduced motion is already handled by the
-       script, which opens without a transition; this is an extra safety. */
+    /* View-transition timing: the default duration buries the movement. The sheet leads (slower,
+       strongly decelerating curve, like lifting a sheet) and the rest fades out faster. Reduced
+       motion is handled by the script, which opens without a transition. */
     ::view-transition-group(planche-ouverte) {
         animation-duration: 460ms;
         animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
