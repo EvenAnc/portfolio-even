@@ -3410,6 +3410,16 @@ textarea:focus-visible,
     }
 }
 
+/* Very narrow phones: the toolbar (226px) is wider than the gap left
+   between the two arrows and slid under them. Tighten its spacing so it
+   fits between them; the buttons keep their 44px touch size. */
+@media (max-width: 341px) {
+    .lb-tools {
+        gap: 4px;
+        padding: 10px 6px;
+    }
+}
+
 /* ── 13. Carrousels des pages projet : fleches ramenees sous la planche
    Deux etats successifs, tous deux mauvais :
      - avant : le conteneur elargi les poussait a -22px et 402px, on
