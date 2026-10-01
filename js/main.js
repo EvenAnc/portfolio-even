@@ -16,7 +16,7 @@ import { resetActivePages, initPageLinks, showInitialPage, initHistory } from '.
 import { initMenu } from './menu.js';
 import { initSafariPaperCache, initNotebookLines } from './notebook.js';
 import { initCarousels } from './carousel.js';
-import { initScrollAnimationsMobile } from './touch-reveal.js';
+import { initTouchReveal } from './touch-reveal.js';
 import { initKeyboardActivation } from './keyboard-activation.js';
 import { initCopyEmail, initContactAnimation, initContactForm } from './contact.js';
 
@@ -72,7 +72,7 @@ function init() {
 
     // Animations au scroll pour les appareils tactiles (mobile)
     // Appelé APRÈS showPage pour que is-active soit bien présent
-    initScrollAnimationsMobile();
+    initTouchReveal();
 
     playHeroIntro();
 
