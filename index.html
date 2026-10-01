@@ -92,8 +92,31 @@
     <script defer src="vendor/gsap-3.12.5/ScrollTrigger.min.js" integrity="sha384-Z3REaz79l2IaAZqJsSABtTbhjgOUYyV3p90XNnAPCSHg3EMTz1fouunq9WZRtj3d"></script>
     <script defer src="vendor/lenis-1.0.42/lenis.min.js" integrity="sha384-li4UtcFCH6QeUqR4JyV58/VgTprMuz9aauj+oWtew7V4Y7ZVjnvz5px9Y3UCG0Ea"></script>
     <script type="module" src="js/main.js"></script>
+    <!-- Fetched in parallel rather than discovered one import level at a time. -->
+    <link rel="modulepreload" href="js/core/state.js">
+    <link rel="modulepreload" href="js/core/env.js">
+    <link rel="modulepreload" href="js/core/gsap-fallback.js">
+    <link rel="modulepreload" href="js/i18n/dictionary.js">
+    <link rel="modulepreload" href="js/i18n/i18n.js">
+    <link rel="modulepreload" href="js/router.js">
+    <link rel="modulepreload" href="js/page-scroll.js">
+    <link rel="modulepreload" href="js/header.js">
+    <link rel="modulepreload" href="js/hero.js">
+    <link rel="modulepreload" href="js/menu.js">
+    <link rel="modulepreload" href="js/notebook.js">
+    <link rel="modulepreload" href="js/carousel.js">
+    <link rel="modulepreload" href="js/touch-reveal.js">
+    <link rel="modulepreload" href="js/keyboard-activation.js">
+    <link rel="modulepreload" href="js/contact.js">
+    <link rel="modulepreload" href="js/favicon.js">
+    <link rel="modulepreload" href="js/preload.js">
+    <link rel="modulepreload" href="js/lightbox/lightbox.js">
+    <link rel="modulepreload" href="js/lightbox/gestures.js">
+    <link rel="modulepreload" href="js/lightbox/pdf-renderer.js">
+    <link rel="modulepreload" href="js/lightbox/galleries.js">
+    <link rel="modulepreload" href="js/lightbox/triggers.js">
 </head>
-<body ontouchstart="">
+<body>
 
     <!-- Lien d'evitement : premier element atteint par la tabulation, il
          permet de sauter le header et le menu pour aller au contenu. -->
@@ -1306,36 +1329,9 @@
     </div>
 
 
-    <!-- ── Mesure d'audience ───────────────────────────────────
-         Cloudflare Web Analytics. Sans cookie et sans identifiant : rien
-         n'est ecrit sur l'appareil du visiteur, donc aucun bandeau de
-         consentement a lui imposer.
-         Consequence assumee : on ne peut pas reconnaitre le meme visiteur
-         d'un jour a l'autre. On sait combien de visites, quelles pages,
-         dans quel ordre, combien de temps et d'ou elles viennent.
-
-         Place ici, en dernier, et en type="module" : un module est differe
-         d'office, il ne s'execute qu'une fois la page analysee et affichee.
-         S'il ne se charge pas du tout, le site est strictement identique.
-
-         fetchpriority="low" en plus : le navigateur telecharge le fichier
-         en parallele de la page, et sans cet attribut il le ferait au meme
-         rang que les images du site. Mesure : le telechargement demarrait
-         a 33 ms, avant meme que la page ne soit affichee (119 ms). Il ne
-         BLOQUAIT rien — un module ne bloque jamais l'affichage — mais il
-         disputait la bande passante. En priorite basse, il attend que le
-         reste soit servi.
-
-         Cloudflare n'est PAS devant le site — le domaine est chez IONOS et
-         pointe sur GitHub Pages. Aucune page de verification anti-robot ne
-         peut donc apparaitre : ce fichier est un simple compteur charge par
-         le navigateur, pas un filtre place sur le chemin.
-
-         Pas d'attribut integrity : Cloudflare met ce fichier a jour sans
-         prevenir, une empreinte figee le ferait echouer au premier
-         changement. Le jeton, lui, n'est pas un secret — il figure dans le
-         code de toutes les pages qui utilisent ce service. -->
-    <script type="module" fetchpriority="low" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "b3319e6ffcba481591e31f55c9d81cdc"}'></script>
+    <!-- Cookieless audience measurement. Low priority, so that it never competes
+         with the page; no integrity hash, because the provider updates the file. -->
+    <script defer fetchpriority="low" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "b3319e6ffcba481591e31f55c9d81cdc"}'></script>
 </body>
 
 </html>

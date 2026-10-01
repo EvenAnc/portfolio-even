@@ -65,9 +65,8 @@
         <span>Retour au portfolio</span>
     </a>
 
-    <!-- Mesure d'audience, sans cookie. Presente aussi sur la page
-         d'erreur : c'est ce qui permettra de reperer un lien casse
-         qui circule quelque part. -->
-    <script type="module" fetchpriority="low" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "b3319e6ffcba481591e31f55c9d81cdc"}'></script>
+    <!-- Cookieless audience measurement, also on the error page: it reveals
+         broken links that circulate elsewhere. -->
+    <script defer fetchpriority="low" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "b3319e6ffcba481591e31f55c9d81cdc"}'></script>
 </body>
 </html>
