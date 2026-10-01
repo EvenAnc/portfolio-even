@@ -727,6 +727,253 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 @keyframes scrollPulse { 0% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(0); opacity: 0; } }
 
 
+/* Notebook */
+
+.notebook-section {
+    position: relative;
+    color: var(--notebook-text);
+}
+
+.notebook-bg-sheet {
+    position: absolute;
+    top: -85px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--notebook-bg);
+    clip-path: polygon(0% 2.5%, 10% 1.8%, 25% 2.8%, 40% 1.5%, 55% 3.2%, 70% 1.8%, 85% 2.8%, 100% 1.8%, 100% 97.2%, 85% 98.2%, 70% 97.2%, 55% 98.5%, 40% 97.2%, 25% 98.2%, 10% 97.2%, 0% 98.2%);
+    z-index: 0;
+    filter: url(#paper-tear);
+    will-change: transform;  /* FIX: promotion GPU réduit le repaint au hover */
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.36, 1), clip-path 0.8s cubic-bezier(0.25, 1, 0.36, 1);
+    transform-origin: center;
+    pointer-events: none;
+}
+
+/* Au survol de la section cahier, la feuille de papier se déroule (scaleX/Y) et les bords déchirés se déforment dynamiquement (morphing) */
+.notebook-section:hover .notebook-bg-sheet {
+    transform: scale(1.015, 1.07);
+    clip-path: polygon(0% 3.5%, 10% 2.2%, 25% 3.8%, 40% 2%, 55% 4.2%, 70% 2.2%, 85% 3.8%, 100% 2.2%, 100% 96.2%, 85% 97.5%, 70% 96.2%, 55% 97.8%, 40% 96.2%, 25% 97.5%, 10% 96.2%, 0% 97.5%);
+}
+
+.notebook-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 110px 80px 130px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Lignes : conteneur vide, rempli par JS avec des longueurs aléatoires */
+.notebook-lines {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* Chaque ligne générée par JS */
+.nb-line {
+    position: absolute;
+    height: 4px;
+    background: var(--notebook-line);
+    border-radius: 2px;
+}
+
+/* Marge rouge de cahier (placée sur la feuille d'arrière-plan pour suivre son étirement) */
+.notebook-bg-sheet::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 80px;
+    width: 2px;
+    background: rgba(255, 54, 74, 0.3);
+    z-index: 1;
+}
+
+.notebook-bg-sheet::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 84px;
+    width: 1px;
+    background: rgba(255, 54, 74, 0.18);
+    z-index: 1;
+}
+
+.notebook-content {
+    position: relative;
+    z-index: 2;
+    padding-left: 30px;
+}
+
+.notebook-title-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 24px;
+}
+
+.notebook-title {
+    font-size: clamp(3.2rem, 6vw, 5rem);
+    line-height: 1;
+    margin-bottom: 0;
+    color: var(--notebook-text);
+}
+
+.notebook-text {
+    font-size: 1.1rem;
+    line-height: 34px; /* Correspond exactement au pas des lignes du cahier (spacing = 34px) */
+    color: rgba(26,26,26,0.75);
+    max-width: 640px;
+    margin-bottom: 34px; /* Permet aux paragraphes de rester calés sur la grille */
+    transition: transform 0.3s var(--ease-out);
+    position: relative;
+    top: -2px; /* Ajustement fin de 5px entre la ligne et l'écriture */
+}
+
+/* Hover wobble sur le texte du cahier */
+.notebook-hover-zone:hover .notebook-text {
+    animation: notebookWobble 0.4s ease-out;
+}
+
+.notebook-title-wrap:hover .notebook-title {
+    animation: notebookWobble 0.5s ease-out;
+}
+
+.notebook-annotation {
+    display: inline-block;
+    font-size: 1.9rem;
+    color: var(--red);
+    margin-top: 24px;
+    transform: rotate(-2deg);
+    opacity: 0.85;
+}
+
+/* Signature "EVEN" avec flèche courbée - cachée par défaut */
+.notebook-signature {
+    position: absolute;
+    bottom: 25%;
+    left: 95%;
+    z-index: 3;
+    opacity: 0;
+    transform: translateY(10px) translateX(-10px);
+    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+}
+
+/* Affichage de la signature uniquement au survol du titre "Qui suis-je ?" */
+.notebook-title-wrap:hover .notebook-signature {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+}
+
+.signature-arrow {
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    width: 80px;
+    height: 60px;
+}
+
+.signature-name {
+    font-size: 3.0rem;
+    color: var(--red);
+    transform: rotate(-6deg);
+    white-space: nowrap;
+    margin-left: 65px; /* Décalage pour laisser la place à la flèche */
+    margin-bottom: 25px; /* Surélève le nom pour que la flèche pointe dessus */
+}
+
+/* La section contact et les autres sections hors hero-screen doivent rester interactives */
+.page.is-active .notebook-section,
+.page.is-active .home-contact,
+.page.is-active .page-next {
+    pointer-events: auto;
+}
+
+.page.is-active .notebook-content,
+.page.is-active .notebook-hover-zone {
+    pointer-events: auto;
+    cursor: default;
+}
+
+/* 3. LE PAPIER DU CAHIER, PRECALCULE
+   Voir initPapierSafari() dans app.js : sur Safari seulement, le filtre
+   de papier dechire est dessine une fois dans une image. Ces regles ne
+   s'appliquent qu'une fois cette image posee, donc jamais sur Chrome.
+   Les deux traits de la marge rouge sont dans l'image, les pseudo-
+   elements d'origine se retirent pour ne pas les doubler. */
+.notebook-bg-sheet.papier-precalcule {
+    filter: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.notebook-bg-sheet.papier-precalcule::before,
+.notebook-bg-sheet.papier-precalcule::after {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    /* ── Cahier de brouillon ── */
+    .notebook-bg-sheet { top: -45px; }
+
+    .notebook-inner { padding: 80px 20px 100px; }
+    .notebook-bg-sheet::before { left: 20px; }
+    .notebook-bg-sheet::after { left: 24px; }
+    .notebook-content { padding-left: 12px; }
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* ── Base Bounce States for Mobile ── */
+    .notebook-signature, .ref-photo, .ref-arrow {
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s !important;
+    }
+
+    .notebook-signature { transform: translateY(-40px) translateX(20px) scale(1.2) !important; }
+
+    /* ── Agrandissement du brouillon au scroll ── */
+    .notebook-section.is-inview .notebook-bg-sheet {
+        transform: scale(1.02) rotate(-1deg);
+        transition-delay: 0.3s;
+    }
+
+    .notebook-section.is-inview .notebook-signature {
+        opacity: 1 !important;
+        transform: translateY(0) translateX(0) scale(1) !important;
+    }
+}
+
+@media (max-width: 991px) {
+    /* La signature manuscrite etait calee a left:95% puis decalee vers la
+           droite et agrandie : elle sortait du cadre. On l'ancre a droite, en
+           reservant la marge que prend l'agrandissement (scale 1,2). */
+    .notebook-signature {
+        left: auto !important;
+        right: 22px !important;
+        transform: translateY(-40px) scale(1.2) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .notebook-signature {
+        right: 16px !important;
+        transform: translateY(-36px) scale(1) !important;
+    }
+}
+
+@keyframes notebookWobble {
+    0%   { transform: rotate(0deg); }
+    25%  { transform: rotate(-0.3deg) translateX(-1px); }
+    50%  { transform: rotate(0.2deg) translateX(1px); }
+    75%  { transform: rotate(-0.15deg); }
+    100% { transform: rotate(0deg); }
+}
+
+
 /* Footer */
 
 .site-footer {
@@ -1081,171 +1328,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
 .patchwork-item:hover .sketch-rect-svg .sketch-rect-path {
     stroke-dashoffset: 0;
-}
-
-.notebook-section {
-    position: relative;
-    color: var(--notebook-text);
-}
-
-.notebook-bg-sheet {
-    position: absolute;
-    top: -85px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: var(--notebook-bg);
-    clip-path: polygon(0% 2.5%, 10% 1.8%, 25% 2.8%, 40% 1.5%, 55% 3.2%, 70% 1.8%, 85% 2.8%, 100% 1.8%, 100% 97.2%, 85% 98.2%, 70% 97.2%, 55% 98.5%, 40% 97.2%, 25% 98.2%, 10% 97.2%, 0% 98.2%);
-    z-index: 0;
-    filter: url(#paper-tear);
-    will-change: transform;  /* FIX: promotion GPU réduit le repaint au hover */
-    transition: transform 0.8s cubic-bezier(0.25, 1, 0.36, 1), clip-path 0.8s cubic-bezier(0.25, 1, 0.36, 1);
-    transform-origin: center;
-    pointer-events: none;
-}
-
-/* Au survol de la section cahier, la feuille de papier se déroule (scaleX/Y) et les bords déchirés se déforment dynamiquement (morphing) */
-.notebook-section:hover .notebook-bg-sheet {
-    transform: scale(1.015, 1.07);
-    clip-path: polygon(0% 3.5%, 10% 2.2%, 25% 3.8%, 40% 2%, 55% 4.2%, 70% 2.2%, 85% 3.8%, 100% 2.2%, 100% 96.2%, 85% 97.5%, 70% 96.2%, 55% 97.8%, 40% 96.2%, 25% 97.5%, 10% 96.2%, 0% 97.5%);
-}
-
-.notebook-inner {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 110px 80px 130px;
-    position: relative;
-    z-index: 1;
-}
-
-/* Lignes : conteneur vide, rempli par JS avec des longueurs aléatoires */
-.notebook-lines {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-}
-
-/* Chaque ligne générée par JS */
-.nb-line {
-    position: absolute;
-    height: 4px;
-    background: var(--notebook-line);
-    border-radius: 2px;
-}
-
-/* Marge rouge de cahier (placée sur la feuille d'arrière-plan pour suivre son étirement) */
-.notebook-bg-sheet::before {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 80px;
-    width: 2px;
-    background: rgba(255, 54, 74, 0.3);
-    z-index: 1;
-}
-
-.notebook-bg-sheet::after {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    left: 84px;
-    width: 1px;
-    background: rgba(255, 54, 74, 0.18);
-    z-index: 1;
-}
-
-.notebook-content {
-    position: relative;
-    z-index: 2;
-    padding-left: 30px;
-}
-
-.notebook-title-wrap {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 24px;
-}
-
-.notebook-title {
-    font-size: clamp(3.2rem, 6vw, 5rem);
-    line-height: 1;
-    margin-bottom: 0;
-    color: var(--notebook-text);
-}
-
-.notebook-text {
-    font-size: 1.1rem;
-    line-height: 34px; /* Correspond exactement au pas des lignes du cahier (spacing = 34px) */
-    color: rgba(26,26,26,0.75);
-    max-width: 640px;
-    margin-bottom: 34px; /* Permet aux paragraphes de rester calés sur la grille */
-    transition: transform 0.3s var(--ease-out);
-    position: relative;
-    top: -2px; /* Ajustement fin de 5px entre la ligne et l'écriture */
-}
-
-/* Hover wobble sur le texte du cahier */
-.notebook-hover-zone:hover .notebook-text {
-    animation: notebookWobble 0.4s ease-out;
-}
-
-@keyframes notebookWobble {
-    0%   { transform: rotate(0deg); }
-    25%  { transform: rotate(-0.3deg) translateX(-1px); }
-    50%  { transform: rotate(0.2deg) translateX(1px); }
-    75%  { transform: rotate(-0.15deg); }
-    100% { transform: rotate(0deg); }
-}
-
-.notebook-title-wrap:hover .notebook-title {
-    animation: notebookWobble 0.5s ease-out;
-}
-
-.notebook-annotation {
-    display: inline-block;
-    font-size: 1.9rem;
-    color: var(--red);
-    margin-top: 24px;
-    transform: rotate(-2deg);
-    opacity: 0.85;
-}
-
-/* Signature "EVEN" avec flèche courbée - cachée par défaut */
-.notebook-signature {
-    position: absolute;
-    bottom: 25%;
-    left: 95%;
-    z-index: 3;
-    opacity: 0;
-    transform: translateY(10px) translateX(-10px);
-    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
-    pointer-events: none;
-    display: flex;
-    align-items: flex-end;
-}
-
-/* Affichage de la signature uniquement au survol du titre "Qui suis-je ?" */
-.notebook-title-wrap:hover .notebook-signature {
-    opacity: 1;
-    transform: translateY(0) translateX(0);
-}
-
-.signature-arrow {
-    position: absolute;
-    left: 0;
-    bottom: -15px;
-    width: 80px;
-    height: 60px;
-}
-
-.signature-name {
-    font-size: 3.0rem;
-    color: var(--red);
-    transform: rotate(-6deg);
-    white-space: nowrap;
-    margin-left: 65px; /* Décalage pour laisser la place à la flèche */
-    margin-bottom: 25px; /* Surélève le nom pour que la flèche pointe dessus */
 }
 
 .page-next {
@@ -2361,14 +2443,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
     .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
 
-    /* ── Cahier de brouillon ── */
-    .notebook-bg-sheet { top: -45px; }
-
-    .notebook-inner { padding: 80px 20px 100px; }
-    .notebook-bg-sheet::before { left: 20px; }
-    .notebook-bg-sheet::after { left: 24px; }
-    .notebook-content { padding-left: 12px; }
-
     /* ── Contact ── */
     .home-contact-inner { padding: 60px 20px 80px; }
 
@@ -2589,13 +2663,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
     .torn-frame:hover .media-frame-img { transform: none; }
     .drawings-gallery .drawing-item:hover { transform: none; filter: none; }
-
-    /* ── Base Bounce States for Mobile ── */
-    .notebook-signature, .ref-photo, .ref-arrow {
-        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s !important;
-    }
-
-    .notebook-signature { transform: translateY(-40px) translateX(20px) scale(1.2) !important; }
     .ref-photo { transform: translateY(-40px) scale(1.2) !important; }
     .ref-arrow { transform: translateY(-40px) scale(1.2) !important; }
 
@@ -2625,17 +2692,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
         opacity: 1 !important;
         transform: rotate(-15deg) scale(1) !important;
         transition-delay: 0.9s !important;
-    }
-
-    /* ── Agrandissement du brouillon au scroll ── */
-    .notebook-section.is-inview .notebook-bg-sheet {
-        transform: scale(1.02) rotate(-1deg);
-        transition-delay: 0.3s;
-    }
-
-    .notebook-section.is-inview .notebook-signature {
-        opacity: 1 !important;
-        transform: translateY(0) translateX(0) scale(1) !important;
     }
 
     /* ── Dessin Noir et Blanc (3eme) ─────────────────────────
@@ -3209,19 +3265,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     }
 }
 
-/* La section contact et les autres sections hors hero-screen doivent rester interactives */
-.page.is-active .notebook-section,
-.page.is-active .home-contact,
-.page.is-active .page-next {
-    pointer-events: auto;
-}
-
-.page.is-active .notebook-content,
-.page.is-active .notebook-hover-zone {
-    pointer-events: auto;
-    cursor: default;
-}
-
 .menu-nav-item:active .mn-label {
     color: var(--red);
     transform: translateX(16px);
@@ -3310,15 +3353,6 @@ textarea:focus-visible,
         width: 120px;
         height: 120px;
     }
-
-    /* La signature manuscrite etait calee a left:95% puis decalee vers la
-           droite et agrandie : elle sortait du cadre. On l'ancre a droite, en
-           reservant la marge que prend l'agrandissement (scale 1,2). */
-    .notebook-signature {
-        left: auto !important;
-        right: 22px !important;
-        transform: translateY(-40px) scale(1.2) !important;
-    }
 }
 
 @media (min-width: 992px) and (max-width: 1328px) {
@@ -3343,11 +3377,6 @@ textarea:focus-visible,
         height: 96px;
         margin-left: 36px;   /* debord proportionnel : ~30px par cote */
         bottom: -24px;
-    }
-
-    .notebook-signature {
-        right: 16px !important;
-        transform: translateY(-36px) scale(1) !important;
     }
 }
 
@@ -4286,22 +4315,4 @@ textarea:focus-visible,
     height: auto;
     flex: 1 1 0;
     min-height: 0;
-}
-
-/* 3. LE PAPIER DU CAHIER, PRECALCULE
-   Voir initPapierSafari() dans app.js : sur Safari seulement, le filtre
-   de papier dechire est dessine une fois dans une image. Ces regles ne
-   s'appliquent qu'une fois cette image posee, donc jamais sur Chrome.
-   Les deux traits de la marge rouge sont dans l'image, les pseudo-
-   elements d'origine se retirent pour ne pas les doubler. */
-.notebook-bg-sheet.papier-precalcule {
-    filter: none;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-}
-
-.notebook-bg-sheet.papier-precalcule::before,
-.notebook-bg-sheet.papier-precalcule::after {
-    display: none;
 }
