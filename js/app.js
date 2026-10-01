@@ -406,6 +406,9 @@ let currentPage = 'home';
 let isMenuOpen  = false;
 let lenis       = null;
 let _historyInitialised = false;
+let lenisTickerFn = null;
+let openDrawingGallery = null;
+let closeDrawingLightbox = null;
 
 // ───────────────────────────────────
 // TITRES ET DESCRIPTIONS PAR PAGE
@@ -471,6 +474,8 @@ function majMetaPage(pageId) {
 // INIT
 // ─────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+    initCoupeClicks();
+    animateFavicon();
 
     // Priorite : l'adresse (un lien partage impose sa langue), puis le
     // choix precedent du visiteur, puis la langue de son navigateur.
@@ -900,7 +905,7 @@ function initKeyboardActivation() {
 // History navigation swaps the page underneath: an overlay left open would
 // cover the new page and keep scrolling locked.
 function closeOverlays() {
-    if (typeof window._closeDrawingLightbox === 'function') window._closeDrawingLightbox();
+    if (closeDrawingLightbox) closeDrawingLightbox();
     if (isMenuOpen) closeMenu();
 }
 
@@ -1156,9 +1161,9 @@ function updateHeaderLogo(pageId) {
 // instance: they go with it, otherwise the ticker keeps calling raf on
 // nothing for the whole page transition.
 function destroyPageLenis() {
-    if (window._lenisTickerFn) {
-        gsap.ticker.remove(window._lenisTickerFn);
-        window._lenisTickerFn = null;
+    if (lenisTickerFn) {
+        gsap.ticker.remove(lenisTickerFn);
+        lenisTickerFn = null;
     }
     if (lenis) {
         lenis.destroy();
@@ -1200,11 +1205,11 @@ function initPageLenis(scrollContainer) {
 
     // BUG-04 FIX : stocker la référence du ticker pour pouvoir le supprimer plus tard
     // et éviter l'accumulation de tickers à chaque navigation entre pages.
-    if (window._lenisTickerFn) {
-        gsap.ticker.remove(window._lenisTickerFn);
+    if (lenisTickerFn) {
+        gsap.ticker.remove(lenisTickerFn);
     }
-    window._lenisTickerFn = time => lenis.raf(time * 1000);
-    gsap.ticker.add(window._lenisTickerFn);
+    lenisTickerFn = time => lenis.raf(time * 1000);
+    gsap.ticker.add(lenisTickerFn);
     gsap.ticker.lagSmoothing(0);
 
     // Sur la page home : animer le logo vers le header au scroll
@@ -1384,6 +1389,10 @@ function initNextPageLinks() {
                 showPage(nextPage);
             }
         });
+    });
+
+    document.querySelectorAll('[data-page-link]').forEach(card => {
+        card.addEventListener('click', () => showPage(card.dataset.pageLink));
     });
 }
 
@@ -2366,7 +2375,7 @@ function initDrawingLightbox() {
     }
 
     // ── API globale pour ouvrir avec une galerie spécifique ──
-    window._openDrawingGallery = function(gallery, index) {
+    openDrawingGallery = function(gallery, index) {
         currentGallery = gallery;
         openLightbox(index || 0);
     };
@@ -2408,7 +2417,7 @@ function initDrawingLightbox() {
 
     // Lets the router close the viewer; a no-op when it is already closed,
     // so page scrolling is never restarted behind another lock.
-    window._closeDrawingLightbox = function() {
+    closeDrawingLightbox = function() {
         if (lightbox.getAttribute('aria-hidden') === 'false') closeLightbox();
     };
 
@@ -2944,7 +2953,7 @@ function souleverLaPlanche(source, ouvrir) {
 /* ==========================================================================
    COUPE CLICK → Open in Drawing Lightbox (reuses the same viewer)
    ========================================================================== */
-(function initCoupeClicks() {
+function initCoupeClicks() {
     const coupeItems = document.querySelectorAll('[data-coupe-gallery] .stack-item[data-coupe-index]');
     if (!coupeItems.length) return;
 
@@ -2952,16 +2961,16 @@ function souleverLaPlanche(source, ouvrir) {
         item.addEventListener('click', () => {
             const idx = parseInt(item.getAttribute('data-coupe-index'), 10);
             // Use the drawing lightbox with diplomeCoupes gallery
-            if (typeof window._openDrawingGallery === 'function') {
+            if (openDrawingGallery) {
                 tracerPuis(item, () => souleverLaPlanche(item,
-                    () => window._openDrawingGallery(diplomeCoupes, idx)));
+                    () => openDrawingGallery(diplomeCoupes, idx)));
             }
         });
     });
-})();
+}
 
 /* --- FAVICON ANIMATION (CANVAS BASED) --- */
-(function animateFavicon() {
+function animateFavicon() {
     const favicon = document.getElementById('favicon');
     if (!favicon) return;
     
@@ -3046,4 +3055,4 @@ function souleverLaPlanche(source, ouvrir) {
             startFavicon();
         }
     });
-})();
+}
