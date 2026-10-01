@@ -125,16 +125,16 @@
     <!-- Every page is revealed by script: without it, leave at least a
          name and a way to get in touch. -->
     <noscript>
-        <div style="position: relative; z-index: 10000; max-width: 34rem; margin: 18vh auto 0; padding: 0 24px; color: #fff; font-family: sans-serif; line-height: 1.6;">
-            <p style="font-size: 2rem; font-weight: 700;">Even ANICET</p>
+        <div class="noscript-notice">
+            <p class="noscript-notice-title">Even ANICET</p>
             <p>Architecte d'intérieur · Interior architect</p>
             <p>Ce portfolio a besoin de JavaScript pour s'afficher.<br>This portfolio needs JavaScript to be displayed.</p>
-            <p><a href="mailto:even.anicet@gmail.com" style="color: #fff;">even.anicet@gmail.com</a></p>
+            <p><a href="mailto:even.anicet@gmail.com">even.anicet@gmail.com</a></p>
         </div>
     </noscript>
 
     <!-- SVG FILTRES INVISIBLES -->
-    <svg width="0" height="0" style="position:absolute;overflow:hidden;">
+    <svg class="svg-filters" width="0" height="0">
         <defs>
             <filter id="sketch-1" x="-5%" y="-5%" width="110%" height="110%">
                 <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" seed="1" result="n"/>
@@ -172,17 +172,17 @@
     ========================================================================================================= -->
     <header class="site-header" id="site-header">
         <div class="header-inner">
-            <div class="header-left" style="display: flex; align-items: center; gap: 40px;">
+            <div class="header-left">
                 <button type="button" class="burger-btn" id="burger-btn" aria-label="Menu" aria-expanded="false" aria-controls="menu-overlay">
                     <span class="b-line"></span>
                     <span class="b-line"></span>
                     <span class="b-line"></span>
                 </button>
-                <button type="button" class="header-back-btn" id="header-back-btn" aria-label="retour" data-i18n-aria="nav_back" style="display: none; background: none; border: none; cursor: pointer; color: #fff; align-items: center; gap: 10px; pointer-events: auto;">
-                    <svg class="sketch-arrow-back" viewBox="0 0 100 50" style="width: 50px; height: 25px;">
+                <button type="button" class="header-back-btn" id="header-back-btn" aria-label="retour" data-i18n-aria="nav_back">
+                    <svg class="sketch-arrow-back" viewBox="0 0 100 50">
                         <path d="M90 25 L20 25 M40 10 L15 25 L40 40" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <span class="font-sketch" style="font-size: 2.2rem;" data-i18n="nav_back">retour</span>
+                    <span class="font-sketch" data-i18n="nav_back">retour</span>
                 </button>
             </div>
 
@@ -259,9 +259,9 @@
         </nav>
 
         <div class="menu-footer">
-            <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="copy-row">
                 <a href="#" class="menu-mail copy-email" data-email="even.anicet@gmail.com">even.anicet@gmail.com</a>
-                <span class="copy-feedback font-sketch" data-i18n="copied" style="color: var(--red); opacity: 0; transform: translateX(-10px); transition: all 0.3s ease; pointer-events: none; font-size: 1.2rem;">copié !</span>
+                <span class="copy-feedback font-sketch" data-i18n="copied">copié !</span>
             </div>
             <div class="menu-footer-social">
                 <a href="https://www.instagram.com/even.anc/" target="_blank" rel="noopener noreferrer">Instagram</a>
@@ -297,9 +297,9 @@
             <!-- GRAND CADRE SHOWCASE (coins arrondis, taille limitée) -->
             <div class="home-showcase">
                 <!-- frame-wrap : le rectangle SVG rouge est ICI, DEHORS du cadre clippé -->
-                <div class="frame-wrap" style="max-width: 1400px; width: 100%; margin: 0 auto; display: block;">
-                    <div class="showcase-frame" style="background: white; width: 100%; aspect-ratio: 16/9; max-height: none; display: flex; align-items: center; justify-content: center; overflow: hidden; border-radius: 18px;">
-                        <span class="font-sketch" data-i18n="video_placeholder" style="color: #111; font-size: clamp(2.5rem, 6vw, 5rem); transform: rotate(-3deg); padding: 20px; text-align: center;">une vidéo arrive !</span>
+                <div class="frame-wrap">
+                    <div class="showcase-frame">
+                        <span class="font-sketch" data-i18n="video_placeholder">une vidéo arrive !</span>
                     </div>
                     <!-- Rectangle rouge DESSINÉ MAIN — par-dessus, déborde du cadre -->
                     <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -321,7 +321,7 @@
                 <!-- Annotation flèche crayonnée cliquez ! -->
                 <div class="shortcut-click-hint">
                     <svg class="click-hint-arrow" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10 10 C 25 5, 45 15, 48 30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" fill="none" style="animation: rectWobble 0.3s steps(1) infinite;"/>
+                        <path d="M10 10 C 25 5, 45 15, 48 30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                         <path d="M38 25 L48 30 L48 18" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                     <span class="click-hint-text font-sketch" data-i18n="click_hint">cliquez !</span>
@@ -340,7 +340,7 @@
                             <div class="notebook-signature">
                                 <span class="signature-name font-sketch">EVEN</span>
                                 <svg class="signature-arrow" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 45 C 18 55, 32 50, 45 15" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" fill="none" style="animation: rectWobble 0.3s steps(1) infinite;"/>
+                                    <path d="M10 45 C 18 55, 32 50, 45 15" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                                     <path d="M30 22 L45 15 L42 30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                                 </svg>
                             </div>
@@ -365,7 +365,7 @@
                               action="https://formsubmit.co/ajax/even.anicet@gmail.com" 
                               method="POST" novalidate>
                             <input type="hidden" name="_subject" value="Nouveau message portfolio — Even ANICET">
-                            <input type="text" name="_honey" style="display:none">
+                            <input class="honeypot" type="text" name="_honey">
                             <input type="hidden" name="_template" value="table">
                             <div class="fg">
                                 <input type="text" id="fn" name="name" required placeholder=" " class="fi" autocomplete="name">
@@ -396,9 +396,9 @@
                         <div class="contact-info">
                             <div class="ci-block">
                                 <h3 class="ci-label" data-i18n="contact_direct">CONTACT DIRECT</h3>
-                                <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="copy-row">
                                     <a href="#" class="ci-link copy-email" data-email="even.anicet@gmail.com">even.anicet@gmail.com</a>
-                                    <span class="copy-feedback font-sketch" data-i18n="copied" style="color: var(--red); opacity: 0; transform: translateX(-10px); transition: all 0.3s ease; pointer-events: none; font-size: 1.8rem;">copié !</span>
+                                    <span class="copy-feedback font-sketch" data-i18n="copied">copié !</span>
                                 </div>
                             </div>
                             <div class="ci-block">
@@ -463,9 +463,9 @@
                 <div class="projects-patchwork">
                     <!-- Projet 1 -->
                     <div class="patchwork-item prio-1" data-page-link="project-diploma">
-                        <div class="polaroid-card" style="transform: rotate(-1deg);">
-                            <div class="polaroid-img-wrap" style="background: #000;">
-                                <img src="assets/opt/mirage.webp" alt="Projet Mirage" data-i18n-alt="alt_project_mirage" class="polaroid-img" style="object-fit: cover; object-position: center; width: 100%; height: 100%; transform: scale(0.92);" width="1000" height="707">
+                        <div class="polaroid-card">
+                            <div class="polaroid-img-wrap">
+                                <img src="assets/opt/mirage.webp" alt="Projet Mirage" data-i18n-alt="alt_project_mirage" class="polaroid-img" width="1000" height="707">
                             </div>
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
@@ -480,9 +480,9 @@
                     
                     <!-- Projet 2 -->
                     <div class="patchwork-item prio-2" data-page-link="project-2">
-                        <div class="polaroid-card" style="transform: rotate(2deg);">
+                        <div class="polaroid-card">
                             <div class="polaroid-img-wrap">
-                                <img src="assets/opt/paterr-icone.webp" alt="Projet Paterr Suisse" data-i18n-alt="alt_project_paterr" class="polaroid-img" style="object-fit: cover; object-position: center;" width="1000" height="707">
+                                <img src="assets/opt/paterr-icone.webp" alt="Projet Paterr Suisse" data-i18n-alt="alt_project_paterr" class="polaroid-img" width="1000" height="707">
                             </div>
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
@@ -497,11 +497,11 @@
                     
                     <!-- Projet 3 -->
                     <div class="patchwork-item prio-3" data-page-link="project-3">
-                        <div class="polaroid-card" style="transform: rotate(-1.5deg);">
-                            <div class="polaroid-img-wrap" style="background: #111; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;">
-                                <svg width="50" height="50" viewBox="0 0 100 100" style="animation: spin-slow 3s linear infinite;">
-                                    <path d="M 50 15 A 35 35 0 1 1 15 50" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-dasharray="80 30" style="animation: pulse-opacity 2s ease-in-out infinite;" />
-                                </svg><span class="font-sketch" style="color: #fff; font-size: 2.2rem; animation: pulse-opacity 2s ease-in-out infinite; letter-spacing: 2px;" data-i18n="proj_loading">en cours...</span>
+                        <div class="polaroid-card">
+                            <div class="polaroid-img-wrap">
+                                <svg width="50" height="50" viewBox="0 0 100 100">
+                                    <path d="M 50 15 A 35 35 0 1 1 15 50" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-dasharray="80 30" />
+                                </svg><span class="font-sketch" data-i18n="proj_loading">en cours...</span>
                             </div>
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
@@ -523,7 +523,7 @@
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </a>
-                <footer class="site-footer" style="margin-top: 80px;">
+                <footer class="site-footer site-footer--spaced">
                     <div class="footer-inner">
                         <div class="footer-top">
                             <span class="footer-logo font-sketch">EVEN ANICET</span>
@@ -549,8 +549,8 @@
                     <span class="page-num">02.2</span>
                     <h2 class="page-title">PATERR SUISSE</h2>
                 </div>
-                <div style="text-align: center; padding: 100px 0;">
-                    <p class="font-sketch" style="font-size: 2rem;">Contenu du projet Paterr Suisse à venir...</p>
+                <div class="coming-soon">
+                    <p class="font-sketch">Contenu du projet Paterr Suisse à venir...</p>
                 </div>
                 <!-- NEXT PAGE LINK -->
                 <a href="javascript:void(0)" class="page-next" data-next="project-3" aria-label="Aller au projet suivant" data-i18n-aria="aria_next_project">
@@ -560,7 +560,7 @@
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </a>
-                <footer class="site-footer" style="margin-top: 80px;">
+                <footer class="site-footer site-footer--spaced">
                     <div class="footer-inner">
                         <div class="footer-top">
                             <span class="footer-logo font-sketch">EVEN ANICET</span>
@@ -586,8 +586,8 @@
                     <span class="page-num">02.3</span>
                     <h2 class="page-title">PROJET 3</h2>
                 </div>
-                <div style="text-align: center; padding: 100px 0;">
-                    <p class="font-sketch" style="font-size: 2rem;">À suivre...</p>
+                <div class="coming-soon">
+                    <p class="font-sketch">À suivre...</p>
                 </div>
                 <!-- NEXT PAGE LINK -->
                 <a href="javascript:void(0)" class="page-next" data-next="drawings" aria-label="Aller à la page Dessins" data-i18n-aria="aria_goto_drawings">
@@ -597,7 +597,7 @@
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </a>
-                <footer class="site-footer" style="margin-top: 80px;">
+                <footer class="site-footer site-footer--spaced">
                     <div class="footer-inner">
                         <div class="footer-top">
                             <span class="footer-logo font-sketch">EVEN ANICET</span>
@@ -623,15 +623,9 @@
                 <div class="fortiche-projects-board">
 
                     <!-- ================== TAPE TITLE ================== -->
-                    <div class="projects-board-header" style="margin-bottom: 0; text-align: center; padding: 60px 0 20px;">
-                        <div class="tape-title-wrap" style="position: relative; display: inline-block;">
-                            <h3 class="font-sketch tape-title" data-i18n="proj_title" style="
-                                background-color: #2a2a2a; 
-                                color: #fff; 
-                                padding: 8px 16px; 
-                                display: inline-block;
-                                box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-                            ">PROJET 01 : DIPLÔME</h3>
+                    <div class="projects-board-header">
+                        <div class="tape-title-wrap">
+                            <h3 class="font-sketch tape-title" data-i18n="proj_title">PROJET 01 : DIPLÔME</h3>
                         </div>
                     </div>
 
@@ -731,7 +725,7 @@
                         <p class="panel-tools" data-i18n="tools_coupes">ArchiCAD · Photoshop</p>
 
                         <div class="cut-stack" data-coupe-gallery>
-                            <div class="stack-item" data-coupe-index="0" style="cursor: pointer;">
+                            <div class="stack-item" data-coupe-index="0">
                                 <div class="drawing-sheet-wrap">
                                     <span class="stack-label font-sketch">Coupe Nord Lointaine</span>
                                     <div class="media-frame-inner drawing-sheet">
@@ -739,7 +733,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="stack-item" data-coupe-index="1" style="cursor: pointer;">
+                            <div class="stack-item" data-coupe-index="1">
                                 <div class="drawing-sheet-wrap">
                                     <span class="stack-label stack-label-right font-sketch">Coupe Nord Texturée</span>
                                     <div class="media-frame-inner drawing-sheet">
@@ -747,7 +741,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="stack-item" data-coupe-index="2" style="cursor: pointer;">
+                            <div class="stack-item" data-coupe-index="2">
                                 <div class="drawing-sheet-wrap">
                                     <span class="stack-label font-sketch">Coupe Ouest Texturée</span>
                                     <div class="media-frame-inner drawing-sheet">
@@ -755,7 +749,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="stack-item" data-coupe-index="3" style="cursor: pointer;">
+                            <div class="stack-item" data-coupe-index="3">
                                 <div class="drawing-sheet-wrap">
                                     <span class="stack-label stack-label-right font-sketch">Coupe Sud Texturée</span>
                                     <div class="media-frame-inner drawing-sheet">
@@ -778,24 +772,24 @@
                             <div class="render3d-item">
                                 <span class="render3d-label font-sketch">Intérieur</span>
                                 <div class="drawing-sheet-wrap">
-                                    <div class="media-frame-inner" style="aspect-ratio: 4/3; background: #222; display: flex; justify-content: center; align-items: center;">
-                                        <div class="font-sketch" style="color: var(--muted); font-size: 1.5rem;">[ 3D Intérieur ]</div>
+                                    <div class="media-frame-inner media-placeholder">
+                                        <div class="font-sketch">[ 3D Intérieur ]</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="render3d-item">
                                 <span class="render3d-label font-sketch">Immersion</span>
                                 <div class="drawing-sheet-wrap">
-                                    <div class="media-frame-inner" style="aspect-ratio: 4/3; background: #222; display: flex; justify-content: center; align-items: center;">
-                                        <div class="font-sketch" style="color: var(--muted); font-size: 1.5rem;">[ 3D Immersion ]</div>
+                                    <div class="media-frame-inner media-placeholder">
+                                        <div class="font-sketch">[ 3D Immersion ]</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="render3d-item">
                                 <span class="render3d-label font-sketch">Vue de loin</span>
                                 <div class="drawing-sheet-wrap">
-                                    <div class="media-frame-inner" style="aspect-ratio: 4/3; background: #222; display: flex; justify-content: center; align-items: center;">
-                                        <div class="font-sketch" style="color: var(--muted); font-size: 1.5rem;">[ Vue Lointaine ]</div>
+                                    <div class="media-frame-inner media-placeholder">
+                                        <div class="font-sketch">[ Vue Lointaine ]</div>
                                     </div>
                                 </div>
                             </div>
@@ -837,7 +831,7 @@
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </a>
-                <footer class="site-footer" style="margin-top: 80px;">
+                <footer class="site-footer site-footer--spaced">
                     <div class="footer-inner">
                         <div class="footer-top">
                             <span class="footer-logo font-sketch">EVEN ANICET</span>
@@ -1008,7 +1002,7 @@
                     <div class="bd-carousel-controls">
                         <button type="button" class="bd-play-pause-btn" aria-label="Lecture automatique" data-i18n-aria="aria_autoplay">
                             <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/></svg>
-                            <svg class="icon-play" viewBox="0 0 24 24" width="24" height="24" style="display: none;"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+                            <svg class="icon-play" viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
                         </button>
                         <div class="bd-dots">
                             <span class="bd-dot active" data-goto="0"></span>
@@ -1042,7 +1036,7 @@
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </a>
-                <footer class="site-footer" style="margin-top: 80px;">
+                <footer class="site-footer site-footer--spaced">
                     <div class="footer-inner">
                         <div class="footer-top">
                             <span class="footer-logo font-sketch">EVEN ANICET</span>
@@ -1079,7 +1073,7 @@
                             <span class="school-city font-sketch">Toulouse</span>
                         </div>
                         <div class="frame-wrap">
-                            <a href="https://www.mjm-design.com/formation/bachelor-architecture-dinterieur" target="_blank" rel="noopener noreferrer" style="display: block; width: 100%; height: 100%; cursor: pointer;" title="Visiter le site de la formation MJM Graphic Design">
+                            <a class="school-link" href="https://www.mjm-design.com/formation/bachelor-architecture-dinterieur" target="_blank" rel="noopener noreferrer" title="Visiter le site de la formation MJM Graphic Design">
                                 <div class="school-img-wrap torn-frame">
                                     <div class="media-frame-inner">
                                         <img src="assets/ecole-art-mjm-toulouse-rncp-alternance.webp" alt="Façade de MJM Toulouse" data-i18n-alt="alt_mjm" class="media-frame-img" width="1000" height="667">
@@ -1148,12 +1142,12 @@
                 <div class="diploma-scan-container">
                     <h4 class="scan-section-title font-sketch">
                         <span data-i18n="study_degree">Diplôme d'Architecte d'Intérieur</span>
-                        <span class="study-year" style="margin-left: 15px; font-size: 1.8rem; vertical-align: middle;">2022 – 2025</span>
+                        <span class="study-year">2022 – 2025</span>
                     </h4>
                     <div class="frame-wrap diploma-scan-wrap">
                         <div class="diploma-scan-frame">
                             <div class="media-frame-inner diploma-scan-inner">
-                                <img src="photo/opt/diplome-archi.webp" class="media-frame-img single-lightbox-trigger" style="cursor: zoom-in;" alt="Scan du diplôme (A4 paysage)" data-i18n-alt="alt_diploma_scan" loading="lazy" width="1400" height="990">
+                                <img src="photo/opt/diplome-archi.webp" class="media-frame-img single-lightbox-trigger" alt="Scan du diplôme (A4 paysage)" data-i18n-alt="alt_diploma_scan" loading="lazy" width="1400" height="990">
                             </div>
                         </div>
                         <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -1170,7 +1164,7 @@
                     </svg>
                 </a>
             
-            <footer class="site-footer" style="margin-top: 80px;">
+            <footer class="site-footer site-footer--spaced">
                 <div class="footer-inner">
                     <div class="footer-top">
                         <span class="footer-logo font-sketch">EVEN ANICET</span>
@@ -1200,14 +1194,14 @@
                     <h2 class="page-title" data-i18n="menu_05">HOBBIES</h2>
                 </div>
                 <p class="page-intro" data-i18n="hobbies_intro">moto & perso</p>
-                <div class="projects-patchwork" style="padding-top: 0;">
+                <div class="projects-patchwork projects-patchwork--flush">
                     
                     <!-- Hobby 1 -->
                     <div class="patchwork-item prio-1 drawing-item orient-portrait">
-                        <div class="frame-wrap" style="transform: rotate(1.5deg);">
+                        <div class="frame-wrap frame-wrap--tilt-cw-1-5">
                             <div class="drawing-sheet-wrap torn-frame">
-                                <div class="media-frame-inner drawing-sheet" style="background: #000; display: flex; align-items: center; justify-content: center;">
-                                    <span class="font-sketch" style="color: #fff; font-size: 2.2rem; letter-spacing: 2px;">à venir...</span>
+                                <div class="media-frame-inner drawing-sheet media-placeholder--dark">
+                                    <span class="font-sketch">à venir...</span>
                                 </div>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -1218,10 +1212,10 @@
 
                     <!-- Hobby 2 -->
                     <div class="patchwork-item prio-2 drawing-item orient-landscape">
-                        <div class="frame-wrap" style="transform: rotate(-1deg);">
+                        <div class="frame-wrap frame-wrap--tilt-ccw-1">
                             <div class="drawing-sheet-wrap torn-frame torn-alt">
-                                <div class="media-frame-inner drawing-sheet" style="background: #000; display: flex; align-items: center; justify-content: center;">
-                                    <span class="font-sketch" style="color: #fff; font-size: 2.2rem; letter-spacing: 2px;">à venir...</span>
+                                <div class="media-frame-inner drawing-sheet media-placeholder--dark">
+                                    <span class="font-sketch">à venir...</span>
                                 </div>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -1232,10 +1226,10 @@
 
                     <!-- Hobby 3 -->
                     <div class="patchwork-item prio-3 drawing-item orient-portrait">
-                        <div class="frame-wrap" style="transform: rotate(2deg);">
+                        <div class="frame-wrap frame-wrap--tilt-cw-2">
                             <div class="drawing-sheet-wrap torn-frame">
-                                <div class="media-frame-inner drawing-sheet" style="background: #000; display: flex; align-items: center; justify-content: center;">
-                                    <span class="font-sketch" style="color: #fff; font-size: 2.2rem; letter-spacing: 2px;">à venir...</span>
+                                <div class="media-frame-inner drawing-sheet media-placeholder--dark">
+                                    <span class="font-sketch">à venir...</span>
                                 </div>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -1254,7 +1248,7 @@
                         <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                 </a>
-                <footer class="site-footer" style="margin-top: 80px;">
+                <footer class="site-footer site-footer--spaced">
                     <div class="footer-inner">
                         <div class="footer-top">
                             <span class="footer-logo font-sketch">EVEN ANICET</span>
