@@ -9,7 +9,7 @@ import { destroyPageLenis, initPageLenis, updateScrollbarWidth } from './page-sc
 import { updateHeaderLogo, updateBackButton } from './header.js';
 import { resetHomeHero, bindHeroScroll } from './hero.js';
 
-let _historyInitialised = false;
+let hasHistoryEntry = false;
 
 // ─────────────────────────────────────
 // FIX Q-03 — ADRESSES PARTAGEABLES ET BOUTON RETOUR
@@ -70,7 +70,7 @@ function urlForPage(pageId) {
 // Amene le visiteur au bloc Contact, en bas de la page d'accueil.
 // Extrait ici parce que trois chemins y menent : le menu, les fleches
 // « page suivante », et desormais l'ouverture directe sur #contact.
-function scrollToContactSection() {
+function scrollToContact() {
     const contactEl = document.getElementById('home-contact');
     // On another page the scroller would be asked to reach an element it
     // does not contain.
@@ -93,7 +93,7 @@ function revealContact(outerDelay = 0) {
         // The visitor may have gone back while the menu was closing.
         if (pageFromHash() !== 'contact') return;
         if (state.page !== 'home') showPage('home', true, false);
-        contactTimers.push(setTimeout(scrollToContactSection, wasOnHome ? 100 : 750));
+        contactTimers.push(setTimeout(scrollToContact, wasOnHome ? 100 : 750));
     }, outerDelay));
 }
 
@@ -124,7 +124,7 @@ export function goToContact(outerDelay) {
     revealContact(outerDelay);
     if (location.hash !== '#contact') {
         history.pushState({ page: 'contact' }, '', location.pathname + location.search + '#contact');
-        _historyInitialised = true;
+        hasHistoryEntry = true;
     }
 }
 
@@ -136,18 +136,18 @@ export function showPage(pageId, animate = true, updateHistory = true) {
     const inEl  = document.getElementById(`page-${pageId}`);
     if (!inEl) return;
 
-    const pageAvant = state.page;
+    const previousPage = state.page;
     state.page = pageId;
     updatePageMeta(pageId);
-    emit('page-change', { from: pageAvant, to: pageId });
+    emit('page-change', { from: previousPage, to: pageId });
 
     // Synchronise l'adresse. replaceState au tout premier affichage pour ne
     // pas creer une entree d'historique fantome avant meme la 1re navigation.
     if (updateHistory) {
         const url = urlForPage(pageId);
-        const method = _historyInitialised ? 'pushState' : 'replaceState';
+        const method = hasHistoryEntry ? 'pushState' : 'replaceState';
         history[method]({ page: pageId }, '', url);
-        _historyInitialised = true;
+        hasHistoryEntry = true;
     }
 
     updateBackButton(pageId);
@@ -168,7 +168,7 @@ export function showPage(pageId, animate = true, updateHistory = true) {
         if (hasScrollTrigger) ScrollTrigger.refresh();
         updateHeaderLogo(pageId);
         
-        hydratePageImages(inEl);
+        loadPageImages(inEl);
         updateScrollbarWidth();
         return;
     }
@@ -195,7 +195,7 @@ export function showPage(pageId, animate = true, updateHistory = true) {
             if (hasScrollTrigger) ScrollTrigger.refresh();
             updateHeaderLogo(pageId);
 
-            hydratePageImages(inEl);
+            loadPageImages(inEl);
             updateScrollbarWidth();
             focusPage(inEl);
         }
@@ -228,7 +228,7 @@ function focusPage(pageEl) {
 // chargement immediat. Chaque page ne charge ainsi que ses propres
 // images, et seulement quand on l'ouvre.
 // ─────────────────────────────────────
-function hydratePageImages(pageEl) {
+function loadPageImages(pageEl) {
     if (!pageEl) return;
     pageEl.querySelectorAll('img[loading="lazy"]').forEach(img => {
         img.loading = 'eager';
@@ -243,7 +243,7 @@ function hydratePageImages(pageEl) {
 // ─────────────────────────────────────
 // SPA — GESTION DES PAGES
 // ─────────────────────────────────────
-export function initSPA() {
+export function resetActivePages() {
     document.querySelectorAll('.page').forEach(p => {
         // Hidden state is set here rather than in the markup: declared
         // statically it would hide focusable content from assistive
@@ -256,7 +256,7 @@ export function initSPA() {
 // ─────────────────────────────────────
 // FLÈCHES "SUIVANT" → PAGE SUIVANTE
 // ─────────────────────────────────────
-export function initNextPageLinks() {
+export function initPageLinks() {
     document.querySelectorAll('.page-next, .showcase-projects-btn').forEach(link => {
         link.addEventListener('click', e => {
             e.preventDefault();
@@ -277,29 +277,29 @@ export function initNextPageLinks() {
 export function showInitialPage() {
     // Révéler la page correspondant à l'adresse demandée (accueil par défaut).
     // Un fragment inconnu retombe sur l'accueil plutôt que sur une page blanche.
-    const demandee = pageFromHash();
-    const pageInitiale = (demandee && demandee !== 'contact') ? demandee : 'home';
+    const requestedPage = pageFromHash();
+    const initialPage = (requestedPage && requestedPage !== 'contact') ? requestedPage : 'home';
     // updateHistory=false pour #contact : showPage remettrait l'adresse a
     // celle de l'accueil et effacerait le fragment, si bien qu'un
     // rafraichissement ne ramenerait plus au bloc contact.
-    showPage(pageInitiale, false, demandee !== 'contact');
-    if (demandee === 'contact') {
+    showPage(initialPage, false, requestedPage !== 'contact');
+    if (requestedPage === 'contact') {
         history.replaceState({ page: 'contact' }, '', '#contact');
     }
     // The landing entry now exists whichever branch ran: the next
     // navigation must add an entry, not overwrite this one.
-    _historyInitialised = true;
+    hasHistoryEntry = true;
 
     // Fragment inconnu (vieux lien, faute de frappe) : on est retombe sur
     // l'accueil, on nettoie aussi la barre d'adresse pour ne pas laisser
     // une adresse qui a l'air cassee.
-    if (demandee === null) {
+    if (requestedPage === null) {
         history.replaceState({ page: 'home' }, '', location.pathname + location.search);
     }
 
     // Ouverture directe sur #contact : afficher l'accueil puis descendre.
-    if (demandee === 'contact') {
-        setTimeout(scrollToContactSection, 600);
+    if (requestedPage === 'contact') {
+        setTimeout(scrollToContact, 600);
     }
 }
 
@@ -307,33 +307,33 @@ export function initHistory() {
     // Boutons Précédent / Suivant du navigateur, et geste de retour sur mobile.
     // updateHistory=false : on suit l'historique, on n'y ajoute rien.
     window.addEventListener('popstate', () => {
-        const cible = pageFromHash();
-        emit('history-navigation', { from: state.page, to: cible });
-        if (cible === 'contact') {
+        const targetPage = pageFromHash();
+        emit('history-navigation', { from: state.page, to: targetPage });
+        if (targetPage === 'contact') {
             revealContact();
             return;
         }
-        if ((cible || 'home') === 'home' && state.page === 'home') {
+        if ((targetPage || 'home') === 'home' && state.page === 'home') {
             scrollHomeToTop();
             return;
         }
-        showPage(cible || 'home', true, false);
+        showPage(targetPage || 'home', true, false);
     });
 
     // Adresse modifiée à la main dans la barre du navigateur.
     window.addEventListener('hashchange', () => {
-        const cible = pageFromHash();
-        emit('history-navigation', { from: state.page, to: cible });
-        if (cible === null) {
+        const targetPage = pageFromHash();
+        emit('history-navigation', { from: state.page, to: targetPage });
+        if (targetPage === null) {
             // adresse inconnue saisie a la main : repli sur l'accueil
             showPage('home', true, false);
             history.replaceState({ page: 'home' }, '', location.pathname + location.search);
             return;
         }
-        if (cible === 'home' && state.page === 'home') {
+        if (targetPage === 'home' && state.page === 'home') {
             scrollHomeToTop();
-        } else if (cible !== 'contact' && cible !== state.page) {
-            showPage(cible, true, false);
+        } else if (targetPage !== 'contact' && targetPage !== state.page) {
+            showPage(targetPage, true, false);
         }
     });
 }
