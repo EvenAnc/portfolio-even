@@ -280,7 +280,7 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
        telephone : sur une page projet le retour prime, le logo s'efface.
        Le logo reste present sur toutes les autres pages. */
     body.a-bouton-retour .header-logo {
-        opacity: 0 !important;
+        opacity: 0;
         pointer-events: none;
     }
 }
@@ -798,8 +798,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
     /* ── Cliquez ! au scroll ── */
     .home-projects-shortcut.is-inview .shortcut-click-hint {
-        opacity: 1 !important;
-        transform: translateY(0) scale(1) rotate(5deg) !important;
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(5deg);
     }
 }
 
@@ -1479,7 +1479,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     }
 
     .notebook-section.is-inview .notebook-signature {
-        opacity: 1 !important;
+        opacity: 1;
         transform: translateY(0) translateX(0) scale(1) !important;
     }
 }
@@ -1623,7 +1623,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     height: 48px;
     resize: none;
     overflow: hidden;
-    padding-top: 0 !important;
+    padding-top: 0;
     margin-top: 12px;
     transition: height 0.4s var(--ease-out), border-color var(--dur-fast);
 }
@@ -1665,7 +1665,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
 /* ── Validation formulaire (BUG-07 FIX) ── */
 .fi-error {
-    border-bottom-color: var(--red) !important;
+    border-bottom-color: var(--red);
 }
 
 .fi-error ~ .fl {
@@ -1777,8 +1777,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     width: calc(100vw - var(--sbw, 0px));
     left: 50%;
     right: 50%;
-    margin-left: calc(-50vw + var(--sbw, 0px) / 2) !important;
-    margin-right: calc(-50vw + var(--sbw, 0px) / 2) !important;
+    margin-left: calc(-50vw + var(--sbw, 0px) / 2);
+    margin-right: calc(-50vw + var(--sbw, 0px) / 2);
     box-sizing: border-box;
 }
 
@@ -1793,8 +1793,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
 /* Footer in projects: no negative margins needed since page-inner has no horizontal padding */
 .project-detail-page .site-footer {
-    margin-left: 0;
-    margin-right: 0;
     clear: both;
 }
 
@@ -1994,7 +1992,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     border-radius: 8px !important;
     overflow: hidden;
     box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-    border: none !important;                   /* FIX: retire le bord gris/blanc */
+    border: none;
     position: relative;
 }
 
@@ -2022,7 +2020,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 .cut-stack .stack-item .drawing-sheet-wrap canvas {
-    height: auto !important;
+    height: auto;
 }
 
 @media (hover: hover) {
@@ -2142,20 +2140,20 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     }
 
     .drawing-item.is-inview .ref-arrow-path {
-        stroke-dashoffset: 0 !important;
-        transition: stroke-dashoffset 0.6s var(--ease-out) 0.8s !important;
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 0.6s var(--ease-out) 0.8s;
     }
 
     .drawing-item.is-inview .map-pin-icon {
         opacity: 1 !important;
-        transform: translateY(0) scale(1) !important;
-        transition-delay: 0.8s !important;
+        transform: translateY(0) scale(1);
+        transition-delay: 0.8s;
     }
 
     .drawing-item.is-inview .map-pin-text {
         opacity: 1 !important;
-        transform: rotate(-15deg) scale(1) !important;
-        transition-delay: 0.9s !important;
+        transform: rotate(-15deg) scale(1);
+        transition-delay: 0.9s;
     }
 
     /* ── Dessin Noir et Blanc (3eme) ─────────────────────────
@@ -2446,8 +2444,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
    font ce calcul de la meme facon. */
 .carousel-landscape .bd-carousel-viewport {
     width: 100% !important;
-    max-width: 100% !important;
-    max-height: none !important;
+    max-width: 100%;
+    max-height: none;
     aspect-ratio: auto;
     margin: 0 auto;
     border: none;
@@ -2455,8 +2453,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     border-radius: 8px;
     background: white;
     overflow: hidden;
-    height: auto !important;
-    align-self: stretch !important;
+    height: auto;
+    align-self: stretch;
 }
 
 .panel-light .bd-carousel-viewport {
@@ -3176,7 +3174,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
 /* ── État zoomé (Pan & Zoom) ── */
 .drawing-lightbox.zoomed .lb-canvas-wrap {
-    overflow: hidden !important; 
+    overflow: hidden; 
     touch-action: none;
 }
 
@@ -3716,8 +3714,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 .sticker-right {
-    left: auto !important;
-    right: clamp(20px, 5vw, 60px) !important;
+    left: auto;
+    right: clamp(20px, 5vw, 60px);
 }
 
 /* Quinconce Layout (Fixed) */
@@ -3776,10 +3774,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 .render3d-item .drawing-sheet-wrap {
-    border-radius: 8px;
     overflow: hidden;
     box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-    border: 3px solid rgba(255, 255, 255, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -3816,7 +3812,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     width: 85%;
     max-width: 900px;
     transition: transform 0.3s ease;
-    margin: 0 !important;
+    margin: 0;
     position: relative;
 }
 
@@ -3973,13 +3969,13 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     }
 
     .sticker-title {
-        font-size: clamp(1.5rem, 4vw, 2.5rem) !important;
-        padding: 10px 25px !important;
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        padding: 10px 25px;
     }
 
     .cut-stack .stack-item {
-        width: 100% !important;
-        max-width: 100% !important;
+        width: 100%;
+        max-width: 100%;
         align-self: center !important;
     }
 
