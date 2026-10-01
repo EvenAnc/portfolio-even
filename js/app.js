@@ -883,6 +883,8 @@ function initKeyboardActivation() {
         '.single-lightbox-trigger',
     ].join(', ');
     document.querySelectorAll(activable).forEach(el => makeKeyboardActivable(el));
+    // "Page" reads the same in both languages, so this name needs no
+    // dictionary entry.
     document.querySelectorAll('.bd-dot').forEach(dot => {
         makeKeyboardActivable(dot, 'Page ' + (Number(dot.dataset.goto) + 1));
     });
@@ -1864,6 +1866,7 @@ function demarrerPrechargeFond() {
 
     // Background preloading spends data the visitor did not ask for: skip
     // it when they asked to save data or when the connection is slow.
+    // Decided once per visit: it is not retried if the connection improves.
     const connection = navigator.connection;
     if (connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || ''))) return;
 
