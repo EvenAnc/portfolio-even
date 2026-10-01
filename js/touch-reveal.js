@@ -9,26 +9,29 @@ import { TOUCH_MEDIA_QUERY } from './core/env.js';
 // ANIMATIONS AU SCROLL — MOBILE TOUCH
 // Remplace les effets de survol sur les appareils tactiles
 // ─────────────────────────────────────
-// Reglages du declenchement tactile — voir initScrollAnimationsMobile
-const TACTILE_SEUIL  = 0.35;   // l'element doit etre franchement a l'ecran
+// Reglages du declenchement tactile — voir initTouchReveal
+const TOUCH_REVEAL_THRESHOLD  = 0.35;   // l'element doit etre franchement a l'ecran
 
-const TACTILE_MARGE  = '0px 0px -12% 0px';
+const TOUCH_REVEAL_ROOT_MARGIN  = '0px 0px -12% 0px';
 
-const TACTILE_DELAI  = 160;    // ms : laisse le temps de poser le regard
+const TOUCH_REVEAL_DELAY_MS  = 160;    // ms : laisse le temps de poser le regard
 
-export function initScrollAnimationsMobile() {
+// Pending reveal of each observed element.
+const revealTimers = new WeakMap();
+
+export function initTouchReveal() {
     const mq = window.matchMedia(TOUCH_MEDIA_QUERY);
     if (!mq.matches) {
         // Le mode peut changer en cours de route : tablette dont on detache
         // le clavier, fenetre passee sur un ecran tactile. On reessaie alors
         // au lieu d'abandonner definitivement.
-        const relancer = () => {
+        const retry = () => {
             if (mq.matches) {
-                mq.removeEventListener('change', relancer);
-                initScrollAnimationsMobile();
+                mq.removeEventListener('change', retry);
+                initTouchReveal();
             }
         };
-        mq.addEventListener('change', relancer);
+        mq.addEventListener('change', retry);
         return;
     }
 
@@ -59,18 +62,18 @@ export function initScrollAnimationsMobile() {
                     // defiler vite, l'animation est annulee plutot que de
                     // clignoter au passage. S'il s'arrete, elle demarre sous
                     // ses yeux — c'est l'equivalent tactile du survol.
-                    if (el._minuteurVue) return;
-                    el._minuteurVue = setTimeout(() => {
+                    if (revealTimers.has(el)) return;
+                    revealTimers.set(el, setTimeout(() => {
                         el.classList.add('is-inview');
-                        el._minuteurVue = null;
-                    }, TACTILE_DELAI);
+                        revealTimers.delete(el);
+                    }, TOUCH_REVEAL_DELAY_MS));
                 } else {
                     // Sorti de l'ecran : on annule un declenchement en attente
                     // et on retire l'etat, pour que l'element rejoue son
                     // animation au prochain passage — comme un survol repete.
-                    if (el._minuteurVue) {
-                        clearTimeout(el._minuteurVue);
-                        el._minuteurVue = null;
+                    if (revealTimers.has(el)) {
+                        clearTimeout(revealTimers.get(el));
+                        revealTimers.delete(el);
                     }
                     el.classList.remove('is-inview');
                 }
@@ -78,8 +81,8 @@ export function initScrollAnimationsMobile() {
         }, {
             // Seuil releve : a 0,05 l'animation partait alors que l'element
             // affleurait a peine le bas de l'ecran, souvent hors du regard.
-            threshold: TACTILE_SEUIL,
-            rootMargin: TACTILE_MARGE
+            threshold: TOUCH_REVEAL_THRESHOLD,
+            rootMargin: TOUCH_REVEAL_ROOT_MARGIN
         });
 
         pageObservers.set(page, observer);
