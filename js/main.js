@@ -15,7 +15,7 @@ import { playHeroIntro } from './hero.js';
 import { resetActivePages, initPageLinks, showInitialPage, initHistory } from './router.js';
 import { initMenu } from './menu.js';
 import { initSafariPaperCache, initNotebookLines } from './notebook.js';
-import { initBDCarousel } from './carousel.js';
+import { initCarousels } from './carousel.js';
 import { initScrollAnimationsMobile } from './touch-reveal.js';
 import { initKeyboardActivation } from './keyboard-activation.js';
 import { initCopyEmail, initContactAnimation, initContactForm } from './contact.js';
@@ -37,7 +37,7 @@ function init() {
     initPageLinks();
     initContactAnimation();
     initContactForm();
-    initBDCarousel();
+    initCarousels();
 
     initLightbox();
     initLightboxTriggers();

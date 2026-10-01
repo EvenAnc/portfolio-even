@@ -5,7 +5,7 @@
 // ─────────────────────────────────────
 // CARROUSEL BANDE DESSINÉE (BD)
 // ─────────────────────────────────────
-export function initBDCarousel() {
+export function initCarousels() {
     const containers = document.querySelectorAll('.bd-carousel-section');
     if (!containers.length) return;
 
@@ -59,7 +59,7 @@ export function initBDCarousel() {
                 indicator.textContent = `${currentIndex + 1} / ${slides.length}`;
             }
 
-            majAutoplay();
+            syncAutoplay();
         }
 
         function nextSlide() { updateCarousel(currentIndex + 1); }
@@ -99,7 +99,7 @@ export function initBDCarousel() {
             if (isPlaying) {
                 if(iconPause) iconPause.style.display = 'block';
                 if(iconPlay) iconPlay.style.display = 'none';
-                majAutoplay();
+                syncAutoplay();
             } else {
                 if(iconPause) iconPause.style.display = 'none';
                 if(iconPlay) iconPlay.style.display = 'block';
@@ -120,9 +120,9 @@ export function initBDCarousel() {
         // ── Quand le carrousel a-t-il le droit de defiler ? ──────────────
         //
         // Deux conditions, et non plus une seule :
-        //   la page doit etre ouverte  ET  le carrousel doit etre a l'ecran.
+        //   la page doit etre isOpen  ET  le carrousel doit etre a l'ecran.
         //
-        // Avant, il suffisait que la page soit ouverte. Le carrousel de la
+        // Avant, il suffisait que la page soit isOpen. Le carrousel de la
         // bande dessinee se trouvant tout en bas de la page Dessins, il
         // defilait pendant qu'Even lisait le haut de la page : le temps
         // d'arriver dessus, il en etait deja a la planche 3. Meme chose sur
@@ -132,20 +132,20 @@ export function initBDCarousel() {
         // elle — c'est ce qui garantit qu'on ne puisse plus laisser le
         // carrousel dans un etat fige par accident.
         const parentPage = container.closest('.page');
-        let pageOuverte = !parentPage || parentPage.classList.contains('is-active');
-        let aLEcran = false;
+        let isPageOpen = !parentPage || parentPage.classList.contains('is-active');
+        let isOnScreen = false;
 
-        function majAutoplay() {
-            if (isPlaying && pageOuverte && aLEcran) startAutoplay();
+        function syncAutoplay() {
+            if (isPlaying && isPageOpen && isOnScreen) startAutoplay();
             else stopAutoplay();
         }
 
         if ('IntersectionObserver' in window) {
-            let observateurARepondu = false;
-            new IntersectionObserver(entrees => {
-                observateurARepondu = true;
-                aLEcran = entrees[0].isIntersecting;
-                majAutoplay();
+            let hasObserverFired = false;
+            new IntersectionObserver(entries => {
+                hasObserverFired = true;
+                isOnScreen = entries[0].isIntersecting;
+                syncAutoplay();
             }, { threshold: 0.3 }).observe(container);
 
             // Filet de securite. Un navigateur qui gere IntersectionObserver
@@ -156,32 +156,32 @@ export function initBDCarousel() {
             // repasse donc en marche par defaut au bout de 4 secondes de
             // silence complet.
             setTimeout(() => {
-                if (!observateurARepondu) {
-                    aLEcran = true;
-                    majAutoplay();
+                if (!hasObserverFired) {
+                    isOnScreen = true;
+                    syncAutoplay();
                 }
             }, 4000);
         } else {
-            aLEcran = true;
-            majAutoplay();
+            isOnScreen = true;
+            syncAutoplay();
         }
 
         if (parentPage) {
             const pageObserver = new MutationObserver(() => {
-                const ouverte = parentPage.classList.contains('is-active');
-                if (ouverte !== pageOuverte) {
-                    pageOuverte = ouverte;
-                    majAutoplay();
+                const isOpen = parentPage.classList.contains('is-active');
+                if (isOpen !== isPageOpen) {
+                    isPageOpen = isOpen;
+                    syncAutoplay();
                 }
             });
             pageObserver.observe(parentPage, { attributes: true, attributeFilter: ['class'] });
         }
 
-        let bdTouchStartX = 0;
-        const bdViewport = container.querySelector('.bd-carousel-viewport');
-        if (bdViewport) {
-            bdViewport.addEventListener('touchstart', e => {
-                bdTouchStartX = e.changedTouches[0].clientX;
+        let touchStartX = 0;
+        const viewport = container.querySelector('.bd-carousel-viewport');
+        if (viewport) {
+            viewport.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].clientX;
                 stopAutoplay();
             }, { passive: true });
             // Le simple fait de poser le doigt coupait le defilement — et
@@ -189,16 +189,16 @@ export function initBDCarousel() {
             // fait defiler la page : le carrousel restait donc fige tant
             // qu'on n'avait pas appuye sur une fleche. On relance apres
             // chaque contact qui n'etait pas un balayage.
-            bdViewport.addEventListener('touchend', e => {
-                const dx = e.changedTouches[0].clientX - bdTouchStartX;
+            viewport.addEventListener('touchend', e => {
+                const dx = e.changedTouches[0].clientX - touchStartX;
                 if (Math.abs(dx) > 40) {
                     if (dx < 0) nextSlide();
                     else prevSlide();
                 } else {
-                    majAutoplay();
+                    syncAutoplay();
                 }
             }, { passive: true });
-            bdViewport.addEventListener('touchcancel', () => majAutoplay(), { passive: true });
+            viewport.addEventListener('touchcancel', () => syncAutoplay(), { passive: true });
         }
     });
 }
