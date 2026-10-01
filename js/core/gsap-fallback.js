@@ -1,5 +1,7 @@
 /**
- * Animation fallback: a minimal stand-in for GSAP that applies the end state of every animation.
+ * Animation fallback: a minimal stand-in for GSAP, installed only when the
+ * library failed to load. It applies the end state of every animation at
+ * once, so the site stays fully usable, just without transitions.
  */
 
 import { gsapMissing } from './env.js';

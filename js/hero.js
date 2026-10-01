@@ -1,5 +1,6 @@
 /**
- * Home hero: entrance animation, and the logo that hands over to the header on scroll.
+ * Home hero: entrance animation, and the logo that hands over to the
+ * header on scroll.
  */
 
 // Resting opacity of the scroll hint under the hero. The hint is shown at
@@ -7,7 +8,7 @@
 // dimmed on its own in the stylesheet. Must match .scroll-invite there.
 const SCROLL_INVITE_OPACITY = 1;
 
-// Animation d'entrée du hero — décalée pour laisser la page se monter
+/** Plays the entrance of the hero, one frame later so that the page is laid out. */
 export function playHeroIntro() {
     requestAnimationFrame(() => {
         const heroWrap  = document.getElementById('hero-logo-wrap');
@@ -56,7 +57,10 @@ export function playHeroIntro() {
     });
 }
 
-// Quand on revient sur la page home, remettre le hero logo en état initial
+/**
+ * Puts the hero back in its resting state when the home page is shown.
+ * @param {string} pageId
+ */
 export function resetHero(pageId) {
     if (pageId !== 'home') return;
     const heroLogoWrap = document.getElementById('hero-logo-wrap');
@@ -69,7 +73,11 @@ export function resetHero(pageId) {
     }
 }
 
-// Sur la page home : animer le logo vers le header au scroll
+/**
+ * Past a threshold the hero logo leaves and the header logo takes over;
+ * scrolling back up reverses it.
+ * @param {object} lenis scroll instance of the home page
+ */
 export function bindHeroScroll(lenis) {
     const heroLogoWrap = document.getElementById('hero-logo-wrap');
     const headerLogo   = document.getElementById('header-logo');
@@ -83,7 +91,6 @@ export function bindHeroScroll(lenis) {
         if (scroll > threshold && !logoInHeader) {
             logoInHeader = true;
 
-            // Hero logo disparaît vers le haut
             gsap.to(heroLogoWrap, {
                 y: -50, opacity: 0,
                 duration: 0.5, ease: 'power3.in',
@@ -93,7 +100,6 @@ export function bindHeroScroll(lenis) {
             });
 
             gsap.to(scrollInvite, { opacity: 0, duration: 0.3 });
-
         } else if (scroll <= threshold && logoInHeader) {
             logoInHeader = false;
 

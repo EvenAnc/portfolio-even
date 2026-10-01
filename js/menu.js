@@ -1,5 +1,6 @@
 /**
- * Full-screen menu: opening, closing, and the navigation controls of the header.
+ * Full-screen menu: opening, closing, and the navigation controls of the
+ * header.
  */
 
 import { state, on } from './core/state.js';
@@ -7,9 +8,6 @@ import { showPage, goToContact } from './router.js';
 
 let isMenuOpen = false;
 
-// ─────────────────────────────────────
-// MENU OVERLAY
-// ─────────────────────────────────────
 export function initMenu() {
     const burger = document.getElementById('burger-btn');
     burger.addEventListener('click', toggleMenu);
@@ -21,7 +19,7 @@ export function initMenu() {
         });
     }
 
-    // Clic sur item du menu
+    // Each item waits for the menu to close before the page changes.
     document.querySelectorAll('.menu-nav-item').forEach(item => {
         item.addEventListener('click', e => {
             e.preventDefault();
@@ -29,7 +27,6 @@ export function initMenu() {
             closeMenu();
 
             if (page === 'contact') {
-                // CONTACT → aller sur la page accueil puis scroller vers le bas
                 goToContact(420);
             } else {
                 setTimeout(() => showPage(page), 420);
@@ -37,7 +34,6 @@ export function initMenu() {
         });
     });
 
-    // Logo header → retour accueil
     const headerLogo = document.getElementById('header-logo');
     if (headerLogo) {
         headerLogo.addEventListener('click', e => {
@@ -46,7 +42,7 @@ export function initMenu() {
         });
     }
 
-    // Clic sur l'arrière-plan du menu (partie grise) pour revenir en arrière
+    // A click on the backdrop, outside links and buttons, closes the menu.
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) {
         menuOverlay.setAttribute('aria-hidden', 'true');
@@ -78,12 +74,10 @@ function toggleMenu() {
 function openMenu() {
     isMenuOpen = true;
     document.body.classList.add('menu-open');
-    // BUG-12 FIX : mettre à jour aria-hidden pour les screen readers
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) menuOverlay.setAttribute('aria-hidden', 'false');
     setBurgerExpanded(true);
 
-    // Animation d'entrée des items avec décalage vertical
     const items = document.querySelectorAll('.menu-nav-item');
     gsap.fromTo(items, { y: 40, opacity: 0 }, {
         y: 0, opacity: 1,
@@ -92,7 +86,6 @@ function openMenu() {
         delay: 0.12
     });
 
-    // Animer le logo du menu
     const menuLogo = document.querySelector('.menu-logo');
     if (menuLogo) {
         gsap.fromTo(menuLogo,
@@ -101,7 +94,6 @@ function openMenu() {
         );
     }
 
-    // Animer le scribble
     const scribble = document.querySelector('.menu-scribble');
     if (scribble) {
         gsap.fromTo(scribble,
@@ -114,7 +106,6 @@ function openMenu() {
 function closeMenu() {
     isMenuOpen = false;
     document.body.classList.remove('menu-open');
-    // BUG-12 FIX : mettre à jour aria-hidden pour les screen readers
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) menuOverlay.setAttribute('aria-hidden', 'true');
     setBurgerExpanded(false);

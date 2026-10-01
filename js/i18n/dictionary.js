@@ -1,10 +1,9 @@
 /**
- * Translations: interface strings and per-page titles and descriptions, in French and English.
+ * Translations: interface strings, and per-page titles and descriptions,
+ * in French and English.
  */
 
-// ─────────────────────────────────────
-// TRADUCTIONS FR / EN
-// ─────────────────────────────────────
+// Keyed by language, then by the data-i18n key used in the markup.
 export const TRANSLATIONS = {
     fr: {
         choice_text2: "Restait à le rendre viable. Installer une station essence en zone inflammable, juste à côté d'une oliveraie, ça ne va pas de soi. Ce sont ces contraintes qui ont fini par donner au projet ses lignes directrices et qui l'ont rendu réalisable.",
@@ -78,7 +77,7 @@ export const TRANSLATIONS = {
         legal_cert:       "Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).",
         legal_mentions:   "Mentions légales",
         legal_rights:     "Tous droits réservés",
-        // Page Projets
+        // Projects page
         proj_title:               "PROJET 01 : DIPLÔME",
         proj_desc: "Un complexe moto multifonctionnel, inspiré des motels américains et des stations-service des années 60-70. On y trouve une station essence, un garage moto, un espace d'exposition, un bar-restaurant et un espace de pause, le tout organisé autour d'une circulation et d'une signalétique travaillées. C'est un lieu de rencontre, pour les passionnés comme pour ceux qui veulent découvrir cet univers.",
         proj_annotation:          "→ MJM Graphic Design Toulouse — 2025",
@@ -214,7 +213,7 @@ export const TRANSLATIONS = {
         legal_cert:       "I certify that I am the sole author of all works and productions presented in this portfolio. All images and creations are protected by copyright in accordance with French Intellectual Property Code (articles L.111-1 et seq.).",
         legal_mentions:   "Legal notice",
         legal_rights:     "All rights reserved",
-        // Projects Page
+        // Projects page
         proj_title:               "PROJECT 01: DIPLOMA",
         proj_desc: "A multi-purpose motorcycle complex, inspired by American motels and 1960s-70s filling stations. It holds a filling station, a motorcycle garage, an exhibition space, a bar-restaurant and a rest area, all arranged around carefully designed circulation and wayfinding. A place to meet, for enthusiasts and for anyone curious about that world.",
         proj_annotation:          "→ MJM Graphic Design Toulouse — 2025",
@@ -280,19 +279,9 @@ export const TRANSLATIONS = {
     }
 };
 
-// ───────────────────────────────────
-// TITRES ET DESCRIPTIONS PAR PAGE
-//
-// Le titre d'onglet et la description ne changeaient qu'avec la LANGUE :
-// toutes les pages portaient ceux de l'accueil. Quand Even colle
-// even-anc.com/#projet-diplome dans une candidature, l'onglet, le favori
-// et Google doivent parler de ce projet, pas du site en general.
-//
-// A savoir : les cartes d'apercu de Discord, LinkedIn ou WhatsApp ne
-// changeront pas pour autant. Ces robots ne lisent que le HTML livre,
-// sans executer le moindre script. Les faire varier par page demande un
-// vrai fichier HTML par page — un autre chantier.
-// ───────────────────────────────────
+// Tab title and meta description of each page, as [title, description].
+// Link previews on social networks keep the static values of index.html:
+// their crawlers do not run scripts.
 export const PAGE_META = {
     fr: {
         'home':            ["Even ANICET | Architecte d'intérieur",

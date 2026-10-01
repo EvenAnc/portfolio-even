@@ -1,5 +1,6 @@
 /**
- * Page scroll: one smooth-scroll instance per page, driven by the animation ticker, and the measured scrollbar width.
+ * Page scroll: one smooth-scroll instance per page, driven by the
+ * animation ticker, and the measured scrollbar width.
  */
 
 import { state } from './core/state.js';
@@ -7,12 +8,10 @@ import { gsapMissing, hasScrollTrigger } from './core/env.js';
 
 let tickerCallback = null;
 
-// ─────────────────────────────────────
-// LENIS SCROLL PAR PAGE
-// ─────────────────────────────────────
-// The ticker callback and the exposed reference both point at the
-// instance: they go with it, otherwise the ticker keeps calling raf on
-// nothing for the whole page transition.
+/**
+ * The ticker callback goes with the instance: left in place, the ticker
+ * would keep calling raf on nothing for the whole page transition.
+ */
 export function destroyPageScroll() {
     if (tickerCallback) {
         gsap.ticker.remove(tickerCallback);
@@ -33,30 +32,26 @@ export function createPageScroll(scrollContainer) {
 
     const options = {
         wrapper: scrollContainer,
-        eventsTarget: scrollContainer,  // FIX: cible le container de la page, pas le document entier
-        duration: 1.0,                  // FIX: réduit de 1.15 → 1.0 pour un scroll plus réactif
+        eventsTarget: scrollContainer,  // the page box, not the whole document
+        duration: 1.0,
         easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         smooth: true,
-        wheelMultiplier: 1.0,           // FIX: remplace mouseMultiplier (API Lenis v2)
+        wheelMultiplier: 1.0,
         touchMultiplier: 1.5,
         smoothTouch: false,
         infinite: false,
         orientation: 'vertical',
     };
 
-    // Only set content if we found a specific wrapper
     if (contentWrapper) {
         options.content = contentWrapper;
     }
 
     const lenis = new Lenis(options);
 
-    // FIX Q-07 : garde — si le CDN GSAP/ScrollTrigger n'a pas repondu,
-    // cette ligne levait une erreur et stoppait tout le JS de la page.
     if (hasScrollTrigger) lenis.on('scroll', ScrollTrigger.update);
 
-    // BUG-04 FIX : stocker la référence du ticker pour pouvoir le supprimer plus tard
-    // et éviter l'accumulation de tickers à chaque navigation entre pages.
+    // One ticker callback at a time, or they pile up with every navigation.
     if (tickerCallback) {
         gsap.ticker.remove(tickerCallback);
     }
@@ -67,16 +62,11 @@ export function createPageScroll(scrollContainer) {
     state.scroll = lenis;
 }
 
-// ─────────────────────────────────────
-// FIX R-01 — LARGEUR REELLE DE LA BARRE DE DEFILEMENT
-// Le footer pleine largeur utilise 100vw, qui INCLUT la barre de
-// defilement de .page (4px) : il debordait donc de ~5px sur les 8
-// pages, a toutes les tailles d'ecran. On mesure la valeur reelle
-// (elle varie : 4px sur Chrome via ::-webkit-scrollbar, autre chose
-// sur Firefox « thin », 0px sur les overlay scrollbars de macOS/mobile)
-// et la CSS s'en sert via var(--sbw). Valeur de repli : 0px, ce qui
-// redonne exactement le comportement d'avant.
-// ─────────────────────────────────────
+/**
+ * Publishes the real scrollbar width as --sbw. Full-width blocks sized in
+ * vw include the scrollbar of the page and would overflow by its width,
+ * which varies: a few pixels on desktop, zero for overlay scrollbars.
+ */
 export function updateScrollbarWidth() {
     const page = document.querySelector('.page.is-active') || document.querySelector('.page');
     if (!page) return;
@@ -85,10 +75,9 @@ export function updateScrollbarWidth() {
 }
 
 export function watchScrollbarWidth() {
-    // FIX R-01 : mesurer la barre de défilement une fois la page active.
-    // ResizeObserver plutôt que l'événement 'resize' seul : la barre peut
-    // apparaître ou disparaître sans redimensionnement de fenêtre (contenu
-    // qui grandit, images qui se chargent, rotation d'écran sur mobile).
+    // A ResizeObserver as well as the resize event: the scrollbar can come
+    // and go without the window changing size (content growing, images
+    // loading, device rotation).
     updateScrollbarWidth();
     if (typeof ResizeObserver !== 'undefined') {
         const observer = new ResizeObserver(() => updateScrollbarWidth());

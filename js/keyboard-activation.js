@@ -1,10 +1,10 @@
 /**
- * Keyboard activation: makes click-only elements focusable and operable from the keyboard.
+ * Keyboard activation: makes click-only elements focusable and operable
+ * from the keyboard.
  */
 
-// Click-only elements (cards, sheets, dots) become reachable and operable
-// from the keyboard without touching their markup or their look: focusable,
-// announced as buttons, activated by Enter or Space.
+// The element keeps its markup and its look: it becomes focusable, is
+// announced as a button and is activated by Enter or Space.
 function makeKeyboardActivable(el, label) {
     if (el.closest('a[href], button')) return;
     el.setAttribute('role', 'button');
