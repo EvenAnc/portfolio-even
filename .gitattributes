@@ -1,0 +1,2 @@
+# Vendored libraries are checked against an integrity hash: their bytes must never be converted.
+vendor/** -text
