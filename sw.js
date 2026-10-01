@@ -1,35 +1,35 @@
 /**
- * Portfolio Even ANICET — cache longue duree
+ * Long-lived cache for the portfolio.
  *
- * GitHub Pages impose Cache-Control: max-age=600 sur TOUT, et ce reglage
- * n'est pas modifiable. Passe 10 minutes, un visiteur qui revient
- * retelecharge donc l'integralite du site. Ce fichier corrige ca.
- *
- * Deux strategies, volontairement differentes :
+ * The host (GitHub Pages) forces Cache-Control: max-age=600 on everything
+ * and that cannot be changed: ten minutes later a returning visitor would
+ * download the whole site again. This worker fixes that, with two
+ * deliberately different strategies:
  *
  *   MEDIA (images, plans, fonts, PDF) — stale-while-revalidate.
  *   Served at once from the visitor's disk, then refreshed in the
  *   background: a file replaced under the same name shows up on the
  *   following visit instead of staying frozen forever.
  *
- *   CODE (HTML, CSS, JS) — reseau d'abord, cache en secours.
- *   C'est ce qui evite le piege classique du service worker : un site
- *   fige sur une vieille version apres une mise a jour. Le visiteur a
- *   toujours le code le plus recent ; le cache ne sert que s'il est
- *   hors ligne.
+ *   CODE (HTML, CSS, JS) — network first, cache as a fallback.
+ *   This avoids the classic service worker trap of a site stuck on an old
+ *   version after an update: the cache only serves when offline.
  *
- * Pour forcer le renouvellement de tous les medias : incrementer VERSION.
+ * Each cache has its own version. Media refresh themselves, so their
+ * version only changes if the storage format does: bumping it makes every
+ * returning visitor download all media again.
  */
 
-const VERSION = 'v2';
-const CACHE_MEDIAS = 'even-medias-' + VERSION;
-const CACHE_CODE   = 'even-code-' + VERSION;
+const MEDIA_VERSION = 'v1';
+const CODE_VERSION  = 'v1';
+const CACHE_MEDIAS = 'even-medias-' + MEDIA_VERSION;
+const CACHE_CODE   = 'even-code-' + CODE_VERSION;
 
 const EXT_MEDIAS = /\.(webp|png|jpe?g|svg|woff2?|pdf|ico)$/i;
 
 self.addEventListener('install', () => {
-    // Pas de prechargement ici : on ne veut pas ralentir la premiere visite.
-    // Le cache se remplit naturellement, au fil de la navigation.
+    // No precaching: the first visit must not be slowed down. The cache
+    // fills up as the visitor browses.
     self.skipWaiting();
 });
 
@@ -47,10 +47,14 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const req = event.request;
 
-    // On ne touche qu'aux GET de notre propre site.
+    // Only same-origin GET requests are handled.
     if (req.method !== 'GET') return;
     const url = new URL(req.url);
     if (url.origin !== self.location.origin) return;
+
+    // A range request expects a partial answer; the cache only holds whole
+    // files and would answer with one. The browser handles these itself.
+    if (req.headers.has('range')) return;
 
     if (EXT_MEDIAS.test(url.pathname)) {
         event.respondWith(staleWhileRevalidate(event));
@@ -73,26 +77,27 @@ async function staleWhileRevalidate(event) {
     const cache = await caches.open(CACHE_MEDIAS);
     const cached = await cache.match(req);
 
-    const refresh = fetch(req).then(async response => {
-        if (isCacheable(response)) await cache.put(req, response.clone());
-        return response;
-    });
+    const network = fetch(req);
 
-    if (!cached) return refresh;
+    // Storing runs beside the answer, never in front of it: the page gets
+    // the response as it streams, and a failed write (quota, offline) costs
+    // nothing but the cached copy. The clone is taken before the page
+    // starts reading the body, since this handler is registered first.
+    const stored = network
+        .then(response => (isCacheable(response) ? cache.put(req, response.clone()) : undefined))
+        .catch(() => {});
+    event.waitUntil(stored);
 
-    // Keeps the worker alive until the refresh is stored; a failed refresh
-    // only means the cached copy stays in use.
-    event.waitUntil(refresh.catch(() => {}));
-    return cached;
+    return cached || network;
 }
 
-// Code : le reseau fait foi, le cache n'est qu'un filet hors ligne.
+// Code: the network is the reference, the cache only an offline fallback.
 async function reseauDAbord(req) {
     const cache = await caches.open(CACHE_CODE);
     try {
         const reponse = await fetch(req);
         if (isCacheable(reponse)) {
-            cache.put(req, reponse.clone());
+            cache.put(req, reponse.clone()).catch(() => {});
         }
         return reponse;
     } catch (e) {
