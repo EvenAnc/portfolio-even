@@ -903,7 +903,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
         inEl.scrollTop = 0;
         resetHomeHero(pageId);
         initPageLenis(inEl);
-        if (hasScrollTrigger)ScrollTrigger.refresh();
+        if (hasScrollTrigger) ScrollTrigger.refresh();
         updateHeaderLogo(pageId);
         
         hydratePageImages(inEl);
@@ -930,7 +930,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
             );
 
             initPageLenis(inEl);
-            if (hasScrollTrigger)ScrollTrigger.refresh();
+            if (hasScrollTrigger) ScrollTrigger.refresh();
             updateHeaderLogo(pageId);
 
             hydratePageImages(inEl);
@@ -1024,7 +1024,7 @@ function initPageLenis(scrollContainer) {
 
     // FIX Q-07 : garde — si le CDN GSAP/ScrollTrigger n'a pas repondu,
     // cette ligne levait une erreur et stoppait tout le JS de la page.
-    if (hasScrollTrigger)lenis.on('scroll', ScrollTrigger.update);
+    if (hasScrollTrigger) lenis.on('scroll', ScrollTrigger.update);
 
     // BUG-04 FIX : stocker la référence du ticker pour pouvoir le supprimer plus tard
     // et éviter l'accumulation de tickers à chaque navigation entre pages.
@@ -1320,7 +1320,7 @@ function initContactForm() {
     if (window.ResizeObserver) {
         const ro = new ResizeObserver(() => {
             if (window._lenis) window._lenis.resize();
-            if (hasScrollTrigger)ScrollTrigger.refresh();
+            if (hasScrollTrigger) ScrollTrigger.refresh();
         });
         ro.observe(form);
     }
@@ -1686,6 +1686,12 @@ function canvasParPriorite() {
 function demarrerPrechargeFond() {
     if (_prechargeDemarree) return;
     _prechargeDemarree = true;
+
+    // Background preloading spends data the visitor did not ask for: skip
+    // it when they asked to save data or when the connection is slow.
+    const connection = navigator.connection;
+    if (connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || ''))) return;
+
     ecouterGestes();
 
     // Les plans sont desormais de simples images : le prechargement se
