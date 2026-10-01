@@ -10,6 +10,11 @@ const MIN_SHEET_HEIGHT_PX = 800;
 // Lines added past the measured height.
 const EXTRA_LINES = 2;
 const REDRAW_DEBOUNCE_MS = 200;
+// Each line starts, ends and fades a little differently, as if drawn by
+// hand: a base value plus a random share of the spread.
+const LINE_LEFT_PX = { base: 4, spread: 20 };
+const LINE_RIGHT_PX = { base: 6, spread: 35 };
+const LINE_OPACITY = { base: 0.18, spread: 0.12 };
 const FALLBACK_DRAW_DELAY_MS = 200;
 
 // The two rules of the red margin (::before and ::after) are read back
@@ -67,15 +72,14 @@ export function initSafariPaperCache() {
     paint();
 }
 
-// Each line starts, ends and fades a little differently, as if drawn by
-// hand.
+// The three draws stay in this order: left, right, opacity.
 function createLine(index) {
     const line = document.createElement('div');
     line.className = 'nb-line';
 
-    const leftOffset = 4 + Math.random() * 20;
-    const rightOffset = 6 + Math.random() * 35;
-    const opacity = 0.18 + Math.random() * 0.12;
+    const leftOffset = LINE_LEFT_PX.base + Math.random() * LINE_LEFT_PX.spread;
+    const rightOffset = LINE_RIGHT_PX.base + Math.random() * LINE_RIGHT_PX.spread;
+    const opacity = LINE_OPACITY.base + Math.random() * LINE_OPACITY.spread;
 
     line.style.left = `${leftOffset}px`;
     line.style.right = `${rightOffset}px`;

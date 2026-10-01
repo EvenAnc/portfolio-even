@@ -53,6 +53,7 @@ export const DIPLOMA_PLANS = [
     { url: 'PDF/plan-expo.pdf', title: 'Zoom Expo', altKey: 'alt_zoom_expo' },
 ];
 
+// In the order of the data-coupe-index attributes of the page.
 export const DIPLOMA_SECTIONS = [
     { url: 'PDF/coupe-nord-loingtaine.pdf', title: 'Coupe Lointaine', altKey: 'alt_coupe_lointaine' },
     { url: 'PDF/coupe-nord-texture.pdf', title: 'Coupe Nord', altKey: 'alt_coupe_nord' },
