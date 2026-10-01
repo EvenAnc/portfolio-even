@@ -2559,128 +2559,7 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 }
 
 
-/* Not yet reorganised */
-
-.menu-overlay {
-    position: fixed; inset: 0; z-index: 90;
-    background: var(--bg);
-    display: flex; flex-direction: column;
-    padding: 0 60px 50px;
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
-    overflow-y: auto;
-}
-
-body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
-.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
-
-.menu-logo {
-    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
-    animation: logoWobbleMini 0.3s steps(1) infinite;
-}
-
-/* Items alignés, espacement vertical régulier */
-.menu-nav {
-    display: flex; flex-direction: column;
-    gap: 18px;
-    flex: 1;
-    justify-content: center;
-}
-
-.menu-nav-item {
-    display: flex; align-items: baseline; gap: 18px;
-    width: fit-content; padding: 10px 0;
-    position: relative;
-}
-
-.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
-
-.mn-label {
-    font-family: var(--font-display);
-    font-size: clamp(2.8rem, 6vw, 4.8rem);
-    line-height: 1; letter-spacing: 0.02em;
-    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
-}
-
-.mn-deco {
-    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
-    color: var(--red); opacity: 0;
-    transform: translateX(-8px) rotate(-3deg);
-    transition: opacity 0.3s, transform 0.4s var(--ease-out);
-    white-space: nowrap;
-}
-
-.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
-.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
-
-.menu-scribble {
-    position: absolute; top: 110px; right: 60px;
-    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
-}
-
-.menu-footer {
-    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
-    display: flex; align-items: center; gap: 40px;
-}
-
-.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
-.menu-mail:hover { opacity: 1; color: var(--red); }
-.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
-.menu-footer-social a { transition: color var(--dur-fast); }
-.menu-footer-social a:hover { color: var(--red); }
-
-.page-next {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 80px;
-    margin-bottom: 40px;
-    float: right;
-    clear: both;
-    padding: 10px 0;
-    transition: transform 0.3s var(--ease-out);
-}
-
-.page-next:hover {
-    transform: translateX(10px);
-}
-
-.page-next-label {
-    font-family: var(--font-sketch);
-    font-size: 3.5rem;
-    text-transform: lowercase;
-    letter-spacing: 0.03em;
-    color: var(--white);
-    transition: color 0.3s;
-}
-
-.page-next:hover .page-next-label {
-    color: var(--red);
-}
-
-.page-next-arrow {
-    width: 60px;
-    height: 30px;
-    animation: rectWobble 0.3s steps(1) infinite;
-}
-
-.page-next-arrow path {
-    stroke: var(--red);
-}
-
-.panel-section::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 20px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12' stroke='white' stroke-width='2.5' fill='none' stroke-linejoin='miter' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-size: 500px 20px;
-      background-repeat: repeat-x;
-      z-index: 1;
-      pointer-events: none;
-  }
+/* Diploma */
 
 .diploma-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: 50px; align-items: start; }
 .school-name-wrap { margin-bottom: 28px; }
@@ -2818,17 +2697,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     color: rgba(255, 255, 255, 0.5);
 }
 
-@media (max-width: 480px) {
-    /* ── Inline PDF Loader ── */
-    .diploma-card-inner {
-        padding: 22px 18px;
-    }
-
-    .diploma-cert-body {
-        gap: 15px;
-    }
-}
-
 .diploma-scan-container {
     margin-top: 60px;
     position: relative;
@@ -2864,6 +2732,199 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     align-items: center;
     box-sizing: border-box;
 }
+
+@supports (min-height: 1cqw) {
+    /* ── FIX DIPLOME : la carte de certification rognait son pied ──────
+       .diploma-card-inner etait verrouillee au format A4 (aspect-ratio
+       1/1.414) avec overflow:hidden. A 1280px la boite fait 633px alors
+       que le contenu en reclame 676 en francais : les 43px du bas — le
+       code RNCP et « Enregistre par France Competences » — etaient
+       purement et simplement coupes. Deja 23px de trop en anglais ; le
+       francais, plus long, ne faisait qu'aggraver un defaut existant.
+
+       Le format A4 devient un PLANCHER au lieu d'une contrainte : la
+       carte garde ses proportions quand le contenu tient, et s'allonge
+       juste ce qu'il faut sinon. Plus rien ne peut etre rogne, quelle
+       que soit la langue ou la longueur d'un futur texte.
+
+       Sous @supports : les navigateurs sans unites de conteneur gardent
+       le comportement actuel, sans regression. */
+    .diploma-placeholder {
+        container-type: inline-size;
+    }
+}
+
+@media (max-width: 768px) {
+    /* ── Diplôme ── */
+    .diploma-layout { grid-template-columns: 1fr; }
+
+    .diploma-placeholder .media-frame-inner,
+    .diploma-card-inner { aspect-ratio: auto; height: auto; }
+
+    .diploma-scan-container { margin-top: 40px; padding-top: 30px; }
+    .scan-section-title { font-size: 1.8rem; margin-bottom: 16px; }
+
+    .diploma-cert-code,
+    .diploma-cert-authority { font-size: 0.875rem; }
+
+    /* ── 9. Diplome : le tampon mordait sur le titre ───────────────────
+       Mesure sur Pixel 8a : tampon « CERTIFIED » a 241-374, titre
+       « CERTIFICATION RNCP » a 69-343 — 102px de recouvrement, et le
+       tampon debordait de 12px hors de la carte (qui s'arrete a 362).
+       Sur grand ecran la carte est assez large pour que les deux
+       cohabitent ; sur telephone le titre court jusque sous le tampon.
+
+       On rentre le tampon dans la carte et on reserve sa largeur au
+       titre, qui passe alors a la ligne au lieu de disparaitre dessous.
+       Le chevauchement volontaire avec la BORDURE de la carte est
+       conserve, c'est le parti pris d'origine. */
+    .diploma-cert-stamp {
+        top: -10px;
+        right: -8px;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        border-width: 2.5px;
+    }
+
+    .diploma-cert-title {
+        padding-right: 96px;   /* largeur du tampon incline + garde */
+    }
+}
+
+@media (max-width: 480px) {
+    /* ── Inline PDF Loader ── */
+    .diploma-card-inner {
+        padding: 22px 18px;
+    }
+
+    .diploma-cert-body {
+        gap: 15px;
+    }
+}
+
+
+/* Not yet reorganised */
+
+.menu-overlay {
+    position: fixed; inset: 0; z-index: 90;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    padding: 0 60px 50px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
+    overflow-y: auto;
+}
+
+body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
+.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
+
+.menu-logo {
+    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+/* Items alignés, espacement vertical régulier */
+.menu-nav {
+    display: flex; flex-direction: column;
+    gap: 18px;
+    flex: 1;
+    justify-content: center;
+}
+
+.menu-nav-item {
+    display: flex; align-items: baseline; gap: 18px;
+    width: fit-content; padding: 10px 0;
+    position: relative;
+}
+
+.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
+
+.mn-label {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1; letter-spacing: 0.02em;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+}
+
+.mn-deco {
+    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+    color: var(--red); opacity: 0;
+    transform: translateX(-8px) rotate(-3deg);
+    transition: opacity 0.3s, transform 0.4s var(--ease-out);
+    white-space: nowrap;
+}
+
+.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
+.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
+
+.menu-scribble {
+    position: absolute; top: 110px; right: 60px;
+    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
+}
+
+.menu-footer {
+    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 40px;
+}
+
+.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
+.menu-mail:hover { opacity: 1; color: var(--red); }
+.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
+.menu-footer-social a { transition: color var(--dur-fast); }
+.menu-footer-social a:hover { color: var(--red); }
+
+.page-next {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 80px;
+    margin-bottom: 40px;
+    float: right;
+    clear: both;
+    padding: 10px 0;
+    transition: transform 0.3s var(--ease-out);
+}
+
+.page-next:hover {
+    transform: translateX(10px);
+}
+
+.page-next-label {
+    font-family: var(--font-sketch);
+    font-size: 3.5rem;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    transition: color 0.3s;
+}
+
+.page-next:hover .page-next-label {
+    color: var(--red);
+}
+
+.page-next-arrow {
+    width: 60px;
+    height: 30px;
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+.page-next-arrow path {
+    stroke: var(--red);
+}
+
+.panel-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12' stroke='white' stroke-width='2.5' fill='none' stroke-linejoin='miter' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size: 500px 20px;
+      background-repeat: repeat-x;
+      z-index: 1;
+      pointer-events: none;
+  }
 
 .drawing-lightbox {
     position: fixed;
@@ -3179,23 +3240,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .menu-logo-wrap { padding-top: 85px; padding-bottom: 20px; }
     .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
     .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
-
-    /* ── Diplôme ── */
-    .diploma-layout { grid-template-columns: 1fr; }
-
-    .diploma-placeholder .media-frame-inner,
-    .diploma-card-inner { aspect-ratio: auto; height: auto; }
-
-    .diploma-scan-container { margin-top: 40px; padding-top: 30px; }
-    .scan-section-title { font-size: 1.8rem; margin-bottom: 16px; }
-
-    .diploma-cert-stamp {
-        font-size: 1rem;
-        padding: 6px 14px;
-        border-width: 2.5px;
-        top: -10px;
-        right: -10px;
-    }
 
     /* Conteneur global : padding safe-area pour les encoches */
     .drawing-lightbox {
@@ -3742,32 +3786,6 @@ textarea:focus-visible,
     border-radius: 0;
 }
 
-@supports (min-height: 1cqw) {
-    /* ── FIX DIPLOME : la carte de certification rognait son pied ──────
-       .diploma-card-inner etait verrouillee au format A4 (aspect-ratio
-       1/1.414) avec overflow:hidden. A 1280px la boite fait 633px alors
-       que le contenu en reclame 676 en francais : les 43px du bas — le
-       code RNCP et « Enregistre par France Competences » — etaient
-       purement et simplement coupes. Deja 23px de trop en anglais ; le
-       francais, plus long, ne faisait qu'aggraver un defaut existant.
-
-       Le format A4 devient un PLANCHER au lieu d'une contrainte : la
-       carte garde ses proportions quand le contenu tient, et s'allonge
-       juste ce qu'il faut sinon. Plus rien ne peut etre rogne, quelle
-       que soit la langue ou la longueur d'un futur texte.
-
-       Sous @supports : les navigateurs sans unites de conteneur gardent
-       le comportement actuel, sans regression. */
-    .diploma-placeholder {
-        container-type: inline-size;
-    }
-}
-
-@media (max-width: 768px) {
-    .diploma-cert-code,
-    .diploma-cert-authority { font-size: 0.875rem; }
-}
-
 .menu-overlay {
     padding-top: max(0px, env(safe-area-inset-top));
     padding-bottom: max(30px, env(safe-area-inset-bottom));
@@ -3805,31 +3823,6 @@ textarea:focus-visible,
     .project-detail-page .page-next {
         padding-left: 20px;
         padding-right: 20px;
-    }
-}
-
-@media (max-width: 768px) {
-    /* ── 9. Diplome : le tampon mordait sur le titre ───────────────────
-       Mesure sur Pixel 8a : tampon « CERTIFIED » a 241-374, titre
-       « CERTIFICATION RNCP » a 69-343 — 102px de recouvrement, et le
-       tampon debordait de 12px hors de la carte (qui s'arrete a 362).
-       Sur grand ecran la carte est assez large pour que les deux
-       cohabitent ; sur telephone le titre court jusque sous le tampon.
-
-       On rentre le tampon dans la carte et on reserve sa largeur au
-       titre, qui passe alors a la ligne au lieu de disparaitre dessous.
-       Le chevauchement volontaire avec la BORDURE de la carte est
-       conserve, c'est le parti pris d'origine. */
-    .diploma-cert-stamp {
-        top: -10px;
-        right: -8px;
-        font-size: 0.9rem;
-        padding: 6px 12px;
-        border-width: 2.5px;
-    }
-
-    .diploma-cert-title {
-        padding-right: 96px;   /* largeur du tampon incline + garde */
     }
 }
 
