@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Priorite : l'adresse (un lien partage impose sa langue), puis le
     // choix precedent du visiteur, puis la langue de son navigateur.
     const langueDemandee = new URLSearchParams(location.search).get('lang');
-    const saved = localStorage.getItem('lang');
+    const saved = readStored('lang');
     currentLang = (langueDemandee === 'fr' || langueDemandee === 'en') ? langueDemandee
         : (saved === 'fr' || saved === 'en') ? saved
         : (navigator.language || '').startsWith('fr') ? 'fr' : 'en';
@@ -592,9 +592,28 @@ function updateScrollbarWidth() {
 // ─────────────────────────────────────
 // LANGUE
 // ─────────────────────────────────────
+// Storage access throws when site data is blocked (privacy settings, some
+// embedded browsers). A remembered preference must never stop the page
+// from starting, so both directions fail silently.
+function readStored(key) {
+    try {
+        return localStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function writeStored(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch {
+        // The preference simply lasts for this visit only.
+    }
+}
+
 function applyLang(lang) {
     currentLang = lang;
-    localStorage.setItem('lang', lang);
+    writeStored('lang', lang);
     document.documentElement.setAttribute('lang', lang);
     majMetaPage(typeof currentPage === 'string' ? currentPage : 'home');
 
