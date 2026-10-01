@@ -86,6 +86,10 @@
     <link rel="preload" href="fonts/SkribblughRegular-XGW02.woff2" as="font" type="font/woff2" crossorigin>
 
     <link rel="stylesheet" href="css/style_v2.css">
+    <style>
+        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
+        @keyframes pulse-opacity { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+    </style>
 </head>
 <body ontouchstart="">
 
@@ -144,12 +148,12 @@
     <header class="site-header" id="site-header">
         <div class="header-inner">
             <div class="header-left" style="display: flex; align-items: center; gap: 40px;">
-                <button class="burger-btn" id="burger-btn" aria-label="Menu" aria-expanded="false" aria-controls="menu-overlay">
+                <button type="button" class="burger-btn" id="burger-btn" aria-label="Menu" aria-expanded="false" aria-controls="menu-overlay">
                     <span class="b-line"></span>
                     <span class="b-line"></span>
                     <span class="b-line"></span>
                 </button>
-                <button class="header-back-btn" id="header-back-btn" aria-label="retour" data-i18n-aria="nav_back" style="display: none; background: none; border: none; cursor: pointer; color: #fff; align-items: center; gap: 10px; pointer-events: auto;">
+                <button type="button" class="header-back-btn" id="header-back-btn" aria-label="retour" data-i18n-aria="nav_back" style="display: none; background: none; border: none; cursor: pointer; color: #fff; align-items: center; gap: 10px; pointer-events: auto;">
                     <svg class="sketch-arrow-back" viewBox="0 0 100 50" style="width: 50px; height: 25px;">
                         <path d="M90 25 L20 25 M40 10 L15 25 L40 40" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
@@ -163,11 +167,11 @@
 
             <div class="header-right">
                 <div class="lang-switcher">
-                    <button class="lang-btn active" data-lang="fr" aria-label="Afficher le site en francais" lang="fr">FR</button>
+                    <button type="button" class="lang-btn active" data-lang="fr" aria-label="Afficher le site en francais" lang="fr">FR</button>
                     <span class="lang-sep">/</span>
-                    <button class="lang-btn" data-lang="en" aria-label="Display the site in English" lang="en">EN</button>
+                    <button type="button" class="lang-btn" data-lang="en" aria-label="Display the site in English" lang="en">EN</button>
                 </div>
-                <nav class="social-nav">
+                <nav class="social-nav" aria-label="Réseaux sociaux" data-i18n-aria="aria_nav_social">
                     <a href="https://www.instagram.com/even.anc/" target="_blank" rel="noopener noreferrer" class="social-lnk" aria-label="Instagram">
                         <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
                             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
@@ -190,13 +194,13 @@
     <!-- =========================================================================================================
          MENU OVERLAY
     ========================================================================================================= -->
-    <div class="menu-overlay" id="menu-overlay" aria-hidden="true">
+    <div class="menu-overlay" id="menu-overlay">
 
         <div class="menu-logo-wrap">
             <span class="menu-logo font-sketch">EVEN ANICET</span>
         </div>
 
-        <nav class="menu-nav" id="menu-nav">
+        <nav class="menu-nav" id="menu-nav" aria-label="Menu principal" data-i18n-aria="aria_nav_main">
             <a href="#" class="menu-nav-item" data-page="home">
                 <span class="mn-num">01</span>
                 <span class="mn-label" data-i18n="menu_01">ACCUEIL</span>
@@ -424,7 +428,7 @@
         </section>
 
         <!-- ─── PAGE 02 : PROJETS (HUB) ─── -->
-        <section class="page" id="page-projects" data-page="projects" aria-hidden="true">
+        <section class="page" id="page-projects" data-page="projects">
             <div class="page-inner">
                 <div class="page-heading">
                     <span class="page-num">02</span>
@@ -470,10 +474,6 @@
                     <div class="patchwork-item prio-3" onclick="showPage('project-3')">
                         <div class="polaroid-card" style="transform: rotate(-1.5deg);">
                             <div class="polaroid-img-wrap" style="background: #111; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px;">
-                                <style>
-                                    @keyframes spin-slow { 100% { transform: rotate(360deg); } }
-                                    @keyframes pulse-opacity { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-                                </style>
                                 <svg width="50" height="50" viewBox="0 0 100 100" style="animation: spin-slow 3s linear infinite;">
                                     <path d="M 50 15 A 35 35 0 1 1 15 50" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-dasharray="80 30" style="animation: pulse-opacity 2s ease-in-out infinite;" />
                                 </svg><span class="font-sketch" style="color: #fff; font-size: 2.2rem; animation: pulse-opacity 2s ease-in-out infinite; letter-spacing: 2px;" data-i18n="proj_loading">en cours...</span>
@@ -518,7 +518,7 @@
         </section>
 
         <!-- ─── DETAIL PROJET : PATERR SUISSE (PLACEHOLDER) ─── -->
-        <section class="page project-detail-page" id="page-project-2" data-page="project-2" aria-hidden="true">
+        <section class="page project-detail-page" id="page-project-2" data-page="project-2">
             <div class="page-inner">
                 <div class="page-heading">
                     <span class="page-num">02.2</span>
@@ -555,7 +555,7 @@
         </section>
 
         <!-- ─── DETAIL PROJET : 3 (PLACEHOLDER) ─── -->
-        <section class="page project-detail-page" id="page-project-3" data-page="project-3" aria-hidden="true">
+        <section class="page project-detail-page" id="page-project-3" data-page="project-3">
             <div class="page-inner">
                 <div class="page-heading">
                     <span class="page-num">02.3</span>
@@ -592,7 +592,7 @@
         </section>
 
         <!-- ─── DETAIL PROJET : DIPLÔME ─── -->
-        <section class="page project-detail-page" id="page-project-diploma" data-page="project-diploma" aria-hidden="true">
+        <section class="page project-detail-page" id="page-project-diploma" data-page="project-diploma">
             <div class="page-inner">
 
                 <div class="fortiche-projects-board">
@@ -629,7 +629,7 @@
                         <p class="panel-tools" data-i18n="tools_zooning">InDesign · Procreate</p>
                         <div class="bd-carousel-section carousel-landscape">
                             <div class="bd-carousel-container">
-                                <button class="bd-nav-btn prev-btn" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                <button type="button" class="bd-nav-btn prev-btn" aria-label="Précédent" data-i18n-aria="aria_prev">
                                     <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 26 9 L 14 21 L 27 29" class="sketch-f1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-f2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-f3"/></svg>
                                 </button>
                                 <div class="frame-wrap">
@@ -646,7 +646,7 @@
                                         <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                 </div>
-                                <button class="bd-nav-btn next-btn" aria-label="Suivant" data-i18n-aria="aria_next">
+                                <button type="button" class="bd-nav-btn next-btn" aria-label="Suivant" data-i18n-aria="aria_next">
                                     <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 14 9 L 26 21 L 13 29" class="sketch-f1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-f2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-f3"/></svg>
                                 </button>
                             </div>
@@ -666,7 +666,7 @@
                         <p class="panel-tools" data-i18n="tools_plans">ArchiCAD · Photoshop</p>
                         <div class="bd-carousel-section carousel-landscape">
                             <div class="bd-carousel-container">
-                                <button class="bd-nav-btn prev-btn" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                <button type="button" class="bd-nav-btn prev-btn" aria-label="Précédent" data-i18n-aria="aria_prev">
                                     <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 26 9 L 14 21 L 27 29" class="sketch-f1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-f2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-f3"/></svg>
                                 </button>
                                 <div class="frame-wrap">
@@ -686,7 +686,7 @@
                                         <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
                                 </div>
-                                <button class="bd-nav-btn next-btn" aria-label="Suivant" data-i18n-aria="aria_next">
+                                <button type="button" class="bd-nav-btn next-btn" aria-label="Suivant" data-i18n-aria="aria_next">
                                     <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 14 9 L 26 21 L 13 29" class="sketch-f1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-f2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-f3"/></svg>
                                 </button>
                             </div>
@@ -798,7 +798,7 @@
                      d'autre. Les deux vides qui l'encadrent grandissent a
                      mesure qu'elle approche du centre de l'ecran, puis se
                      referment. La page respire autour d'elle. -->
-                <section class="quote-band" aria-label="Citation">
+                <section class="quote-band">
                     <figure class="qb-body">
                         <blockquote class="qb-text" data-i18n="quote_text">Quand les détails réussissent, ils ne distraient pas et n'amusent pas. Ils conduisent à la compréhension de l'ensemble dont ils font partie.</blockquote>
                         <figcaption class="qb-author" data-i18n="quote_author">Peter Zumthor</figcaption>
@@ -835,7 +835,7 @@
         </section>
 
         <!-- ——— PAGE 03 : DESSINS ——— -->
-        <section class="page" id="page-drawings" data-page="drawings" aria-hidden="true">
+        <section class="page" id="page-drawings" data-page="drawings">
             <div class="page-inner">
                 <div class="page-heading">
                     <span class="page-num">03</span>
@@ -922,7 +922,7 @@
                         <div class="animation-explosion-detail"></div>
                     </div>
                     <div class="bd-carousel-container">
-                        <button class="bd-nav-btn prev-btn" aria-label="Page précédente" data-i18n-aria="aria_prev_sheet">
+                        <button type="button" class="bd-nav-btn prev-btn" aria-label="Page précédente" data-i18n-aria="aria_prev_sheet">
                             <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M 26 9 L 14 21 L 27 29" class="sketch-f1" />
                                 <path d="M 24 11 L 16 19 L 23 31" class="sketch-f2" />
@@ -970,7 +970,7 @@
                             </svg>
                         </div>
 
-                        <button class="bd-nav-btn next-btn" aria-label="Page suivante" data-i18n-aria="aria_next_sheet">
+                        <button type="button" class="bd-nav-btn next-btn" aria-label="Page suivante" data-i18n-aria="aria_next_sheet">
                             <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M 14 9 L 26 21 L 13 29" class="sketch-f1" />
                                 <path d="M 16 11 L 24 19 L 17 31" class="sketch-f2" />
@@ -981,7 +981,7 @@
 
                     <!-- Contrôles interactifs du bas -->
                     <div class="bd-carousel-controls">
-                        <button class="bd-play-pause-btn" aria-label="Lecture automatique" data-i18n-aria="aria_autoplay">
+                        <button type="button" class="bd-play-pause-btn" aria-label="Lecture automatique" data-i18n-aria="aria_autoplay">
                             <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/></svg>
                             <svg class="icon-play" viewBox="0 0 24 24" width="24" height="24" style="display: none;"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
                         </button>
@@ -1002,7 +1002,7 @@
                 <!-- Meme dispositif que sur la page projet : la phrase au
                      centre, le nom juste en dessous, et la page qui respire
                      autour quand elle approche du centre de l'ecran. -->
-                <section class="quote-band" aria-label="Citation">
+                <section class="quote-band">
                     <figure class="qb-body">
                         <blockquote class="qb-text" data-i18n="quote2_text">Je préfère dessiner que parler. Dessiner est plus rapide et laisse moins de place au mensonge.</blockquote>
                         <figcaption class="qb-author" data-i18n="quote2_author">Le Corbusier</figcaption>
@@ -1040,7 +1040,7 @@
         </section>
 
         <!-- ——— PAGE 04 : DIPLÔME ——— -->
-        <section class="page" id="page-diploma" data-page="diploma" aria-hidden="true">
+        <section class="page" id="page-diploma" data-page="diploma">
             <div class="page-inner">
                 <div class="page-heading">
                     <span class="page-num">04</span>
@@ -1168,7 +1168,7 @@
         </section>
 
         <!-- ——— PAGE 05 : HOBBIES ——— -->
-        <section class="page" id="page-hobbies" data-page="hobbies" aria-hidden="true">
+        <section class="page" id="page-hobbies" data-page="hobbies">
             <div class="page-inner">
                 <div class="page-heading">
                     <span class="page-num">05</span>
@@ -1254,7 +1254,7 @@
     </div>
 
     <!-- Lightbox ultra-épurée (style Fortiche) -->
-    <div id="drawing-lightbox" class="drawing-lightbox" role="dialog" aria-modal="true" aria-label="Visionneuse d'images" data-i18n-aria="aria_viewer" aria-hidden="true">
+    <div id="drawing-lightbox" class="drawing-lightbox" role="dialog" aria-modal="true" aria-label="Visionneuse d'images" data-i18n-aria="aria_viewer">
 
         <!-- Logo centré en haut -->
         <span class="lb-logo font-sketch">EVEN ANICET</span>
@@ -1273,30 +1273,29 @@
                 </svg>
                 <input type="range" id="lb-zoom-range" min="1" max="4" step="0.05" value="1" aria-label="Niveau de zoom" data-i18n-aria="aria_zoom_level">
             </div>
-            <button class="lb-tool-btn lb-fullscreen-btn" aria-label="Plein écran" data-i18n-aria="aria_fullscreen">
+            <button type="button" class="lb-tool-btn lb-fullscreen-btn" aria-label="Plein écran" data-i18n-aria="aria_fullscreen">
                 <svg viewBox="0 0 24 24" width="24" height="24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="currentColor"/></svg>
             </button>
-            <button class="lb-tool-btn lb-zoom-btn" aria-label="Zoomer" data-i18n-aria="aria_zoom">
+            <button type="button" class="lb-tool-btn lb-zoom-btn" aria-label="Zoomer" data-i18n-aria="aria_zoom">
                 <svg viewBox="0 0 24 24" width="24" height="24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm2.5-4h-2v2H9v-2H7V9h2V7h1.5v2h2v1.5z" fill="currentColor"/></svg>
             </button>
-            <button class="lb-close" aria-label="Fermer" data-i18n-aria="aria_close">&times;</button>
+            <button type="button" class="lb-close" aria-label="Fermer" data-i18n-aria="aria_close">&times;</button>
         </div>
 
         <!-- Flèche gauche -->
-        <button class="lb-arrow lb-prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+        <button type="button" class="lb-arrow lb-prev" aria-label="Précédent" data-i18n-aria="aria_prev">
             <svg viewBox="0 0 24 24" width="28" height="28"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor"/></svg>
         </button>
 
         <!-- Image -->
         <div class="lb-canvas-wrap" id="lb-canvas-wrap">
-            <img id="lb-img" alt="Drawing preview">
         </div>
 
         <!-- Loader -->
         <div class="lb-loader" id="lb-loader"><div class="lb-spinner"></div></div>
 
         <!-- Flèche droite -->
-        <button class="lb-arrow lb-next" aria-label="Suivant" data-i18n-aria="aria_next">
+        <button type="button" class="lb-arrow lb-next" aria-label="Suivant" data-i18n-aria="aria_next">
             <svg viewBox="0 0 24 24" width="28" height="28"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor"/></svg>
         </button>
 

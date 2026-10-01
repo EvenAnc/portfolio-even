@@ -780,6 +780,7 @@ function initMenu() {
     // Clic sur l'arrière-plan du menu (partie grise) pour revenir en arrière
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) {
+        menuOverlay.setAttribute('aria-hidden', 'true');
         menuOverlay.addEventListener('click', e => {
             if (!e.target.closest('a') && !e.target.closest('button')) {
                 closeMenu();
@@ -888,6 +889,10 @@ function closeOverlays() {
 // ─────────────────────────────────────
 function initSPA() {
     document.querySelectorAll('.page').forEach(p => {
+        // Hidden state is set here rather than in the markup: declared
+        // statically it would hide focusable content from assistive
+        // technology even if this script never ran.
+        p.setAttribute('aria-hidden', 'true');
         p.classList.remove('is-active');
     });
 }
@@ -1943,6 +1948,8 @@ const diplomeAnalyses = [
 function initDrawingLightbox() {
     const lightbox = document.getElementById('drawing-lightbox');
     if (!lightbox) return;
+    // The open/closed state lives in this attribute; it starts closed.
+    lightbox.setAttribute('aria-hidden', 'true');
 
     const canvasWrap = document.getElementById('lb-canvas-wrap');
     const counterEl  = lightbox.querySelector('.lb-counter');
