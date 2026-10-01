@@ -974,6 +974,172 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 }
 
 
+/* Contact */
+
+.home-contact { padding: 0; background: var(--bg); }
+
+.home-contact-inner {
+    max-width: 1200px; margin: 0 auto; padding: 100px 60px;
+}
+
+.contact-layout {
+    display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 80px; align-items: start;
+}
+
+.contact-form { display: flex; flex-direction: column; gap: 36px; }
+.fg { position: relative; }
+
+.fi {
+    display: block;
+    width: 100%; padding: 12px 0;
+    background: transparent; border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    color: var(--white); font-family: var(--font-body);
+    font-size: 1rem; outline: none;
+    transition: border-color var(--dur-fast);
+}
+
+.fi-ta {
+    height: 48px;
+    resize: none;
+    overflow: hidden;
+    padding-top: 0 !important;
+    margin-top: 12px;
+    transition: height 0.4s var(--ease-out), border-color var(--dur-fast);
+}
+
+.fi-ta:focus,
+.fi-ta:not(:placeholder-shown) {
+    height: 120px;
+    overflow-y: auto;
+}
+
+.fl {
+    position: absolute; left: 0; top: 12px;
+    font-family: var(--font-display); font-size: 1.1rem;
+    letter-spacing: 0.05em; color: rgba(255,255,255,0.3);
+    pointer-events: none; transform-origin: left top;
+    transition: transform 0.3s var(--ease-out), color 0.3s;
+}
+
+.fi:focus ~ .fl, .fi:not(:placeholder-shown) ~ .fl {
+    transform: translateY(-24px) scale(0.82); color: var(--red);
+}
+
+/* La ligne rouge animée est gérée uniquement par le span .fb pour éviter tout dédoublement */
+.fb { position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-med) var(--ease-out); }
+
+.fi:focus ~ .fb { width: 100%; }
+
+.submit-btn {
+    padding: 14px 42px;
+    font-family: var(--font-display); font-size: 1.3rem;
+    letter-spacing: 0.07em; color: var(--white);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+
+.submit-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* ── Validation formulaire (BUG-07 FIX) ── */
+.fi-error {
+    border-bottom-color: var(--red) !important;
+}
+
+.fi-error ~ .fl {
+    color: var(--red) !important;
+    transform: translateY(-24px) scale(0.82) !important;
+}
+
+.form-feedback {
+    min-height: 22px;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-feedback--error {
+    color: var(--red);
+    opacity: 1;
+}
+
+.form-feedback--success {
+    color: #4ade80; /* vert succès */
+    opacity: 1;
+}
+
+.contact-info { display: flex; flex-direction: column; gap: 36px; padding-top: 12px; }
+.ci-label { font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.25); margin-bottom: 10px; text-transform: uppercase; }
+.ci-link { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.03em; display: inline-block; transition: color var(--dur-fast); }
+.ci-link:hover { color: var(--red); }
+
+.ci-soc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    margin-bottom: 12px;
+    transition: opacity var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
+}
+
+.ci-soc:hover {
+    opacity: 1;
+    color: var(--red);
+    transform: translateX(4px);
+}
+
+.ci-soc-icon {
+    flex-shrink: 0;
+}
+
+.ci-text { font-size: 1rem; font-weight: 300; opacity: 0.5; }
+
+@media (max-width: 768px) {
+    /* ── Contact ── */
+    .home-contact-inner { padding: 60px 20px 80px; }
+
+    .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* ── Blocs d'infos contact ── */
+    .ci-block {
+        opacity: 0;
+        transform: translateX(16px);
+        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+
+    .ci-block.is-inview {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .ci-block:nth-child(2) { transition-delay: 0.1s; }
+    .ci-block:nth-child(3) { transition-delay: 0.2s; }
+
+    /* ── Groupes de champs formulaire ── */
+    .fg {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+
+    .fg.is-inview {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .fg:nth-child(2) { transition-delay: 0.08s; }
+    .fg:nth-child(3) { transition-delay: 0.16s; }
+}
+
+
 /* Footer */
 
 .site-footer {
@@ -1369,129 +1535,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     stroke: var(--red);
 }
 
-.home-contact { padding: 0; background: var(--bg); }
-
-.home-contact-inner {
-    max-width: 1200px; margin: 0 auto; padding: 100px 60px;
-}
-
-.contact-layout {
-    display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 80px; align-items: start;
-}
-
-.contact-form { display: flex; flex-direction: column; gap: 36px; }
-.fg { position: relative; }
-
-.fi {
-    display: block;
-    width: 100%; padding: 12px 0;
-    background: transparent; border: none;
-    border-bottom: 1px solid rgba(255,255,255,0.18);
-    color: var(--white); font-family: var(--font-body);
-    font-size: 1rem; outline: none;
-    transition: border-color var(--dur-fast);
-}
-
-.fi-ta {
-    height: 48px;
-    resize: none;
-    overflow: hidden;
-    padding-top: 0 !important;
-    margin-top: 12px;
-    transition: height 0.4s var(--ease-out), border-color var(--dur-fast);
-}
-
-.fi-ta:focus,
-.fi-ta:not(:placeholder-shown) {
-    height: 120px;
-    overflow-y: auto;
-}
-
-.fl {
-    position: absolute; left: 0; top: 12px;
-    font-family: var(--font-display); font-size: 1.1rem;
-    letter-spacing: 0.05em; color: rgba(255,255,255,0.3);
-    pointer-events: none; transform-origin: left top;
-    transition: transform 0.3s var(--ease-out), color 0.3s;
-}
-
-.fi:focus ~ .fl, .fi:not(:placeholder-shown) ~ .fl {
-    transform: translateY(-24px) scale(0.82); color: var(--red);
-}
-
-/* La ligne rouge animée est gérée uniquement par le span .fb pour éviter tout dédoublement */
-.fb { position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-med) var(--ease-out); }
-
-.fi:focus ~ .fb { width: 100%; }
-
-.submit-btn {
-    padding: 14px 42px;
-    font-family: var(--font-display); font-size: 1.3rem;
-    letter-spacing: 0.07em; color: var(--white);
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    cursor: pointer;
-    transition: border-color var(--dur-fast), color var(--dur-fast);
-}
-
-.submit-btn:hover { border-color: var(--red); color: var(--red); }
-
-/* ── Validation formulaire (BUG-07 FIX) ── */
-.fi-error {
-    border-bottom-color: var(--red) !important;
-}
-
-.fi-error ~ .fl {
-    color: var(--red) !important;
-    transform: translateY(-24px) scale(0.82) !important;
-}
-
-.form-feedback {
-    min-height: 22px;
-    font-size: 0.9rem;
-    letter-spacing: 0.03em;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.form-feedback--error {
-    color: var(--red);
-    opacity: 1;
-}
-
-.form-feedback--success {
-    color: #4ade80; /* vert succès */
-    opacity: 1;
-}
-
-.contact-info { display: flex; flex-direction: column; gap: 36px; padding-top: 12px; }
-.ci-label { font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.25); margin-bottom: 10px; text-transform: uppercase; }
-.ci-link { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.03em; display: inline-block; transition: color var(--dur-fast); }
-.ci-link:hover { color: var(--red); }
-
-.ci-soc {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    opacity: 0.6;
-    margin-bottom: 12px;
-    transition: opacity var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
-}
-
-.ci-soc:hover {
-    opacity: 1;
-    color: var(--red);
-    transform: translateX(4px);
-}
-
-.ci-soc-icon {
-    flex-shrink: 0;
-}
-
-.ci-text { font-size: 1rem; font-weight: 300; opacity: 0.5; }
 .drawings-gallery { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 40px; align-items: end; }
 
 .drawing-item { 
@@ -2443,11 +2486,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
     .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
 
-    /* ── Contact ── */
-    .home-contact-inner { padding: 60px 20px 80px; }
-
-    .contact-layout { grid-template-columns: 1fr; gap: 40px; }
-
     /* ── Galerie Dessins ── */
     .drawings-gallery { grid-template-columns: 1fr; gap: 28px; }
 
@@ -2626,36 +2664,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 
     .drawing-item:nth-child(2) { transition-delay: 0.1s; }
     .drawing-item:nth-child(3) { transition-delay: 0.2s; }
-
-    /* ── Blocs d'infos contact ── */
-    .ci-block {
-        opacity: 0;
-        transform: translateX(16px);
-        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-    }
-
-    .ci-block.is-inview {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    .ci-block:nth-child(2) { transition-delay: 0.1s; }
-    .ci-block:nth-child(3) { transition-delay: 0.2s; }
-
-    /* ── Groupes de champs formulaire ── */
-    .fg {
-        opacity: 0;
-        transform: translateY(16px);
-        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-    }
-
-    .fg.is-inview {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .fg:nth-child(2) { transition-delay: 0.08s; }
-    .fg:nth-child(3) { transition-delay: 0.16s; }
 
     /* ── Désactiver les hover visuels sur mobile (ils ne font rien
            mais laissent un état intermédiaire bloqué sur certains OS) ── */
