@@ -6,18 +6,15 @@
     <title>Even ANICET — Architecte d'intérieur</title>
     <meta name="description" content="Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.">
 
-    <!-- Open Graph / Réseaux sociaux -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Even ANICET — Architecte d'intérieur">
     <meta property="og:description" content="Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.">
     <meta property="og:url" content="https://even-anc.com/">
     <meta property="og:site_name" content="Even ANICET">
     <meta property="og:locale" content="fr_FR">
-    <!-- Carte d'apercu : GIF anime 3 images, meme effet « boiling line » que le
-         favicon du site. Discord et Slack l'animent ; les autres plateformes
-         affichent la premiere image, qui se suffit a elle-meme.
-         Un SVG etait declare ici : aucune plateforme ne le supporte, les
-         apercus etaient donc vides. -->
+    <!-- Preview card: 3-frame animated GIF, same boiling-line effect as the favicon. Discord
+         and Slack animate it; other platforms show the first frame. -->
     <meta property="og:image" content="https://even-anc.com/og-card-v3.gif">
     <meta property="og:image:type" content="image/gif">
     <meta property="og:image:width" content="1200">
@@ -32,8 +29,7 @@
     <meta name="twitter:image:alt" content="Even ANICET, architecte d'interieur — even-anc.com">
 
     <link rel="canonical" href="https://even-anc.com/">
-    <!-- Versions linguistiques. La langue vit dans ?lang= : sans adresse
-         distincte, il n'y a rien a declarer aux moteurs. -->
+    <!-- Language versions: the language lives in ?lang=. -->
     <link rel="alternate" hreflang="fr" href="https://even-anc.com/">
     <link rel="alternate" hreflang="en" href="https://even-anc.com/?lang=en">
     <link rel="alternate" hreflang="x-default" href="https://even-anc.com/">
@@ -44,8 +40,8 @@
     <link id="favicon" rel="icon" type="image/svg+xml" href="favicon_1.svg">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-    <!-- Donnees structurees : permet a Google d'associer le site a une personne
-         et de faire remonter un panneau de connaissance sur une recherche par nom. -->
+    <!-- Structured data: lets Google tie the site to a person and show a knowledge panel for a
+         name search. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -77,8 +73,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Permanent+Marker&family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
 
-    <!-- Skribblugh porte l'identite du site : sans prechargement, le texte
-         s'affiche d'abord dans une police de substitution puis saute. -->
+    <!-- Preload the site font: without it the text first shows in a fallback font, then jumps. -->
     <link rel="preload" href="fonts/SkribblughRegular-XGW02.woff2" as="font" type="font/woff2" crossorigin>
 
     <link rel="stylesheet" href="css/base.css">
@@ -125,8 +120,7 @@
 </head>
 <body>
 
-    <!-- Lien d'evitement : premier element atteint par la tabulation, il
-         permet de sauter le header et le menu pour aller au contenu. -->
+    <!-- Skip link: first element reached by Tab, jumps past the header and menu to the content. -->
     <a class="skip-link" href="#page-wrapper">Aller au contenu</a>
 
     <!-- Every page is revealed by script: without it, leave at least a
@@ -140,7 +134,7 @@
         </div>
     </noscript>
 
-    <!-- SVG FILTRES INVISIBLES -->
+    <!-- SVG filters -->
     <svg class="svg-filters" width="0" height="0">
         <defs>
             <filter id="sketch-1" x="-5%" y="-5%" width="110%" height="110%">
@@ -174,9 +168,7 @@
         </defs>
     </svg>
 
-    <!-- =========================================================================================================
-         HEADER FIXE
-    ========================================================================================================= -->
+    <!-- Header -->
     <header class="site-header" id="site-header">
         <div class="header-inner">
             <div class="header-left">
@@ -223,9 +215,7 @@
         </div>
     </header>
 
-    <!-- =========================================================================================================
-         MENU OVERLAY
-    ========================================================================================================= -->
+    <!-- Menu overlay -->
     <div class="menu-overlay" id="menu-overlay">
 
         <div class="menu-logo-wrap">
@@ -280,15 +270,13 @@
         <span class="menu-scribble font-sketch">sommaire ↓</span>
     </div>
 
-    <!-- =========================================================================================================
-         CONTENEUR SPA
-    ========================================================================================================= -->
+    <!-- Page container -->
     <div id="page-wrapper" role="main">
 
-        <!-- ─── PAGE 01 : ACCUEIL ─── -->
+        <!-- Page: home -->
         <section class="page" id="page-home" data-page="home">
 
-            <!-- HERO -->
+            <!-- Hero -->
             <div class="hero-screen">
                 <div class="hero-logo-wrap" id="hero-logo-wrap">
                     <h1 class="hero-logo font-sketch" id="hero-logo">EVEN ANICET</h1>
@@ -301,31 +289,32 @@
                 </div>
             </div>
 
-            <!-- GRAND CADRE SHOWCASE (coins arrondis, taille limitée) -->
+            <!-- Showcase frame -->
             <div class="home-showcase">
-                <!-- frame-wrap : le rectangle SVG rouge est ICI, DEHORS du cadre clippé -->
+                <!-- The red SVG rectangle sits outside the clipped frame so that it can
+                     overflow it. -->
                 <div class="frame-wrap">
                     <div class="showcase-frame">
                         <span class="font-sketch" data-i18n="video_placeholder">une vidéo arrive !</span>
                     </div>
-                    <!-- Rectangle rouge DESSINÉ MAIN — par-dessus, déborde du cadre -->
+                    <!-- Hand-drawn red rectangle, overflowing the frame -->
                     <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
                         <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
             </div>
 
-            <!-- BOUTON EXPOSITION PROJETS (SUPERPOSITION INSPIRÉE DE LA MAQUETTE) -->
+            <!-- Projects shortcut -->
             <div class="home-projects-shortcut showcase-projects-btn" data-next="projects">
                 <span class="shortcut-sub-text font-sketch" data-i18n="shortcut_sub">Aperçu</span>
                 <span class="shortcut-main-text" data-i18n="shortcut_main">MES PROJETS</span>
                 
-                <!-- Underline crayonné animé au hover -->
+                <!-- Pencil underline, animated on hover -->
                 <svg class="shortcut-underline-svg" viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true">
                     <path class="shortcut-underline-path" d="M10 10 C 80 12, 220 8, 290 10" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round"/>
                 </svg>
 
-                <!-- Annotation flèche crayonnée cliquez ! -->
+                <!-- Pencil arrow annotation -->
                 <div class="shortcut-click-hint">
                     <svg class="click-hint-arrow" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M10 10 C 25 5, 45 15, 48 30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
@@ -335,7 +324,7 @@
                 </div>
             </div>
 
-            <!-- SECTION CAHIER DE BROUILLON -->
+            <!-- Notebook -->
             <div class="notebook-section" id="notebook-section">
                 <div class="notebook-bg-sheet" aria-hidden="true"></div>
                 <div class="notebook-inner">
@@ -343,7 +332,7 @@
                     <div class="notebook-content notebook-hover-zone">
                         <div class="notebook-title-wrap">
                             <h2 class="notebook-title font-sketch" data-i18n="about_title">Qui suis-je ?</h2>
-                            <!-- Annotation "EVEN" avec flèche pointant vers le haut à droite -->
+                            <!-- Signature annotation with an arrow -->
                             <div class="notebook-signature">
                                 <span class="signature-name font-sketch">EVEN</span>
                                 <svg class="signature-arrow" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -359,7 +348,7 @@
                 </div>
             </div>
 
-            <!-- CONTACT (intégré dans accueil) -->
+            <!-- Contact -->
             <div class="home-contact" id="home-contact">
                 <div class="home-contact-inner">
                     <div class="page-heading">
@@ -436,7 +425,7 @@
                 </div>
             </div>
 
-            <!-- FOOTER LÉGAL -->
+            <!-- Legal footer -->
             <footer class="site-footer" id="site-footer">
                 <div class="footer-inner">
                     <div class="footer-top">
@@ -459,7 +448,7 @@
 
         </section>
 
-        <!-- ─── PAGE 02 : PROJETS (HUB) ─── -->
+        <!-- Page: projects hub -->
         <section class="page" id="page-projects" data-page="projects">
             <div class="page-inner">
                 <div class="page-heading">
@@ -522,7 +511,7 @@
                     </div>
                 </div>
 
-                <!-- NEXT PAGE LINK -->
+                <!-- Next-page link -->
                 <a href="javascript:void(0)" class="page-next" data-next="drawings" aria-label="Aller à la page suivante" data-i18n-aria="aria_next_page">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
@@ -549,7 +538,7 @@
             </div>
         </section>
 
-        <!-- ─── DETAIL PROJET : PATERR SUISSE (PLACEHOLDER) ─── -->
+        <!-- Project detail: Paterr Suisse (placeholder) -->
         <section class="page project-detail-page" id="page-project-2" data-page="project-2">
             <div class="page-inner">
                 <div class="page-heading">
@@ -559,7 +548,7 @@
                 <div class="coming-soon">
                     <p class="font-sketch">Contenu du projet Paterr Suisse à venir...</p>
                 </div>
-                <!-- NEXT PAGE LINK -->
+                <!-- Next-page link -->
                 <a href="javascript:void(0)" class="page-next" data-next="project-3" aria-label="Aller au projet suivant" data-i18n-aria="aria_next_project">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
@@ -586,7 +575,7 @@
             </div>
         </section>
 
-        <!-- ─── DETAIL PROJET : 3 (PLACEHOLDER) ─── -->
+        <!-- Project detail: project 3 (placeholder) -->
         <section class="page project-detail-page" id="page-project-3" data-page="project-3">
             <div class="page-inner">
                 <div class="page-heading">
@@ -596,7 +585,7 @@
                 <div class="coming-soon">
                     <p class="font-sketch">À suivre...</p>
                 </div>
-                <!-- NEXT PAGE LINK -->
+                <!-- Next-page link -->
                 <a href="javascript:void(0)" class="page-next" data-next="drawings" aria-label="Aller à la page Dessins" data-i18n-aria="aria_goto_drawings">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
@@ -623,20 +612,20 @@
             </div>
         </section>
 
-        <!-- ─── DETAIL PROJET : DIPLÔME ─── -->
+        <!-- Project detail: diploma -->
         <section class="page project-detail-page" id="page-project-diploma" data-page="project-diploma">
             <div class="page-inner">
 
                 <div class="fortiche-projects-board">
 
-                    <!-- ================== TAPE TITLE ================== -->
+                    <!-- Tape title -->
                     <div class="projects-board-header">
                         <div class="tape-title-wrap">
                             <h3 class="font-sketch tape-title" data-i18n="proj_title">PROJET 01 : DIPLÔME</h3>
                         </div>
                     </div>
 
-                    <!-- ================== DESCRIPTION CAHIER ================== -->
+                    <!-- Project description -->
                     <div class="project-description-notebook">
                         <div class="project-desc-sheet">
                             <div class="project-desc-content">
@@ -646,7 +635,7 @@
                         </div>
                     </div>
 
-                    <!-- ================== PANEL 1 : ZOONING & ANALYSE (anthracite) ================== -->                    <!-- ================== PANEL 1 : ZOONING & ANALYSE (anthracite) ================== -->
+                    <!-- Panel 1: zoning and analysis (dark grey) -->
                     <div class="panel-section panel-light">
                         <div class="sticker-title-wrap">
                             <span class="sticker-title font-sketch" data-i18n="proj_panel_zooning">ZOONING ET ANALYSE</span>
@@ -667,7 +656,7 @@
                                             <div class="bd-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="pdf-inline-render pdf-img" src="PDF/opt/zooning-circulation.webp" srcset="PDF/opt/zooning-circulation-1280.webp 1x, PDF/opt/zooning-circulation.webp 2x" data-pdf-url="PDF/zooning-circulation.pdf" alt="Zoning des circulations" data-i18n-alt="alt_zoning_circulation" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
                                         </div>
                                     </div>
-                                    <!-- SVG Crayonné rouge dessiné main -->
+                                    <!-- Hand-drawn red scribble -->
                                     <svg class="sketch-rect-svg bd-frame-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
                                         <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
@@ -683,7 +672,7 @@
                         </div>
                     </div>
 
-                    <!-- ================== PANEL 2 : PLANS (noir) ================== -->
+                    <!-- Panel 2: plans (black) -->
                     <div class="panel-section">
                         <div class="sticker-title-wrap sticker-right">
                             <span class="sticker-title font-sketch" data-i18n="proj_panel_plans">PLANS</span>
@@ -707,7 +696,7 @@
                                             <div class="bd-slide" data-slide="6"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="pdf-inline-render pdf-img" src="PDF/opt/plan-expo.webp" srcset="PDF/opt/plan-expo-1280.webp 1x, PDF/opt/plan-expo.webp 2x" data-pdf-url="PDF/plan-expo.pdf" alt="Zoom sur l'espace d'exposition" data-i18n-alt="alt_zoom_expo" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
                                         </div>
                                     </div>
-                                    <!-- SVG Crayonné rouge dessiné main -->
+                                    <!-- Hand-drawn red scribble -->
                                     <svg class="sketch-rect-svg bd-frame-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
                                         <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                                     </svg>
@@ -723,7 +712,7 @@
                         </div>
                     </div>
 
-                    <!-- ================== PANEL 3 : COUPES ARCHITECTURALES (anthracite) ================== -->
+                    <!-- Panel 3: architectural sections (dark grey) -->
                     <div class="panel-section panel-light">
                         <div class="sticker-title-wrap">
                             <span class="sticker-title font-sketch" data-i18n="proj_panel_coupes">COUPES ARCHITECTURALES</span>
@@ -767,7 +756,7 @@
                         </div>
                     </div>
 
-                    <!-- ================== PANEL 4 : 3D (noir) ================== -->
+                    <!-- Panel 4: 3D (black) -->
                     <div class="panel-section">
                         <div class="sticker-title-wrap sticker-right">
                             <span class="sticker-title font-sketch" data-i18n="proj_panel_3d">3D</span>
@@ -803,10 +792,7 @@
                         </div>
                     </div>
 
-                    <!-- ================== L'ARBITRAGE ================== -->
-                    <!-- Le bloc que cherche un professionnel : la decision
-                         tranchee et sa raison. Rien d'autre ne montre aussi
-                         bien une maniere de penser. -->
+                    <!-- Trade-off -->
                     <div class="panel-section panel-choice">
                         <div class="choice-inner">
                             <span class="choice-eyebrow font-sketch" data-i18n="choice_eyebrow">Les problématiques</span>
@@ -816,14 +802,9 @@
                         </div>
                     </div>
 
-                </div><!-- /.fortiche-projects-board -->
+                </div><!-- End of project board -->
 
-                <!-- ================== CITATION DE FIN ================== -->
-                <!-- Reprend la page de fin du dossier de diplome d'Even :
-                     la phrase au centre, le nom juste en dessous, rien
-                     d'autre. Les deux vides qui l'encadrent grandissent a
-                     mesure qu'elle approche du centre de l'ecran, puis se
-                     referment. La page respire autour d'elle. -->
+                <!-- Closing quote -->
                 <section class="quote-band">
                     <figure class="qb-body">
                         <blockquote class="qb-text" data-i18n="quote_text">Quand les détails réussissent, ils ne distraient pas et n'amusent pas. Ils conduisent à la compréhension de l'ensemble dont ils font partie.</blockquote>
@@ -860,7 +841,7 @@
             </div>
         </section>
 
-        <!-- ——— PAGE 03 : DESSINS ——— -->
+        <!-- Page: drawings -->
         <section class="page" id="page-drawings" data-page="drawings">
             <div class="page-inner">
                 <div class="page-heading">
@@ -869,7 +850,7 @@
                 </div>
                 <p class="page-intro" data-i18n="drawings_intro">Esquisses architecturales à main levée sur papier A4.</p>
 
-                <!-- Dessins uniques -->
+                <!-- Single drawings -->
                 <div class="drawings-gallery">
                     <div class="drawing-item orient-portrait">
                         <div class="frame-wrap">
@@ -940,7 +921,7 @@
                     </div>
                 </div>
 
-                <!-- Section Bande Dessinée -->
+                <!-- Comic carousel -->
                 <div class="bd-carousel-section">
                     <div class="bd-title-wrap">
                         <h3 class="bd-section-title font-sketch" data-i18n="bd_title">BANDE DESSINÉE</h3>
@@ -990,7 +971,7 @@
                             </div>
                         </div>
 
-                            <!-- SVG Crayonné rouge dessiné main -->
+                            <!-- Hand-drawn red scribble -->
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
                                 <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -1005,7 +986,7 @@
                         </button>
                     </div>
 
-                    <!-- Contrôles interactifs du bas -->
+                    <!-- Carousel controls -->
                     <div class="bd-carousel-controls">
                         <button type="button" class="bd-play-pause-btn" aria-label="Lecture automatique" data-i18n-aria="aria_autoplay">
                             <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/></svg>
@@ -1024,10 +1005,7 @@
                     </div>
                 </div>
 
-                <!-- ================== CITATION DE FIN ================== -->
-                <!-- Meme dispositif que sur la page projet : la phrase au
-                     centre, le nom juste en dessous, et la page qui respire
-                     autour quand elle approche du centre de l'ecran. -->
+                <!-- Closing quote -->
                 <section class="quote-band">
                     <figure class="qb-body">
                         <blockquote class="qb-text" data-i18n="quote2_text">Je préfère dessiner que parler. Dessiner est plus rapide et laisse moins de place au mensonge.</blockquote>
@@ -1035,7 +1013,7 @@
                     </figure>
                 </section>
 
-                <!-- Flèche suivant → -->
+                <!-- Next-page link -->
                 <a href="javascript:void(0)" class="page-next" data-next="diploma" aria-label="Aller à la page Diplôme" data-i18n-aria="aria_goto_diploma">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
@@ -1065,7 +1043,7 @@
             </div>
         </section>
 
-        <!-- ——— PAGE 04 : DIPLÔME ——— -->
+        <!-- Page: diploma -->
         <section class="page" id="page-diploma" data-page="diploma">
             <div class="page-inner">
                 <div class="page-heading">
@@ -1145,7 +1123,7 @@
                     </div>
                 </div>
 
-                <!-- Section du scan du diplôme (A4 Paysage) -->
+                <!-- Diploma scan (A4 landscape) -->
                 <div class="diploma-scan-container">
                     <h4 class="scan-section-title font-sketch">
                         <span data-i18n="study_degree">Diplôme d'Architecte d'Intérieur</span>
@@ -1193,7 +1171,7 @@
 </div>
         </section>
 
-        <!-- ——— PAGE 05 : HOBBIES ——— -->
+        <!-- Page: hobbies -->
         <section class="page" id="page-hobbies" data-page="hobbies">
             <div class="page-inner">
                 <div class="page-heading">
@@ -1247,7 +1225,7 @@
 
                 </div>
 
-                <!-- Flèche suivant → -->
+                <!-- Next-page link -->
                 <a href="javascript:void(0)" class="page-next" data-next="contact" aria-label="Aller à la page Contact" data-i18n-aria="aria_goto_contact">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
@@ -1279,16 +1257,16 @@
 
     </div>
 
-    <!-- Lightbox ultra-épurée (style Fortiche) -->
+    <!-- Lightbox -->
     <div id="drawing-lightbox" class="drawing-lightbox" role="dialog" aria-modal="true" aria-label="Visionneuse d'images" data-i18n-aria="aria_viewer">
 
-        <!-- Logo centré en haut -->
+        <!-- Logo -->
         <span class="lb-logo font-sketch">EVEN ANICET</span>
 
-        <!-- Compteur discret sous le logo -->
+        <!-- Counter -->
         <span class="lb-counter font-sketch">1 / 7</span>
 
-        <!-- Outils (Plein écran, Zoom, Fermer) -->
+        <!-- Tools: fullscreen, zoom, close -->
         <div class="lb-tools">
             <div class="lb-zoom-slider-container" id="lb-zoom-slider-container">
                 <svg class="lb-slider-svg" viewBox="0 0 100 20" preserveAspectRatio="none">
@@ -1308,7 +1286,7 @@
             <button type="button" class="lb-close" aria-label="Fermer" data-i18n-aria="aria_close">&times;</button>
         </div>
 
-        <!-- Flèche gauche -->
+        <!-- Previous arrow -->
         <button type="button" class="lb-arrow lb-prev" aria-label="Précédent" data-i18n-aria="aria_prev">
             <svg viewBox="0 0 24 24" width="28" height="28"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor"/></svg>
         </button>
@@ -1320,18 +1298,18 @@
         <!-- Loader -->
         <div class="lb-loader" id="lb-loader"><div class="lb-spinner"></div></div>
 
-        <!-- Flèche droite -->
+        <!-- Next arrow -->
         <button type="button" class="lb-arrow lb-next" aria-label="Suivant" data-i18n-aria="aria_next">
             <svg viewBox="0 0 24 24" width="28" height="28"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor"/></svg>
         </button>
 
-        <!-- Points indicateurs en bas -->
+        <!-- Dots -->
         <div class="lb-dots"></div>
     </div>
 
 
-    <!-- Cookieless audience measurement. Low priority, so that it never competes
-         with the page; no integrity hash, because the provider updates the file. -->
+    <!-- Cookieless audience measurement. Low priority, so that it never competes with the page;
+         no integrity hash, because the provider updates the file. -->
     <script defer fetchpriority="low" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "b3319e6ffcba481591e31f55c9d81cdc"}'></script>
 </body>
 
