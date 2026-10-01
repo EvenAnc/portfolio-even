@@ -10,10 +10,21 @@ export const state = {
     scroll: null,
 };
 
+/** Every event of the bus, with the detail its handlers receive. */
+export const EVENTS = {
+    /** A navigation starts. Detail: `{ from: string, to: string }`, page ids. */
+    PAGE_CHANGE: 'page-change',
+    /** The requested page has just become the active one. Detail: `{ page: string }`. */
+    PAGE_SHOWN: 'page-shown',
+    /** Back, Forward or a fragment typed by hand. Detail: `{ from: string, to: string|null }`. */
+    HISTORY_NAVIGATION: 'history-navigation',
+};
+
 const handlers = new Map();
 
 /**
- * @param {string} eventName
+ * Subscribes to an event.
+ * @param {string} eventName one of EVENTS
  * @param {(detail: object) => void} handler
  */
 export function on(eventName, handler) {
@@ -22,9 +33,28 @@ export function on(eventName, handler) {
 }
 
 /**
- * @param {string} eventName
+ * Removes a subscription made with `on`.
+ * @param {string} eventName one of EVENTS
+ * @param {(detail: object) => void} handler
+ */
+export function off(eventName, handler) {
+    const list = handlers.get(eventName) || [];
+    const index = list.indexOf(handler);
+    if (index !== -1) list.splice(index, 1);
+}
+
+/**
+ * Calls every handler of an event, in subscription order.
+ * @param {string} eventName one of EVENTS
  * @param {object} [detail]
  */
 export function emit(eventName, detail) {
-    (handlers.get(eventName) || []).forEach(handler => handler(detail));
+    [...(handlers.get(eventName) || [])].forEach(handler => {
+        // A failing subscriber must not interrupt the emitter half-way.
+        try {
+            handler(detail);
+        } catch (error) {
+            console.error(`[portfolio] handler of "${eventName}" failed:`, error);
+        }
+    });
 }

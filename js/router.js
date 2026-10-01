@@ -7,34 +7,56 @@
  * on every direct opening.
  */
 
-import { state, emit } from './core/state.js';
+import { state, emit, EVENTS } from './core/state.js';
 import { hasScrollTrigger } from './core/env.js';
 import { updatePageMeta } from './i18n/i18n.js';
 import { destroyPageScroll, createPageScroll, updateScrollbarWidth } from './page-scroll.js';
 import { updateHeaderLogo, updateBackButton } from './header.js';
 import { resetHero, bindHeroScroll } from './hero.js';
 
-// False until the landing entry is written: the first display replaces the
-// current history entry instead of adding one.
-let hasHistoryEntry = false;
-
 // Page id -> URL fragment. The fragments are public addresses.
 const PAGE_SLUGS = {
-    'home':            '',
-    'projects':        'projets',
+    'home': '',
+    'projects': 'projets',
     'project-diploma': 'projet-diplome',
-    'project-2':       'projet-paterr-suisse',
-    'project-3':       'projet-03',
-    'drawings':        'dessins',
-    'diploma':         'diplome',
-    'hobbies':         'hobbies',
+    'project-2': 'projet-paterr-suisse',
+    'project-3': 'projet-03',
+    'drawings': 'dessins',
+    'diploma': 'diplome',
+    'hobbies': 'hobbies',
 };
 
 // A Map, not a plain object: fragments such as #constructor would otherwise
 // resolve to members inherited from Object.prototype.
 const SLUG_TO_PAGE = new Map(
-    Object.entries(PAGE_SLUGS).filter(([, slug]) => slug).map(([id, slug]) => [slug, id])
+    Object.entries(PAGE_SLUGS).filter(([, slug]) => slug).map(([id, slug]) => [slug, id]),
 );
+
+const FADE_OUT_S = 0.35;
+const FADE_IN_S = 0.55;
+const FADE_IN_RISE_PX = 22;
+
+// The contact block stops a little below the top edge of the page.
+const CONTACT_SCROLL_MARGIN_PX = 40;
+const CONTACT_SCROLL_DURATION_S = 1.2;
+// Wait before scrolling to the contact block: when already on the home
+// page, after a page transition, and on a direct opening.
+const CONTACT_SCROLL_DELAY_MS = 100;
+const CONTACT_SCROLL_DELAY_AFTER_TRANSITION_MS = 750;
+const CONTACT_SCROLL_DELAY_ON_LOAD_MS = 600;
+// Wait between a click on a "next page" arrow and the move to contact.
+const CONTACT_LINK_DELAY_MS = 300;
+
+// False until the landing entry is written: the first display replaces the
+// current history entry instead of adding one.
+let hasHistoryEntry = false;
+
+// A reveal still pending belongs to a navigation that has been superseded:
+// left alone, it would switch page or scroll after the visitor moved on.
+let contactTimers = [];
+
+// Fade of the page that is leaving, while it runs.
+let fadeOut = null;
 
 /**
  * Reads the current fragment.
@@ -53,12 +75,15 @@ export function pageFromHash() {
     return SLUG_TO_PAGE.get(raw) || null;
 }
 
+// The query string carries the language (?lang=en) and must survive
+// navigation.
+function baseUrl() {
+    return location.pathname + location.search;
+}
+
 function urlForPage(pageId) {
     const slug = PAGE_SLUGS[pageId];
-    // The query string carries the language (?lang=en) and must survive
-    // navigation.
-    const base = location.pathname + location.search;
-    return slug ? base + '#' + slug : base;
+    return slug ? `${baseUrl()}#${slug}` : baseUrl();
 }
 
 // Contact is not a page: it is the last block of the home page.
@@ -68,11 +93,19 @@ function scrollToContact() {
     // does not contain.
     if (!contactEl || state.page !== 'home') return;
     if (state.scroll) {
-        state.scroll.scrollTo(contactEl, { offset: -40, duration: 1.2 });
+        state.scroll.scrollTo(contactEl, {
+            offset: -CONTACT_SCROLL_MARGIN_PX,
+            duration: CONTACT_SCROLL_DURATION_S,
+        });
     } else {
         const homeEl = document.getElementById('page-home');
-        if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - 40, behavior: 'smooth' });
+        if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - CONTACT_SCROLL_MARGIN_PX, behavior: 'smooth' });
     }
+}
+
+function cancelContactReveal() {
+    contactTimers.forEach(clearTimeout);
+    contactTimers = [];
 }
 
 // Brings home in if needed, then scrolls once its transition has settled.
@@ -85,17 +118,9 @@ function revealContact(outerDelay = 0) {
         // The visitor may have gone back while the menu was closing.
         if (pageFromHash() !== 'contact') return;
         if (state.page !== 'home') showPage('home', true, false);
-        contactTimers.push(setTimeout(scrollToContact, wasOnHome ? 100 : 750));
+        const scrollDelay = wasOnHome ? CONTACT_SCROLL_DELAY_MS : CONTACT_SCROLL_DELAY_AFTER_TRANSITION_MS;
+        contactTimers.push(setTimeout(scrollToContact, scrollDelay));
     }, outerDelay));
-}
-
-// A reveal still pending belongs to a navigation that has been superseded:
-// left alone, it would switch page or scroll after the visitor moved on.
-let contactTimers = [];
-
-function cancelContactReveal() {
-    contactTimers.forEach(clearTimeout);
-    contactTimers = [];
 }
 
 // Leaving the #contact entry for the plain home address stays on the same
@@ -119,67 +144,10 @@ function scrollHomeToTop() {
 export function goToContact(outerDelay) {
     revealContact(outerDelay);
     if (location.hash !== '#contact') {
-        history.pushState({ page: 'contact' }, '', location.pathname + location.search + '#contact');
+        history.pushState({ page: 'contact' }, '', `${baseUrl()}#contact`);
         hasHistoryEntry = true;
     }
 }
-
-/**
- * Displays a page.
- * @param {string} pageId
- * @param {boolean} [animate] false swaps the pages at once
- * @param {boolean} [updateHistory] false when following the history rather than adding to it
- */
-export function showPage(pageId, animate = true, updateHistory = true) {
-    if (pageId === state.page && animate) return;
-    cancelContactReveal();
-
-    const inEl = document.getElementById(`page-${pageId}`);
-    if (!inEl) return;
-    // The page on display: during a fade it is still the one that was
-    // leaving, not the one state.page already names.
-    const outEl = document.querySelector('.page.is-active');
-    const wasFading = cancelFadeOut();
-
-    const previousPage = state.page;
-    state.page = pageId;
-    updatePageMeta(pageId);
-    emit('page-change', { from: previousPage, to: pageId });
-
-    if (updateHistory) recordHistoryEntry(pageId);
-
-    updateBackButton(pageId);
-
-    // The scroll instance belongs to the page that is leaving.
-    destroyPageScroll();
-
-    if (!animate || !outEl) {
-        if (wasFading && outEl) outEl.style.opacity = '';
-        swapActivePage(outEl, inEl, pageId);
-        settlePage(inEl, pageId);
-        return;
-    }
-
-    fadeOut = gsap.to(outEl, {
-        opacity: 0, duration: 0.35, ease: 'power2.in',
-        onComplete: () => {
-            fadeOut = null;
-            outEl.style.opacity = '';
-            swapActivePage(outEl, inEl, pageId);
-
-            gsap.fromTo(inEl,
-                { opacity: 0, y: 22 },
-                { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }
-            );
-
-            settlePage(inEl, pageId);
-            focusPage(inEl);
-        }
-    });
-}
-
-// Fade of the page that is leaving, while it runs.
-let fadeOut = null;
 
 // A navigation asked during the fade supersedes it: the fade stops and its
 // completion never runs, so only the latest navigation activates a page.
@@ -207,18 +175,33 @@ function swapActivePage(outEl, inEl, pageId) {
     resetHero(pageId);
 }
 
+// The hero follows the scroll position of the home page only.
+function startPageScroll(pageEl, pageId) {
+    createPageScroll(pageEl);
+    if (pageId === 'home' && state.scroll) bindHeroScroll(state.scroll);
+}
+
+// Inactive pages are in content-visibility: hidden, which skips their
+// rendering and keeps the first load light. Lazy loading relies on an
+// intersection that is never computed in a skipped subtree, so the images
+// of a page are switched to eager loading when that page opens.
+function loadPageImages(pageEl) {
+    pageEl.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        img.loading = 'eager';
+        // Setting src again restarts a download the browser had deferred.
+        if (!img.complete || img.naturalWidth === 0) {
+            const src = img.getAttribute('src');
+            if (src) img.setAttribute('src', src);
+        }
+    });
+}
+
 function settlePage(inEl, pageId) {
     startPageScroll(inEl, pageId);
     if (hasScrollTrigger) ScrollTrigger.refresh();
     updateHeaderLogo(pageId);
     loadPageImages(inEl);
     updateScrollbarWidth();
-}
-
-// The hero follows the scroll position of the home page only.
-function startPageScroll(pageEl, pageId) {
-    createPageScroll(pageEl);
-    if (pageId === 'home' && state.scroll) bindHeroScroll(state.scroll);
 }
 
 // Pages scroll inside their own box: unless focus sits in the visible one,
@@ -229,41 +212,87 @@ function focusPage(pageEl) {
     pageEl.focus({ preventScroll: true });
 }
 
-// Inactive pages are in content-visibility: hidden, which skips their
-// rendering and keeps the first load light. Lazy loading relies on an
-// intersection that is never computed in a skipped subtree, so the images
-// of a page are switched to eager loading when that page opens.
-function loadPageImages(pageEl) {
-    if (!pageEl) return;
-    pageEl.querySelectorAll('img[loading="lazy"]').forEach(img => {
-        img.loading = 'eager';
-        // Setting src again restarts a download the browser had deferred.
-        if (!img.complete || img.naturalWidth === 0) {
-            const src = img.getAttribute('src');
-            if (src) { img.setAttribute('src', src); }
-        }
+function fadeToPage(outEl, inEl, pageId) {
+    fadeOut = gsap.to(outEl, {
+        opacity: 0,
+        duration: FADE_OUT_S,
+        ease: 'power2.in',
+        onComplete: () => {
+            fadeOut = null;
+            outEl.style.opacity = '';
+            swapActivePage(outEl, inEl, pageId);
+
+            gsap.fromTo(inEl,
+                { opacity: 0, y: FADE_IN_RISE_PX },
+                { opacity: 1, y: 0, duration: FADE_IN_S, ease: 'power3.out' },
+            );
+
+            settlePage(inEl, pageId);
+            focusPage(inEl);
+            emit(EVENTS.PAGE_SHOWN, { page: pageId });
+        },
     });
+}
+
+/**
+ * Displays a page.
+ * @param {string} pageId
+ * @param {boolean} [animate] false swaps the pages at once
+ * @param {boolean} [updateHistory] false when following the history rather than adding to it
+ */
+export function showPage(pageId, animate = true, updateHistory = true) {
+    if (pageId === state.page && animate) return;
+    cancelContactReveal();
+
+    const inEl = document.getElementById(`page-${pageId}`);
+    if (!inEl) return;
+    // The page on display: during a fade it is still the one that was
+    // leaving, not the one state.page already names.
+    const outEl = document.querySelector('.page.is-active');
+    const wasFading = cancelFadeOut();
+
+    const previousPage = state.page;
+    state.page = pageId;
+    updatePageMeta(pageId);
+    emit(EVENTS.PAGE_CHANGE, { from: previousPage, to: pageId });
+
+    if (updateHistory) recordHistoryEntry(pageId);
+
+    updateBackButton(pageId);
+
+    // The scroll instance belongs to the page that is leaving.
+    destroyPageScroll();
+
+    if (animate && outEl) {
+        fadeToPage(outEl, inEl, pageId);
+        return;
+    }
+
+    if (wasFading && outEl) outEl.style.opacity = '';
+    swapActivePage(outEl, inEl, pageId);
+    settlePage(inEl, pageId);
+    emit(EVENTS.PAGE_SHOWN, { page: pageId });
 }
 
 /** Hides every page; the router then reveals the one the address asks for. */
 export function resetActivePages() {
-    document.querySelectorAll('.page').forEach(p => {
+    document.querySelectorAll('.page').forEach(page => {
         // Hidden state is set here rather than in the markup: declared
         // statically it would hide focusable content from assistive
         // technology even if this script never ran.
-        p.setAttribute('aria-hidden', 'true');
-        p.classList.remove('is-active');
+        page.setAttribute('aria-hidden', 'true');
+        page.classList.remove('is-active');
     });
 }
 
 /** Wires the "next page" arrows, the home shortcut and the project cards. */
 export function initPageLinks() {
     document.querySelectorAll('.page-next, .showcase-projects-btn').forEach(link => {
-        link.addEventListener('click', e => {
-            e.preventDefault();
+        link.addEventListener('click', event => {
+            event.preventDefault();
             const nextPage = link.dataset.next;
             if (nextPage === 'contact') {
-                goToContact(300);
+                goToContact(CONTACT_LINK_DELAY_MS);
             } else if (nextPage) {
                 showPage(nextPage);
             }
@@ -292,42 +321,45 @@ export function showInitialPage() {
 
     // An unknown fragment is also removed from the address bar.
     if (requestedPage === null) {
-        history.replaceState({ page: 'home' }, '', location.pathname + location.search);
+        history.replaceState({ page: 'home' }, '', baseUrl());
     }
 
     if (requestedPage === 'contact') {
-        setTimeout(scrollToContact, 600);
+        setTimeout(scrollToContact, CONTACT_SCROLL_DELAY_ON_LOAD_MS);
+    }
+}
+
+function onPopState() {
+    const targetPage = pageFromHash();
+    emit(EVENTS.HISTORY_NAVIGATION, { from: state.page, to: targetPage });
+    if (targetPage === 'contact') {
+        revealContact();
+        return;
+    }
+    if ((targetPage || 'home') === 'home' && state.page === 'home') {
+        scrollHomeToTop();
+        return;
+    }
+    showPage(targetPage || 'home', true, false);
+}
+
+function onHashChange() {
+    const targetPage = pageFromHash();
+    emit(EVENTS.HISTORY_NAVIGATION, { from: state.page, to: targetPage });
+    if (targetPage === null) {
+        showPage('home', true, false);
+        history.replaceState({ page: 'home' }, '', baseUrl());
+        return;
+    }
+    if (targetPage === 'home' && state.page === 'home') {
+        scrollHomeToTop();
+    } else if (targetPage !== 'contact' && targetPage !== state.page) {
+        showPage(targetPage, true, false);
     }
 }
 
 /** Follows the browser history: Back and Forward, and fragments typed by hand. */
 export function initHistory() {
-    window.addEventListener('popstate', () => {
-        const targetPage = pageFromHash();
-        emit('history-navigation', { from: state.page, to: targetPage });
-        if (targetPage === 'contact') {
-            revealContact();
-            return;
-        }
-        if ((targetPage || 'home') === 'home' && state.page === 'home') {
-            scrollHomeToTop();
-            return;
-        }
-        showPage(targetPage || 'home', true, false);
-    });
-
-    window.addEventListener('hashchange', () => {
-        const targetPage = pageFromHash();
-        emit('history-navigation', { from: state.page, to: targetPage });
-        if (targetPage === null) {
-            showPage('home', true, false);
-            history.replaceState({ page: 'home' }, '', location.pathname + location.search);
-            return;
-        }
-        if (targetPage === 'home' && state.page === 'home') {
-            scrollHomeToTop();
-        } else if (targetPage !== 'contact' && targetPage !== state.page) {
-            showPage(targetPage, true, false);
-        }
-    });
+    window.addEventListener('popstate', onPopState);
+    window.addEventListener('hashchange', onHashChange);
 }
