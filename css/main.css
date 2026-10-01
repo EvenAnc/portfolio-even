@@ -2803,128 +2803,7 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 }
 
 
-/* Not yet reorganised */
-
-.menu-overlay {
-    position: fixed; inset: 0; z-index: 90;
-    background: var(--bg);
-    display: flex; flex-direction: column;
-    padding: 0 60px 50px;
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
-    overflow-y: auto;
-}
-
-body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
-.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
-
-.menu-logo {
-    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
-    animation: logoWobbleMini 0.3s steps(1) infinite;
-}
-
-/* Items alignés, espacement vertical régulier */
-.menu-nav {
-    display: flex; flex-direction: column;
-    gap: 18px;
-    flex: 1;
-    justify-content: center;
-}
-
-.menu-nav-item {
-    display: flex; align-items: baseline; gap: 18px;
-    width: fit-content; padding: 10px 0;
-    position: relative;
-}
-
-.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
-
-.mn-label {
-    font-family: var(--font-display);
-    font-size: clamp(2.8rem, 6vw, 4.8rem);
-    line-height: 1; letter-spacing: 0.02em;
-    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
-}
-
-.mn-deco {
-    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
-    color: var(--red); opacity: 0;
-    transform: translateX(-8px) rotate(-3deg);
-    transition: opacity 0.3s, transform 0.4s var(--ease-out);
-    white-space: nowrap;
-}
-
-.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
-.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
-
-.menu-scribble {
-    position: absolute; top: 110px; right: 60px;
-    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
-}
-
-.menu-footer {
-    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
-    display: flex; align-items: center; gap: 40px;
-}
-
-.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
-.menu-mail:hover { opacity: 1; color: var(--red); }
-.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
-.menu-footer-social a { transition: color var(--dur-fast); }
-.menu-footer-social a:hover { color: var(--red); }
-
-.page-next {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 80px;
-    margin-bottom: 40px;
-    float: right;
-    clear: both;
-    padding: 10px 0;
-    transition: transform 0.3s var(--ease-out);
-}
-
-.page-next:hover {
-    transform: translateX(10px);
-}
-
-.page-next-label {
-    font-family: var(--font-sketch);
-    font-size: 3.5rem;
-    text-transform: lowercase;
-    letter-spacing: 0.03em;
-    color: var(--white);
-    transition: color 0.3s;
-}
-
-.page-next:hover .page-next-label {
-    color: var(--red);
-}
-
-.page-next-arrow {
-    width: 60px;
-    height: 30px;
-    animation: rectWobble 0.3s steps(1) infinite;
-}
-
-.page-next-arrow path {
-    stroke: var(--red);
-}
-
-.panel-section::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 20px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12' stroke='white' stroke-width='2.5' fill='none' stroke-linejoin='miter' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-size: 500px 20px;
-      background-repeat: repeat-x;
-      z-index: 1;
-      pointer-events: none;
-  }
+/* Lightbox */
 
 .drawing-lightbox {
     position: fixed;
@@ -3175,10 +3054,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     animation: lb-spin 0.9s linear infinite;
 }
 
-@keyframes lb-spin {
-    to { transform: rotate(360deg); }
-}
-
 /* ── Points indicateurs en bas ── */
 .lb-dots {
     position: absolute;
@@ -3218,6 +3093,25 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     pointer-events: none;
 }
 
+.drawing-lightbox .lb-close {
+    top: max(18px, calc(18px + env(safe-area-inset-top)));
+}
+
+/* La visionneuse s'ouvre normalement en fondu sur 0,35s. Pendant une
+   transition de vue, ce fondu est nuisible : au moment ou le navigateur
+   photographie l'image d'arrivee, l'opacite vaut encore 0 et la planche
+   grandit vers du vide. On la rend visible d'un coup — l'animation, c'est
+   la transition qui la fait. La classe est retiree juste apres, pour que
+   la fermeture retrouve son fondu.
+   Meme poids que .drawing-lightbox[aria-hidden="false"], mais posee plus
+   loin dans le fichier : c'est elle qui l'emporte. */
+.drawing-lightbox.sans-fondu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: none;
+}
+
 @media (orientation: landscape) and (max-height: 500px) and (min-width: 769px) {
     /* Phone held sideways: the viewer and its canvas each reserve room for the
        controls, and the two stacked paddings leave about a fifth of a 393px-high
@@ -3234,13 +3128,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 @media (max-width: 768px) {
-    /* ── Menu overlay ── */
-    .menu-overlay { padding: 0 20px 30px; }
-
-    .menu-logo-wrap { padding-top: 85px; padding-bottom: 20px; }
-    .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
-    .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
-
     /* Conteneur global : padding safe-area pour les encoches */
     .drawing-lightbox {
         padding: 0;
@@ -3311,17 +3198,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
         padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
     }
 
-    /* Flèches de navigation : plus petites, sans fond (Swipe disponible) */
-    .lb-arrow {
-        padding: 12px 8px;
-        min-width: 44px;
-        min-height: 60px;
-        background: none;
-        border-radius: 0;
-    }
-
-    .lb-prev { left: 0px; }
-    .lb-next { right: 0px; }
     .lb-arrow svg { width: 18px; height: 18px; }
 
     /* Points indicateurs : remontés pour ne pas chevaucher la barre */
@@ -3331,6 +3207,285 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     }
 
     .lb-dot { width: 10px; height: 10px; }
+
+    /* ── 5. Visionneuse sur telephone : recuperer la place perdue ──────
+       Mesure sur iPhone 390x844 : le conteneur reservait 45px de marge de
+       chaque cote pour degager les fleches, et l'image n'occupait que
+       300x424 — a peine plus que la vignette du carrousel. Ouvrir une
+       planche « en grand » n'apportait presque rien.
+
+       Les fleches ne font que 60px de haut et sont centrees : elles ne
+       croisent l'image que sur une bande etroite. On les laisse donc
+       flotter par-dessus, comme sur toutes les visionneuses mobiles, et
+       l'image reprend la largeur. Le glissement lateral reste de toute
+       facon le geste principal.
+       Resultat : 300x424 -> environ 370x523, soit +50% de surface. */
+    #lb-canvas-wrap {
+        padding: 70px 10px 120px;
+    }
+
+    .lb-prev, .lb-next {
+        /* legere ombre pour rester lisibles au-dessus d'une planche claire */
+        filter: drop-shadow(0 0 6px rgba(0,0,0,0.85));
+    }
+
+    /* ── 12. Visionneuse : fleches ramenees dans la barre du bas ───────
+       Au doigt, des fleches collees aux bords de l'ecran se confondent
+       avec le geste de retour du systeme et passent inapercues. Even
+       demande a les retrouver a cote des boutons zoom et plein ecran.
+
+       Mesures : la barre d'outils occupe 93 -> 319 et laisse 93px libres
+       de chaque cote — exactement la place des fleches. On les aligne sur
+       sa hauteur (bottom: 44px), ce qui regroupe TOUTES les commandes en
+       une seule rangee : precedent | plein ecran  zoom  fermer | suivant */
+    /* Flèches de navigation : plus petites, sans fond (Swipe disponible) */
+    .lb-arrow {
+        padding: 12px 8px;
+        min-width: 44px;
+        background: none;
+        border-radius: 0;
+        top: auto;
+        bottom: calc(44px + env(safe-area-inset-bottom, 0px));
+        height: 70px;
+        min-height: 70px;
+        transform: none;
+    }
+
+    .lb-prev {
+        left: 14px;
+    }
+
+    .lb-next {
+        right: 14px;
+    }
+
+    /* Au doigt, l'etat :hover reste colle apres l'appui. Le survol
+           reappliquait translateY(-50%), heritee de la disposition bureau ou
+           la fleche est centree verticalement : la fleche touchee sautait de
+           35px vers le haut et se desalignait de sa voisine. On ne garde que
+           l'eclaircissement de la couleur. */
+    .lb-arrow:hover,
+    .lb-arrow:focus,
+    .lb-arrow:active {
+        transform: none;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 768px) {
+    /* Small phone held sideways: the logo, counter, dots and bottom toolbar
+       left under 45% of the screen height to the image. Put the dots and the
+       counter on the logo row, shrink the toolbar, and give the room to the
+       image. Close button and arrows stay on the bottom row. */
+    .lb-logo {
+        top: 4px;
+        font-size: 1.3rem;
+    }
+
+    .lb-counter {
+        top: 12px;
+        left: calc(50% + 56px);
+        transform: none;
+    }
+
+    .lb-dots {
+        top: 16px;
+        bottom: auto;
+        left: auto;
+        right: 14px;
+        transform: none;
+    }
+
+    .lb-arrow {
+        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+        height: 54px;
+        min-height: 54px;
+    }
+
+    #lb-canvas-wrap {
+        padding: 40px 10px calc(62px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+@media (max-width: 341px) {
+    /* Very narrow phones: the toolbar (226px) is wider than the gap left
+       between the two arrows and slid under them. Tighten its spacing so it
+       fits between them; the buttons keep their 44px touch size. */
+    .lb-tools {
+        gap: 4px;
+        padding: 10px 6px;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* ── 19. Le rythme de la planche qui se souleve ───────────────
+
+       Sans ces regles le navigateur applique sa duree par defaut a tout,
+       fond compris, et le mouvement se noie dans le fondu general.
+       On donne le premier role a la planche — un peu plus lente, avec une
+       courbe qui decelere franchement, comme une feuille qu'on souleve — et
+       on abrege le fondu du reste pour qu'il ne la concurrence pas.
+
+       La regle « reduced motion » est deja assuree cote script, qui ouvre
+       sans transition ; celle-ci est une ceinture de plus. */
+    ::view-transition-group(planche-ouverte) {
+        animation-duration: 460ms;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    ::view-transition-old(planche-ouverte),
+    ::view-transition-new(planche-ouverte) {
+        animation-duration: 460ms;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration: 240ms;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 768px) {
+    .lb-tools {
+        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+        padding: 4px 22px;
+    }
+}
+
+@keyframes lb-spin {
+    to { transform: rotate(360deg); }
+}
+
+
+/* Not yet reorganised */
+
+.menu-overlay {
+    position: fixed; inset: 0; z-index: 90;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    padding: 0 60px 50px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
+    overflow-y: auto;
+}
+
+body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
+.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
+
+.menu-logo {
+    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+/* Items alignés, espacement vertical régulier */
+.menu-nav {
+    display: flex; flex-direction: column;
+    gap: 18px;
+    flex: 1;
+    justify-content: center;
+}
+
+.menu-nav-item {
+    display: flex; align-items: baseline; gap: 18px;
+    width: fit-content; padding: 10px 0;
+    position: relative;
+}
+
+.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
+
+.mn-label {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1; letter-spacing: 0.02em;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+}
+
+.mn-deco {
+    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+    color: var(--red); opacity: 0;
+    transform: translateX(-8px) rotate(-3deg);
+    transition: opacity 0.3s, transform 0.4s var(--ease-out);
+    white-space: nowrap;
+}
+
+.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
+.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
+
+.menu-scribble {
+    position: absolute; top: 110px; right: 60px;
+    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
+}
+
+.menu-footer {
+    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 40px;
+}
+
+.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
+.menu-mail:hover { opacity: 1; color: var(--red); }
+.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
+.menu-footer-social a { transition: color var(--dur-fast); }
+.menu-footer-social a:hover { color: var(--red); }
+
+.page-next {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 80px;
+    margin-bottom: 40px;
+    float: right;
+    clear: both;
+    padding: 10px 0;
+    transition: transform 0.3s var(--ease-out);
+}
+
+.page-next:hover {
+    transform: translateX(10px);
+}
+
+.page-next-label {
+    font-family: var(--font-sketch);
+    font-size: 3.5rem;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    transition: color 0.3s;
+}
+
+.page-next:hover .page-next-label {
+    color: var(--red);
+}
+
+.page-next-arrow {
+    width: 60px;
+    height: 30px;
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+.page-next-arrow path {
+    stroke: var(--red);
+}
+
+.panel-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12' stroke='white' stroke-width='2.5' fill='none' stroke-linejoin='miter' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size: 500px 20px;
+      background-repeat: repeat-x;
+      z-index: 1;
+      pointer-events: none;
+  }
+
+@media (max-width: 768px) {
+    /* ── Menu overlay ── */
+    .menu-overlay { padding: 0 20px 30px; }
+
+    .menu-logo-wrap { padding-top: 85px; padding-bottom: 20px; }
+    .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
+    .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
 }
 
 /* PROJECTS REDESIGN (FORTICHE STYLE) */
@@ -3791,154 +3946,11 @@ textarea:focus-visible,
     padding-bottom: max(30px, env(safe-area-inset-bottom));
 }
 
-.drawing-lightbox .lb-close {
-    top: max(18px, calc(18px + env(safe-area-inset-top)));
-}
-
-@media (max-width: 768px) {
-    /* ── 5. Visionneuse sur telephone : recuperer la place perdue ──────
-       Mesure sur iPhone 390x844 : le conteneur reservait 45px de marge de
-       chaque cote pour degager les fleches, et l'image n'occupait que
-       300x424 — a peine plus que la vignette du carrousel. Ouvrir une
-       planche « en grand » n'apportait presque rien.
-
-       Les fleches ne font que 60px de haut et sont centrees : elles ne
-       croisent l'image que sur une bande etroite. On les laisse donc
-       flotter par-dessus, comme sur toutes les visionneuses mobiles, et
-       l'image reprend la largeur. Le glissement lateral reste de toute
-       facon le geste principal.
-       Resultat : 300x424 -> environ 370x523, soit +50% de surface. */
-    #lb-canvas-wrap {
-        padding: 70px 10px 120px;
-    }
-
-    .lb-prev, .lb-next {
-        /* legere ombre pour rester lisibles au-dessus d'une planche claire */
-        filter: drop-shadow(0 0 6px rgba(0,0,0,0.85));
-    }
-}
-
 @media (max-width: 768px) {
     /* le contenu hors panneau garde sa respiration */
     .project-detail-page .page-next {
         padding-left: 20px;
         padding-right: 20px;
-    }
-}
-
-@media (max-width: 768px) {
-    /* ── 12. Visionneuse : fleches ramenees dans la barre du bas ───────
-       Au doigt, des fleches collees aux bords de l'ecran se confondent
-       avec le geste de retour du systeme et passent inapercues. Even
-       demande a les retrouver a cote des boutons zoom et plein ecran.
-
-       Mesures : la barre d'outils occupe 93 -> 319 et laisse 93px libres
-       de chaque cote — exactement la place des fleches. On les aligne sur
-       sa hauteur (bottom: 44px), ce qui regroupe TOUTES les commandes en
-       une seule rangee : precedent | plein ecran  zoom  fermer | suivant */
-    .lb-arrow {
-        top: auto;
-        /* Meme ancrage EXACT que .lb-tools. J'avais ecrit 44px tout court :
-           sur un telephone a barre de gestes, env(safe-area-inset-bottom)
-           vaut une trentaine de pixels, la barre d'outils remontait
-           d'autant et les fleches restaient en bas. Invisible sur mon
-           navigateur de test, ou cette valeur vaut zero. */
-        bottom: calc(44px + env(safe-area-inset-bottom, 0px));
-        height: 70px;
-        min-height: 70px;
-        transform: none;
-    }
-
-    .lb-prev { left: 14px; }
-    .lb-next { right: 14px; }
-
-    /* Au doigt, l'etat :hover reste colle apres l'appui. Le survol
-           reappliquait translateY(-50%), heritee de la disposition bureau ou
-           la fleche est centree verticalement : la fleche touchee sautait de
-           35px vers le haut et se desalignait de sa voisine. On ne garde que
-           l'eclaircissement de la couleur. */
-    .lb-arrow:hover,
-    .lb-arrow:focus,
-    .lb-arrow:active {
-        transform: none;
-    }
-}
-
-@media (max-width: 341px) {
-    /* Very narrow phones: the toolbar (226px) is wider than the gap left
-       between the two arrows and slid under them. Tighten its spacing so it
-       fits between them; the buttons keep their 44px touch size. */
-    .lb-tools {
-        gap: 4px;
-        padding: 10px 6px;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 500px) and (max-width: 768px) {
-    /* Small phone held sideways: the logo, counter, dots and bottom toolbar
-       left under 45% of the screen height to the image. Put the dots and the
-       counter on the logo row, shrink the toolbar, and give the room to the
-       image. Close button and arrows stay on the bottom row. */
-    .lb-logo {
-        top: 4px;
-        font-size: 1.3rem;
-    }
-
-    .lb-counter {
-        top: 12px;
-        left: calc(50% + 56px);
-        transform: none;
-    }
-
-    .lb-dots {
-        top: 16px;
-        bottom: auto;
-        left: auto;
-        right: 14px;
-        transform: none;
-    }
-
-    .lb-tools {
-        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
-        padding: 4px 22px;
-    }
-
-    .lb-arrow {
-        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
-        height: 54px;
-        min-height: 54px;
-    }
-
-    #lb-canvas-wrap {
-        padding: 40px 10px calc(62px + env(safe-area-inset-bottom, 0px));
-    }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    /* ── 19. Le rythme de la planche qui se souleve ───────────────
-
-       Sans ces regles le navigateur applique sa duree par defaut a tout,
-       fond compris, et le mouvement se noie dans le fondu general.
-       On donne le premier role a la planche — un peu plus lente, avec une
-       courbe qui decelere franchement, comme une feuille qu'on souleve — et
-       on abrege le fondu du reste pour qu'il ne la concurrence pas.
-
-       La regle « reduced motion » est deja assuree cote script, qui ouvre
-       sans transition ; celle-ci est une ceinture de plus. */
-    ::view-transition-group(planche-ouverte) {
-        animation-duration: 460ms;
-        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    ::view-transition-old(planche-ouverte),
-    ::view-transition-new(planche-ouverte) {
-        animation-duration: 460ms;
-        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-        animation-duration: 240ms;
     }
 }
 
@@ -4027,21 +4039,6 @@ textarea:focus-visible,
     .panel-lede { margin-bottom: 24px; padding: 0 14px; }
     .choice-inner { padding: 26px 20px 26px 22px; }
     .panel-choice { padding-top: 48px; padding-bottom: 48px; }
-}
-
-/* La visionneuse s'ouvre normalement en fondu sur 0,35s. Pendant une
-   transition de vue, ce fondu est nuisible : au moment ou le navigateur
-   photographie l'image d'arrivee, l'opacite vaut encore 0 et la planche
-   grandit vers du vide. On la rend visible d'un coup — l'animation, c'est
-   la transition qui la fait. La classe est retiree juste apres, pour que
-   la fermeture retrouve son fondu.
-   Meme poids que .drawing-lightbox[aria-hidden="false"], mais posee plus
-   loin dans le fichier : c'est elle qui l'emporte. */
-.drawing-lightbox.sans-fondu {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
-    transition: none;
 }
 
 /* ── 21. Les logiciels employes, sous chaque serie de planches ───
