@@ -1,0 +1,96 @@
+/* Utilities */
+
+.noscript-notice {
+    position: relative;
+    z-index: 10000;
+    max-width: 34rem;
+    margin: 18vh auto 0;
+    padding: 0 24px;
+    color: #fff;
+    font-family: sans-serif;
+    line-height: 1.6;
+}
+.noscript-notice-title { font-size: 2rem; font-weight: 700; }
+.noscript-notice a { color: #fff; }
+.svg-filters { position: absolute; overflow: hidden; }
+.honeypot { display: none; }
+.copy-row { display: flex; align-items: center; gap: 10px; }
+.copy-feedback {
+    color: var(--red);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+.menu-footer .copy-feedback { font-size: 1.2rem; }
+.ci-block .copy-feedback { font-size: 1.8rem; }
+.coming-soon { text-align: center; padding: 100px 0; }
+.coming-soon .font-sketch { font-size: 2rem; }
+
+
+/* Overrides */
+
+/* ── Focus clavier visible ─────────────────────────────────────────
+   Uniquement :focus-visible : la bordure n'apparait donc jamais au
+   clic souris, seulement lors d'une navigation au clavier. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+/* A page takes focus after a navigation only so that the keyboard scrolls
+   it; it is not a control, so it shows no focus ring. The two rules stay
+   apart: a browser that does not know :focus-visible drops any rule whose
+   selector list contains it, and must still get the first one. */
+.page:focus {
+    outline: none;
+}
+
+.page:focus-visible {
+    outline: none;
+    border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-logo,
+    .menu-logo,
+    .header-logo-text,
+    .shortcut-sub-text,
+    .click-hint-text,
+    .page-next-arrow,
+    .sketch-rect-path {
+        animation: none !important;
+        filter: none !important;
+    }
+
+    .scroll-line {
+        animation: none !important;
+        opacity: 0.4;
+        transform: scaleY(0.7);
+    }
+
+    .torn-frame:hover .media-frame-img,
+    .frame-wrap:hover .torn-frame .media-frame-img {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .notebook-bg-sheet {
+        transition: none !important;
+    }
+
+    .notebook-hover-zone:hover .notebook-text {
+        animation: none !important;
+    }
+
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}

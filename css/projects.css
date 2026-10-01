@@ -1,0 +1,671 @@
+/* Project detail */
+
+.panel-section::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 20px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12' stroke='white' stroke-width='2.5' fill='none' stroke-linejoin='miter' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size: 500px 20px;
+      background-repeat: repeat-x;
+      z-index: 1;
+      pointer-events: none;
+  }
+
+.projects-board-header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.tape-title {
+    color: #fff;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    display: inline-block;
+    background: #2a2a2a;
+    padding: 8px 16px;
+    transform: rotate(-1deg);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 2;
+}
+
+.tape-title::after {
+    content: '#';
+    position: absolute;
+    top: -20px;
+    left: -25px;
+    color: var(--red);
+    font-size: clamp(3.5rem, 7vw, 5.2rem);
+    font-family: var(--font-sketch);
+    transform: rotate(-15deg);
+    line-height: 1;
+    z-index: 5;
+}
+
+.tape-title::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(2deg);
+    width: 60px;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    z-index: 3;
+}
+
+.stack-item {
+    position: relative;
+    width: 60vw;
+    max-width: 1200px;
+    margin: 0 auto;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.stack-item:nth-child(even) {
+    align-self: flex-end;
+    transform: rotate(1deg);
+}
+
+.stack-item:nth-child(odd) {
+    align-self: flex-start;
+    transform: rotate(-1deg);
+}
+
+.stack-item:hover {
+    transform: scale(1.02) rotate(0deg);
+    z-index: 5;
+}
+
+/* Pagination and Progress */
+/* --- PROJECTS PAGE REDESIGN --- */
+.project-detail-page {
+    background: #111111;
+}
+
+/* PROJECTS REDESIGN (FORTICHE STYLE) */
+.fortiche-projects-board {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    width: 100%;
+}
+
+.fortiche-projects-board .panel-section + .panel-section {
+    margin-top: -20px;
+}
+
+/* Spacing between tape title and first sticker */
+.fortiche-projects-board .projects-board-header {
+    padding: 60px 0 20px;
+    margin-bottom: 0;
+}
+
+/* Project Description Notebook */
+.project-description-notebook {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    padding: 0 30px;
+}
+
+.project-desc-sheet {
+    position: relative;
+    background: #f5f0e8;
+    border-radius: 6px;
+    padding: 35px 40px 30px;
+    box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
+}
+
+.project-desc-content {
+    position: relative;
+    z-index: 1;
+}
+
+.project-desc-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+.project-desc-annotation {
+    font-family: var(--font-body);
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    color: var(--red);
+    display: block;
+    margin-top: 8px;
+}
+
+.panel-section {
+    position: relative;
+    width: 100%;
+    padding: 120px 4vw 80px;   /* FIX: padding top généreux pour le sticker qui dépasse */
+    margin-top: 80px;          /* FIX: marge obligatoire entre description et section */
+}
+
+.panel-section:first-of-type {
+    margin-top: 60px;
+}
+
+.panel-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #111111;
+    z-index: -1;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12 L 500 20 L 0 20 Z' fill='black'/%3E%3C/svg%3E"), linear-gradient(black, black);
+    -webkit-mask-position: top left, 0 20px;
+    -webkit-mask-repeat: repeat-x, no-repeat;
+    -webkit-mask-size: 500px 20px, 100% calc(100% - 20px);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12 L 500 20 L 0 20 Z' fill='black'/%3E%3C/svg%3E"), linear-gradient(black, black);
+    mask-position: top left, 0 20px;
+    mask-repeat: repeat-x, no-repeat;
+    mask-size: 500px 20px, 100% calc(100% - 20px);
+}
+
+.panel-light {
+    color: #fff;
+}
+
+.panel-light::before {
+    background: #1a1a1a;
+}
+
+/* Sticker Titles */
+.sticker-title-wrap {
+    position: absolute;
+    left: clamp(20px, 5vw, 60px);
+    top: -40px;
+    z-index: 10;
+}
+
+.sticker-right {
+    left: auto;
+    right: clamp(20px, 5vw, 60px);
+}
+
+/* Quinconce Layout (Fixed) */
+/* Quinconce (Staggered) layout for Coupes */
+/* 3. CUT STACK (Coupes) */
+.cut-stack {
+    margin-top: 30px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 40px auto 0;
+}
+
+.cut-stack .stack-item:nth-child(odd) {
+    align-self: flex-start;
+}
+
+.cut-stack .stack-item:nth-child(even) {
+    align-self: flex-end;
+}
+
+.cut-stack .stack-item:hover {
+    transform: scale(1.02);
+}
+
+.progress-bar {
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 0%;
+    background: var(--red);
+    transition: width 0.1s linear;
+}
+
+.render3d-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1300px;
+    margin: 40px auto 0;
+    padding: 0 20px;
+}
+
+.render3d-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.render3d-label {
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    color: var(--red);
+    letter-spacing: 0.03em;
+}
+
+.render3d-item .drawing-sheet-wrap {
+    overflow: hidden;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.render3d-item .drawing-sheet-wrap:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 15px 15px 40px rgba(0,0,0,0.7);
+}
+
+/* Sticker hover interaction (depth effect) */
+/* sticker-right is now handled above via .sticker-title-wrap override */
+/* Base Sticker styling (removed inline styles) */
+.sticker-title {
+    font-family: var(--font-sketch);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    padding: 15px 40px;
+    transform: rotate(-3deg);
+    border: 4px solid #1a1a1a;
+    box-shadow: 8px 8px 0px #1a1a1a;
+    animation: stickerWobble 4s infinite ease-in-out;
+    cursor: default;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sticker-title:hover {
+    transform: rotate(-1deg) scale(1.05) translateY(-3px);
+    box-shadow: 12px 12px 0px #1a1a1a, 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* Cut stack coupe aspect ratio */
+.cut-stack .stack-item {
+    width: 85%;
+    max-width: 900px;
+    transition: transform 0.3s ease;
+    margin: 0;
+    position: relative;
+}
+
+/* Stack item labels — overlaid on the image */
+.stack-label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 5;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 6px 16px;
+    font-size: clamp(0.85rem, 1.6vw, 1.2rem);
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(4px);
+}
+
+.stack-label-right {
+    left: auto;
+    right: 12px;
+}
+
+/* ── 20. L'ossature de recit du projet de diplome ─────────────
+
+   La page presentait de belles planches mises bout a bout. Un
+   professionnel ne lit pas des planches, il lit un raisonnement : la
+   commande, le site, la contrainte, l'arbitrage. Ces emplacements
+   attendent ce texte-la.
+
+   Tout est cale sur la charte existante : Bebas pour les etiquettes,
+   Space Grotesk pour la lecture, le rouge en pointe. Aucun nouvel
+   element ne doit avoir l'air rapporte. */
+/* — Chapeau sous le titre d'un panneau ———————————————— */
+.panel-lede {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: clamp(0.98rem, 2vw, 1.08rem);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.72);
+    /* 43rem = les 62 caracteres visés, mais exprimes dans une unite qui
+       ne depend pas de la police. .panel-tools, ecrit en Bebas, doit
+       partager EXACTEMENT cette largeur pour s'aligner dessus : en « ch »
+       il obtenait une boite plus etroite, donc un bord gauche decale. */
+    max-width: 43rem;
+    margin: 4px auto 30px;
+    padding: 0 20px;
+}
+
+.panel-light .panel-lede { color: rgba(255, 255, 255, 0.78); }
+
+.choice-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 34px 30px 34px 34px;
+    border-left: 3px solid var(--red);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.choice-eyebrow {
+    display: block;
+    font-size: 1.6rem;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 14px;
+    transform: rotate(-1.5deg);   /* la main, comme partout ailleurs */
+    transform-origin: left center;
+}
+
+.choice-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.35rem, 3.6vw, 2rem);
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    color: var(--white);
+    margin: 0 0 16px;
+    text-wrap: balance;
+}
+
+.choice-text {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: clamp(0.98rem, 2vw, 1.06rem);
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+    max-width: 62ch;
+}
+
+/* ── 21. Les logiciels employes, sous chaque serie de planches ───
+
+   Even les avait notes entre parentheses dans ses textes. Sortis de la
+   phrase et poses en dessous, ils deviennent lisibles d'un coup d'oeil :
+   un professionnel qui recrute cherche precisement cette information, et
+   ne devrait pas avoir a la pecher au milieu d'un paragraphe.
+
+   Traitement de legende technique : petites capitales espacees, en
+   rouge et centrees sous le paragraphe qu'elles completent — le rouge
+   est la couleur d'accent du site, il signale l'information sans avoir
+   besoin d'un cadre ni d'un intitule.
+   Centrees dans la COLONNE DE TEXTE, pas dans la page : d'ou la meme
+   largeur maximale que .panel-lede, sinon la ligne se centrerait par
+   rapport a l'ecran et flotterait a cote du texte. */
+.panel-tools {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    text-align: center;        /* centre dans la colonne de texte, pas dans la page */
+    max-width: 43rem;          /* meme largeur que .panel-lede, voir plus haut */
+    margin: -14px auto 30px;   /* remonte contre le chapeau qu'il complete */
+    padding: 0 20px;
+}
+
+/* Le second paragraphe du bloc « problematiques » : meme corps, un
+   ecart franc pour marquer le retournement du recit. */
+.choice-text + .choice-text {
+    margin-top: 16px;
+}
+
+/* Les marges des deux blocs qui encadrent la citation doivent etre
+   EGALES, sinon le texte ne peut pas etre a la fois centre et a egale
+   distance des deux. Mesure : le bas du panneau du dessus vaut 120px
+   sur grand ecran et 219 sur telephone, la marge haute de « suivant »
+   valait 80 dans les deux cas. On l'aligne.
+   Aucune reserve de defilement ici : Even veut « suivant » colle au
+   pied de page. Ce qui rend la fin de l'animation atteignable, c'est
+   la plage resserree, pas de l'espace ajoute. */
+/* Le bas du panneau du dessus : 40px, serre. C'est la demande d'Even,
+   et c'est ce qui rend l'animation lisible — son amplitude etant fixe,
+   plus l'ecart de depart est grand moins le mouvement se voit. */
+#page-project-diploma .panel-choice,
+#page-drawings .bd-carousel-section {
+    padding-bottom: 40px;
+}
+
+@media (max-width: 900px) {
+    /* Responsive */
+    .stack-item {
+        width: 100%;
+        align-self: center !important;
+        transform: rotate(0) !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Responsive 3D Grid & Projects page */
+    .render3d-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .sticker-title {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        padding: 10px 25px;
+    }
+
+    .cut-stack .stack-item {
+        width: 100%;
+        max-width: 100%;
+        align-self: center !important;
+    }
+
+    .panel-section {
+        padding: 80px 20px 40px;
+    }
+
+    .project-desc-sheet {
+        padding: 25px 20px;
+    }
+
+    .panel-lede { margin-bottom: 24px; padding: 0 14px; }
+    .choice-inner { padding: 26px 20px 26px 22px; }
+
+    .panel-tools {
+        font-size: 0.74rem;
+        letter-spacing: 0.14em;
+        margin: -10px auto 24px;
+        padding: 0 14px;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* — L'ecartement, lie au defilement ————————————————
+       Natif, sans une ligne de script. Hors de @supports, l'etat de repos
+       ci-dessus reste en place : la citation s'affiche simplement, bien
+       mise en page, et rien ne bouge. */
+    /* PLAGE : de 25% a 75% de la traversee, et non de 0 a 100.
+               Deux raisons.
+               Le sommet reste exactement au centre — c'est le milieu de la
+               plage, quelle qu'elle soit.
+               Et surtout la fin devient ATTEIGNABLE : aller jusqu'a 100%
+               demanderait que la citation sorte entierement par le haut,
+               ce que la page ne permet pas puisqu'il ne reste presque rien
+               en dessous. Mesure : il manquait 374px, puis 14px apres la
+               reserve. En s'arretant a 75%, l'animation revient a zero
+               bien avant la fin de course, sur toutes les hauteurs
+               d'ecran, y compris un ultra-large. */
+    #page-project-diploma .panel-choice,
+    #page-drawings .bd-carousel-section {
+        animation: qb-ecarter-haut linear both;
+        animation-timeline: --citation;
+        animation-range: cover 21% cover 79%;
+    }
+}
+
+/* — L'arbitrage : le bloc que cherche un professionnel —————— */
+.panel-choice {
+    padding-top: 70px;
+    padding-bottom: 70px;
+}
+
+@media (max-width: 768px) {
+    .panel-choice { padding-top: 48px; padding-bottom: 48px; }
+}
+
+@keyframes stickerWobble {
+    0%, 100% { transform: rotate(-3deg) scale(1); }
+    50% { transform: rotate(-1deg) scale(1.03); }
+}
+
+.tape-title-wrap { position: relative; display: inline-block; }
+
+
+/* Quote band */
+
+/* PAS DE FOND SOUS LA CITATION, ET C'EST UN CHOIX.
+   Il y en avait un : un degrade qui assombrissait la bande a l'approche
+   du centre. Il a produit deux defauts visuels de suite.
+     D'abord des bandes horizontales. Un degrade aussi sombre ne dispose
+     que d'une douzaine de valeurs sur 8 bits, etalees sur 600px : les
+     paliers se voient, quelle que soit la finesse de la courbe.
+     Puis, en voulant les casser avec un bruit de tramage, des nuages.
+     Mon bruit avait quatre octaves, il fabriquait donc des structures a
+     grande echelle — exactement l'inverse d'un tramage, qui doit etre
+     un grain fin et rien d'autre.
+   Le fond est donc supprime. L'effet repose sur les deux choses
+   qu'Even a validees des le debut : les ecarts qui s'ouvrent et le
+   texte qui s'eclaircit. Aucun artefact possible, puisqu'il n'y a plus
+   rien a rendre. */
+.quote-band {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Pleine largeur. Sans ca, la bande s'arrete a la largeur du contenu
+       (1200px) et son fond dessine un rectangle aux bords verticaux
+       nets, tres visible sur la page Dessins ou le fond de page est plus
+       clair que celui de la bande. Meme procede que le pied de page :
+       --sbw est mesure au runtime, sinon la barre de defilement de .page
+       ferait deborder de quelques pixels. */
+    width: calc(100vw - var(--sbw, 0px));
+    margin-left: calc(-50vw + var(--sbw, 0px) / 2 + 50%);
+    margin-right: calc(-50vw + var(--sbw, 0px) / 2 + 50%);
+    box-sizing: border-box;
+    /* Rembourrage SYMETRIQUE, et c'est important.
+       Rattraper l'ecart des blocs voisins par le rembourrage du bas
+       donnait bien deux ecarts egaux, mais decalait le texte vers le
+       haut de la moitie du rattrapage. Les deux exigences d'Even —
+       ecarts egaux ET texte centre — sont incompatibles tant que les
+       marges des voisins different. On les egalise donc a la source
+       (voir .page-next plus bas), et ici tout redevient symetrique. */
+    padding-top: 14vh;
+    padding-bottom: 14vh;
+}
+
+/* Le fond s'etend au-dela du bloc pour suivre l'ecart qui s'ouvre.
+   Positionne en absolu, il ne compte pas dans la mise en page. */
+.qb-body {
+    /* taille et position fixes : c'est la reference de la piste */
+    view-timeline-name: --citation;
+    view-timeline-axis: block;
+    margin: 0;
+    padding: 0 40px;
+    max-width: 80rem;       /* assez large pour tenir sur une ligne */
+    text-align: center;
+}
+
+.qb-text {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 300;
+    /* Corps volontairement discret : Even trouvait la phrase deja tres
+       lisible, et une ligne unique demande de la retenue. */
+    font-size: clamp(0.9rem, 1.2vw, 1.06rem);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    color: var(--white);
+    text-wrap: balance;
+    quotes: none;
+}
+
+.qb-text::before { content: '\00AB\00A0'; }
+.qb-text::after  { content: '\00A0\00BB'; }
+
+.qb-author {
+    margin: 18px 0 0;
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(0.8rem, 1vw, 0.9rem);
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+    .quote-band {
+        padding-top: 12vh;
+        padding-bottom: 12vh;
+    }
+
+    .qb-body { padding: 0 26px; max-width: 30rem; }
+    .qb-text { font-size: 1rem; line-height: 1.65; }
+    .qb-author { margin-top: 15px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .qb-body {
+        animation: qb-monter linear both;
+        animation-timeline: --citation;
+        animation-range: cover 21% cover 79%;
+    }
+}
+
+@keyframes qb-ecarter-haut {
+        0% { transform: translateY(-0vh); }
+        7.1% { transform: translateY(-0.99vh); }
+        14.3% { transform: translateY(-3.765vh); }
+        21.4% { transform: translateY(-7.775vh); }
+        28.6% { transform: translateY(-12.225vh); }
+        35.7% { transform: translateY(-16.235vh); }
+        42.9% { transform: translateY(-19.01vh); }
+        50% { transform: translateY(-20vh); }
+        57.1% { transform: translateY(-19.01vh); }
+        64.3% { transform: translateY(-16.235vh); }
+        71.4% { transform: translateY(-12.225vh); }
+        78.6% { transform: translateY(-7.775vh); }
+        85.7% { transform: translateY(-3.765vh); }
+        92.9% { transform: translateY(-0.99vh); }
+        100% { transform: translateY(-0vh); }
+}
+
+@keyframes qb-ecarter-bas {
+        0% { transform: translateY(0vh); }
+        7.1% { transform: translateY(0.99vh); }
+        14.3% { transform: translateY(3.765vh); }
+        21.4% { transform: translateY(7.775vh); }
+        28.6% { transform: translateY(12.225vh); }
+        35.7% { transform: translateY(16.235vh); }
+        42.9% { transform: translateY(19.01vh); }
+        50% { transform: translateY(20vh); }
+        57.1% { transform: translateY(19.01vh); }
+        64.3% { transform: translateY(16.235vh); }
+        71.4% { transform: translateY(12.225vh); }
+        78.6% { transform: translateY(7.775vh); }
+        85.7% { transform: translateY(3.765vh); }
+        92.9% { transform: translateY(0.99vh); }
+        100% { transform: translateY(0vh); }
+}
+
+@keyframes qb-monter {
+        0% { opacity: 0.32; }
+        7.1% { opacity: 0.354; }
+        14.3% { opacity: 0.448; }
+        21.4% { opacity: 0.584; }
+        28.6% { opacity: 0.736; }
+        35.7% { opacity: 0.872; }
+        42.9% { opacity: 0.966; }
+        50% { opacity: 1; }
+        57.1% { opacity: 0.966; }
+        64.3% { opacity: 0.872; }
+        71.4% { opacity: 0.736; }
+        78.6% { opacity: 0.584; }
+        85.7% { opacity: 0.448; }
+        92.9% { opacity: 0.354; }
+        100% { opacity: 0.32; }
+}

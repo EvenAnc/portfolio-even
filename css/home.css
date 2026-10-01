@@ -1,0 +1,712 @@
+/* Hero */
+
+.hero-screen {
+    width: 100%; min-height: 100vh; min-height: 100dvh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 80px 40px 60px; position: relative;
+    /* FIX: évite que le hero capture les événements de scroll/click en dehors des zones interactives */
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.hero-logo-wrap { text-align: center; z-index: 2; pointer-events: none; }
+
+.hero-logo {
+    font-size: clamp(5rem, 14vw, 12rem); line-height: 0.85;
+    color: var(--white); text-transform: uppercase;
+    will-change: transform, filter;
+    animation: logoWobble 0.26s steps(1) infinite;
+}
+
+.hero-profession {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 2.2vw, 1.6rem); font-weight: 300;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--red); margin-top: 14px;
+    /* Initialement invisible, GSAP anime l'entrée */
+    opacity: 0;
+}
+
+.scroll-invite {
+    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    z-index: 3; opacity: 1; pointer-events: none;
+}
+
+/* The line carries the dimming that used to sit on the whole hint, so the
+   label beside it stays at full contrast. In its colour rather than its
+   opacity, which the pulse animation already drives. */
+.scroll-line { width: 1px; height: 50px; background: rgba(255, 255, 255, 0.45); animation: scrollPulse 2s ease-in-out infinite; transform-origin: top; }
+
+.scroll-label { font-size: 1.4rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--red); }
+
+.home-showcase {
+    padding: 0 60px;
+    margin-bottom: 110px;
+    pointer-events: auto;  /* FIX: explicite auto hors du hero */
+    opacity: 0;             /* Animé par GSAP au chargement */
+}
+
+.showcase-frame {
+    position: relative;
+    width: 100%;
+    max-height: none;
+    border-radius: 18px;
+    overflow: hidden;
+    background: white;
+    cursor: pointer;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-projects-shortcut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 10;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -25px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-align: center;
+    user-select: none;        /* FIX: empêche la sélection de texte au double-click */
+    -webkit-user-select: none;
+    pointer-events: auto;     /* FIX: réactive les événements sur ce bouton (parent est none) */
+    transition: transform var(--dur-med) var(--ease-out);
+}
+
+.shortcut-sub-text {
+    font-family: var(--font-sketch);
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    color: var(--white); /* Devient blanc par défaut */
+    transform: translateY(18px) rotate(-4deg);
+    z-index: 2;
+    pointer-events: none;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+.shortcut-main-text {
+    font-family: var(--font-display);
+    font-size: clamp(3.8rem, 12vw, 9.8rem);
+    font-weight: bold;
+    line-height: 0.75;
+    letter-spacing: -0.01em;
+    color: var(--red);
+    text-transform: uppercase;
+    pointer-events: none;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+}
+
+/* Effets au survol */
+.home-projects-shortcut:hover {
+    transform: scale(1.03);
+}
+
+.home-projects-shortcut:hover .shortcut-sub-text {
+    transform: translateY(10px) rotate(-6deg) scale(1.08);
+    color: var(--red); /* Devient rouge au survol pour vibrer */
+}
+
+.home-projects-shortcut:hover .shortcut-main-text {
+    transform: scaleY(1.06);
+    color: #ff4a5c; /* Rouge légèrement plus lumineux */
+}
+
+/* Underline crayonné animé */
+.shortcut-underline-svg {
+    width: min(400px, 50vw);
+    height: 16px;
+    margin-top: 10px;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.shortcut-underline-path {
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+    transition: stroke-dashoffset 0.5s var(--ease-out);
+}
+
+.home-projects-shortcut:hover .shortcut-underline-path {
+    stroke-dashoffset: 0;
+}
+
+/* Annotation flèche "cliquez !" */
+.shortcut-click-hint {
+    position: absolute;
+    left: calc(50% + min(290px, 25vw));
+    top: 15px; /* Aligné dans l'angle droit de "MES PROJETS", au niveau de la fin du texte */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    z-index: 4;
+    transition: transform var(--dur-med) var(--ease-out);
+    transform: rotate(5deg);
+}
+
+.click-hint-text {
+    font-size: 3.0rem; /* Taille augmentée encore plus */
+    color: var(--red);
+    white-space: nowrap;
+    animation: logoWobbleMini 0.28s steps(1) infinite;
+    transform: translateY(-8px) rotate(4deg); /* Légèrement surélevé par rapport à la flèche */
+}
+
+.click-hint-arrow {
+    width: 72px; /* Flèche augmentée */
+    height: 48px;
+    transform: scaleX(-1); /* Retourne horizontalement le tracé courbe pour pointer vers la gauche */
+}
+
+/* Feedback au survol pour la flèche et le texte */
+.home-projects-shortcut:hover .shortcut-click-hint {
+    transform: scale(1.08) rotate(7deg);
+}
+
+/* Évite les repaints inutiles sur les éléments animés par GSAP */
+.home-showcase,
+.home-projects-shortcut,
+.hero-logo-wrap,
+.home-contact-inner {
+    will-change: opacity, transform;
+}
+
+/* Nettoie will-change après entrée (GSAP le fait mais en CSS c'est plus sûr) */
+/* Nettoie will-change après entrée (GSAP le fait mais en CSS c'est plus sûr) */
+.page.is-active .home-showcase,
+.page.is-active .home-projects-shortcut {
+    will-change: auto;
+}
+
+/* ── 18. Ce qu'Even cherche, dit des la premiere seconde ────────
+
+   Un recruteur accorde quelques secondes avant de decider s'il continue.
+   Rien sur le site ne disait ce qu'Even cherche : c'etait la premiere
+   information manquante, avant toute question de technique.
+
+   Volontairement discret : la ligne ne doit pas concurrencer le logo,
+   qui reste le morceau de bravoure de la page. Corps petit, capitales
+   espacees, blanc attenue. Elle entre avec le reste du hero, apres la
+   profession, pour ne pas alourdir la premiere seconde.
+   Le tiret rouge qui la precedait a ete retire a la demande d'Even. */
+.hero-seeking {
+    font-family: var(--font-body);
+    font-size: clamp(0.68rem, 1.5vw, 0.82rem);
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.62);
+    margin-top: 22px;
+    opacity: 0;              /* l'entree est animee, comme la profession */
+}
+
+@media (max-width: 768px) {
+    /* ── Accueil ── */
+    .home-showcase { padding: 0 16px; margin-bottom: 36px; }
+
+    .home-projects-shortcut { margin-top: -10px; margin-bottom: 10px; }
+
+    .shortcut-click-hint { 
+        display: flex;
+        opacity: 0;
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
+        transform: translateY(-40px) scale(1.2) rotate(5deg);
+        left: auto;
+        right: -10px; /* Décalé vers la droite, dans la zone anthracite */
+        top: -15px; /* Décalé vers le haut */
+    }
+
+    .click-hint-text {
+        font-size: 2.2rem;
+    }
+
+    .click-hint-arrow {
+        width: 45px;
+        height: 30px;
+    }
+
+    .shortcut-underline-svg { width: 80%; }
+    .shortcut-main-text { font-size: clamp(3rem, 12vw, 7rem); }
+
+    .hero-seeking {
+        margin-top: 16px;
+        letter-spacing: 0.11em;
+        /* Sur telephone la phrase passe a deux lignes : on borne la
+           largeur pour qu'elle se coupe proprement plutot qu'au hasard. */
+        max-width: 30ch;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* ── Bouton "MES PROJETS" : animer à l'entrée ── */
+    .home-projects-shortcut {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+        transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
+    }
+
+    .home-projects-shortcut.is-inview {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    .home-projects-shortcut:hover { transform: none; }
+    .home-projects-shortcut:hover .shortcut-sub-text { transform: translateY(18px) rotate(-4deg); }
+    .home-projects-shortcut:hover .shortcut-main-text { transform: none; }
+    .home-projects-shortcut:hover .shortcut-underline-path { stroke-dashoffset: 400; }
+
+    /* ── Cliquez ! au scroll ── */
+    .home-projects-shortcut.is-inview .shortcut-click-hint {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotate(5deg);
+    }
+}
+
+.home-projects-shortcut:active {
+    transform: scale(0.97);
+    transition: transform 0.1s ease;
+}
+
+@keyframes logoWobble {
+    0%,33%   { filter: url(#sketch-1) drop-shadow(0 0 0 transparent); }
+    34%,66%  { filter: url(#sketch-2) drop-shadow(0 0 0 transparent); }
+    67%,100% { filter: url(#sketch-3) drop-shadow(0 0 0 transparent); }
+}
+
+@keyframes scrollPulse { 0% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(0); opacity: 0; } }
+
+.home-showcase .frame-wrap { max-width: 1400px; width: 100%; margin: 0 auto; display: block; }
+.showcase-frame .font-sketch {
+    color: #111;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    transform: rotate(-3deg);
+    padding: 20px;
+    text-align: center;
+}
+.click-hint-arrow path:first-child { animation: rectWobble 0.3s steps(1) infinite; }
+
+
+/* Notebook */
+
+.notebook-section {
+    position: relative;
+    color: var(--notebook-text);
+}
+
+.notebook-bg-sheet {
+    position: absolute;
+    top: -85px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--notebook-bg);
+    clip-path: polygon(0% 2.5%, 10% 1.8%, 25% 2.8%, 40% 1.5%, 55% 3.2%, 70% 1.8%, 85% 2.8%, 100% 1.8%, 100% 97.2%, 85% 98.2%, 70% 97.2%, 55% 98.5%, 40% 97.2%, 25% 98.2%, 10% 97.2%, 0% 98.2%);
+    z-index: 0;
+    filter: url(#paper-tear);
+    will-change: transform;  /* FIX: promotion GPU réduit le repaint au hover */
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.36, 1), clip-path 0.8s cubic-bezier(0.25, 1, 0.36, 1);
+    transform-origin: center;
+    pointer-events: none;
+}
+
+/* Au survol de la section cahier, la feuille de papier se déroule (scaleX/Y) et les bords déchirés se déforment dynamiquement (morphing) */
+.notebook-section:hover .notebook-bg-sheet {
+    transform: scale(1.015, 1.07);
+    clip-path: polygon(0% 3.5%, 10% 2.2%, 25% 3.8%, 40% 2%, 55% 4.2%, 70% 2.2%, 85% 3.8%, 100% 2.2%, 100% 96.2%, 85% 97.5%, 70% 96.2%, 55% 97.8%, 40% 96.2%, 25% 97.5%, 10% 96.2%, 0% 97.5%);
+}
+
+.notebook-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 110px 80px 130px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Lignes : conteneur vide, rempli par JS avec des longueurs aléatoires */
+.notebook-lines {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+/* Chaque ligne générée par JS */
+.nb-line {
+    position: absolute;
+    height: 4px;
+    background: var(--notebook-line);
+    border-radius: 2px;
+}
+
+/* Marge rouge de cahier (placée sur la feuille d'arrière-plan pour suivre son étirement) */
+.notebook-bg-sheet::before {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 80px;
+    width: 2px;
+    background: rgba(255, 54, 74, 0.3);
+    z-index: 1;
+}
+
+.notebook-bg-sheet::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 84px;
+    width: 1px;
+    background: rgba(255, 54, 74, 0.18);
+    z-index: 1;
+}
+
+.notebook-content {
+    position: relative;
+    z-index: 2;
+    padding-left: 30px;
+}
+
+.notebook-title-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 24px;
+}
+
+.notebook-title {
+    font-size: clamp(3.2rem, 6vw, 5rem);
+    line-height: 1;
+    margin-bottom: 0;
+    color: var(--notebook-text);
+}
+
+.notebook-text {
+    font-size: 1.1rem;
+    line-height: 34px; /* Correspond exactement au pas des lignes du cahier (spacing = 34px) */
+    color: rgba(26,26,26,0.75);
+    max-width: 640px;
+    margin-bottom: 34px; /* Permet aux paragraphes de rester calés sur la grille */
+    transition: transform 0.3s var(--ease-out);
+    position: relative;
+    top: -2px; /* Ajustement fin de 5px entre la ligne et l'écriture */
+}
+
+/* Hover wobble sur le texte du cahier */
+.notebook-hover-zone:hover .notebook-text {
+    animation: notebookWobble 0.4s ease-out;
+}
+
+.notebook-title-wrap:hover .notebook-title {
+    animation: notebookWobble 0.5s ease-out;
+}
+
+.notebook-annotation {
+    display: inline-block;
+    font-size: 1.9rem;
+    color: var(--red);
+    margin-top: 24px;
+    transform: rotate(-2deg);
+    opacity: 0.85;
+}
+
+/* Signature "EVEN" avec flèche courbée - cachée par défaut */
+.notebook-signature {
+    position: absolute;
+    bottom: 25%;
+    left: 95%;
+    z-index: 3;
+    opacity: 0;
+    transform: translateY(10px) translateX(-10px);
+    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+    pointer-events: none;
+    display: flex;
+    align-items: flex-end;
+}
+
+/* Affichage de la signature uniquement au survol du titre "Qui suis-je ?" */
+.notebook-title-wrap:hover .notebook-signature {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+}
+
+.signature-arrow {
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    width: 80px;
+    height: 60px;
+}
+
+.signature-name {
+    font-size: 3.0rem;
+    color: var(--red);
+    transform: rotate(-6deg);
+    white-space: nowrap;
+    margin-left: 65px; /* Décalage pour laisser la place à la flèche */
+    margin-bottom: 25px; /* Surélève le nom pour que la flèche pointe dessus */
+}
+
+/* La section contact et les autres sections hors hero-screen doivent rester interactives */
+.page.is-active .notebook-section,
+.page.is-active .home-contact,
+.page.is-active .page-next {
+    pointer-events: auto;
+}
+
+.page.is-active .notebook-content,
+.page.is-active .notebook-hover-zone {
+    pointer-events: auto;
+    cursor: default;
+}
+
+/* 3. LE PAPIER DU CAHIER, PRECALCULE
+   Voir initPapierSafari() dans app.js : sur Safari seulement, le filtre
+   de papier dechire est dessine une fois dans une image. Ces regles ne
+   s'appliquent qu'une fois cette image posee, donc jamais sur Chrome.
+   Les deux traits de la marge rouge sont dans l'image, les pseudo-
+   elements d'origine se retirent pour ne pas les doubler. */
+.notebook-bg-sheet.papier-precalcule {
+    filter: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.notebook-bg-sheet.papier-precalcule::before,
+.notebook-bg-sheet.papier-precalcule::after {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    /* ── Cahier de brouillon ── */
+    .notebook-bg-sheet { top: -45px; }
+
+    .notebook-inner { padding: 80px 20px 100px; }
+    .notebook-bg-sheet::before { left: 20px; }
+    .notebook-bg-sheet::after { left: 24px; }
+    .notebook-content { padding-left: 12px; }
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* ── Base Bounce States for Mobile ── */
+    .notebook-signature, .ref-photo, .ref-arrow {
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s !important;
+    }
+
+    .notebook-signature { transform: translateY(-40px) translateX(20px) scale(1.2) !important; }
+
+    /* ── Agrandissement du brouillon au scroll ── */
+    .notebook-section.is-inview .notebook-bg-sheet {
+        transform: scale(1.02) rotate(-1deg);
+        transition-delay: 0.3s;
+    }
+
+    .notebook-section.is-inview .notebook-signature {
+        opacity: 1;
+        transform: translateY(0) translateX(0) scale(1) !important;
+    }
+}
+
+@media (max-width: 991px) {
+    /* La signature manuscrite etait calee a left:95% puis decalee vers la
+           droite et agrandie : elle sortait du cadre. On l'ancre a droite, en
+           reservant la marge que prend l'agrandissement (scale 1,2). */
+    .notebook-signature {
+        left: auto !important;
+        right: 22px !important;
+        transform: translateY(-40px) scale(1.2) !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .notebook-signature {
+        right: 16px !important;
+        transform: translateY(-36px) scale(1) !important;
+    }
+}
+
+@keyframes notebookWobble {
+    0%   { transform: rotate(0deg); }
+    25%  { transform: rotate(-0.3deg) translateX(-1px); }
+    50%  { transform: rotate(0.2deg) translateX(1px); }
+    75%  { transform: rotate(-0.15deg); }
+    100% { transform: rotate(0deg); }
+}
+
+.signature-arrow path:first-child { animation: rectWobble 0.3s steps(1) infinite; }
+
+
+/* Contact */
+
+.home-contact { padding: 0; background: var(--bg); }
+
+.home-contact-inner {
+    max-width: 1200px; margin: 0 auto; padding: 100px 60px;
+}
+
+.contact-layout {
+    display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 80px; align-items: start;
+}
+
+.contact-form { display: flex; flex-direction: column; gap: 36px; }
+.fg { position: relative; }
+
+.fi {
+    display: block;
+    width: 100%; padding: 12px 0;
+    background: transparent; border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    color: var(--white); font-family: var(--font-body);
+    font-size: 1rem; outline: none;
+    transition: border-color var(--dur-fast);
+}
+
+.fi-ta {
+    height: 48px;
+    resize: none;
+    overflow: hidden;
+    padding-top: 0;
+    margin-top: 12px;
+    transition: height 0.4s var(--ease-out), border-color var(--dur-fast);
+}
+
+.fi-ta:focus,
+.fi-ta:not(:placeholder-shown) {
+    height: 120px;
+    overflow-y: auto;
+}
+
+.fl {
+    position: absolute; left: 0; top: 12px;
+    font-family: var(--font-display); font-size: 1.1rem;
+    letter-spacing: 0.05em; color: rgba(255,255,255,0.3);
+    pointer-events: none; transform-origin: left top;
+    transition: transform 0.3s var(--ease-out), color 0.3s;
+}
+
+.fi:focus ~ .fl, .fi:not(:placeholder-shown) ~ .fl {
+    transform: translateY(-24px) scale(0.82); color: var(--red);
+}
+
+/* La ligne rouge animée est gérée uniquement par le span .fb pour éviter tout dédoublement */
+.fb { position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-med) var(--ease-out); }
+
+.fi:focus ~ .fb { width: 100%; }
+
+.submit-btn {
+    padding: 14px 42px;
+    font-family: var(--font-display); font-size: 1.3rem;
+    letter-spacing: 0.07em; color: var(--white);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+
+.submit-btn:hover { border-color: var(--red); color: var(--red); }
+
+/* ── Validation formulaire (BUG-07 FIX) ── */
+.fi-error {
+    border-bottom-color: var(--red);
+}
+
+.fi-error ~ .fl {
+    color: var(--red) !important;
+    transform: translateY(-24px) scale(0.82) !important;
+}
+
+.form-feedback {
+    min-height: 22px;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-feedback--error {
+    color: var(--red);
+    opacity: 1;
+}
+
+.form-feedback--success {
+    color: #4ade80; /* vert succès */
+    opacity: 1;
+}
+
+.contact-info { display: flex; flex-direction: column; gap: 36px; padding-top: 12px; }
+.ci-label { font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.25); margin-bottom: 10px; text-transform: uppercase; }
+.ci-link { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.03em; display: inline-block; transition: color var(--dur-fast); }
+.ci-link:hover { color: var(--red); }
+
+.ci-soc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    margin-bottom: 12px;
+    transition: opacity var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
+}
+
+.ci-soc:hover {
+    opacity: 1;
+    color: var(--red);
+    transform: translateX(4px);
+}
+
+.ci-soc-icon {
+    flex-shrink: 0;
+}
+
+.ci-text { font-size: 1rem; font-weight: 300; opacity: 0.5; }
+
+@media (max-width: 768px) {
+    /* ── Contact ── */
+    .home-contact-inner { padding: 60px 20px 80px; }
+
+    .contact-layout { grid-template-columns: 1fr; gap: 40px; }
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* ── Blocs d'infos contact ── */
+    .ci-block {
+        opacity: 0;
+        transform: translateX(16px);
+        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+
+    .ci-block.is-inview {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .ci-block:nth-child(2) { transition-delay: 0.1s; }
+    .ci-block:nth-child(3) { transition-delay: 0.2s; }
+
+    /* ── Groupes de champs formulaire ── */
+    .fg {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+
+    .fg.is-inview {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .fg:nth-child(2) { transition-delay: 0.08s; }
+    .fg:nth-child(3) { transition-delay: 0.16s; }
+}
