@@ -7,7 +7,7 @@ import { gsapMissing } from './env.js';
 export function installGsapFallback() {
     if (!gsapMissing) return;
 
-    console.warn('[portfolio] GSAP indisponible — mode degrade sans animations.');
+    console.warn('[portfolio] GSAP unavailable: running without animations.');
 
     const TWEEN_KEYS = ['duration', 'ease', 'delay', 'onComplete', 'onStart',
                         'onUpdate', 'stagger', 'overwrite', 'repeat', 'yoyo', 'paused'];
