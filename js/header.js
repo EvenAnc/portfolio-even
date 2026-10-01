@@ -21,11 +21,11 @@ export function updateHeaderLogo(pageId) {
 export function updateBackButton(pageId) {
     const backBtn = document.getElementById('header-back-btn');
     if (backBtn) {
-        const surProjet = pageId.startsWith('project-');
-        backBtn.style.display = surProjet ? 'flex' : 'none';
+        const isProjectPage = pageId.startsWith('project-');
+        backBtn.style.display = isProjectPage ? 'flex' : 'none';
         // Sur telephone le bouton retour et le logo centre se chevauchent
         // (mesure : 74px de recouvrement sur un ecran de 412px). La CSS
         // s'appuie sur cette classe pour masquer le logo dans ce cas.
-        document.body.classList.toggle('a-bouton-retour', surProjet);
+        document.body.classList.toggle('a-bouton-retour', isProjectPage);
     }
 }
