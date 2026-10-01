@@ -3061,6 +3061,16 @@ textarea:focus-visible,
     }
 }
 
+/* Between the desktop and narrow layouts the gallery's right edge is less
+   than 110px from the screen edge, so the pinned reference photo stuck out
+   of the screen and was cut off. Pull it back so it ends 14px short of the
+   edge; the offset reaches the desktop value of -110px at 1328px. */
+@media (min-width: 992px) and (max-width: 1328px) {
+    .ref-photo-wrap {
+        right: max(-110px, min(-46px, calc(554px - 50vw)));
+    }
+}
+
 @media (max-width: 480px) {
     .ref-photo-wrap {
         right: -6px;
