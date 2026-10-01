@@ -2629,6 +2629,8 @@ function initDrawingLightbox() {
             initialPinchDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
             initialPinchScale = scale;
         } else if (e.touches.length === 1) {
+            // A first finger starts a new gesture, whatever became of the last.
+            pinchInProgress = false;
             lbTouchStartX = e.touches[0].clientX;
             lbTouchStartY = e.touches[0].clientY;
         }
@@ -2672,6 +2674,13 @@ function initDrawingLightbox() {
             updateTransform();
         }
     }, { passive: false });
+
+    // The system can take a gesture away (home swipe, incoming call) without
+    // any touchend: forget it, or the next swipe would be swallowed.
+    lightbox.addEventListener('touchcancel', () => {
+        pinchInProgress = false;
+        initialPinchDistance = null;
+    });
 
     lightbox.addEventListener('touchend', (e) => {
         if (e.touches.length < 2) {
