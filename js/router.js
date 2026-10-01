@@ -7,7 +7,7 @@ import { hasScrollTrigger } from './core/env.js';
 import { updatePageMeta } from './i18n/i18n.js';
 import { destroyPageScroll, createPageScroll, updateScrollbarWidth } from './page-scroll.js';
 import { updateHeaderLogo, updateBackButton } from './header.js';
-import { resetHomeHero, bindHeroScroll } from './hero.js';
+import { resetHero, bindHeroScroll } from './hero.js';
 
 let hasHistoryEntry = false;
 
@@ -163,7 +163,7 @@ export function showPage(pageId, animate = true, updateHistory = true) {
         inEl.classList.add('is-active');
         inEl.setAttribute('aria-hidden', 'false');
         inEl.scrollTop = 0;
-        resetHomeHero(pageId);
+        resetHero(pageId);
         startPageScroll(inEl);
         if (hasScrollTrigger) ScrollTrigger.refresh();
         updateHeaderLogo(pageId);
@@ -184,7 +184,7 @@ export function showPage(pageId, animate = true, updateHistory = true) {
             inEl.classList.add('is-active');
             inEl.setAttribute('aria-hidden', 'false');
             inEl.scrollTop = 0;
-            resetHomeHero(pageId);
+            resetHero(pageId);
 
             gsap.fromTo(inEl,
                 { opacity: 0, y: 22 },

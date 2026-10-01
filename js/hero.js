@@ -57,7 +57,7 @@ export function playHeroIntro() {
 }
 
 // Quand on revient sur la page home, remettre le hero logo en état initial
-export function resetHomeHero(pageId) {
+export function resetHero(pageId) {
     if (pageId !== 'home') return;
     const heroLogoWrap = document.getElementById('hero-logo-wrap');
     const scrollInvite = document.getElementById('scroll-invite');
