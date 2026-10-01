@@ -2110,13 +2110,21 @@ function initDrawingLightbox() {
         hideTimer = setTimeout(() => {
             // Hiding would take the close button away from someone panning
             // a zoomed image or driving the viewer from the keyboard.
-            if (isZoomed || lightbox.querySelector(':focus-visible')) return;
+            if (isZoomed || keyboardDriven) return;
             lightbox.classList.add('controls-hidden');
         }, 2500);
     }
 
-    lightbox.addEventListener('mousemove', showControls);
-    lightbox.addEventListener('touchstart', showControls);
+    // Tracked by hand rather than read from :focus-visible, which older
+    // Safari rejects as a selector: the last input device used decides.
+    let keyboardDriven = false;
+    const onPointerActivity = () => {
+        keyboardDriven = false;
+        showControls();
+    };
+
+    lightbox.addEventListener('mousemove', onPointerActivity);
+    lightbox.addEventListener('touchstart', onPointerActivity);
 
     // ── Afficher un dessin ──
     async function showDrawing(index) {
@@ -2502,6 +2510,7 @@ function initDrawingLightbox() {
     document.addEventListener('keydown', (e) => {
         if (lightbox.getAttribute('aria-hidden') === 'false') {
             // Any key counts as activity, like a mouse move.
+            keyboardDriven = true;
             showControls();
             if (e.key === 'Escape') closeLightbox();
             if (e.key === 'Tab') trapFocus(e);
