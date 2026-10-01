@@ -4,7 +4,7 @@
  */
 
 import { isTouch, prefersReducedMotion } from '../core/env.js';
-import { allDrawings, diplomeCoupes, findGalleryByUrl } from './galleries.js';
+import { DRAWINGS, DIPLOMA_SECTIONS, findGalleryByUrl } from './galleries.js';
 import { openGallery, openSingleImage } from './lightbox.js';
 
 // On touch devices a tap would open the viewer before the red frame had
@@ -113,7 +113,7 @@ function bindDrawings() {
             const items = Array.from(document.querySelectorAll('#page-drawings .drawing-item, #page-drawings .bd-slide'));
             const index = items.indexOf(item);
             if (index !== -1) {
-                traceFrameThen(trigger, () => openGallery(allDrawings, index));
+                traceFrameThen(trigger, () => openGallery(DRAWINGS, index));
             }
         });
     });
@@ -160,7 +160,7 @@ export function initSectionTriggers() {
     document.querySelectorAll('[data-coupe-gallery] .stack-item[data-coupe-index]').forEach(item => {
         item.addEventListener('click', () => {
             const index = parseInt(item.getAttribute('data-coupe-index'), 10);
-            traceFrameThen(item, () => liftBoard(item, () => openGallery(diplomeCoupes, index || 0)));
+            traceFrameThen(item, () => liftBoard(item, () => openGallery(DIPLOMA_SECTIONS, index || 0)));
         });
     });
 }

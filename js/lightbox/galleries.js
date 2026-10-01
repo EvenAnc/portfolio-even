@@ -5,7 +5,7 @@
 // ─────────────────────────────────────
 // CONFIGURATION ET RENDU PDF.JS DESSINS
 // ─────────────────────────────────────
-export const allDrawings = [
+export const DRAWINGS = [
     {
         url: "dessin/opt/cartographie@2x.webp",
         altKey: "alt_draw_carto",
@@ -57,7 +57,7 @@ export const allDrawings = [
     }
 ];
 
-export const diplomePlans = [
+export const DIPLOMA_PLANS = [
     { url: 'PDF/plan-rmoins1.pdf', title: 'Plan R-1', altKey: 'alt_plan_rm1' },
     { url: 'PDF/plan-rdc.pdf', title: 'Plan RDC', altKey: 'alt_plan_rdc' },
     { url: 'PDF/plan-r1.pdf', title: 'Plan R+1', altKey: 'alt_plan_r1' },
@@ -67,14 +67,14 @@ export const diplomePlans = [
     { url: 'PDF/plan-expo.pdf', title: 'Zoom Expo', altKey: 'alt_zoom_expo' }
 ];
 
-export const diplomeCoupes = [
+export const DIPLOMA_SECTIONS = [
     { url: 'PDF/coupe-nord-loingtaine.pdf', title: 'Coupe Lointaine', altKey: 'alt_coupe_lointaine' },
     { url: 'PDF/coupe-nord-texture.pdf', title: 'Coupe Nord', altKey: 'alt_coupe_nord' },
     { url: 'PDF/coupe-ouest-texture.pdf', title: 'Coupe Ouest', altKey: 'alt_coupe_ouest' },
     { url: 'PDF/coupe-sud-texture.pdf', title: 'Coupe Sud', altKey: 'alt_coupe_sud' }
 ];
 
-export const diplomeAnalyses = [
+export const DIPLOMA_ANALYSES = [
     { url: 'PDF/plan-masse.pdf', title: 'Plan Masse', altKey: 'alt_plan_masse' },
     { url: 'PDF/trame.pdf', title: 'Trame', altKey: 'alt_trame' },
     { url: 'PDF/zooning-batiment.pdf', title: 'Zoning Bâtiment', altKey: 'alt_zoning_building' },
@@ -87,7 +87,7 @@ export const diplomeAnalyses = [
  * @returns {{gallery: Array, index: number}|null}
  */
 export function findGalleryByUrl(url) {
-    for (const gallery of [diplomePlans, diplomeCoupes, diplomeAnalyses]) {
+    for (const gallery of [DIPLOMA_PLANS, DIPLOMA_SECTIONS, DIPLOMA_ANALYSES]) {
         const index = gallery.findIndex(item => item.url === url);
         if (index !== -1) return { gallery, index };
     }
