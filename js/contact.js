@@ -7,14 +7,13 @@ import { state } from './core/state.js';
 import { hasScrollTrigger } from './core/env.js';
 import { t } from './i18n/i18n.js';
 
-// Resolves to true when the text reached the clipboard. The async API only
-// exists in secure contexts and recent browsers, hence the legacy command.
-function copyText(text) {
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-        return navigator.clipboard.writeText(text).then(() => true, () => legacyCopy(text));
-    }
-    return Promise.resolve(legacyCopy(text));
-}
+// Past this delay the request is treated as lost: the visitor gets an
+// error and a usable form back instead of a button stuck on "sending".
+const SUBMIT_TIMEOUT_MS = 15000;
+const FORM_FEEDBACK_DURATION_MS = 5000;
+const COPY_FEEDBACK_DURATION_MS = 2000;
+// Deliberately loose: unusual but valid addresses must pass.
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+$/;
 
 function legacyCopy(text) {
     const previousFocus = document.activeElement;
@@ -36,6 +35,15 @@ function legacyCopy(text) {
     return copied;
 }
 
+// Resolves to true when the text reached the clipboard. The async API only
+// exists in secure contexts and recent browsers, hence the legacy command.
+function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).then(() => true, () => legacyCopy(text));
+    }
+    return Promise.resolve(legacyCopy(text));
+}
+
 function selectContents(element) {
     const range = document.createRange();
     range.selectNodeContents(element);
@@ -44,34 +52,42 @@ function selectContents(element) {
     selection.addRange(range);
 }
 
-export function initCopyEmail() {
-    document.querySelectorAll('.copy-email').forEach(link => {
-        let feedbackTimer = null;
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const email = this.dataset.email || this.innerText.trim();
-            copyText(email).then(copied => {
-                // Nothing could be copied: select the address so that the
-                // visitor can copy it by hand, and say so.
-                if (!copied) selectContents(this);
-                const feedback = this.nextElementSibling;
-                if (feedback && feedback.classList.contains('copy-feedback')) {
-                    const key = copied ? 'copied' : 'copy_manual';
-                    feedback.setAttribute('data-i18n', key);
-                    feedback.textContent = t(key);
-                    feedback.style.opacity = '1';
-                    feedback.style.transform = 'translateX(5px)';
-                    clearTimeout(feedbackTimer);
-                    feedbackTimer = setTimeout(() => {
-                        feedback.style.opacity = '0';
-                        feedback.style.transform = 'translateX(-10px)';
-                    }, 2000);
-                }
-            }).catch(err => console.error('[portfolio] e-mail address could not be copied:', err));
-        });
+function bindCopyEmail(link) {
+    const feedback = link.nextElementSibling;
+    const hasFeedback = Boolean(feedback) && feedback.classList.contains('copy-feedback');
+    let feedbackTimer = null;
+
+    function showCopyFeedback(copied) {
+        const key = copied ? 'copied' : 'copy_manual';
+        feedback.setAttribute('data-i18n', key);
+        feedback.textContent = t(key);
+        feedback.style.opacity = '1';
+        feedback.style.transform = 'translateX(5px)';
+        clearTimeout(feedbackTimer);
+        feedbackTimer = setTimeout(() => {
+            feedback.style.opacity = '0';
+            feedback.style.transform = 'translateX(-10px)';
+        }, COPY_FEEDBACK_DURATION_MS);
+    }
+
+    link.addEventListener('click', event => {
+        event.preventDefault();
+        const email = link.dataset.email || link.innerText.trim();
+        copyText(email).then(copied => {
+            // Nothing could be copied: select the address so that the
+            // visitor can copy it by hand, and say so.
+            if (!copied) selectContents(link);
+            if (hasFeedback) showCopyFeedback(copied);
+        }).catch(error => console.error('[portfolio] e-mail address could not be copied:', error));
     });
 }
 
+/** Makes a click on the e-mail address copy it, with a short confirmation. */
+export function initCopyEmail() {
+    document.querySelectorAll('.copy-email').forEach(bindCopyEmail);
+}
+
+/** Animates the contact block in when it scrolls into view. */
 export function initContactReveal() {
     if (!hasScrollTrigger) return;
 
@@ -83,189 +99,183 @@ export function initContactReveal() {
 
     const heading = homeContact.querySelector('.page-heading');
     const intro = homeContact.querySelector('.page-intro');
-    const formGroups = homeContact.querySelectorAll('.fg');
-    const submitBtn = homeContact.querySelector('.btn-wrap');
+    const formElements = [...homeContact.querySelectorAll('.fg'), homeContact.querySelector('.btn-wrap')];
     const infoBlocks = homeContact.querySelectorAll('.ci-block');
 
-    const tl = gsap.timeline({
+    const timeline = gsap.timeline({
         scrollTrigger: {
             trigger: homeContact,
-            scroller: "#page-home",
-            start: "top 85%",
-            toggleActions: "play none none none"
-        }
+            scroller: '#page-home',
+            start: 'top 85%',
+            toggleActions: 'play none none none',
+        },
     });
 
-    tl.fromTo(heading,
+    timeline.fromTo(heading,
         { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
     );
-
-    tl.fromTo(intro,
+    timeline.fromTo(intro,
         { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-        "-=0.6"
+        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+        '-=0.6',
     );
-
-    const formElements = [...formGroups, submitBtn];
-    tl.fromTo(formElements,
+    timeline.fromTo(formElements,
         { opacity: 0, y: 25 },
-        { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: "power3.out" },
-        "-=0.5"
+        { opacity: 1, y: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out' },
+        '-=0.5',
     );
-
-    tl.fromTo(infoBlocks,
+    timeline.fromTo(infoBlocks,
         { opacity: 0, x: 20 },
-        { opacity: 1, x: 0, duration: 0.7, stagger: 0.12, ease: "power3.out" },
-        "-=0.6"
+        { opacity: 1, x: 0, duration: 0.7, stagger: 0.12, ease: 'power3.out' },
+        '-=0.6',
     );
 }
 
+// The form changes height (growing textarea, feedback message): the scroll
+// length and the scroll triggers must follow.
+function watchFormHeight(form) {
+    new ResizeObserver(() => {
+        if (state.scroll) state.scroll.resize();
+        if (hasScrollTrigger) ScrollTrigger.refresh();
+    }).observe(form);
+}
+
+// Marks the fields in error and tells whether the form can be sent.
+function validateFields({ nameEl, emailEl, messageEl }) {
+    const invalidFields = [
+        !nameEl.value.trim() && nameEl,
+        !EMAIL_PATTERN.test(emailEl.value.trim()) && emailEl,
+        !messageEl.value.trim() && messageEl,
+    ].filter(Boolean);
+    invalidFields.forEach(field => field.classList.add('fi-error'));
+    return invalidFields.length === 0;
+}
+
+// Form services send the success flag as a boolean, a string or a number.
+function isRefusal(result) {
+    const flag = result ? result.success : undefined;
+    return flag === false || flag === 0 || ['false', '0'].includes(String(flag).toLowerCase());
+}
+
+// Resolves when the service accepted the message, rejects otherwise.
+function sendForm(form, formData, signal) {
+    return fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: { Accept: 'application/json' },
+        signal,
+    }).then(response => {
+        if (!response.ok) throw new Error('Network response was not ok.');
+        // A 200 answer can still carry a refusal in its body. When the
+        // body is not JSON, the status already checked is all there is.
+        return response.json().catch(() => null);
+    }).then(result => {
+        if (isRefusal(result)) throw new Error('The form service refused the message.');
+    });
+}
+
+// The label shows whichever dictionary key it carries, so a language switch
+// during a request translates the pending label and the restored one alike.
+function setSubmitLabel(button, key) {
+    const label = button.querySelector('[data-i18n]');
+    if (!label) return;
+    label.setAttribute('data-i18n', key);
+    label.textContent = t(key);
+}
+
+// The message is readable through its CSS class alone; the slide-in is an
+// extra. It carries its dictionary key, like the label above.
+function createFeedback(feedback) {
+    let clearTimer = null;
+
+    function clear() {
+        clearTimeout(clearTimer);
+        feedback.classList.remove('form-feedback--success', 'form-feedback--error');
+        feedback.removeAttribute('data-i18n');
+        feedback.textContent = '';
+    }
+
+    function show(kind, key) {
+        feedback.setAttribute('data-i18n', key);
+        feedback.textContent = t(key);
+        feedback.classList.add(`form-feedback--${kind}`);
+        gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: kind === 'success' ? 0.4 : 0.35 });
+    }
+
+    // A new attempt clears the message at once, which also cancels this
+    // timer: left running, it would wipe the message of that attempt early.
+    function clearLater() {
+        clearTimeout(clearTimer);
+        clearTimer = setTimeout(clear, FORM_FEEDBACK_DURATION_MS);
+    }
+
+    return { clear, show, clearLater };
+}
+
+function submitForm(form, submitBtn, feedback) {
+    // Read before the button is disabled, like a native submission.
+    const formData = new FormData(form);
+    setSubmitLabel(submitBtn, 'form_sending');
+    submitBtn.disabled = true;
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS);
+
+    return sendForm(form, formData, controller.signal).then(() => {
+        feedback.show('success', 'form_sent');
+        form.reset();
+    }).catch(error => {
+        console.error('[portfolio] message could not be sent:',
+            controller.signal.aborted ? 'the request timed out.' : error);
+        feedback.show('error', 'form_failed');
+    }).finally(() => {
+        clearTimeout(timeoutId);
+        setSubmitLabel(submitBtn, 'form_send');
+        submitBtn.disabled = false;
+        feedback.clearLater();
+    });
+}
+
 /**
- * Kept apart from the entrance animation: the form must be intercepted even
- * when the animation library failed to load, otherwise the browser posts it
- * natively and lands on the raw JSON answer.
+ * Validates and sends the contact form. Kept apart from the entrance
+ * animation: the form must be intercepted even when the animation library
+ * failed to load, otherwise the browser posts it natively and lands on the
+ * raw JSON answer.
  */
 export function initContactForm() {
     const form = document.getElementById('contact-form');
-    const feedback = document.getElementById('form-feedback');
-    if (!form || !feedback) return;
+    const feedbackEl = document.getElementById('form-feedback');
+    const submitBtn = document.getElementById('contact-submit');
+    const fields = {
+        nameEl: document.getElementById('fn'),
+        emailEl: document.getElementById('fe'),
+        messageEl: document.getElementById('fm'),
+    };
+    if (!form || !feedbackEl || !submitBtn || !Object.values(fields).every(Boolean)) return;
 
-    // The form changes height (growing textarea, feedback message): the
-    // scroll length and the scroll triggers must follow.
-    if (window.ResizeObserver) {
-        const ro = new ResizeObserver(() => {
-            if (state.scroll) state.scroll.resize();
-            if (hasScrollTrigger) ScrollTrigger.refresh();
-        });
-        ro.observe(form);
-    }
-
-    // The message is readable through its CSS class alone; the slide-in is
-    // an extra that needs the animation library.
-    function animateFeedback(duration) {
-        if (typeof gsap === 'undefined') return;
-        gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration });
-    }
-
-    // The label shows whichever dictionary key it carries, so a language
-    // switch during a request translates the pending label and the
-    // restored one alike.
-    function setSubmitLabel(button, key) {
-        const label = button.querySelector('[data-i18n]');
-        if (!label) return;
-        label.setAttribute('data-i18n', key);
-        label.textContent = t(key);
-    }
+    watchFormHeight(form);
+    const feedback = createFeedback(feedbackEl);
 
     // Pressing Enter in a field submits the form without going through the
     // button, so the lock has to live on the submit event itself.
     let isSubmitting = false;
 
-    // Past this delay the request is treated as lost: the visitor gets an
-    // error and a usable form back instead of a button stuck on "sending".
-    const SUBMIT_TIMEOUT_MS = 15000;
-
-    // Clears the message once it has been read. A new attempt cancels it, or
-    // the timer of the previous attempt would wipe the new message early.
-    let feedbackTimer = null;
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
+    form.addEventListener('submit', event => {
+        event.preventDefault();
         if (isSubmitting) return;
-        clearTimeout(feedbackTimer);
 
-        const nameEl  = document.getElementById('fn');
-        const emailEl = document.getElementById('fe');
-        const msgEl   = document.getElementById('fm');
+        Object.values(fields).forEach(field => field.classList.remove('fi-error'));
+        feedback.clear();
 
-        const name  = nameEl.value.trim();
-        const email = emailEl.value.trim();
-        const msg   = msgEl.value.trim();
-
-        [nameEl, emailEl, msgEl].forEach(el => el.classList.remove('fi-error'));
-        feedback.className = 'form-feedback';
-        feedback.textContent = '';
-
-        let hasError = false;
-
-        if (!name) { nameEl.classList.add('fi-error'); hasError = true; }
-
-        // Deliberately loose: unusual but valid addresses must pass.
-        if (!email || !/^[^\s@]+@[^\s@]+$/.test(email)) {
-            emailEl.classList.add('fi-error');
-            hasError = true;
-        }
-
-        if (!msg) { msgEl.classList.add('fi-error'); hasError = true; }
-
-        if (hasError) {
-            const errMsg = state.lang === 'fr'
-                ? 'Merci de remplir tous les champs correctement.'
-                : 'Please fill in all fields correctly.';
-
-            feedback.textContent = errMsg;
-            feedback.classList.add('form-feedback--error');
-            animateFeedback(0.35);
+        if (!validateFields(fields)) {
+            feedback.show('error', 'form_invalid');
             return;
         }
 
-        const formData = new FormData(form);
-        const submitBtn = document.getElementById('contact-submit');
         isSubmitting = true;
-        setSubmitLabel(submitBtn, 'form_sending');
-        submitBtn.style.pointerEvents = 'none';
-        submitBtn.disabled = true;
-
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS);
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
-            },
-            signal: controller.signal
-        }).then(response => {
-            if (!response.ok) throw new Error('Network response was not ok.');
-            // A 200 answer can still carry a refusal in its body. When the
-            // body is not JSON, the status already checked is all there is.
-            return response.json().catch(() => null);
-        }).then(result => {
-            // Form services send this flag as a boolean, a string or a number.
-            const flag = result ? result.success : undefined;
-            const refused = flag === false || flag === 0
-                || ['false', '0'].includes(String(flag).toLowerCase());
-            if (!refused) {
-                const successMsg = state.lang === 'fr'
-                    ? '✓ Message envoyé avec succès !'
-                    : '✓ Message sent successfully!';
-                feedback.textContent = successMsg;
-                feedback.classList.add('form-feedback--success');
-                animateFeedback(0.4);
-                form.reset();
-            } else {
-                throw new Error('The form service refused the message.');
-            }
-        }).catch(error => {
-            const errorMsg = state.lang === 'fr'
-                ? 'Erreur lors de l\'envoi. Veuillez réessayer.'
-                : 'Error sending message. Please try again.';
-            feedback.textContent = errorMsg;
-            feedback.classList.add('form-feedback--error');
-            animateFeedback(0.35);
-        }).finally(() => {
-            clearTimeout(timeoutId);
-            setSubmitLabel(submitBtn, 'form_send');
-            submitBtn.style.pointerEvents = 'auto';
-            submitBtn.disabled = false;
+        submitForm(form, submitBtn, feedback).finally(() => {
             isSubmitting = false;
-            clearTimeout(feedbackTimer);
-            feedbackTimer = setTimeout(() => {
-                feedback.textContent = '';
-                feedback.classList.remove('form-feedback--success', 'form-feedback--error');
-            }, 5000);
         });
     });
 }
