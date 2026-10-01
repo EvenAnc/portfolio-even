@@ -85,3 +85,14 @@ desktop.ini
 dessin/*.png
 dessin/*.pdf
 photo/DIPLOME ARCHI/
+
+# Tooling
+node_modules/
+npm-debug.log*
+.eslintcache
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*~
