@@ -1311,9 +1311,29 @@ function initNotebookLines() {
     if (!container) return;
 
     // Attendre que la section soit visible pour mesurer
-    const observer = new ResizeObserver(() => {
-        generateLines(container);
-        observer.disconnect();
+    // The first notification draws the lines, as it always did. Later ones
+    // redraw them only when the width has changed (window resize, device
+    // rotation): the text then reflows and the sheet needs a different
+    // number of lines. Height alone is ignored, since the lines themselves
+    // and late-loading content would otherwise trigger needless redraws.
+    let drawnWidth = null;
+    let redrawTimer = null;
+    const observer = new ResizeObserver(entries => {
+        const width = Math.round(entries[0].contentRect.width);
+        if (drawnWidth === null) {
+            drawnWidth = width;
+            generateLines(container);
+            return;
+        }
+        if (width === drawnWidth) return;
+        clearTimeout(redrawTimer);
+        redrawTimer = setTimeout(() => {
+            drawnWidth = width;
+            // Emptied first so that the old lines do not count in the
+            // height the new ones are measured against.
+            container.innerHTML = '';
+            generateLines(container);
+        }, 200);
     });
     observer.observe(container.parentElement);
 
