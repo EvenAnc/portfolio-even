@@ -2652,6 +2652,14 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     max-height: 65vh;
     aspect-ratio: 1.414 / 1;
 }
+/* Mid-size screens: let the board give up the width the two arrows need,
+   so they stay inside the viewport instead of overflowing the container. */
+@media (min-width: 992px) and (max-width: 1365px) {
+    .carousel-landscape .bd-carousel-container .frame-wrap {
+        flex: 0 1 auto;
+        min-width: 0;
+    }
+}
 /* Professional Document Styling (replaces torn paper) */
 .drawing-sheet-wrap {
     border-radius: 8px !important;
