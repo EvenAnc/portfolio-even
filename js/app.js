@@ -891,7 +891,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
     }
 
     // Détruire le Lenis de l'ancienne page
-    if (lenis) { lenis.destroy(); lenis = null; }
+    destroyPageLenis();
 
     if (!animate || !outEl) {
         if (outEl) {
@@ -980,6 +980,21 @@ function updateHeaderLogo(pageId) {
 // ─────────────────────────────────────
 // LENIS SCROLL PAR PAGE
 // ─────────────────────────────────────
+// The ticker callback and the exposed reference both point at the
+// instance: they go with it, otherwise the ticker keeps calling raf on
+// nothing for the whole page transition.
+function destroyPageLenis() {
+    if (window._lenisTickerFn) {
+        gsap.ticker.remove(window._lenisTickerFn);
+        window._lenisTickerFn = null;
+    }
+    if (lenis) {
+        lenis.destroy();
+        lenis = null;
+    }
+    window._lenis = null;
+}
+
 function initPageLenis(scrollContainer) {
     // Lenis takes over the wheel but only moves when the GSAP ticker drives
     // it: without GSAP the page keeps its native scrolling.
