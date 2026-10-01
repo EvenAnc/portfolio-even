@@ -1382,6 +1382,23 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     aspect-ratio: 1.414 / 1;
 }
 
+/* Drawings page, short windows: the board is a fixed A4 sheet taller than
+   the window, which pushed its dots and progress bar off screen. Cap its
+   width so board plus controls (143px: header, gaps, dots) fit the window
+   height; the cap only bites below about 737px of height. */
+@media (min-width: 769px) {
+    #page-drawings .bd-carousel-viewport {
+        width: min(420px, max(120px, calc((100vh - 143px) / 1.414)));
+        width: min(420px, max(120px, calc((100dvh - 143px) / 1.414)));
+    }
+}
+@media (max-width: 768px) {
+    #page-drawings .bd-carousel-viewport {
+        width: min(320px, calc(100vw - 92px), max(120px, calc((100vh - 143px) / 1.414)));
+        width: min(320px, calc(100vw - 92px), max(120px, calc((100dvh - 143px) / 1.414)));
+    }
+}
+
 .bd-carousel-track {
     width: 100%;
     height: 100%;
