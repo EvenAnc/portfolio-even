@@ -70,7 +70,7 @@ export function initCopyEmail() {
     });
 }
 
-export function initContactAnimation() {
+export function initContactReveal() {
     if (!hasScrollTrigger) return;
 
     gsap.registerPlugin(ScrollTrigger);
