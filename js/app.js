@@ -394,6 +394,11 @@ if (gsapMissing) {
     };
 }
 
+// Resting opacity of the scroll hint under the hero. The hint is shown at
+// full strength so that its label keeps enough contrast; the thin line is
+// dimmed on its own in the stylesheet. Must match .scroll-invite there.
+const SCROLL_INVITE_OPACITY = 1;
+
 let currentLang = 'fr';
 let currentPage = 'home';
 let isMenuOpen  = false;
@@ -616,7 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (scrollInv) {
             gsap.fromTo(scrollInv,
                 { opacity: 0 },
-                { opacity: 0.45, duration: 0.8, delay: 1.5 }
+                { opacity: SCROLL_INVITE_OPACITY, duration: 0.8, delay: 1.5 }
             );
         }
         if (showcase) {
@@ -1122,7 +1127,7 @@ function resetHomeHero(pageId) {
         gsap.set(heroLogoWrap, { y: 0, opacity: 1 });
     }
     if (scrollInvite) {
-        gsap.set(scrollInvite, { opacity: 0.45 });
+        gsap.set(scrollInvite, { opacity: SCROLL_INVITE_OPACITY });
     }
 }
 
@@ -1233,7 +1238,7 @@ function initPageLenis(scrollContainer) {
                     y: 0, opacity: 1,
                     duration: 0.5, ease: 'power3.out', delay: 0.1
                 });
-                gsap.to(scrollInvite, { opacity: 0.45, duration: 0.4 });
+                gsap.to(scrollInvite, { opacity: SCROLL_INVITE_OPACITY, duration: 0.4 });
             }
         });
     }
