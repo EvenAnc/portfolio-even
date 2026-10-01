@@ -5,58 +5,58 @@
 // ─────────────────────────────────────
 // SAFARI : LE PAPIER DECHIRE CALCULE UNE SEULE FOIS
 // ─────────────────────────────────────
-// La feuille du cahier porte filter:url(#paper-tear), un bruit
+// La sheet du cahier porte filter:url(#paper-tear), un bruit
 // feTurbulence a 3 octaves sur toute la section. Chrome le garde en
 // memoire. Safari le recalcule sur le processeur a chaque image des
 // qu'une animation bouge ailleurs sur la page (logo qui tremble...).
 // Mesure dans WebKit : 2,5 images par seconde au repos sur l'accueil,
 // c'etait le lag du Mac.
 //
-// Sur Safari seulement, on dessine la meme feuille UNE fois dans une
-// image SVG : meme filtre, memes coordonnees, meme graine, donc memes
-// dechirures et meme marge rouge ondulee. Safari la garde en cache
+// Sur Safari seulement, on dessine la meme sheet UNE fois dans une
+// image SVG : meme filterEl, memes coordonnees, meme graine, donc memes
+// dechirures et meme margins rouge ondulee. Safari la garde en cache
 // comme n'importe quelle image : 40 images par seconde au repos.
 //
 // -webkit-hyphens n'est reconnu que par WebKit (Safari Mac, iPhone,
 // iPad). Chrome ne passe jamais ici : son rendu ne change pas d'un pixel.
-export function initPapierSafari() {
+export function initSafariPaperCache() {
     if (!(window.CSS && CSS.supports('-webkit-hyphens', 'none'))) return;
-    const feuille = document.querySelector('#notebook-section .notebook-bg-sheet');
-    const filtre  = document.getElementById('paper-tear');
-    if (!feuille || !filtre || typeof ResizeObserver === 'undefined' || typeof XMLSerializer === 'undefined') return;
+    const sheet = document.querySelector('#notebook-section .notebook-bg-sheet');
+    const filterEl  = document.getElementById('paper-tear');
+    if (!sheet || !filterEl || typeof ResizeObserver === 'undefined' || typeof XMLSerializer === 'undefined') return;
 
-    const definition = new XMLSerializer().serializeToString(filtre);
-    let empreinte = '';
+    const filterMarkup = new XMLSerializer().serializeToString(filterEl);
+    let lastSignature = '';
 
-    // Les deux traits de la marge rouge (::before et ::after) sont relus
-    // dans la feuille de style : ils changent de place sur mobile.
-    function trait(pseudo, h) {
-        const s = getComputedStyle(feuille, pseudo);
+    // Les deux traits de la margins rouge (::before et ::after) sont relus
+    // dans la sheet de style : ils changent de place sur mobile.
+    function marginRect(pseudo, h) {
+        const s = getComputedStyle(sheet, pseudo);
         if (s.content === 'none') return '';
         return '<rect x="' + parseFloat(s.left) + '" y="0" width="' + parseFloat(s.width) +
                '" height="' + h + '" fill="' + s.backgroundColor + '"/>';
     }
 
-    function peindre() {
-        const w = feuille.offsetWidth, h = feuille.offsetHeight;
+    function paint() {
+        const w = sheet.offsetWidth, h = sheet.offsetHeight;
         if (!w || !h) return;
-        const fond  = getComputedStyle(feuille).getPropertyValue('--notebook-bg').trim() || '#f2f0eb';
-        const marge = trait('::before', h) + trait('::after', h);
-        const cle = w + 'x' + h + '|' + fond + '|' + marge;
-        if (cle === empreinte) return;   // meme taille, rien a redessiner
-        empreinte = cle;
+        const background  = getComputedStyle(sheet).getPropertyValue('--notebook-bg').trim() || '#f2f0eb';
+        const margins = marginRect('::before', h) + marginRect('::after', h);
+        const signature = w + 'x' + h + '|' + background + '|' + margins;
+        if (signature === lastSignature) return;   // meme taille, rien a redessiner
+        lastSignature = signature;
         const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h +
-                    '" viewBox="0 0 ' + w + ' ' + h + '"><defs>' + definition + '</defs>' +
+                    '" viewBox="0 0 ' + w + ' ' + h + '"><defs>' + filterMarkup + '</defs>' +
                     '<g filter="url(#paper-tear)"><rect width="' + w + '" height="' + h +
-                    '" fill="' + fond + '"/>' + marge + '</g></svg>';
-        feuille.style.backgroundImage = 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
-        feuille.classList.add('papier-precalcule');
+                    '" fill="' + background + '"/>' + margins + '</g></svg>';
+        sheet.style.backgroundImage = 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
+        sheet.classList.add('papier-precalcule');
     }
 
-    // Redessine si la feuille change de taille (rotation, changement de
+    // Redessine si la sheet change de taille (rotation, changement de
     // langue qui rallonge le texte, chargement des polices).
-    new ResizeObserver(peindre).observe(feuille);
-    peindre();
+    new ResizeObserver(paint).observe(sheet);
+    paint();
 }
 
 // ─────────────────────────────────────
@@ -75,7 +75,7 @@ export function initNotebookLines() {
     let drawnWidth = null;
     let drawnHeight = null;
     const draw = () => {
-        generateLines(container);
+        renderLines(container);
         drawnHeight = container.parentElement.offsetHeight;
     };
     let redrawTimer = null;
@@ -112,7 +112,7 @@ export function initNotebookLines() {
     setTimeout(() => draw(), 200);
 }
 
-function generateLines(container) {
+function renderLines(container) {
     const parent = container.parentElement;
     if (!parent) return;
     const h = Math.max(parent.scrollHeight, parent.offsetHeight, 800);

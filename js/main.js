@@ -14,7 +14,7 @@ import { watchScrollbarWidth } from './page-scroll.js';
 import { playHeroIntro } from './hero.js';
 import { resetActivePages, initPageLinks, showInitialPage, initHistory } from './router.js';
 import { initMenu } from './menu.js';
-import { initPapierSafari, initNotebookLines } from './notebook.js';
+import { initSafariPaperCache, initNotebookLines } from './notebook.js';
 import { initBDCarousel } from './carousel.js';
 import { initScrollAnimationsMobile } from './touch-reveal.js';
 import { initKeyboardActivation } from './keyboard-activation.js';
@@ -33,7 +33,7 @@ function init() {
     initMenu();
     resetActivePages();
     initNotebookLines();
-    initPapierSafari();
+    initSafariPaperCache();
     initPageLinks();
     initContactAnimation();
     initContactForm();
