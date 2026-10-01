@@ -4,6 +4,8 @@
  * Rectangle SVG dessiné main + Menu habillé + Carrousel inertie
  */
 
+'use strict';
+
 // Un appareil est considere tactile s'il n'a pas de survol OU si son
 // pointeur est grossier (doigt). Le second critere rattrape les tablettes
 // et PC tactiles qui se declarent a tort comme ayant un survol : sans lui
