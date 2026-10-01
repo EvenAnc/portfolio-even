@@ -401,7 +401,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initLangSwitcher();
     initMenu();
     initSPA();
-    initCarousel();
     initNotebookLines();
     initPapierSafari();
     initNextPageLinks();
@@ -808,7 +807,6 @@ function showPage(pageId, animate = true, updateHistory = true) {
     const inEl  = document.getElementById(`page-${pageId}`);
     if (!inEl) return;
 
-    const pageAvant = currentPage;
     currentPage = pageId;
     majMetaPage(pageId);
 
@@ -834,11 +832,6 @@ function showPage(pageId, animate = true, updateHistory = true) {
     // Détruire le Lenis de l'ancienne page
     if (lenis) { lenis.destroy(); lenis = null; }
 
-    // FIX MEM-01 : libérer les documents PDF en quittant la page qui les porte
-    if (pageAvant === 'project-diploma' && pageId !== 'project-diploma') {
-        releasePdfCache();
-    }
-
     if (!animate || !outEl) {
         if (outEl) {
             outEl.classList.remove('is-active');
@@ -853,13 +846,6 @@ function showPage(pageId, animate = true, updateHistory = true) {
         updateHeaderLogo(pageId);
         
         hydratePageImages(inEl);
-        // FIX P-01d : les 15 canvas PDF sont TOUS sur la page « projet diplome ».
-        // Avant, ils etaient rendus depuis le hub « projets », donc pendant que
-        // leur propre page etait invisible : 9 Mo telecharges pour une page pas
-        // forcement ouverte, et un rendu canvas dans un sous-arbre non affiche.
-        // On declenche desormais a l'ouverture reelle de la page concernee :
-        // le shimmer de chargement deja prevu prend le relais.
-        if (pageId === 'project-diploma') renderInlinePDFs();
         updateScrollbarWidth();
         return;
     }
@@ -887,7 +873,6 @@ function showPage(pageId, animate = true, updateHistory = true) {
             updateHeaderLogo(pageId);
 
             hydratePageImages(inEl);
-            if (pageId === 'project-diploma') renderInlinePDFs();  // voir FIX P-01d
             updateScrollbarWidth();
         }
     });
@@ -1002,13 +987,6 @@ function initPageLenis(scrollContainer) {
     }
 
     window._lenis = lenis;
-}
-
-// ─────────────────────────────────────
-// CARROUSEL HORIZONTAL (PHOTOS)
-// ─────────────────────────────────────
-function initCarousel() {
-    // Carousel is now static wrapped grid layout, no-op
 }
 
 // ─────────────────────────────────────
@@ -1493,243 +1471,6 @@ function initBDCarousel() {
 }
 
 // ─────────────────────────────────────
-// RENDU PDF INLINE — LAZY + OPTIMISÉ
-// Charge seulement le slide visible en premier, puis les autres en différé
-// ─────────────────────────────────────
-let _pdfLib = null;
-let _pdfCache = {}; // Cache des documents PDF déjà chargés
-
-// FIX MEM-01 : les documents PDF restaient ouverts indéfiniment. Mesure sur
-// le site : 3 Mo de mémoire sur l'accueil, 66 Mo après ouverture de la page
-// projet diplôme, et toujours 66 Mo après l'avoir quittée. Sur un téléphone
-// d'entrée de gamme, c'est le seuil où le système ferme l'onglet.
-//
-// Les canvas déjà rendus gardent leur image : ce sont des bitmaps, ils ne
-// dépendent plus du document PDF. Et comme renderSingleCanvas ignore les
-// canvas marqués .pdf-loaded, revenir sur la page ne re-télécharge rien.
-function releasePdfCache(essai = 0) {
-    const urls = Object.keys(_pdfCache);
-    if (!urls.length) return;
-
-    // Garde-fou : si un rendu est encore en cours, detruire son document le
-    // ferait echouer, et le gestionnaire d'erreur remplace alors le canvas
-    // par un cadre « fichier introuvable » — definitivement. On patiente
-    // plutot que de casser un rendu en vol. Au-dela de 10 essais (20 s) on
-    // libere quand meme : un rendu bloque ne doit pas retenir la memoire.
-    if (document.querySelector('canvas.pdf-inline-render.pdf-loading') && essai < 10) {
-        setTimeout(() => releasePdfCache(essai + 1), 2000);
-        return;
-    }
-    urls.forEach(u => {
-        try {
-            const doc = _pdfCache[u];
-            if (doc && typeof doc.destroy === 'function') {
-                Promise.resolve(doc.destroy()).catch(() => {});
-            }
-        } catch (e) { /* document déjà libéré */ }
-    });
-    _pdfCache = {};
-}
-
-async function getPdfLib() {
-    if (_pdfLib) return _pdfLib;
-    if (typeof pdfjsLib !== 'undefined') _pdfLib = pdfjsLib;
-    else if (window.pdfjsLib) _pdfLib = window.pdfjsLib;
-    if (!_pdfLib) { console.error('PDF.js non chargé.'); return null; }
-    // Toujours utiliser le worker CDN correspondant à la même version que pdf.min.js
-    // (version mismatch ou chemin relatif = crash silencieux sur mobile)
-    _pdfLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    return _pdfLib;
-}
-
-// PERF-02 : les rendus partaient tous en parallele. Sur un processeur
-// modeste, lancer 4 decodages PDF simultanes sature le thread principal et
-// fige la page pendant plusieurs secondes.
-//
-// Ordonnanceur a 2 rendus simultanes maximum : assez pour occuper la machine
-// sans la saturer, et le travail total reste identique.
-//
-// Deux garde-fous, appris a la dure : une file strictement sequentielle se
-// bloque entierement si UN rendu ne se termine jamais (fichier corrompu,
-// reseau coupe). D'ou la limite de temps par element, et la reprise de la
-// file quoi qu'il arrive.
-const RENDUS_SIMULTANES = 2;
-const DELAI_MAX_RENDU = 20000;
-let _enCours = 0;
-const _attente = [];
-
-function mettreEnFile(canvas) {
-    // Un canvas en attente n'a encore aucune classe d'etat : sans ce marqueur,
-    // chaque balayage le remettait en file. On montait a 57 entrees pour 15
-    // plans — autant de travail inutile.
-    if (canvas.dataset.pdfEnFile === '1') return Promise.resolve();
-    canvas.dataset.pdfEnFile = '1';
-    return new Promise(resolve => {
-        _attente.push({ canvas, resolve });
-        depilerRendus();
-    });
-}
-
-function depilerRendus() {
-    while (_enCours < RENDUS_SIMULTANES && _attente.length) {
-        const { canvas, resolve } = _attente.shift();
-        _enCours++;
-        let fini = false;
-        const terminer = () => {
-            if (fini) return;
-            fini = true;
-            _enCours--;
-            resolve();
-            depilerRendus();
-        };
-        // si un rendu s'eternise, on libere la place au lieu de bloquer tout
-        const secours = setTimeout(terminer, DELAI_MAX_RENDU);
-        Promise.resolve()
-            .then(() => renderSingleCanvas(canvas))
-            .catch(() => {})
-            .finally(() => {
-                clearTimeout(secours);
-                // en cas d'echec, on relache le marqueur : un futur balayage
-                // pourra retenter plutot que de laisser un cadre vide.
-                if (!canvas.classList.contains('pdf-loaded')) delete canvas.dataset.pdfEnFile;
-                terminer();
-            });
-    }
-}
-
-async function renderSingleCanvas(canvas) {
-    if (!canvas || canvas.classList.contains('pdf-loaded') || canvas.classList.contains('pdf-loading')) return;
-    canvas.classList.add('pdf-loading');
-
-    const url = canvas.dataset.pdfUrl;
-    if (!url) return;
-
-    const pdfLib = await getPdfLib();
-    if (!pdfLib) return;
-
-    // Montrer le shimmer de chargement
-    canvas.parentElement.classList.add('pdf-shimmer');
-
-    try {
-        // Utiliser le cache pour éviter de re-télécharger le même fichier
-        if (!_pdfCache[url]) {
-            // Charger le PDF directement via URL (streaming, compatible mobile)
-        // encodeURI pour gérer les espaces et caractères spéciaux dans les noms de fichiers
-        _pdfCache[url] = await pdfLib.getDocument(encodeURI(url)).promise;
-        }
-        const pdf = _pdfCache[url];
-        const page = await pdf.getPage(1);
-
-        // PERF-01 : l'echelle etait fixee a 1.8 quelle que soit la taille
-        // d'affichage. Un plan montre en 1200px etait rendu en 2142px : 1,8x
-        // plus de pixels que ce que l'ecran peut afficher, donc autant de
-        // travail jete. On calcule desormais l'echelle a partir de la largeur
-        // reellement occupee, multipliee par la densite de l'ecran, avec 25%
-        // de marge pour rester net si le visiteur zoome au navigateur.
-        // Sur un ecran retina l'echelle monte automatiquement : c'est une
-        // adaptation, pas une reduction — le rendu reste net partout.
-        // On mesure le CONTENEUR, pas le canvas : tant qu'il n'est pas rendu,
-        // le canvas garde sa taille intrinseque par defaut (300px) et donnerait
-        // une echelle trop basse. Une fois rendu il occupe 100% du conteneur,
-        // c'est donc bien celui-ci qui dicte la taille d'affichage finale.
-        const conteneur = canvas.parentElement;
-        const largeurAffichee = conteneur ? conteneur.getBoundingClientRect().width : 0;
-        const base = page.getViewport({ scale: 1 }).width;
-        let thumbScale = 1.8;                       // repli si la mise en page n'est pas encore connue
-        if (largeurAffichee > 50 && base > 0) {
-            const dpr = window.devicePixelRatio || 1;
-            thumbScale = (largeurAffichee * dpr * 1.25) / base;
-            thumbScale = Math.max(0.8, Math.min(thumbScale, 3));   // bornes de securite
-        }
-        const viewport = page.getViewport({ scale: thumbScale });
-
-        const cropTopPercent = parseFloat(canvas.dataset.pdfCropTop || '0');
-        const cropTopPx = Math.round(viewport.height * cropTopPercent / 100);
-
-        canvas.width  = viewport.width;
-        canvas.height = (viewport.height * 0.96) - cropTopPx;
-        canvas.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;';
-
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        if (cropTopPx > 0) ctx.translate(0, -cropTopPx);
-
-        await page.render({ canvasContext: ctx, viewport, background: 'white' }).promise;
-
-        canvas.classList.remove('pdf-loading');
-        canvas.classList.add('pdf-loaded');
-        canvas.parentElement.classList.remove('pdf-shimmer');
-
-    } catch (err) {
-        console.error('Erreur PDF :', url, err);
-        canvas.parentElement.classList.remove('pdf-shimmer');
-        canvas.classList.remove('pdf-loading');
-        // Afficher un placeholder élégant en cas d'erreur
-        canvas.parentElement.innerHTML = `
-            <div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1a1a1a;color:rgba(255,255,255,0.4);font-family:var(--font-body);font-size:0.85rem;gap:8px;">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                <span>${url.split('/').pop()}</span>
-            </div>`;
-    }
-}
-
-// PERF-03 : les 15 plans etaient tous rendus des l'ouverture de la page,
-// alors que 4 seulement se trouvent pres de l'ecran — 17 millions de pixels
-// dessines d'un coup, dont les trois quarts pour rien tant qu'on n'a pas
-// fait defiler. On ne declenche desormais le rendu qu'a l'approche, avec
-// 700px d'avance pour qu'un plan soit pret avant d'etre atteint.
-// Aucune perte de qualite : c'est le meme rendu, simplement plus tard.
-//
-// Choix volontaire de NE PAS utiliser IntersectionObserver : il depend du
-// moteur de rendu, ce qui le rend invérifiable sur banc de test et delicat
-// a diagnostiquer si un plan ne s'affiche pas. Un calcul de position direct
-// fait le meme travail, se teste partout, et n'a aucune dependance.
-const MARGE_PRECHARGE = 700;   // px d'avance avant l'entree a l'ecran
-let _balayagePdfActif = false;
-let _balayageTimer = null;
-
-function canvasProcheEcran(canvas) {
-    const r = canvas.getBoundingClientRect();
-    if (!r.height && !r.width) return false;
-    return r.bottom > -MARGE_PRECHARGE && r.top < window.innerHeight + MARGE_PRECHARGE;
-}
-
-function balayerCanvasPdf() {
-    const restants = Array.from(document.querySelectorAll(
-        'canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)'));
-    if (!restants.length) { arreterBalayagePdf(); return; }
-    restants.filter(canvasProcheEcran).forEach(c => {
-        mettreEnFile(c).then(() => { if (window._lenis) window._lenis.resize(); });
-    });
-}
-
-function planifierBalayage() {
-    clearTimeout(_balayageTimer);
-    _balayageTimer = setTimeout(balayerCanvasPdf, 120);
-}
-
-function demarrerBalayagePdf(racine) {
-    balayerCanvasPdf();                       // premiere passe immediate
-    if (_balayagePdfActif) return;
-    _balayagePdfActif = true;
-    if (racine) racine.addEventListener('scroll', planifierBalayage, { passive: true });
-    window.addEventListener('resize', planifierBalayage, { passive: true });
-    if (window._lenis) window._lenis.on('scroll', planifierBalayage);
-    // filet : si un evenement de defilement manque a l'appel, on repasse
-    // quelques fois pendant les premieres secondes.
-    let essais = 0;
-    const filet = setInterval(() => {
-        balayerCanvasPdf();
-        if (++essais >= 6) clearInterval(filet);
-    }, 1000);
-}
-
-function arreterBalayagePdf() {
-    clearTimeout(_balayageTimer);
-}
-
-// ─────────────────────────────────────
 // PERF-04 — PRECHARGEMENT DE FOND, PENDANT LA VISITE
 // Constat d'Even : en arrivant sur la page des plans, les 4 coupes du bas
 // ne se dessinaient qu'apres avoir fait defiler, et ca saccadait pendant.
@@ -1808,42 +1549,6 @@ function demarrerPrechargeFond() {
     planifier();
 }
 
-async function renderInlinePDFs() {
-    // Trouver tous les canvas non rendus
-    const allCanvases = Array.from(document.querySelectorAll('canvas.pdf-inline-render:not(.pdf-loaded):not(.pdf-loading)'));
-    if (!allCanvases.length) return;
-
-    demarrerBalayagePdf(document.querySelector('.page.is-active'));
-    return;
-
-    // PRIORITÉ 1 : Rendre d'abord les slides actifs/visibles
-    const visibleCanvases = allCanvases.filter(c => {
-        const slide = c.closest('.bd-slide');
-        const stackItem = c.closest('.stack-item');
-        // Slide actif = premier du carrousel, ou coupe (toutes visibles)
-        return (slide && slide.classList.contains('active')) || stackItem || (!slide && !stackItem);
-    });
-
-    const deferredCanvases = allCanvases.filter(c => !visibleCanvases.includes(c));
-
-    // Rendre les visibles en premier (en parallèle limitée)
-    await Promise.allSettled(visibleCanvases.map(c => renderSingleCanvas(c)));
-
-    // Rafraîchir Lenis après le premier batch
-    if (window._lenis) window._lenis.resize();
-    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-
-    // Rendre les non-visibles en différé (avec délais entre chaque pour ne pas bloquer le thread)
-    for (const canvas of deferredCanvases) {
-        await renderSingleCanvas(canvas);
-        await new Promise(r => setTimeout(r, 80)); // respiration entre chaque
-    }
-
-    // Rafraîchir une dernière fois
-    if (window._lenis) window._lenis.resize();
-    if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
-}
-
 // ─────────────────────────────────────
 // CONFIGURATION ET RENDU PDF.JS DESSINS
 // ─────────────────────────────────────
@@ -1915,12 +1620,6 @@ const diplomeAnalyses = [
     { url: 'PDF/zooning-batiment.pdf', title: 'Zoning Bâtiment' },
     { url: 'PDF/zooning-circulation.pdf', title: 'Zoning Circulations' }
 ];
-
-const galleriesMap = {
-    'plans': diplomePlans,
-    'coupes': diplomeCoupes,
-    'analyses': diplomeAnalyses
-};
 
 // Removed PDF.js rendering logic
 
@@ -2058,23 +1757,14 @@ function initDrawingLightbox() {
             canvas.style.backgroundColor = '#ffffff'; // White background for PDF
             
             let pdfLib = null;
-            if (window['pdfjs-dist/build/pdf']) {
-                pdfLib = window['pdfjs-dist/build/pdf'];
-            } else if (window.pdfjsLib) {
+            if (window.pdfjsLib) {
                 pdfLib = window.pdfjsLib;
             }
             
             if (pdfLib) {
                 pdfLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                 
-                let loadingTaskPromise;
-                if (typeof pdfData !== 'undefined' && pdfData[url]) {
-                    loadingTaskPromise = fetch("data:application/pdf;base64," + pdfData[url])
-                        .then(res => res.arrayBuffer())
-                        .then(buffer => pdfLib.getDocument({ data: buffer }).promise);
-                } else {
-                    loadingTaskPromise = pdfLib.getDocument(encodeURI(url)).promise;
-                }
+                const loadingTaskPromise = pdfLib.getDocument(encodeURI(url)).promise;
                 
                 // FIX MEM-02 : le document ouvert ici n'était jamais libéré.
                 // On le garde le temps du rendu, puis on le relâche : le canvas
@@ -2084,7 +1774,6 @@ function initDrawingLightbox() {
                     docOuvert = pdf;
                     return pdf.getPage(1);
                 }).then(page => {
-                    const pixelRatio = window.devicePixelRatio || 1;
                     // Using a higher scale for sharp rendering
                     const viewport = page.getViewport({ scale: 3.0 });
                     
@@ -2536,8 +2225,6 @@ function initScrollAnimationsMobile() {
     // Sélecteurs à observer — même liste que les éléments animés en CSS
     const SELECTORS = [
         '.drawing-item',
-        '.project-item',
-        '.hc-item',
         '.ci-block',
         '.fg',
         '.notebook-section',
