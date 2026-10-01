@@ -109,6 +109,19 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     animation: logoWobbleMini 0.3s steps(1) infinite;
 }
 
+/* Narrowest phones (Galaxy Fold closed): the logo only gets half the header
+   and wrapped onto two lines. Shrink it onto one line and nudge it left so
+   it clears the language switcher. */
+@media (max-width: 303px) {
+    .header-logo {
+        left: calc(50% - 28px);
+        white-space: nowrap;
+    }
+    .header-logo-text {
+        font-size: 1.3rem;
+    }
+}
+
 @keyframes logoWobbleMini {
     0%,33%   { filter: url(#sketch-1); }
     34%,66%  { filter: url(#sketch-2); }
