@@ -1720,6 +1720,11 @@ function initDrawingLightbox() {
     let maxZoom = 4;
     let currentRenderId = 0;
     let activePdfJob = null;
+    let openedAt = 0;
+
+    // The second click of a double-click lands on the viewer that the first
+    // one just opened; it must neither close it nor zoom.
+    const OPEN_CLICK_GUARD_MS = 400;
 
     // Share of the page height that is drawn: the bottom strip only holds
     // the sheet's page number.
@@ -1953,6 +1958,7 @@ function initDrawingLightbox() {
         // Opening on a missing entry would lock scrolling behind an empty viewer.
         if (!Number.isInteger(index) || index < 0 || index >= currentGallery.length) return;
         isSingleMode = false;
+        openedAt = performance.now();
         lightbox.setAttribute('aria-hidden', 'false');
         if (window._lenis) window._lenis.stop();
         document.body.style.overflow = 'hidden';
@@ -1968,6 +1974,7 @@ function initDrawingLightbox() {
 
     function openSingleImage(url, title) {
         isSingleMode = true;
+        openedAt = performance.now();
         lightbox.setAttribute('aria-hidden', 'false');
         if (window._lenis) window._lenis.stop();
         document.body.style.overflow = 'hidden';
@@ -2155,6 +2162,7 @@ function initDrawingLightbox() {
 
     // Clic en dehors de l'image = fermer, clic sur l'image = zoom (si non zoomé)
     lightbox.addEventListener('click', (e) => {
+        if (performance.now() - openedAt < OPEN_CLICK_GUARD_MS) return;
         if (e.target === lightbox || e.target.classList.contains('lb-canvas-wrap')) {
             closeLightbox();
         } else if (e.target.tagName.toLowerCase() === 'img' || e.target.tagName.toLowerCase() === 'canvas') {
