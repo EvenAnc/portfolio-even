@@ -56,8 +56,6 @@ const i18n = {
         tools_plans: "ArchiCAD · Photoshop",
         tools_coupes: "ArchiCAD · Photoshop",
         tools_3d: "Twinmotion",
-        meta_title:          "Even ANICET — Architecte d'intérieur",
-        meta_desc:           "Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.",
         home_subtitle:       "Architecte d'intérieur",
         home_seeking:        "Recherche un contrat en Suisse romande",
         home_scroll:         "Défilez",
@@ -77,8 +75,6 @@ const i18n = {
         copied:              "copié !",
         copy_manual:         "sélectionnée, à copier",
         video_placeholder:   "une vidéo arrive !",
-        showcase_sub:        "Rendu 3D — 2025",
-        showcase_btn:        "voir les projets",
         shortcut_sub:        "Aperçu",
         shortcut_main:       "MES PROJETS",
         click_hint:          "cliquez !",
@@ -86,11 +82,6 @@ const i18n = {
         about_p1: "L'architecture d'intérieur me tient depuis toujours. Trois ans chez MJM Graphic Design Toulouse, et je dessine encore à la main avant d'ouvrir un logiciel. Ça m'aide à concevoir des espaces qui racontent une histoire.",
         about_p2: "Ce qui me retient, c'est le détail, la lumière, les matériaux nobles. Et l'architecture vernaculaire, qui guide tous mes projets. Avant de dessiner, je regarde ce qui se construisait dans la région et pourquoi. Chaque projet est une recherche entre la fonction, l'esthétique et l'histoire du lieu.",
         about_annotation:    "→ toujours en quête du détail juste",
-        projects_intro:      "Conception d'espaces minimalistes et modélisations techniques 3D.",
-        proj_cat_3d:         "Rendu 3D & Intérieur",
-        proj_cat_plan:       "Plan & Aménagement",
-        proj_cat_sketch:     "Esquisse & Concept",
-        photos_intro:        "Détails de textures, matières et jeux d'ombres.",
         drawings_intro:      "Esquisses architecturales à main levée sur papier A4.",
         study_degree:        "Diplôme d'Architecte d'Intérieur",
         study_focus:         "Spécialisations",
@@ -110,9 +101,6 @@ const i18n = {
         diploma_cert_c3: "Prescription technique des matériaux, devis et cahiers des charges.",
         diploma_cert_c4: "Planification des interventions et coordination de la maîtrise d'œuvre.",
         diploma_cert_footer: "Enregistré par France Compétences",
-        diploma_scan_title: "Scan du diplôme officiel",
-        diploma_scan_placeholder_title: "Scan du diplôme (A4 Paysage) à intégrer ici",
-        diploma_scan_placeholder_sub: "Espace réservé pour le document officiel de fin de cycle (A4 Paysage)",
         contact_intro: "Discutons de votre projet d'aménagement intérieur, une proposition d'embauche, une question, ou juste l'envie d'échanger, n'hésitez pas !",
         form_name: "NOM", form_email: "EMAIL",
         form_message: "MESSAGE", form_send: "ENVOYER", form_sending: "ENVOI...",
@@ -145,9 +133,54 @@ const i18n = {
         proj_panel_plans:         "PLANS",
         proj_panel_coupes:        "COUPES ARCHITECTURALES",
         proj_panel_3d:            "3D",
-        proj_label_int:           "Intérieur",
-        proj_label_immersion:     "Immersion",
-        proj_label_far:           "Vue de loin",
+        hobbies_intro: "moto & perso",
+        // Accessible names and image descriptions
+        nav_back: "retour",
+        aria_nav_social: "Réseaux sociaux",
+        aria_nav_main: "Menu principal",
+        aria_next_page: "Aller à la page suivante",
+        aria_next_project: "Aller au projet suivant",
+        aria_goto_drawings: "Aller à la page Dessins",
+        aria_goto_diploma: "Aller à la page Diplôme",
+        aria_goto_hobbies: "Aller à la page Hobbies",
+        aria_goto_contact: "Aller à la page Contact",
+        aria_prev: "Précédent",
+        aria_next: "Suivant",
+        aria_prev_sheet: "Page précédente",
+        aria_next_sheet: "Page suivante",
+        aria_autoplay: "Lecture automatique",
+        aria_viewer: "Visionneuse d'images",
+        aria_zoom_level: "Niveau de zoom",
+        aria_fullscreen: "Plein écran",
+        aria_zoom: "Zoomer",
+        aria_close: "Fermer",
+        alt_project_mirage: "Projet Mirage",
+        alt_project_paterr: "Projet Paterr Suisse",
+        alt_plan_masse: "Plan masse",
+        alt_trame: "Trame structurelle",
+        alt_zoning_building: "Zoning du bâtiment",
+        alt_zoning_circulation: "Zoning des circulations",
+        alt_plan_rm1: "Plan du niveau R-1",
+        alt_plan_rdc: "Plan du rez-de-chaussée",
+        alt_plan_r1: "Plan du niveau R+1",
+        alt_zoom_station: "Zoom sur la station",
+        alt_zoom_resto: "Zoom sur le restaurant",
+        alt_zoom_garage: "Zoom sur le garage",
+        alt_zoom_expo: "Zoom sur l'espace d'exposition",
+        alt_coupe_lointaine: "Coupe nord, vue lointaine",
+        alt_coupe_nord: "Coupe nord texturée",
+        alt_coupe_ouest: "Coupe ouest texturée",
+        alt_coupe_sud: "Coupe sud texturée",
+        alt_draw_carto: "Dessin Cartographie",
+        alt_draw_style: "Dessin À la manière de",
+        alt_draw_nb: "Dessin Noir et blanc",
+        alt_photo_ref: "Photo de référence",
+        alt_bd_1: "BD page 1",
+        alt_bd_2: "BD page 2",
+        alt_bd_3: "BD page 3",
+        alt_bd_4: "BD page 4",
+        alt_mjm: "Façade de MJM Toulouse",
+        alt_diploma_scan: "Scan du diplôme (A4 paysage)",
     },
     en: {
         choice_text2: "Then it had to be made workable. Putting a filling station in a fire-prone area, right next to an olive grove, is not obvious. Those constraints ended up giving the project its guiding lines, and made it buildable.",
@@ -159,8 +192,6 @@ const i18n = {
         tools_plans: "ArchiCAD · Photoshop",
         tools_coupes: "ArchiCAD · Photoshop",
         tools_3d: "Twinmotion",
-        meta_title:          "Even ANICET — Interior Architect",
-        meta_desc:           "Portfolio of Even ANICET, interior architect from MJM Graphic Design Toulouse.",
         home_subtitle:       "Interior Architect",
         home_seeking:        "Seeking a contract in French-speaking Switzerland",
         home_scroll:         "Scroll",
@@ -180,8 +211,6 @@ const i18n = {
         copied:              "copied !",
         copy_manual:         "selected, copy it",
         video_placeholder:   "video coming soon !",
-        showcase_sub:        "3D Render — 2025",
-        showcase_btn:        "view projects",
         shortcut_sub:        "sneak peek",
         shortcut_main:       "MY PROJECTS",
         click_hint:          "click here !",
@@ -189,11 +218,6 @@ const i18n = {
         about_p1: "Interior architecture has held me for as long as I can remember. Three years at MJM Graphic Design Toulouse, and I still draw by hand before opening any software. It helps me design spaces that tell a story.",
         about_p2: "What holds my attention is detail, light, honest materials. And vernacular architecture, which guides all my projects. Before I draw anything, I look at what used to be built in the area, and why. Every project is a search between function, aesthetics and the story of the place.",
         about_annotation:    "→ always chasing the perfect detail",
-        projects_intro:      "Minimalist space design and 3D technical modelling.",
-        proj_cat_3d:         "3D Render & Interior",
-        proj_cat_plan:       "Technical Plan & Layout",
-        proj_cat_sketch:     "Pencil Sketch & Concept",
-        photos_intro:        "Textures, materials and interplay of light.",
         drawings_intro:      "Freehand architectural sketches on A4 paper.",
         study_degree:        "Interior Design & Architecture Degree",
         study_focus:         "Core Modules",
@@ -213,9 +237,6 @@ const i18n = {
         diploma_cert_c3: "Technical specification of materials, cost estimation, and construction specifications.",
         diploma_cert_c4: "Project scheduling, execution management, and contractor coordination.",
         diploma_cert_footer: "Registered by France Compétences",
-        diploma_scan_title: "Official Diploma Scan",
-        diploma_scan_placeholder_title: "Official diploma scan (A4 Landscape) placeholder",
-        diploma_scan_placeholder_sub: "Reserved space for the official graduation document (A4 Landscape)",
         contact_intro: "Let's talk about your interior project, a job offer, a question, or simply the wish to exchange, do get in touch!",
         form_name: "NAME", form_email: "EMAIL",
         form_message: "MESSAGE", form_send: "SEND", form_sending: "SENDING...",
@@ -248,9 +269,54 @@ const i18n = {
         proj_panel_plans:         "FLOOR PLANS",
         proj_panel_coupes:        "ARCHITECTURAL SECTIONS",
         proj_panel_3d:            "3D RENDERS",
-        proj_label_int:           "Interior",
-        proj_label_immersion:     "Immersion",
-        proj_label_far:           "Wide shot",
+        hobbies_intro: "moto & personal",
+        // Accessible names and image descriptions
+        nav_back: "back",
+        aria_nav_social: "Social networks",
+        aria_nav_main: "Main menu",
+        aria_next_page: "Go to the next page",
+        aria_next_project: "Go to the next project",
+        aria_goto_drawings: "Go to the Drawings page",
+        aria_goto_diploma: "Go to the Diploma page",
+        aria_goto_hobbies: "Go to the Hobbies page",
+        aria_goto_contact: "Go to the Contact page",
+        aria_prev: "Previous",
+        aria_next: "Next",
+        aria_prev_sheet: "Previous page",
+        aria_next_sheet: "Next page",
+        aria_autoplay: "Autoplay",
+        aria_viewer: "Image viewer",
+        aria_zoom_level: "Zoom level",
+        aria_fullscreen: "Full screen",
+        aria_zoom: "Zoom in",
+        aria_close: "Close",
+        alt_project_mirage: "Mirage project",
+        alt_project_paterr: "Paterr Suisse project",
+        alt_plan_masse: "Site plan",
+        alt_trame: "Structural grid",
+        alt_zoning_building: "Building zoning",
+        alt_zoning_circulation: "Circulation zoning",
+        alt_plan_rm1: "Level -1 plan",
+        alt_plan_rdc: "Ground floor plan",
+        alt_plan_r1: "Level +1 plan",
+        alt_zoom_station: "Close-up of the station",
+        alt_zoom_resto: "Close-up of the restaurant",
+        alt_zoom_garage: "Close-up of the garage",
+        alt_zoom_expo: "Close-up of the exhibition space",
+        alt_coupe_lointaine: "North section, distant view",
+        alt_coupe_nord: "Textured north section",
+        alt_coupe_ouest: "Textured west section",
+        alt_coupe_sud: "Textured south section",
+        alt_draw_carto: "Drawing: Cartography",
+        alt_draw_style: "Drawing: In the style of",
+        alt_draw_nb: "Drawing: Black and white",
+        alt_photo_ref: "Reference photo",
+        alt_bd_1: "Comic page 1",
+        alt_bd_2: "Comic page 2",
+        alt_bd_3: "Comic page 3",
+        alt_bd_4: "Comic page 4",
+        alt_mjm: "MJM Toulouse façade",
+        alt_diploma_scan: "Diploma scan (A4 landscape)",
     }
 };
 
@@ -639,6 +705,15 @@ function applyLang(lang) {
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (i18n[lang][key] !== undefined) el.textContent = i18n[lang][key];
+    });
+
+    // Text that lives in attributes (accessible names, image descriptions)
+    // is translated the same way, through a sibling data attribute.
+    [['data-i18n-aria', 'aria-label'], ['data-i18n-alt', 'alt']].forEach(([source, target]) => {
+        document.querySelectorAll('[' + source + ']').forEach(el => {
+            const text = i18n[lang][el.getAttribute(source)];
+            if (text !== undefined) el.setAttribute(target, text);
+        });
     });
 
     document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -1733,42 +1808,49 @@ function demarrerPrechargeFond() {
 const allDrawings = [
     {
         url: "dessin/opt/cartographie@2x.webp",
+        altKey: "alt_draw_carto",
         title: "CARTOGRAPHIE",
         desc: "Dessin technique & Relief — A4",
         orient: "portrait"
     },
     {
         url: "dessin/opt/a-la-maniere-de@2x.webp",
+        altKey: "alt_draw_style",
         title: "À LA MANIÈRE DE...",
         desc: "Étude de style & Graphite — A4",
         orient: "landscape"
     },
     {
         url: "dessin/opt/noir-et-blanc@2x.webp",
+        altKey: "alt_draw_nb",
         title: "NOIR ET BLANC",
         desc: "Encre de Chine & Graphisme — A4",
         orient: "portrait"
     },
     {
         url: "dessin/opt/bd-page-1@2x.webp",
+        altKey: "alt_bd_1",
         title: "BANDE DESSINÉE — Page 1",
         desc: "A4 — Portrait",
         orient: "portrait"
     },
     {
         url: "dessin/opt/bd-page-2@2x.webp",
+        altKey: "alt_bd_2",
         title: "BANDE DESSINÉE — Page 2",
         desc: "A4 — Portrait",
         orient: "portrait"
     },
     {
         url: "dessin/opt/bd-page-3@2x.webp",
+        altKey: "alt_bd_3",
         title: "BANDE DESSINÉE — Page 3",
         desc: "A4 — Portrait",
         orient: "portrait"
     },
     {
         url: "dessin/opt/bd-page-4@2x.webp",
+        altKey: "alt_bd_4",
         title: "BANDE DESSINÉE — Page 4",
         desc: "A4 — Portrait",
         orient: "portrait"
@@ -1776,27 +1858,27 @@ const allDrawings = [
 ];
 
 const diplomePlans = [
-    { url: 'PDF/plan-rmoins1.pdf', title: 'Plan R-1' },
-    { url: 'PDF/plan-rdc.pdf', title: 'Plan RDC' },
-    { url: 'PDF/plan-r1.pdf', title: 'Plan R+1' },
-    { url: 'PDF/plan-station.pdf', title: 'Zoom Station' },
-    { url: 'PDF/plan-resto.pdf', title: 'Zoom Resto' },
-    { url: 'PDF/plan-garage.pdf', title: 'Zoom Garage' },
-    { url: 'PDF/plan-expo.pdf', title: 'Zoom Expo' }
+    { url: 'PDF/plan-rmoins1.pdf', title: 'Plan R-1', altKey: 'alt_plan_rm1' },
+    { url: 'PDF/plan-rdc.pdf', title: 'Plan RDC', altKey: 'alt_plan_rdc' },
+    { url: 'PDF/plan-r1.pdf', title: 'Plan R+1', altKey: 'alt_plan_r1' },
+    { url: 'PDF/plan-station.pdf', title: 'Zoom Station', altKey: 'alt_zoom_station' },
+    { url: 'PDF/plan-resto.pdf', title: 'Zoom Resto', altKey: 'alt_zoom_resto' },
+    { url: 'PDF/plan-garage.pdf', title: 'Zoom Garage', altKey: 'alt_zoom_garage' },
+    { url: 'PDF/plan-expo.pdf', title: 'Zoom Expo', altKey: 'alt_zoom_expo' }
 ];
 
 const diplomeCoupes = [
-    { url: 'PDF/coupe-nord-loingtaine.pdf', title: 'Coupe Lointaine' },
-    { url: 'PDF/coupe-nord-texture.pdf', title: 'Coupe Nord' },
-    { url: 'PDF/coupe-ouest-texture.pdf', title: 'Coupe Ouest' },
-    { url: 'PDF/coupe-sud-texture.pdf', title: 'Coupe Sud' }
+    { url: 'PDF/coupe-nord-loingtaine.pdf', title: 'Coupe Lointaine', altKey: 'alt_coupe_lointaine' },
+    { url: 'PDF/coupe-nord-texture.pdf', title: 'Coupe Nord', altKey: 'alt_coupe_nord' },
+    { url: 'PDF/coupe-ouest-texture.pdf', title: 'Coupe Ouest', altKey: 'alt_coupe_ouest' },
+    { url: 'PDF/coupe-sud-texture.pdf', title: 'Coupe Sud', altKey: 'alt_coupe_sud' }
 ];
 
 const diplomeAnalyses = [
-    { url: 'PDF/plan-masse.pdf', title: 'Plan Masse' },
-    { url: 'PDF/trame.pdf', title: 'Trame' },
-    { url: 'PDF/zooning-batiment.pdf', title: 'Zoning Bâtiment' },
-    { url: 'PDF/zooning-circulation.pdf', title: 'Zoning Circulations' }
+    { url: 'PDF/plan-masse.pdf', title: 'Plan Masse', altKey: 'alt_plan_masse' },
+    { url: 'PDF/trame.pdf', title: 'Trame', altKey: 'alt_trame' },
+    { url: 'PDF/zooning-batiment.pdf', title: 'Zoning Bâtiment', altKey: 'alt_zoning_building' },
+    { url: 'PDF/zooning-circulation.pdf', title: 'Zoning Circulations', altKey: 'alt_zoning_circulation' }
 ];
 
 // Removed PDF.js rendering logic
@@ -1978,7 +2060,8 @@ function initDrawingLightbox() {
         if (activePdfJob) releasePdfJob(activePdfJob);
 
         const url = isSingleMode ? index.url : currentGallery[index].url;
-        const altText = isSingleMode ? (index.title || '') : currentGallery[index].title;
+        const entry = isSingleMode ? index : currentGallery[index];
+        const altText = (entry.altKey && i18n[currentLang][entry.altKey]) || entry.title || '';
 
         const isPdf = url.toLowerCase().endsWith('.pdf');
         maxZoom = isPdf ? 10 : 4;
@@ -1990,6 +2073,9 @@ function initDrawingLightbox() {
             // Render as PDF on a canvas
             const canvas = document.createElement('canvas');
             canvas.style.backgroundColor = '#ffffff'; // White background for PDF
+            // A canvas has no alt: it is exposed as an image with a name.
+            canvas.setAttribute('role', 'img');
+            canvas.setAttribute('aria-label', altText);
             
             let pdfLib = null;
             if (window.pdfjsLib) {
