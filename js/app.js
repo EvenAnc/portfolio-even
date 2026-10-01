@@ -1675,6 +1675,43 @@ function initDrawingLightbox() {
     let currentGallery = allDrawings;
     let maxZoom = 4;
     let currentRenderId = 0;
+    let activePdfJob = null;
+
+    // Share of the page height that is drawn: the bottom strip only holds
+    // the sheet's page number.
+    const PDF_VISIBLE_HEIGHT = 0.95;
+    const PDF_MAX_SCALE = 3;
+    const PDF_ZOOM_RESERVE = 4;
+    const PDF_MAX_PIXELS = 9e6;
+    const PDF_MAX_PIXELS_TOUCH = 4e6;
+
+    // Scale = what the screen can show (fitted size x pixel ratio x zoom
+    // reserve), never above PDF_MAX_SCALE, then capped by a pixel budget so
+    // that one sheet cannot exhaust canvas memory on a phone or tablet.
+    function pdfRenderScale(page) {
+        const base = page.getViewport({ scale: 1 });
+        const fit = Math.min(window.innerWidth / base.width, window.innerHeight / base.height);
+        const wanted = fit * (window.devicePixelRatio || 1) * PDF_ZOOM_RESERVE;
+        const budget = window.matchMedia(REQUETE_TACTILE).matches ? PDF_MAX_PIXELS_TOUCH : PDF_MAX_PIXELS;
+        const budgetScale = Math.sqrt(budget / (base.width * base.height * PDF_VISIBLE_HEIGHT));
+        return Math.min(PDF_MAX_SCALE, wanted, budgetScale);
+    }
+
+    // Aborts whatever the job is still doing and frees its document.
+    // Destroying the loading task also destroys the document it produced.
+    function releasePdfJob(job) {
+        if (activePdfJob === job) activePdfJob = null;
+        if (job.renderTask) job.renderTask.cancel();
+        Promise.resolve(job.loadingTask.destroy()).catch(() => {});
+    }
+
+    // Zeroing a canvas frees its backing store at once; mobile Safari
+    // otherwise keeps it until a garbage collection that may come late.
+    function clearCanvasWrap() {
+        if (!canvasWrap) return;
+        canvasWrap.querySelectorAll('canvas').forEach(c => { c.width = c.height = 0; });
+        canvasWrap.innerHTML = '';
+    }
 
     function updateTransform() {
         const item = canvasWrap.querySelector('img, canvas');
@@ -1757,10 +1794,11 @@ function initDrawingLightbox() {
         }
 
         // Préparer l'image
-        if (canvasWrap) canvasWrap.innerHTML = '';
+        clearCanvasWrap();
         if (loader) loader.classList.add('active');
 
         const renderId = ++currentRenderId;
+        if (activePdfJob) releasePdfJob(activePdfJob);
 
         const url = isSingleMode ? index.url : currentGallery[index].url;
         const altText = isSingleMode ? (index.title || '') : currentGallery[index].title;
@@ -1784,22 +1822,19 @@ function initDrawingLightbox() {
             if (pdfLib) {
                 pdfLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
                 
-                const loadingTaskPromise = pdfLib.getDocument(encodeURI(url)).promise;
-                
-                // FIX MEM-02 : le document ouvert ici n'était jamais libéré.
-                // On le garde le temps du rendu, puis on le relâche : le canvas
-                // conserve son image, le document n'a plus d'utilité.
-                let docOuvert = null;
-                loadingTaskPromise.then(pdf => {
-                    docOuvert = pdf;
-                    return pdf.getPage(1);
+                const job = { loadingTask: pdfLib.getDocument(encodeURI(url)), renderTask: null };
+                activePdfJob = job;
+                const isStale = () => renderId !== currentRenderId;
+
+                job.loadingTask.promise.then(pdf => {
+                    return isStale() ? null : pdf.getPage(1);
                 }).then(page => {
-                    // Using a higher scale for sharp rendering
-                    const viewport = page.getViewport({ scale: 3.0 });
-                    
+                    if (!page || isStale()) return;
+
+                    const viewport = page.getViewport({ scale: pdfRenderScale(page) });
+
                     canvas.width = viewport.width;
-                    // Couper la pagination en bas (95% de la hauteur)
-                    canvas.height = viewport.height * 0.95;
+                    canvas.height = viewport.height * PDF_VISIBLE_HEIGHT;
                     
                     const context = canvas.getContext('2d');
                     
@@ -1813,25 +1848,27 @@ function initDrawingLightbox() {
                         background: 'white'
                     };
                     
-                    return page.render(renderContext).promise;
+                    job.renderTask = page.render(renderContext);
+                    return job.renderTask.promise;
                 }).then(() => {
-                    if (renderId === currentRenderId) {
-                        if (canvasWrap) {
-                            canvasWrap.innerHTML = '';
-                            canvasWrap.appendChild(canvas);
-                        }
-                        if (loader) loader.classList.remove('active');
+                    // The canvas keeps its pixels: the document is no longer needed.
+                    job.renderTask = null;
+                    releasePdfJob(job);
+                    if (isStale()) {
+                        canvas.width = canvas.height = 0;
+                        return;
                     }
-                    if (docOuvert) {
-                        Promise.resolve(docOuvert.destroy()).catch(() => {});
-                        docOuvert = null;
+                    if (canvasWrap) {
+                        canvasWrap.innerHTML = '';
+                        canvasWrap.appendChild(canvas);
                     }
+                    if (loader) loader.classList.remove('active');
                 }).catch(err => {
-                    if (docOuvert) {
-                        Promise.resolve(docOuvert.destroy()).catch(() => {});
-                        docOuvert = null;
-                    }
-                    if (renderId === currentRenderId) {
+                    job.renderTask = null;
+                    releasePdfJob(job);
+                    if (isStale()) {
+                        canvas.width = canvas.height = 0;
+                    } else {
                         if (loader) loader.classList.remove('active');
                         console.error('Erreur lors du chargement du PDF:', err);
                     }
@@ -1907,9 +1944,11 @@ function initDrawingLightbox() {
             document.exitFullscreen().catch(()=>{});
         }
         clearTimeout(hideTimer);
-        setTimeout(() => {
-            if (canvasWrap) canvasWrap.innerHTML = '';
-        }, 350);
+        // A render still in flight must not land in the closed viewer.
+        ++currentRenderId;
+        if (activePdfJob) releasePdfJob(activePdfJob);
+        if (loader) loader.classList.remove('active');
+        setTimeout(clearCanvasWrap, 350);
         if (window._lenis) window._lenis.start();
         document.body.style.overflow = '';
     }
