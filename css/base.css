@@ -1,0 +1,80 @@
+/* Tokens */
+
+:root {
+    --bg: #1a1a1a;
+    --white: #FFFFFF;
+    --red: #FF364A;
+    --muted: rgba(255,255,255,0.45);
+    --notebook-bg: #f2f0eb;
+    --notebook-line: rgba(140,135,125,0.35);
+    --notebook-text: #1a1a1a;
+
+    --font-display: 'Bebas Neue', 'Impact', sans-serif;
+    --font-body:    'Space Grotesk', sans-serif;
+    --font-sketch:  'Skribblugh', 'Permanent Marker', cursive;
+
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --dur-fast: 0.22s;
+    --dur-med:  0.55s;
+}
+
+@font-face {
+    font-family: 'Skribblugh';
+    /* woff2 d'abord : 11 Ko de moins, et c'est la premiere police que
+       le visiteur voit — le logo. Le woff reste en secours pour les
+       navigateurs anciens, qui ignorent simplement la premiere source. */
+    src: url('../fonts/SkribblughRegular-XGW02.woff2') format('woff2'),
+         url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+/* Reset and base */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+}
+
+a, button { color: inherit; text-decoration: none; background: none; border: none; cursor: pointer; font-family: inherit; }
+img { display: block; width: 100%; height: 100%; object-fit: cover; -webkit-user-select: none; user-select: none; }
+.font-sketch { font-family: var(--font-sketch); }
+
+/* ── Lien d'evitement ──────────────────────────────────────────────
+   Invisible tant qu'on ne tabule pas, il apparait au premier Tab et
+   permet de sauter le header pour aller droit au contenu. */
+.skip-link {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -120%);
+    z-index: 200;
+    padding: 14px 26px;
+    background: var(--red);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.skip-link:focus {
+    transform: translate(-50%, 0);
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* Retire le voile bleu d'appui sur Android */
+    a, button, .stack-item, .drawing-sheet-wrap {
+        -webkit-tap-highlight-color: transparent;
+    }
+}

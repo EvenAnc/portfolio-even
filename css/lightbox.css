@@ -1,0 +1,553 @@
+/* Lightbox */
+
+.drawing-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 90px 60px 60px;
+    box-sizing: border-box;
+    background: #121212;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+    cursor: default;
+}
+
+.drawing-lightbox[aria-hidden="false"] {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.35s ease, visibility 0s linear 0s;
+}
+
+/* ── Logo centré en haut ── */
+.lb-logo {
+    position: absolute;
+    top: 26px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.2rem;
+    color: var(--white);
+    z-index: 10010;
+    letter-spacing: 0.04em;
+    opacity: 0.85;
+    transition: opacity 0.4s ease;
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+/* ── Compteur discret sous le logo ── */
+.lb-counter {
+    position: absolute;
+    top: 78px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.35);
+    z-index: 10010;
+    letter-spacing: 0.04em;
+    transition: opacity 0.4s ease;
+}
+
+/* ── Outils (Plein écran, Zoom, Fermer) ── */
+.lb-tools {
+    position: absolute;
+    top: 20px;
+    right: 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 10010;
+}
+
+.lb-tool-btn, .lb-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.45);
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+}
+
+.lb-close {
+    font-size: 2.4rem;
+    line-height: 1;
+}
+
+.lb-tool-btn:hover, .lb-close:hover {
+    color: var(--white);
+    transform: scale(1.15);
+}
+
+/* ── Flèches de navigation ── */
+.lb-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.35);
+    cursor: pointer;
+    z-index: 10005;
+    padding: 14px;
+    transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.lb-prev { left: 18px; }
+.lb-next { right: 18px; }
+
+.lb-arrow:hover {
+    color: var(--white);
+    transform: translateY(-50%) scale(1.2);
+}
+
+/* ── Conteneur du canvas (l'image) ── */
+.lb-canvas-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    z-index: 10001;
+    background: transparent;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 110px 70px 50px 70px;
+}
+
+.lb-canvas-wrap img,
+.lb-canvas-wrap canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border: none;
+    outline: none;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+/* ── Slider de Zoom (Crayonné) ── */
+.lb-zoom-slider-container {
+    position: relative;
+    width: 120px;
+    height: 30px;
+    display: none;
+    align-items: center;
+    margin-right: 5px;
+    opacity: 0;
+    transform: translateX(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.drawing-lightbox.zoomed .lb-zoom-slider-container {
+    display: flex;
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.lb-slider-svg {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+#lb-zoom-range {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    background: transparent;
+    cursor: pointer;
+    z-index: 2;
+    margin: 0;
+}
+
+#lb-zoom-range:focus {
+    outline: none;
+}
+
+#lb-zoom-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 30px;
+    background: transparent;
+}
+
+#lb-zoom-range::-moz-range-thumb {
+    width: 20px;
+    height: 30px;
+    background: transparent;
+    border: none;
+}
+
+/* ── État zoomé (Pan & Zoom) ── */
+.drawing-lightbox.zoomed .lb-canvas-wrap {
+    overflow: hidden; 
+    touch-action: none;
+}
+
+.drawing-lightbox.zoomed .lb-canvas-wrap img,
+.drawing-lightbox.zoomed .lb-canvas-wrap canvas {
+    cursor: grab;
+    transform-origin: center center;
+}
+
+.drawing-lightbox.zoomed .lb-canvas-wrap img.dragging,
+.drawing-lightbox.zoomed .lb-canvas-wrap canvas.dragging {
+    cursor: grabbing;
+    transition: none !important;
+}
+
+/* Fallback embed PDF — supprimer le cadre gris du viewer natif */
+.lb-canvas-wrap embed,
+.lb-canvas-wrap object {
+    display: block;
+    border: none;
+    outline: none;
+    background: #121212;
+}
+
+/* ── Loader spinner ── */
+.lb-loader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10002;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.lb-loader.active {
+    opacity: 1;
+}
+
+.lb-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2.5px solid rgba(255, 255, 255, 0.12);
+    border-top: 2.5px solid var(--red);
+    border-radius: 50%;
+    animation: lb-spin 0.9s linear infinite;
+}
+
+/* ── Points indicateurs en bas ── */
+.lb-dots {
+    position: absolute;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 10010;
+}
+
+.lb-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.25s ease;
+}
+
+.lb-dot.active {
+    background: var(--white);
+    transform: scale(1.35);
+}
+
+.lb-dot:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* ── Auto-masquage des contrôles (classe JS) ── */
+.drawing-lightbox.controls-hidden .lb-logo,
+.drawing-lightbox.controls-hidden .lb-counter,
+.drawing-lightbox.controls-hidden .lb-close,
+.drawing-lightbox.controls-hidden .lb-arrow,
+.drawing-lightbox.controls-hidden .lb-dots {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.drawing-lightbox .lb-close {
+    top: max(18px, calc(18px + env(safe-area-inset-top)));
+}
+
+/* La visionneuse s'ouvre normalement en fondu sur 0,35s. Pendant une
+   transition de vue, ce fondu est nuisible : au moment ou le navigateur
+   photographie l'image d'arrivee, l'opacite vaut encore 0 et la planche
+   grandit vers du vide. On la rend visible d'un coup — l'animation, c'est
+   la transition qui la fait. La classe est retiree juste apres, pour que
+   la fermeture retrouve son fondu.
+   Meme poids que .drawing-lightbox[aria-hidden="false"], mais posee plus
+   loin dans le fichier : c'est elle qui l'emporte. */
+.drawing-lightbox.sans-fondu {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: none;
+}
+
+@media (orientation: landscape) and (max-height: 500px) and (min-width: 769px) {
+    /* Phone held sideways: the viewer and its canvas each reserve room for the
+       controls, and the two stacked paddings leave about a fifth of a 393px-high
+       screen to the image. The canvas padding alone clears the logo, the counter
+       (top) and the dots (bottom). Narrower screens use the bottom toolbar layout
+       below and are left alone. */
+    .drawing-lightbox {
+        padding: 0;
+    }
+
+    .lb-canvas-wrap {
+        padding: 104px 70px 44px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Conteneur global : padding safe-area pour les encoches */
+    .drawing-lightbox {
+        padding: 0;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    /* Logo : remonté, taille ajustée, reste centré */
+    .lb-logo {
+        font-size: 1.6rem;
+        top: calc(12px + env(safe-area-inset-top, 0px));
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+
+    /* Compteur sous le logo, plus petit */
+    .lb-counter {
+        top: calc(50px + env(safe-area-inset-top, 0px));
+        font-size: 0.9rem;
+    }
+
+    /* Barre d'outils — sur mobile, on la déplace EN BAS
+           pour éviter toute superposition avec le logo haut */
+    .lb-tools {
+        top: auto;
+        bottom: calc(44px + env(safe-area-inset-bottom, 0px));
+        right: 50%;
+        transform: translateX(50%);
+        flex-direction: row;
+        gap: 24px;
+        background: rgba(18, 18, 18, 0.75);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 30px;
+        padding: 10px 22px;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    /* Boutons outils : plus grands pour les doigts */
+    .lb-tool-btn {
+        padding: 8px;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    .lb-tool-btn svg { width: 22px; height: 22px; }
+
+    /* Bouton fermer : intégré dans la barre du bas */
+    .lb-close {
+        font-size: 2rem;
+        padding: 8px;
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* Slider de zoom : visible mais dans la barre du bas, plein largeur */
+    .lb-zoom-slider-container {
+        width: 90px;
+        height: 36px;
+        margin-right: 0;
+    }
+
+    /* Canvas : prend tout l'écran avec espace pour logo et barre du bas */
+    .lb-canvas-wrap {
+        padding: 90px 45px 140px 45px;
+        padding-top: calc(90px + env(safe-area-inset-top, 0px));
+        padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .lb-arrow svg { width: 18px; height: 18px; }
+
+    /* Points indicateurs : remontés pour ne pas chevaucher la barre */
+    .lb-dots {
+        bottom: calc(125px + env(safe-area-inset-bottom, 0px));
+        gap: 12px;
+    }
+
+    .lb-dot { width: 10px; height: 10px; }
+
+    /* ── 5. Visionneuse sur telephone : recuperer la place perdue ──────
+       Mesure sur iPhone 390x844 : le conteneur reservait 45px de marge de
+       chaque cote pour degager les fleches, et l'image n'occupait que
+       300x424 — a peine plus que la vignette du carrousel. Ouvrir une
+       planche « en grand » n'apportait presque rien.
+
+       Les fleches ne font que 60px de haut et sont centrees : elles ne
+       croisent l'image que sur une bande etroite. On les laisse donc
+       flotter par-dessus, comme sur toutes les visionneuses mobiles, et
+       l'image reprend la largeur. Le glissement lateral reste de toute
+       facon le geste principal.
+       Resultat : 300x424 -> environ 370x523, soit +50% de surface. */
+    #lb-canvas-wrap {
+        padding: 70px 10px 120px;
+    }
+
+    .lb-prev, .lb-next {
+        /* legere ombre pour rester lisibles au-dessus d'une planche claire */
+        filter: drop-shadow(0 0 6px rgba(0,0,0,0.85));
+    }
+
+    /* ── 12. Visionneuse : fleches ramenees dans la barre du bas ───────
+       Au doigt, des fleches collees aux bords de l'ecran se confondent
+       avec le geste de retour du systeme et passent inapercues. Even
+       demande a les retrouver a cote des boutons zoom et plein ecran.
+
+       Mesures : la barre d'outils occupe 93 -> 319 et laisse 93px libres
+       de chaque cote — exactement la place des fleches. On les aligne sur
+       sa hauteur (bottom: 44px), ce qui regroupe TOUTES les commandes en
+       une seule rangee : precedent | plein ecran  zoom  fermer | suivant */
+    /* Flèches de navigation : plus petites, sans fond (Swipe disponible) */
+    .lb-arrow {
+        padding: 12px 8px;
+        min-width: 44px;
+        background: none;
+        border-radius: 0;
+        top: auto;
+        bottom: calc(44px + env(safe-area-inset-bottom, 0px));
+        height: 70px;
+        min-height: 70px;
+        transform: none;
+    }
+
+    .lb-prev {
+        left: 14px;
+    }
+
+    .lb-next {
+        right: 14px;
+    }
+
+    /* Au doigt, l'etat :hover reste colle apres l'appui. Le survol
+           reappliquait translateY(-50%), heritee de la disposition bureau ou
+           la fleche est centree verticalement : la fleche touchee sautait de
+           35px vers le haut et se desalignait de sa voisine. On ne garde que
+           l'eclaircissement de la couleur. */
+    .lb-arrow:hover,
+    .lb-arrow:focus,
+    .lb-arrow:active {
+        transform: none;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 768px) {
+    /* Small phone held sideways: the logo, counter, dots and bottom toolbar
+       left under 45% of the screen height to the image. Put the dots and the
+       counter on the logo row, shrink the toolbar, and give the room to the
+       image. Close button and arrows stay on the bottom row. */
+    .lb-logo {
+        top: 4px;
+        font-size: 1.3rem;
+    }
+
+    .lb-counter {
+        top: 12px;
+        left: calc(50% + 56px);
+        transform: none;
+    }
+
+    .lb-dots {
+        top: 16px;
+        bottom: auto;
+        left: auto;
+        right: 14px;
+        transform: none;
+    }
+
+    .lb-arrow {
+        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+        height: 54px;
+        min-height: 54px;
+    }
+
+    #lb-canvas-wrap {
+        padding: 40px 10px calc(62px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
+@media (max-width: 341px) {
+    /* Very narrow phones: the toolbar (226px) is wider than the gap left
+       between the two arrows and slid under them. Tighten its spacing so it
+       fits between them; the buttons keep their 44px touch size. */
+    .lb-tools {
+        gap: 4px;
+        padding: 10px 6px;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* ── 19. Le rythme de la planche qui se souleve ───────────────
+
+       Sans ces regles le navigateur applique sa duree par defaut a tout,
+       fond compris, et le mouvement se noie dans le fondu general.
+       On donne le premier role a la planche — un peu plus lente, avec une
+       courbe qui decelere franchement, comme une feuille qu'on souleve — et
+       on abrege le fondu du reste pour qu'il ne la concurrence pas.
+
+       La regle « reduced motion » est deja assuree cote script, qui ouvre
+       sans transition ; celle-ci est une ceinture de plus. */
+    ::view-transition-group(planche-ouverte) {
+        animation-duration: 460ms;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    ::view-transition-old(planche-ouverte),
+    ::view-transition-new(planche-ouverte) {
+        animation-duration: 460ms;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation-duration: 240ms;
+    }
+}
+
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 768px) {
+    .lb-tools {
+        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+        padding: 4px 22px;
+    }
+}
+
+@keyframes lb-spin {
+    to { transform: rotate(360deg); }
+}
+
+.single-lightbox-trigger { cursor: zoom-in; }
