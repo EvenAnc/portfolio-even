@@ -4,11 +4,12 @@
  * Rectangle SVG dessiné main + Menu habillé + Carrousel inertie
  */
 
-// Un appareil est considere tactile s'il n'a pas de survol OU si son
-// pointeur est grossier (doigt). Le second critere rattrape les tablettes
-// et PC tactiles qui se declarent a tort comme ayant un survol : sans lui
-// ils n'avaient NI le survol reel, NI l'equivalent tactile.
-const REQUETE_TACTILE = '(hover: none), (pointer: coarse)';
+import { REQUETE_TACTILE, gsapMissing, hasScrollTrigger, readStored, writeStored } from './core/env.js';
+import { installGsapFallback } from './core/gsap-fallback.js';
+import { i18n, META_PAGES } from './i18n/dictionary.js';
+import { allDrawings, diplomePlans, diplomeCoupes, diplomeAnalyses } from './lightbox/galleries.js';
+import { animateFavicon } from './favicon.js';
+import { demarrerPrechargeFond } from './preload.js';
 
 // Au doigt, un appui ouvre la visionneuse instantanement : le rectangle
 // rouge n'a pas le temps de se dessiner, et Even ne voit jamais
@@ -45,284 +46,6 @@ function tracerPuis(element, action) {
 }
 
 // ─────────────────────────────────────
-// TRADUCTIONS FR / EN
-// ─────────────────────────────────────
-const i18n = {
-    fr: {
-        choice_text2: "Restait à le rendre viable. Installer une station essence en zone inflammable, juste à côté d'une oliveraie, ça ne va pas de soi. Ce sont ces contraintes qui ont fini par donner au projet ses lignes directrices et qui l'ont rendu réalisable.",
-        quote_text: "Quand les détails réussissent, ils ne distraient pas et n'amusent pas. Ils conduisent à la compréhension de l'ensemble dont ils font partie.",
-        quote_author: "Peter Zumthor",
-        quote2_text: "Je préfère dessiner que parler. Dessiner est plus rapide et laisse moins de place au mensonge.",
-        quote2_author: "Le Corbusier",
-        tools_zooning: "InDesign · Procreate",
-        tools_plans: "ArchiCAD · Photoshop",
-        tools_coupes: "ArchiCAD · Photoshop",
-        tools_3d: "Twinmotion",
-        home_subtitle:       "Architecte d'intérieur",
-        home_seeking:        "Recherche un contrat en Suisse romande",
-        home_scroll:         "Défilez",
-        menu_01: "ACCUEIL",  menu_02: "PROJETS", menu_03: "DESSINS",
-        menu_04: "DIPLÔME",  menu_05: "HOBBIES", menu_06: "CONTACT",
-        menu_deco_01: "bienvenue",
-        menu_deco_02: "mes réalisations",
-        menu_deco_03: "à main levée",
-        menu_deco_04: "MJM Toulouse",
-        menu_deco_05: "moto & perso",
-        menu_deco_06: "parlons-en",
-        nav_next:            "suivant",
-        proj_01_title:       "PROJET 01 : DIPLÔME",
-        proj_02_title:       "PROJET 02 : PATERR SUISSE",
-        proj_03_title:       "PROJET 03 : À SUIVRE...",
-        proj_loading:        "en cours...",
-        copied:              "copié !",
-        copy_manual:         "sélectionnée, à copier",
-        video_placeholder:   "une vidéo arrive !",
-        shortcut_sub:        "Aperçu",
-        shortcut_main:       "MES PROJETS",
-        click_hint:          "cliquez !",
-        about_title:         "Qui suis-je ?",
-        about_p1: "L'architecture d'intérieur me tient depuis toujours. Trois ans chez MJM Graphic Design Toulouse, et je dessine encore à la main avant d'ouvrir un logiciel. Ça m'aide à concevoir des espaces qui racontent une histoire.",
-        about_p2: "Ce qui me retient, c'est le détail, la lumière, les matériaux nobles. Et l'architecture vernaculaire, qui guide tous mes projets. Avant de dessiner, je regarde ce qui se construisait dans la région et pourquoi. Chaque projet est une recherche entre la fonction, l'esthétique et l'histoire du lieu.",
-        about_annotation:    "→ toujours en quête du détail juste",
-        drawings_intro:      "Esquisses architecturales à main levée sur papier A4.",
-        study_degree:        "Diplôme d'Architecte d'Intérieur",
-        study_focus:         "Spécialisations",
-        study_focus_desc:    "Modélisation 3D, plans de coupe, design mobilier et gestion d'espace.",
-        study_address:       "Adresse",
-        study_school_status: "Statut de l'établissement",
-        study_school_status_desc: "Enseignement supérieur privé technique, enregistré auprès de l'Académie de Toulouse.",
-        diploma_cert_title: "CERTIFICATION RNCP",
-        diploma_cert_subtitle: "Designer en architecture d'intérieur - Niveau 6",
-        diploma_cert_rncp: "STATUT RÉGLEMENTAIRE",
-        diploma_cert_rncp_val: "Titre de niveau 6 (Bac+3 / Licence) inscrit au RNCP, certifiant l'aptitude à concevoir des espaces intérieurs, élaborer des dossiers techniques et superviser des chantiers.",
-        diploma_cert_credits: "CRÉDENTIALS ACADÉMIQUES",
-        diploma_cert_credits_val: "Équivalence de 180 crédits ECTS (Niveau 6 Européen EQF). Équivalence Suisse : Bachelor of Arts (BA) HES en architecture d'intérieur. Formation éligible au CPF.",
-        diploma_cert_competences: "COMPÉTENCES CLÉS ACCRÉDITÉES",
-        diploma_cert_c1: "Diagnostic technique, spatial et réglementaire de l'existant.",
-        diploma_cert_c2: "Création de concepts esthétiques, plans de coupe et modélisations 3D.",
-        diploma_cert_c3: "Prescription technique des matériaux, devis et cahiers des charges.",
-        diploma_cert_c4: "Planification des interventions et coordination de la maîtrise d'œuvre.",
-        diploma_cert_footer: "Enregistré par France Compétences",
-        contact_intro: "Discutons de votre projet d'aménagement intérieur, une proposition d'embauche, une question, ou juste l'envie d'échanger, n'hésitez pas !",
-        form_name: "NOM", form_email: "EMAIL",
-        form_message: "MESSAGE", form_send: "ENVOYER", form_sending: "ENVOI...",
-        contact_direct:   "CONTACT DIRECT",
-        contact_social:   "RÉSEAUX",
-        contact_location: "LOCALISATION",
-        drawing_title_carto: "CARTOGRAPHIE",
-        drawing_desc_carto:  "Dessin technique & Relief — A4",
-        drawing_title_nb:    "NOIR ET BLANC",
-        drawing_desc_nb:     "Encre de Chine & Graphisme — A4",
-        drawing_title_style: "À LA MANIÈRE DE...",
-        drawing_desc_style:  "Étude de style & Graphite — A4",
-        bd_title:            "BANDE DESSINÉE",
-        legal_copyright:  "Toutes les œuvres présentées sur ce site (rendus 3D, esquisses, photographies, dessins) sont la propriété exclusive d'Even ANICET. Toute reproduction, distribution ou utilisation sans autorisation écrite préalable est strictement interdite.",
-        legal_cert:       "Je certifie être l'auteur de l'ensemble des travaux et productions présentés sur ce portfolio. Les images et créations sont protégées par le droit d'auteur conformément au Code de la Propriété Intellectuelle français (articles L.111-1 et suivants).",
-        legal_mentions:   "Mentions légales",
-        legal_rights:     "Tous droits réservés",
-        // Page Projets
-        proj_title:               "PROJET 01 : DIPLÔME",
-        proj_desc: "Un complexe moto multifonctionnel, inspiré des motels américains et des stations-service des années 60-70. On y trouve une station essence, un garage moto, un espace d'exposition, un bar-restaurant et un espace de pause, le tout organisé autour d'une circulation et d'une signalétique travaillées. C'est un lieu de rencontre, pour les passionnés comme pour ceux qui veulent découvrir cet univers.",
-        proj_annotation:          "→ MJM Graphic Design Toulouse — 2025",
-        lede_zooning: "Une oliveraie en bord de route, à Lambesc, sur un axe très fréquenté par les motards. Le projet s'installe sur une portion de parcelle restée vide. La circulation reprend les codes d'une piste de moto, et c'est elle qui décide de l'implantation des bâtiments.",
-        lede_plans: "Plans définitifs et détails, niveau par niveau, en suivant la pente du terrain. La matériauthèque répond à l'architecture vernaculaire du lieu. Chaque matériau est choisi pour tenir l'ensemble, du sol à la toiture.",
-        lede_coupes: "Ici tout se joue sur la verticalité du site. Les coupes sont texturées pour rendre lisible l'épaisseur du projet et la matière réelle des parois, ce qu'un plan ne peut pas montrer.",
-        lede_3d: "La forme finale du projet. Ces vues intérieures et extérieures montrent ce que j'avais en tête depuis le premier croquis.",
-        choice_eyebrow: "Les problématiques",
-        choice_title: "Un site pas comme les autres",
-        choice_text: "Le terrain n'a pas été choisi pour sa facilité. Il est perché dans les hauteurs de Lambesc, en pleine garrigue, au croisement de deux grands axes motards et à deux pas des routes de cols. Aucune station-service à des kilomètres, rien autour. Je suis tombé dessus pendant une balade et l'endroit s'est imposé.",
-        proj_panel_zooning:       "ZOONING ET ANALYSE",
-        proj_panel_plans:         "PLANS",
-        proj_panel_coupes:        "COUPES ARCHITECTURALES",
-        proj_panel_3d:            "3D",
-        hobbies_intro: "moto & perso",
-        // Accessible names and image descriptions
-        nav_back: "retour",
-        aria_nav_social: "Réseaux sociaux",
-        aria_nav_main: "Menu principal",
-        aria_next_page: "Aller à la page suivante",
-        aria_next_project: "Aller au projet suivant",
-        aria_goto_drawings: "Aller à la page Dessins",
-        aria_goto_diploma: "Aller à la page Diplôme",
-        aria_goto_hobbies: "Aller à la page Hobbies",
-        aria_goto_contact: "Aller à la page Contact",
-        aria_prev: "Précédent",
-        aria_next: "Suivant",
-        aria_prev_sheet: "Page précédente",
-        aria_next_sheet: "Page suivante",
-        aria_autoplay: "Lecture automatique",
-        aria_viewer: "Visionneuse d'images",
-        aria_zoom_level: "Niveau de zoom",
-        aria_fullscreen: "Plein écran",
-        aria_zoom: "Zoomer",
-        aria_close: "Fermer",
-        alt_project_mirage: "Projet Mirage",
-        alt_project_paterr: "Projet Paterr Suisse",
-        alt_plan_masse: "Plan masse",
-        alt_trame: "Trame structurelle",
-        alt_zoning_building: "Zoning du bâtiment",
-        alt_zoning_circulation: "Zoning des circulations",
-        alt_plan_rm1: "Plan du niveau R-1",
-        alt_plan_rdc: "Plan du rez-de-chaussée",
-        alt_plan_r1: "Plan du niveau R+1",
-        alt_zoom_station: "Zoom sur la station",
-        alt_zoom_resto: "Zoom sur le restaurant",
-        alt_zoom_garage: "Zoom sur le garage",
-        alt_zoom_expo: "Zoom sur l'espace d'exposition",
-        alt_coupe_lointaine: "Coupe nord, vue lointaine",
-        alt_coupe_nord: "Coupe nord texturée",
-        alt_coupe_ouest: "Coupe ouest texturée",
-        alt_coupe_sud: "Coupe sud texturée",
-        alt_draw_carto: "Dessin Cartographie",
-        alt_draw_style: "Dessin À la manière de",
-        alt_draw_nb: "Dessin Noir et blanc",
-        alt_photo_ref: "Photo de référence",
-        alt_bd_1: "BD page 1",
-        alt_bd_2: "BD page 2",
-        alt_bd_3: "BD page 3",
-        alt_bd_4: "BD page 4",
-        alt_mjm: "Façade de MJM Toulouse",
-        alt_diploma_scan: "Scan du diplôme (A4 paysage)",
-    },
-    en: {
-        choice_text2: "Then it had to be made workable. Putting a filling station in a fire-prone area, right next to an olive grove, is not obvious. Those constraints ended up giving the project its guiding lines, and made it buildable.",
-        quote_text: "When details succeed, they do not distract or entertain. They lead to an understanding of the whole of which they are an inherent part.",
-        quote_author: "Peter Zumthor",
-        quote2_text: "I would rather draw than talk. Drawing is faster, and leaves less room for lies.",
-        quote2_author: "Le Corbusier",
-        tools_zooning: "InDesign · Procreate",
-        tools_plans: "ArchiCAD · Photoshop",
-        tools_coupes: "ArchiCAD · Photoshop",
-        tools_3d: "Twinmotion",
-        home_subtitle:       "Interior Architect",
-        home_seeking:        "Seeking a contract in French-speaking Switzerland",
-        home_scroll:         "Scroll",
-        menu_01: "HOME",     menu_02: "PROJECTS", menu_03: "DRAWINGS",
-        menu_04: "DIPLOMA",  menu_05: "HOBBIES",  menu_06: "CONTACT",
-        menu_deco_01: "welcome",
-        menu_deco_02: "my work",
-        menu_deco_03: "freehand",
-        menu_deco_04: "MJM Toulouse",
-        menu_deco_05: "moto & personal",
-        menu_deco_06: "let's talk",
-        nav_next:            "next",
-        proj_01_title:       "PROJECT 01: DIPLOMA",
-        proj_02_title:       "PROJECT 02: PATERR SUISSE",
-        proj_03_title:       "PROJECT 03: COMING SOON...",
-        proj_loading:        "loading...",
-        copied:              "copied !",
-        copy_manual:         "selected, copy it",
-        video_placeholder:   "video coming soon !",
-        shortcut_sub:        "sneak peek",
-        shortcut_main:       "MY PROJECTS",
-        click_hint:          "click here !",
-        about_title:         "About me",
-        about_p1: "Interior architecture has held me for as long as I can remember. Three years at MJM Graphic Design Toulouse, and I still draw by hand before opening any software. It helps me design spaces that tell a story.",
-        about_p2: "What holds my attention is detail, light, honest materials. And vernacular architecture, which guides all my projects. Before I draw anything, I look at what used to be built in the area, and why. Every project is a search between function, aesthetics and the story of the place.",
-        about_annotation:    "→ always chasing the perfect detail",
-        drawings_intro:      "Freehand architectural sketches on A4 paper.",
-        study_degree:        "Interior Design & Architecture Degree",
-        study_focus:         "Core Modules",
-        study_focus_desc:    "3D CAD modelling, drafting plans, custom furniture and spatial management.",
-        study_address:       "Address",
-        study_school_status: "Institution Status",
-        study_school_status_desc: "Private technical higher education institution, registered with the Academy of Toulouse.",
-        diploma_cert_title: "RNCP CERTIFICATION",
-        diploma_cert_subtitle: "Interior Architecture Designer - Level 6",
-        diploma_cert_rncp: "REGULATORY STATUS",
-        diploma_cert_rncp_val: "State-certified level 6 qualification (Bachelor's degree equivalent) registered at the RNCP, certifying professional skills in spatial design, technical drafts, and site supervision.",
-        diploma_cert_credits: "ACADEMIC CREDENTIALS",
-        diploma_cert_credits_val: "Equivalency of 180 ECTS credits (European EQF Level 6). Swiss Equivalence: Bachelor of Arts (BA) HES in Interior Architecture. Course eligible for CPF.",
-        diploma_cert_competences: "KEY ACCREDITED SKILLS",
-        diploma_cert_c1: "Technical, spatial, and regulatory auditing of existing spaces.",
-        diploma_cert_c2: "Creation of aesthetic concepts, technical drawing section plans, and 3D renders.",
-        diploma_cert_c3: "Technical specification of materials, cost estimation, and construction specifications.",
-        diploma_cert_c4: "Project scheduling, execution management, and contractor coordination.",
-        diploma_cert_footer: "Registered by France Compétences",
-        contact_intro: "Let's talk about your interior project, a job offer, a question, or simply the wish to exchange, do get in touch!",
-        form_name: "NAME", form_email: "EMAIL",
-        form_message: "MESSAGE", form_send: "SEND", form_sending: "SENDING...",
-        contact_direct:   "DIRECT CONTACT",
-        contact_social:   "SOCIALS",
-        contact_location: "LOCATION",
-        drawing_title_carto: "CARTOGRAPHY",
-        drawing_desc_carto:  "Technical Drawing & Relief — A4",
-        drawing_title_nb:    "BLACK & WHITE",
-        drawing_desc_nb:     "Indian Ink & Graphic — A4",
-        drawing_title_style: "IN THE STYLE OF...",
-        drawing_desc_style:  "Style Study & Graphite — A4",
-        bd_title:            "COMIC BOOK (BD)",
-        legal_copyright:  "All works presented on this website (3D renders, sketches, photographs, drawings) are the exclusive property of Even ANICET. Any reproduction, distribution or use without prior written authorisation is strictly prohibited.",
-        legal_cert:       "I certify that I am the sole author of all works and productions presented in this portfolio. All images and creations are protected by copyright in accordance with French Intellectual Property Code (articles L.111-1 et seq.).",
-        legal_mentions:   "Legal notice",
-        legal_rights:     "All rights reserved",
-        // Projects Page
-        proj_title:               "PROJECT 01: DIPLOMA",
-        proj_desc: "A multi-purpose motorcycle complex, inspired by American motels and 1960s-70s filling stations. It holds a filling station, a motorcycle garage, an exhibition space, a bar-restaurant and a rest area, all arranged around carefully designed circulation and wayfinding. A place to meet, for enthusiasts and for anyone curious about that world.",
-        proj_annotation:          "→ MJM Graphic Design Toulouse — 2025",
-        lede_zooning: "An olive grove by the roadside in Lambesc, on a route heavily used by motorcyclists. The project sits on an empty stretch of the plot. Circulation borrows the language of a racetrack, and it is what decides where the buildings go.",
-        lede_plans: "Final plans and details, level by level, following the slope of the ground. The material library answers the vernacular architecture of the place. Every material is chosen to hold the whole together, from floor to roof.",
-        lede_coupes: "Everything here comes down to the verticality of the site. The sections are textured to make the depth of the project readable, along with the real substance of its walls, which a plan cannot show.",
-        lede_3d: "The final form of the project. These interior and exterior views show what I had in mind from the first sketch.",
-        choice_eyebrow: "The challenges",
-        choice_title: "A site unlike any other",
-        choice_text: "The site was not chosen for being easy. It sits above Lambesc in open garrigue, at the crossing of two major motorcycle routes and close to the mountain passes. No filling station for miles, nothing around. I came across it on a ride and the place spoke for itself.",
-        proj_panel_zooning:       "ZONING & ANALYSIS",
-        proj_panel_plans:         "FLOOR PLANS",
-        proj_panel_coupes:        "ARCHITECTURAL SECTIONS",
-        proj_panel_3d:            "3D RENDERS",
-        hobbies_intro: "moto & personal",
-        // Accessible names and image descriptions
-        nav_back: "back",
-        aria_nav_social: "Social networks",
-        aria_nav_main: "Main menu",
-        aria_next_page: "Go to the next page",
-        aria_next_project: "Go to the next project",
-        aria_goto_drawings: "Go to the Drawings page",
-        aria_goto_diploma: "Go to the Diploma page",
-        aria_goto_hobbies: "Go to the Hobbies page",
-        aria_goto_contact: "Go to the Contact page",
-        aria_prev: "Previous",
-        aria_next: "Next",
-        aria_prev_sheet: "Previous page",
-        aria_next_sheet: "Next page",
-        aria_autoplay: "Autoplay",
-        aria_viewer: "Image viewer",
-        aria_zoom_level: "Zoom level",
-        aria_fullscreen: "Full screen",
-        aria_zoom: "Zoom in",
-        aria_close: "Close",
-        alt_project_mirage: "Mirage project",
-        alt_project_paterr: "Paterr Suisse project",
-        alt_plan_masse: "Site plan",
-        alt_trame: "Structural grid",
-        alt_zoning_building: "Building zoning",
-        alt_zoning_circulation: "Circulation zoning",
-        alt_plan_rm1: "Level -1 plan",
-        alt_plan_rdc: "Ground floor plan",
-        alt_plan_r1: "Level +1 plan",
-        alt_zoom_station: "Close-up of the station",
-        alt_zoom_resto: "Close-up of the restaurant",
-        alt_zoom_garage: "Close-up of the garage",
-        alt_zoom_expo: "Close-up of the exhibition space",
-        alt_coupe_lointaine: "North section, distant view",
-        alt_coupe_nord: "Textured north section",
-        alt_coupe_ouest: "Textured west section",
-        alt_coupe_sud: "Textured south section",
-        alt_draw_carto: "Drawing: Cartography",
-        alt_draw_style: "Drawing: In the style of",
-        alt_draw_nb: "Drawing: Black and white",
-        alt_photo_ref: "Reference photo",
-        alt_bd_1: "Comic page 1",
-        alt_bd_2: "Comic page 2",
-        alt_bd_3: "Comic page 3",
-        alt_bd_4: "Comic page 4",
-        alt_mjm: "MJM Toulouse façade",
-        alt_diploma_scan: "Diploma scan (A4 landscape)",
-    }
-};
-
-// ─────────────────────────────────────
 // FIX Q-07 — FILET DE SECURITE CDN
 // GSAP, ScrollTrigger, Lenis et PDF.js viennent de CDN externes.
 // Si l'un d'eux ne repond pas, le premier appel gsap.* levait une
@@ -332,67 +55,6 @@ const i18n = {
 // Resultat : le site reste entierement navigable, simplement sans
 // transitions. Quand le CDN repond normalement, ce bloc ne fait rien.
 // ─────────────────────────────────────
-const gsapMissing = typeof window.gsap === 'undefined';
-
-// ScrollTrigger can load on its own when GSAP did not; it then throws on
-// first use, so it only counts when the real GSAP is there to drive it.
-const hasScrollTrigger = !gsapMissing && typeof window.ScrollTrigger !== 'undefined';
-
-if (gsapMissing) {
-    console.warn('[portfolio] GSAP indisponible — mode degrade sans animations.');
-
-    const TWEEN_KEYS = ['duration', 'ease', 'delay', 'onComplete', 'onStart',
-                        'onUpdate', 'stagger', 'overwrite', 'repeat', 'yoyo', 'paused'];
-
-    const toElements = (targets) => {
-        if (!targets) return [];
-        if (typeof targets === 'string') return [...document.querySelectorAll(targets)];
-        if (targets instanceof Element) return [targets];
-        if (targets.length !== undefined) return [...targets];
-        return [];
-    };
-
-    const applyVars = (targets, vars) => {
-        vars = vars || {};
-        toElements(targets).forEach(el => {
-            if (!el || !el.style) return;
-            const transform = [];
-            for (const key in vars) {
-                if (TWEEN_KEYS.indexOf(key) !== -1) continue;
-                const v = vars[key];
-                if (key === 'x')            transform.push('translateX(' + (typeof v === 'number' ? v + 'px' : v) + ')');
-                else if (key === 'y')       transform.push('translateY(' + (typeof v === 'number' ? v + 'px' : v) + ')');
-                else if (key === 'scale')   transform.push('scale(' + v + ')');
-                else if (key === 'rotation')transform.push('rotate(' + v + 'deg)');
-                else if (key === 'opacity') el.style.opacity = v;
-                else if (key in el.style)   el.style[key] = typeof v === 'number' && key !== 'zIndex' ? v + 'px' : v;
-            }
-            if (transform.length) el.style.transform = transform.join(' ');
-        });
-        if (typeof vars.onComplete === 'function') {
-            try { vars.onComplete(); } catch (e) { console.error(e); }
-        }
-        return { kill() {}, pause() {}, play() {}, progress() { return 1; } };
-    };
-
-    const chainable = () => {
-        const api = {};
-        ['to', 'from', 'fromTo', 'set', 'add', 'call', 'pause', 'play', 'kill', 'clear']
-            .forEach(m => { api[m] = () => api; });
-        return api;
-    };
-
-    window.gsap = {
-        to:     (t, vars) => applyVars(t, vars),
-        set:    (t, vars) => applyVars(t, vars),
-        from:   (t, vars) => applyVars(t, {}),
-        fromTo: (t, from, to) => applyVars(t, to),
-        timeline: chainable,
-        ticker: { add() {}, remove() {}, lagSmoothing() {} },
-        registerPlugin() {},
-        utils: { toArray: toElements }
-    };
-}
 
 // Resting opacity of the scroll hint under the hero. The hint is shown at
 // full strength so that its label keeps enough contrast; the thin line is
@@ -408,58 +70,6 @@ let lenisTickerFn = null;
 let openDrawingGallery = null;
 let closeDrawingLightbox = null;
 
-// ───────────────────────────────────
-// TITRES ET DESCRIPTIONS PAR PAGE
-//
-// Le titre d'onglet et la description ne changeaient qu'avec la LANGUE :
-// toutes les pages portaient ceux de l'accueil. Quand Even colle
-// even-anc.com/#projet-diplome dans une candidature, l'onglet, le favori
-// et Google doivent parler de ce projet, pas du site en general.
-//
-// A savoir : les cartes d'apercu de Discord, LinkedIn ou WhatsApp ne
-// changeront pas pour autant. Ces robots ne lisent que le HTML livre,
-// sans executer le moindre script. Les faire varier par page demande un
-// vrai fichier HTML par page — un autre chantier.
-// ───────────────────────────────────
-const META_PAGES = {
-    fr: {
-        'home':            ["Even ANICET | Architecte d'intérieur",
-                            "Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse. Recherche un contrat en Suisse romande."],
-        'projects':        ["Projets | Even ANICET",
-                            "Les projets d'architecture d'intérieur d'Even ANICET, conception d'espaces, plans techniques et perspectives."],
-        'project-diploma': ["Projet de diplôme | Even ANICET",
-                            "Complexe moto multifonctionnel, zoning, plans de niveaux, coupes architecturales et matériauthèque. Projet de diplôme, MJM Toulouse."],
-        'project-2':       ["Paterr Suisse | Even ANICET",
-                            "Projet Paterr Suisse, par Even ANICET, architecte d'intérieur."],
-        'project-3':       ["Projet 03 | Even ANICET",
-                            "Troisième projet d'architecture d'intérieur d'Even ANICET."],
-        'drawings':        ["Dessins | Even ANICET",
-                            "Dessins à main levée, cartographie, étude de style au graphite, encre de Chine et bande dessinée."],
-        'diploma':         ["Diplôme | Even ANICET",
-                            "Titre RNCP de niveau 6 en architecture d'intérieur, MJM Graphic Design Toulouse. Équivalence 180 crédits ECTS."],
-        'hobbies':         ["Hobbies | Even ANICET",
-                            "Moto, projets personnels et travaux hors école d'Even ANICET."]
-    },
-    en: {
-        'home':            ["Even ANICET | Interior Architect",
-                            "Portfolio of Even ANICET, interior architect from MJM Graphic Design Toulouse. Seeking a contract in French-speaking Switzerland."],
-        'projects':        ["Projects | Even ANICET",
-                            "Interior architecture projects by Even ANICET, spatial design, technical drawings and perspectives."],
-        'project-diploma': ["Graduation Project | Even ANICET",
-                            "Multi-purpose motorcycle complex, zoning, floor plans, sections and material library. Graduation project, MJM Toulouse."],
-        'project-2':       ["Paterr Suisse | Even ANICET",
-                            "Paterr Suisse project by Even ANICET, interior architect."],
-        'project-3':       ["Project 03 | Even ANICET",
-                            "Third interior architecture project by Even ANICET."],
-        'drawings':        ["Drawings | Even ANICET",
-                            "Freehand drawings, cartography, graphite style study, Indian ink and comic art."],
-        'diploma':         ["Diploma | Even ANICET",
-                            "French RNCP level 6 qualification in interior architecture, MJM Graphic Design Toulouse. 180 ECTS credits."],
-        'hobbies':         ["Hobbies | Even ANICET",
-                            "Motorcycling, personal projects and work outside school by Even ANICET."]
-    }
-};
-
 function majMetaPage(pageId) {
     const table = META_PAGES[currentLang] || META_PAGES.fr;
     const paire = table[pageId] || table['home'];
@@ -472,6 +82,7 @@ function majMetaPage(pageId) {
 // INIT
 // ─────────────────────────────────────
 function init() {
+    installGsapFallback();
     initCoupeClicks();
     animateFavicon();
 
@@ -685,28 +296,6 @@ function updateScrollbarWidth() {
     if (!page) return;
     const sbw = Math.max(0, Math.round(page.offsetWidth - page.clientWidth));
     document.documentElement.style.setProperty('--sbw', sbw + 'px');
-}
-
-// ─────────────────────────────────────
-// LANGUE
-// ─────────────────────────────────────
-// Storage access throws when site data is blocked (privacy settings, some
-// embedded browsers). A remembered preference must never stop the page
-// from starting, so both directions fail silently.
-function readStored(key) {
-    try {
-        return localStorage.getItem(key);
-    } catch {
-        return null;
-    }
-}
-
-function writeStored(key, value) {
-    try {
-        localStorage.setItem(key, value);
-    } catch {
-        // The preference simply lasts for this visit only.
-    }
 }
 
 function applyLang(lang) {
@@ -1671,7 +1260,6 @@ function initContactForm() {
     });
 }
 
-
 // ─────────────────────────────────────
 // CARROUSEL BANDE DESSINÉE (BD)
 // ─────────────────────────────────────
@@ -1731,7 +1319,6 @@ function initBDCarousel() {
 
             majAutoplay();
         }
-
 
         function nextSlide() { updateCarousel(currentIndex + 1); }
         function prevSlide() { updateCarousel(currentIndex - 1); }
@@ -1873,174 +1460,6 @@ function initBDCarousel() {
         }
     });
 }
-
-// ─────────────────────────────────────
-// PERF-04 — PRECHARGEMENT DE FOND, PENDANT LA VISITE
-// Constat d'Even : en arrivant sur la page des plans, les 4 coupes du bas
-// ne se dessinaient qu'apres avoir fait defiler, et ca saccadait pendant.
-//
-// Un visiteur ne fonce pas sur « Projets » en une seconde : il regarde
-// l'accueil, cherche la navigation. On met ce temps a profit pour preparer
-// les plans en fond, de sorte qu'ils soient deja prets a l'arrivee.
-//
-// Ordre de priorite :
-//   1. les 6 visibles d'emblee (2 diapos actives du carrousel + 4 coupes)
-//   2. les 9 diapos masquees, ensuite et sans se presser
-//
-// Trois regles pour ne JAMAIS faire saccader la page :
-//   - on ne travaille que pendant les temps morts du navigateur
-//     (requestIdleCallback), donc jamais en concurrence avec le visiteur ;
-//   - on ne DEMARRE pas un rendu si le visiteur vient d'interagir
-//     (defilement, molette, doigt) — un rendu lance ne peut plus etre
-//     interrompu, il faut donc choisir le bon moment pour le lancer ;
-//   - un seul rendu a la fois en fond, contre deux a la demande.
-// ─────────────────────────────────────
-const REPOS_APRES_INTERACTION = 450;   // ms de calme exiges avant de relancer
-let _dernierGeste = 0;
-let _prechargeDemarree = false;
-
-function marquerGeste() { _dernierGeste = Date.now(); }
-
-function ecouterGestes() {
-    ['wheel', 'touchmove', 'pointerdown', 'keydown'].forEach(ev =>
-        window.addEventListener(ev, marquerGeste, { passive: true }));
-    document.querySelectorAll('.page').forEach(pg =>
-        pg.addEventListener('scroll', marquerGeste, { passive: true }));
-}
-
-function canvasParPriorite() {
-    const tous = Array.from(document.querySelectorAll('.pdf-inline-render'));
-    const prioritaire = c => c.closest('.stack-item')
-        || (c.closest('.bd-slide') && c.closest('.bd-slide').classList.contains('active'));
-    return [...tous.filter(prioritaire), ...tous.filter(c => !prioritaire(c))];
-}
-
-function demarrerPrechargeFond() {
-    if (_prechargeDemarree) return;
-    _prechargeDemarree = true;
-
-    // Background preloading spends data the visitor did not ask for: skip
-    // it when they asked to save data or when the connection is slow.
-    // Decided once per visit: it is not retried if the connection improves.
-    const connection = navigator.connection;
-    if (connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || ''))) return;
-
-    ecouterGestes();
-
-    // Les plans sont desormais de simples images : le prechargement se
-    // resume a les demander au reseau. Le navigateur les decode ensuite
-    // hors du fil principal, ce qui ne peut plus faire saccader la page.
-    // The srcset travels with the address so that the preload requests the
-    // same candidate the page will display, not a second file.
-    const liste = canvasParPriorite()
-        .map(el => ({ src: el.getAttribute('src'), srcset: el.getAttribute('srcset') }))
-        .filter(entry => entry.src);
-    let i = 0;
-
-    const planifier = (delai) => {
-        const lancer = () => etape();
-        if (typeof requestIdleCallback === 'function') {
-            requestIdleCallback(lancer, { timeout: 4000 });
-        } else {
-            setTimeout(lancer, delai || 250);
-        }
-    };
-
-    const etape = () => {
-        if (i >= liste.length) return;                       // tout est en cache
-        if (document.visibilityState !== 'visible') return planifier(2000);
-        if (Date.now() - _dernierGeste < REPOS_APRES_INTERACTION) return planifier(500);
-
-        const entry = liste[i++];
-        const img = new Image();
-        img.decoding = 'async';
-        // on enchaine des que l'image est en cache, succes ou non
-        img.onload = img.onerror = () => planifier(80);
-        if (entry.srcset) img.srcset = entry.srcset;
-        img.src = entry.src;
-    };
-
-    planifier();
-}
-
-// ─────────────────────────────────────
-// CONFIGURATION ET RENDU PDF.JS DESSINS
-// ─────────────────────────────────────
-const allDrawings = [
-    {
-        url: "dessin/opt/cartographie@2x.webp",
-        altKey: "alt_draw_carto",
-        title: "CARTOGRAPHIE",
-        desc: "Dessin technique & Relief — A4",
-        orient: "portrait"
-    },
-    {
-        url: "dessin/opt/a-la-maniere-de@2x.webp",
-        altKey: "alt_draw_style",
-        title: "À LA MANIÈRE DE...",
-        desc: "Étude de style & Graphite — A4",
-        orient: "landscape"
-    },
-    {
-        url: "dessin/opt/noir-et-blanc@2x.webp",
-        altKey: "alt_draw_nb",
-        title: "NOIR ET BLANC",
-        desc: "Encre de Chine & Graphisme — A4",
-        orient: "portrait"
-    },
-    {
-        url: "dessin/opt/bd-page-1@2x.webp",
-        altKey: "alt_bd_1",
-        title: "BANDE DESSINÉE — Page 1",
-        desc: "A4 — Portrait",
-        orient: "portrait"
-    },
-    {
-        url: "dessin/opt/bd-page-2@2x.webp",
-        altKey: "alt_bd_2",
-        title: "BANDE DESSINÉE — Page 2",
-        desc: "A4 — Portrait",
-        orient: "portrait"
-    },
-    {
-        url: "dessin/opt/bd-page-3@2x.webp",
-        altKey: "alt_bd_3",
-        title: "BANDE DESSINÉE — Page 3",
-        desc: "A4 — Portrait",
-        orient: "portrait"
-    },
-    {
-        url: "dessin/opt/bd-page-4@2x.webp",
-        altKey: "alt_bd_4",
-        title: "BANDE DESSINÉE — Page 4",
-        desc: "A4 — Portrait",
-        orient: "portrait"
-    }
-];
-
-const diplomePlans = [
-    { url: 'PDF/plan-rmoins1.pdf', title: 'Plan R-1', altKey: 'alt_plan_rm1' },
-    { url: 'PDF/plan-rdc.pdf', title: 'Plan RDC', altKey: 'alt_plan_rdc' },
-    { url: 'PDF/plan-r1.pdf', title: 'Plan R+1', altKey: 'alt_plan_r1' },
-    { url: 'PDF/plan-station.pdf', title: 'Zoom Station', altKey: 'alt_zoom_station' },
-    { url: 'PDF/plan-resto.pdf', title: 'Zoom Resto', altKey: 'alt_zoom_resto' },
-    { url: 'PDF/plan-garage.pdf', title: 'Zoom Garage', altKey: 'alt_zoom_garage' },
-    { url: 'PDF/plan-expo.pdf', title: 'Zoom Expo', altKey: 'alt_zoom_expo' }
-];
-
-const diplomeCoupes = [
-    { url: 'PDF/coupe-nord-loingtaine.pdf', title: 'Coupe Lointaine', altKey: 'alt_coupe_lointaine' },
-    { url: 'PDF/coupe-nord-texture.pdf', title: 'Coupe Nord', altKey: 'alt_coupe_nord' },
-    { url: 'PDF/coupe-ouest-texture.pdf', title: 'Coupe Ouest', altKey: 'alt_coupe_ouest' },
-    { url: 'PDF/coupe-sud-texture.pdf', title: 'Coupe Sud', altKey: 'alt_coupe_sud' }
-];
-
-const diplomeAnalyses = [
-    { url: 'PDF/plan-masse.pdf', title: 'Plan Masse', altKey: 'alt_plan_masse' },
-    { url: 'PDF/trame.pdf', title: 'Trame', altKey: 'alt_trame' },
-    { url: 'PDF/zooning-batiment.pdf', title: 'Zoning Bâtiment', altKey: 'alt_zoning_building' },
-    { url: 'PDF/zooning-circulation.pdf', title: 'Zoning Circulations', altKey: 'alt_zoning_circulation' }
-];
 
 // ─────────────────────────────────────
 // PDF.JS, LOADED ON DEMAND
@@ -2197,7 +1616,6 @@ function initDrawingLightbox() {
     // The second click of a double-click lands on the viewer that the first
     // one just opened; it must neither close it nor zoom.
     const OPEN_CLICK_GUARD_MS = 400;
-
 
     // Aborts a PDF render still in flight and frees its document.
     function cancelActiveRender() {
@@ -3037,94 +2455,6 @@ function initCoupeClicks() {
                     () => openDrawingGallery(diplomeCoupes, idx)));
             }
         });
-    });
-}
-
-/* --- FAVICON ANIMATION (CANVAS BASED) --- */
-function animateFavicon() {
-    const favicon = document.getElementById('favicon');
-    if (!favicon) return;
-    
-    // Attendre que la police soit chargée
-    document.fonts.ready.then(() => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 100;
-        canvas.height = 100;
-        const ctx = canvas.getContext('2d');
-        
-        const frames = [];
-        const transforms = [
-            { r: -0.01, x: -3, y: -1, s: 1.02 },
-            { r: 0.01,  x:  2, y:  1,  s: 0.98 },
-            { r: 0,     x: -1, y: 0, s: 1.0 }
-        ];
-
-        for (let i = 0; i < 3; i++) {
-            ctx.clearRect(0, 0, 100, 100);
-            
-            // Fond noir arrondi
-            ctx.fillStyle = "#111111";
-            ctx.beginPath();
-            if (ctx.roundRect) {
-                ctx.roundRect(0, 0, 100, 100, 25);
-            } else {
-                ctx.rect(0, 0, 100, 100); // Fallback
-            }
-            ctx.fill();
-            
-            // Texte E
-            ctx.save();
-            ctx.translate(50, 50);
-            ctx.rotate(transforms[i].r);
-            ctx.scale(transforms[i].s, transforms[i].s);
-            ctx.translate(transforms[i].x, transforms[i].y);
-            
-            ctx.fillStyle = "#ffffff";
-            ctx.font = "105px 'Skribblugh', cursive";
-            ctx.textAlign = "center";
-            ctx.textBaseline = "middle";
-            ctx.fillText("E", 0, 15); // Offset X et Y pour centrer parfaitement la lettre
-            
-            ctx.restore();
-            
-            frames.push(canvas.toDataURL('image/png'));
-        }
-
-        // FIX Q-02 : la boucle tournait a 8 img/s indefiniment, y compris
-        // onglet en arriere-plan (batterie mobile + main thread reveille en
-        // permanence). Elle est desormais suspendue des que l'onglet n'est
-        // plus visible, et desactivee si l'utilisateur demande moins d'animation.
-        // Comportement a l'ecran, onglet au premier plan : strictement identique.
-        const reduceMotion = window.matchMedia
-            && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        let currentFrame = 0;
-        let faviconTimer = null;
-
-        const stepFavicon = () => {
-            favicon.href = frames[currentFrame];
-            currentFrame = (currentFrame + 1) % 3;
-        };
-
-        const startFavicon = () => {
-            if (faviconTimer !== null || reduceMotion) return;
-            faviconTimer = setInterval(stepFavicon, 120);
-        };
-        const stopFavicon = () => {
-            if (faviconTimer === null) return;
-            clearInterval(faviconTimer);
-            faviconTimer = null;
-        };
-
-        document.addEventListener('visibilitychange', () => {
-            document.visibilityState === 'visible' ? startFavicon() : stopFavicon();
-        });
-
-        if (reduceMotion) {
-            favicon.href = frames[0];   // une frame fixe, pas d'animation
-        } else if (document.visibilityState === 'visible') {
-            startFavicon();
-        }
     });
 }
 
