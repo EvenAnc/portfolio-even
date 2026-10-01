@@ -28,6 +28,9 @@ export function createPageScroll(scrollContainer) {
     // it: without GSAP the page keeps its native scrolling.
     if (typeof Lenis === 'undefined' || gsapMissing) return;
 
+    // One instance and one ticker callback at a time.
+    destroyPageScroll();
+
     const contentWrapper = scrollContainer.querySelector('.page-inner') || null;
 
     const options = {
@@ -51,10 +54,6 @@ export function createPageScroll(scrollContainer) {
 
     if (hasScrollTrigger) lenis.on('scroll', ScrollTrigger.update);
 
-    // One ticker callback at a time, or they pile up with every navigation.
-    if (tickerCallback) {
-        gsap.ticker.remove(tickerCallback);
-    }
     tickerCallback = time => lenis.raf(time * 1000);
     gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);

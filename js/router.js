@@ -134,21 +134,19 @@ export function showPage(pageId, animate = true, updateHistory = true) {
     if (pageId === state.page && animate) return;
     cancelContactReveal();
 
-    const outEl = document.getElementById(`page-${state.page}`);
-    const inEl  = document.getElementById(`page-${pageId}`);
+    const inEl = document.getElementById(`page-${pageId}`);
     if (!inEl) return;
+    // The page on display: during a fade it is still the one that was
+    // leaving, not the one state.page already names.
+    const outEl = document.querySelector('.page.is-active');
+    const wasFading = cancelFadeOut();
 
     const previousPage = state.page;
     state.page = pageId;
     updatePageMeta(pageId);
     emit('page-change', { from: previousPage, to: pageId });
 
-    if (updateHistory) {
-        const url = urlForPage(pageId);
-        const method = hasHistoryEntry ? 'pushState' : 'replaceState';
-        history[method]({ page: pageId }, '', url);
-        hasHistoryEntry = true;
-    }
+    if (updateHistory) recordHistoryEntry(pageId);
 
     updateBackButton(pageId);
 
@@ -156,55 +154,71 @@ export function showPage(pageId, animate = true, updateHistory = true) {
     destroyPageScroll();
 
     if (!animate || !outEl) {
-        if (outEl) {
-            outEl.classList.remove('is-active');
-            outEl.setAttribute('aria-hidden', 'true');
-        }
-        inEl.classList.add('is-active');
-        inEl.setAttribute('aria-hidden', 'false');
-        inEl.scrollTop = 0;
-        resetHero(pageId);
-        startPageScroll(inEl);
-        if (hasScrollTrigger) ScrollTrigger.refresh();
-        updateHeaderLogo(pageId);
-
-        loadPageImages(inEl);
-        updateScrollbarWidth();
+        if (wasFading && outEl) outEl.style.opacity = '';
+        swapActivePage(outEl, inEl, pageId);
+        settlePage(inEl, pageId);
         return;
     }
 
-    gsap.to(outEl, {
+    fadeOut = gsap.to(outEl, {
         opacity: 0, duration: 0.35, ease: 'power2.in',
         onComplete: () => {
-            outEl.classList.remove('is-active');
-            outEl.setAttribute('aria-hidden', 'true');
+            fadeOut = null;
             outEl.style.opacity = '';
-
-            inEl.classList.add('is-active');
-            inEl.setAttribute('aria-hidden', 'false');
-            inEl.scrollTop = 0;
-            resetHero(pageId);
+            swapActivePage(outEl, inEl, pageId);
 
             gsap.fromTo(inEl,
                 { opacity: 0, y: 22 },
                 { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }
             );
 
-            startPageScroll(inEl);
-            if (hasScrollTrigger) ScrollTrigger.refresh();
-            updateHeaderLogo(pageId);
-
-            loadPageImages(inEl);
-            updateScrollbarWidth();
+            settlePage(inEl, pageId);
             focusPage(inEl);
         }
     });
 }
 
+// Fade of the page that is leaving, while it runs.
+let fadeOut = null;
+
+// A navigation asked during the fade supersedes it: the fade stops and its
+// completion never runs, so only the latest navigation activates a page.
+function cancelFadeOut() {
+    if (!fadeOut) return false;
+    fadeOut.kill();
+    fadeOut = null;
+    return true;
+}
+
+function recordHistoryEntry(pageId) {
+    const method = hasHistoryEntry ? 'pushState' : 'replaceState';
+    history[method]({ page: pageId }, '', urlForPage(pageId));
+    hasHistoryEntry = true;
+}
+
+function swapActivePage(outEl, inEl, pageId) {
+    if (outEl) {
+        outEl.classList.remove('is-active');
+        outEl.setAttribute('aria-hidden', 'true');
+    }
+    inEl.classList.add('is-active');
+    inEl.setAttribute('aria-hidden', 'false');
+    inEl.scrollTop = 0;
+    resetHero(pageId);
+}
+
+function settlePage(inEl, pageId) {
+    startPageScroll(inEl, pageId);
+    if (hasScrollTrigger) ScrollTrigger.refresh();
+    updateHeaderLogo(pageId);
+    loadPageImages(inEl);
+    updateScrollbarWidth();
+}
+
 // The hero follows the scroll position of the home page only.
-function startPageScroll(pageEl) {
+function startPageScroll(pageEl, pageId) {
     createPageScroll(pageEl);
-    if (state.page === 'home' && state.scroll) bindHeroScroll(state.scroll);
+    if (pageId === 'home' && state.scroll) bindHeroScroll(state.scroll);
 }
 
 // Pages scroll inside their own box: unless focus sits in the visible one,
