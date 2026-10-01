@@ -1860,6 +1860,8 @@ function initDrawingLightbox() {
 
     // ── Ouvrir / Fermer ──
     function openLightbox(index) {
+        // Opening on a missing entry would lock scrolling behind an empty viewer.
+        if (!Number.isInteger(index) || index < 0 || index >= currentGallery.length) return;
         isSingleMode = false;
         lightbox.setAttribute('aria-hidden', 'false');
         if (window._lenis) window._lenis.stop();
@@ -1904,7 +1906,9 @@ function initDrawingLightbox() {
     }
 
     // ── Clic sur les dessins de la galerie et les slides BD ──
-    document.querySelectorAll('.drawing-item .frame-wrap, #page-drawings .bd-slide .drawing-sheet-wrap').forEach((item) => {
+    // Scoped to the drawings page: the index below maps onto allDrawings, and
+    // other pages reuse .drawing-item for cards that have nothing to open.
+    document.querySelectorAll('#page-drawings .drawing-item .frame-wrap, #page-drawings .bd-slide .drawing-sheet-wrap').forEach((item) => {
         item.addEventListener('click', () => {
             const parentItem = item.closest('.drawing-item, .bd-slide');
             if (!parentItem) return;
@@ -1914,7 +1918,7 @@ function initDrawingLightbox() {
 
             if (parentItem.classList.contains('bd-slide') && !parentItem.classList.contains('active')) return;
 
-            const allElements = Array.from(document.querySelectorAll('.drawing-item, #page-drawings .bd-slide'));
+            const allElements = Array.from(document.querySelectorAll('#page-drawings .drawing-item, #page-drawings .bd-slide'));
             const idx = allElements.indexOf(parentItem);
             if (idx !== -1) {
                 tracerPuis(item, () => {
