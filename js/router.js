@@ -4,7 +4,7 @@
 
 import { state, emit } from './core/state.js';
 import { hasScrollTrigger } from './core/env.js';
-import { majMetaPage } from './i18n/i18n.js';
+import { updatePageMeta } from './i18n/i18n.js';
 import { destroyPageLenis, initPageLenis, updateScrollbarWidth } from './page-scroll.js';
 import { updateHeaderLogo, updateBackButton } from './header.js';
 import { resetHomeHero, bindHeroScroll } from './hero.js';
@@ -138,7 +138,7 @@ export function showPage(pageId, animate = true, updateHistory = true) {
 
     const pageAvant = state.page;
     state.page = pageId;
-    majMetaPage(pageId);
+    updatePageMeta(pageId);
     emit('page-change', { from: pageAvant, to: pageId });
 
     // Synchronise l'adresse. replaceState au tout premier affichage pour ne

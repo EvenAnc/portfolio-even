@@ -4,44 +4,44 @@
 
 import { state } from '../core/state.js';
 import { readStored, writeStored } from '../core/env.js';
-import { i18n, META_PAGES } from './dictionary.js';
+import { TRANSLATIONS, PAGE_META } from './dictionary.js';
 
 // Looks a key up in the dictionary of the current language.
 export function t(key) {
-    return i18n[state.lang][key];
+    return TRANSLATIONS[state.lang][key];
 }
 
-// Priorite : l'adresse (un lien partage impose sa langue), puis le
+// Priorite : l'url (un lien partage impose sa langue), puis le
 // choix precedent du visiteur, puis la langue de son navigateur.
 export function resolveInitialLanguage() {
-    const langueDemandee = new URLSearchParams(location.search).get('lang');
-    const saved = readStored('lang');
-    return (langueDemandee === 'fr' || langueDemandee === 'en') ? langueDemandee
-        : (saved === 'fr' || saved === 'en') ? saved
+    const requestedLang = new URLSearchParams(location.search).get('lang');
+    const storedLang = readStored('lang');
+    return (requestedLang === 'fr' || requestedLang === 'en') ? requestedLang
+        : (storedLang === 'fr' || storedLang === 'en') ? storedLang
         : (navigator.language || '').startsWith('fr') ? 'fr' : 'en';
 }
 
-export function majMetaPage(pageId) {
-    const table = META_PAGES[state.lang] || META_PAGES.fr;
-    const paire = table[pageId] || table['home'];
-    document.title = paire[0];
-    const balise = document.querySelector('meta[name="description"]');
-    if (balise) balise.content = paire[1];
+export function updatePageMeta(pageId) {
+    const metaByPage = PAGE_META[state.lang] || PAGE_META.fr;
+    const entry = metaByPage[pageId] || metaByPage['home'];
+    document.title = entry[0];
+    const descriptionTag = document.querySelector('meta[name="description"]');
+    if (descriptionTag) descriptionTag.content = entry[1];
 }
 
-export function applyLang(lang) {
+export function applyLanguage(lang) {
     state.lang = lang;
     writeStored('lang', lang);
     document.documentElement.setAttribute('lang', lang);
-    majMetaPage(state.page);
+    updatePageMeta(state.page);
 
-    // La langue vit dans l'adresse : c'est ce qui permet d'envoyer un lien
+    // La langue vit dans l'url : c'est ce qui permet d'envoyer un lien
     // qui s'ouvrira en anglais, et ce qui donne un sens aux balises
-    // hreflang. Le francais reste l'adresse nue.
-    const adresse = new URL(location.href);
-    if (lang === 'en') adresse.searchParams.set('lang', 'en');
-    else adresse.searchParams.delete('lang');
-    if (adresse.href !== location.href) history.replaceState(history.state, '', adresse.href);
+    // hreflang. Le francais reste l'url nue.
+    const url = new URL(location.href);
+    if (lang === 'en') url.searchParams.set('lang', 'en');
+    else url.searchParams.delete('lang');
+    if (url.href !== location.href) history.replaceState(history.state, '', url.href);
 
     // The canonical address names the language version on display, in line
     // with the hreflang alternates declared in the head.
@@ -53,14 +53,14 @@ export function applyLang(lang) {
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        if (i18n[lang][key] !== undefined) el.textContent = i18n[lang][key];
+        if (TRANSLATIONS[lang][key] !== undefined) el.textContent = TRANSLATIONS[lang][key];
     });
 
     // Text that lives in attributes (accessible names, image descriptions)
     // is translated the same way, through a sibling data attribute.
     [['data-i18n-aria', 'aria-label'], ['data-i18n-alt', 'alt']].forEach(([source, target]) => {
         document.querySelectorAll('[' + source + ']').forEach(el => {
-            const text = i18n[lang][el.getAttribute(source)];
+            const text = TRANSLATIONS[lang][el.getAttribute(source)];
             if (text !== undefined) el.setAttribute(target, text);
         });
     });
@@ -70,10 +70,10 @@ export function applyLang(lang) {
     });
 }
 
-export function initLangSwitcher() {
+export function initLanguageSwitcher() {
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            if (btn.dataset.lang !== state.lang) applyLang(btn.dataset.lang);
+            if (btn.dataset.lang !== state.lang) applyLanguage(btn.dataset.lang);
         });
     });
 }
