@@ -1325,7 +1325,7 @@ function initContactForm() {
 
     // Past this delay the request is treated as lost: the visitor gets an
     // error and a usable form back instead of a button stuck on "sending".
-    const SUBMIT_TIMEOUT_MS = 8000;
+    const SUBMIT_TIMEOUT_MS = 15000;
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
