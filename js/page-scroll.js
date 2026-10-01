@@ -6,11 +6,16 @@
 import { state } from './core/state.js';
 import { gsapMissing, hasScrollTrigger } from './core/env.js';
 
+const SCROLL_DURATION_S = 1.0;
+const TOUCH_MULTIPLIER = 1.5;
+const RESIZE_DEBOUNCE_MS = 150;
+
 let tickerCallback = null;
 
 /**
- * The ticker callback goes with the instance: left in place, the ticker
- * would keep calling raf on nothing for the whole page transition.
+ * Destroys the scroll instance of the page on display, if any. The ticker
+ * callback goes with it: left in place, the ticker would keep calling raf
+ * on nothing for the whole page transition.
  */
 export function destroyPageScroll() {
     if (tickerCallback) {
@@ -23,6 +28,10 @@ export function destroyPageScroll() {
     }
 }
 
+/**
+ * Gives a page its smooth-scroll instance, published as `state.scroll`.
+ * @param {HTMLElement} scrollContainer the page box, which scrolls on its own
+ */
 export function createPageScroll(scrollContainer) {
     // Lenis takes over the wheel but only moves when the GSAP ticker drives
     // it: without GSAP the page keeps its native scrolling.
@@ -31,24 +40,16 @@ export function createPageScroll(scrollContainer) {
     // One instance and one ticker callback at a time.
     destroyPageScroll();
 
-    const contentWrapper = scrollContainer.querySelector('.page-inner') || null;
-
     const options = {
         wrapper: scrollContainer,
-        eventsTarget: scrollContainer,  // the page box, not the whole document
-        duration: 1.0,
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smooth: true,
-        wheelMultiplier: 1.0,
-        touchMultiplier: 1.5,
-        smoothTouch: false,
-        infinite: false,
-        orientation: 'vertical',
+        // The page box, not the whole document.
+        eventsTarget: scrollContainer,
+        duration: SCROLL_DURATION_S,
+        easing: progress => Math.min(1, 1.001 - Math.pow(2, -10 * progress)),
+        touchMultiplier: TOUCH_MULTIPLIER,
     };
-
-    if (contentWrapper) {
-        options.content = contentWrapper;
-    }
+    const contentWrapper = scrollContainer.querySelector('.page-inner');
+    if (contentWrapper) options.content = contentWrapper;
 
     const lenis = new Lenis(options);
 
@@ -70,21 +71,22 @@ export function updateScrollbarWidth() {
     const page = document.querySelector('.page.is-active') || document.querySelector('.page');
     if (!page) return;
     const scrollbarWidth = Math.max(0, Math.round(page.offsetWidth - page.clientWidth));
-    document.documentElement.style.setProperty('--sbw', scrollbarWidth + 'px');
+    document.documentElement.style.setProperty('--sbw', `${scrollbarWidth}px`);
 }
 
+/**
+ * Keeps --sbw up to date. A ResizeObserver as well as the resize event: the
+ * scrollbar can come and go without the window changing size (content
+ * growing, images loading, device rotation).
+ */
 export function watchScrollbarWidth() {
-    // A ResizeObserver as well as the resize event: the scrollbar can come
-    // and go without the window changing size (content growing, images
-    // loading, device rotation).
     updateScrollbarWidth();
-    if (typeof ResizeObserver !== 'undefined') {
-        const observer = new ResizeObserver(() => updateScrollbarWidth());
-        document.querySelectorAll('.page').forEach(pg => observer.observe(pg));
-    }
+    const observer = new ResizeObserver(updateScrollbarWidth);
+    document.querySelectorAll('.page').forEach(page => observer.observe(page));
+
     let resizeTimer = null;
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(updateScrollbarWidth, 150);
+        resizeTimer = setTimeout(updateScrollbarWidth, RESIZE_DEBOUNCE_MS);
     }, { passive: true });
 }

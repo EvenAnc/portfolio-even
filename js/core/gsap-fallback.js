@@ -6,60 +6,75 @@
 
 import { gsapMissing } from './env.js';
 
+// Tween settings, as opposed to the properties being animated.
+const TWEEN_KEYS = ['duration', 'ease', 'delay', 'onComplete', 'onStart',
+    'onUpdate', 'stagger', 'overwrite', 'repeat', 'yoyo', 'paused'];
+
+const toPx = value => (typeof value === 'number' ? `${value}px` : value);
+
+const TRANSFORMS = {
+    x: value => `translateX(${toPx(value)})`,
+    y: value => `translateY(${toPx(value)})`,
+    scale: value => `scale(${value})`,
+    rotation: value => `rotate(${value}deg)`,
+    rotate: value => `rotate(${value}deg)`,
+};
+
+function toElements(targets) {
+    if (!targets) return [];
+    if (typeof targets === 'string') return [...document.querySelectorAll(targets)];
+    if (targets instanceof Element) return [targets];
+    if (targets.length !== undefined) return [...targets];
+    return [];
+}
+
+function applyEndState(element, vars) {
+    if (!element || !element.style) return;
+    const transform = [];
+    Object.keys(vars).forEach(key => {
+        if (TWEEN_KEYS.includes(key)) return;
+        const value = vars[key];
+        if (key in TRANSFORMS) transform.push(TRANSFORMS[key](value));
+        else if (key === 'opacity' || key === 'zIndex') element.style[key] = value;
+        else if (key in element.style) element.style[key] = toPx(value);
+    });
+    if (transform.length) element.style.transform = transform.join(' ');
+}
+
+function applyVars(targets, vars = {}) {
+    toElements(targets).forEach(element => applyEndState(element, vars));
+    if (typeof vars.onComplete === 'function') {
+        try {
+            vars.onComplete();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    return { kill() {}, pause() {}, play() {}, progress: () => 1 };
+}
+
+function chainable() {
+    const api = {};
+    ['to', 'from', 'fromTo', 'set', 'add', 'call', 'pause', 'play', 'kill', 'clear']
+        .forEach(method => { api[method] = () => api; });
+    return api;
+}
+
+/** Defines a global `gsap` that jumps to end states; does nothing when GSAP loaded. */
 export function installGsapFallback() {
     if (!gsapMissing) return;
 
     console.warn('[portfolio] GSAP unavailable: running without animations.');
 
-    const TWEEN_KEYS = ['duration', 'ease', 'delay', 'onComplete', 'onStart',
-                        'onUpdate', 'stagger', 'overwrite', 'repeat', 'yoyo', 'paused'];
-
-    const toElements = (targets) => {
-        if (!targets) return [];
-        if (typeof targets === 'string') return [...document.querySelectorAll(targets)];
-        if (targets instanceof Element) return [targets];
-        if (targets.length !== undefined) return [...targets];
-        return [];
-    };
-
-    const applyVars = (targets, vars) => {
-        vars = vars || {};
-        toElements(targets).forEach(el => {
-            if (!el || !el.style) return;
-            const transform = [];
-            for (const key in vars) {
-                if (TWEEN_KEYS.indexOf(key) !== -1) continue;
-                const v = vars[key];
-                if (key === 'x')            transform.push('translateX(' + (typeof v === 'number' ? v + 'px' : v) + ')');
-                else if (key === 'y')       transform.push('translateY(' + (typeof v === 'number' ? v + 'px' : v) + ')');
-                else if (key === 'scale')   transform.push('scale(' + v + ')');
-                else if (key === 'rotation')transform.push('rotate(' + v + 'deg)');
-                else if (key === 'opacity') el.style.opacity = v;
-                else if (key in el.style)   el.style[key] = typeof v === 'number' && key !== 'zIndex' ? v + 'px' : v;
-            }
-            if (transform.length) el.style.transform = transform.join(' ');
-        });
-        if (typeof vars.onComplete === 'function') {
-            try { vars.onComplete(); } catch (e) { console.error(e); }
-        }
-        return { kill() {}, pause() {}, play() {}, progress() { return 1; } };
-    };
-
-    const chainable = () => {
-        const api = {};
-        ['to', 'from', 'fromTo', 'set', 'add', 'call', 'pause', 'play', 'kill', 'clear']
-            .forEach(m => { api[m] = () => api; });
-        return api;
-    };
-
     window.gsap = {
-        to:     (t, vars) => applyVars(t, vars),
-        set:    (t, vars) => applyVars(t, vars),
-        from:   (t, vars) => applyVars(t, {}),
-        fromTo: (t, from, to) => applyVars(t, to),
+        to: applyVars,
+        set: applyVars,
+        // The end state of a "from" tween is the element as it stands.
+        from: (targets, vars = {}) => applyVars(targets, { onComplete: vars.onComplete }),
+        fromTo: (targets, from, to) => applyVars(targets, to),
         timeline: chainable,
         ticker: { add() {}, remove() {}, lagSmoothing() {} },
         registerPlugin() {},
-        utils: { toArray: toElements }
+        utils: { toArray: toElements },
     };
 }
