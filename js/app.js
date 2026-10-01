@@ -1537,11 +1537,15 @@ function initContactForm() {
             signal: controller.signal
         }).then(response => {
             if (!response.ok) throw new Error('Network response was not ok.');
-            // A 200 answer can still carry a refusal in its body; an
-            // unreadable body is not one.
-            return response.json().catch(() => ({}));
+            // A 200 answer can still carry a refusal in its body. When the
+            // body is not JSON, the status already checked is all there is.
+            return response.json().catch(() => null);
         }).then(result => {
-            if (result && result.success !== false) {
+            // Form services send this flag as a boolean, a string or a number.
+            const flag = result ? result.success : undefined;
+            const refused = flag === false || flag === 0
+                || ['false', '0'].includes(String(flag).toLowerCase());
+            if (!refused) {
                 const successMsg = currentLang === 'fr'
                     ? '✓ Message envoyé avec succès !'
                     : '✓ Message sent successfully!';
