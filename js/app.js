@@ -817,14 +817,24 @@ function scrollToContactSection() {
     }
 }
 
-function goToContact(outerDelay) {
+// Contact is the bottom of the home page: bring home in if needed, then
+// scroll once its transition has settled. Never touches the history, so
+// the caller decides whether this navigation adds an entry.
+function revealContact(outerDelay = 0) {
     const wasOnHome = currentPage === 'home';
     setTimeout(() => {
-        if (!wasOnHome) showPage('home', true);
+        if (!wasOnHome) showPage('home', true, false);
         setTimeout(scrollToContactSection, wasOnHome ? 100 : 750);
     }, outerDelay);
+}
+
+// One navigation, one history entry: the #contact entry stands for the
+// whole move, including the switch to the home page.
+function goToContact(outerDelay) {
+    revealContact(outerDelay);
     if (location.hash !== '#contact') {
-        history.pushState({ page: 'contact' }, '', '#contact');
+        history.pushState({ page: 'contact' }, '', location.pathname + location.search + '#contact');
+        _historyInitialised = true;
     }
 }
 
