@@ -2065,6 +2065,9 @@ function initDrawingLightbox() {
         // retrouvait bloque devant l'image. Sur tactile, elles restent.
         if (window.matchMedia(REQUETE_TACTILE).matches) return;
         hideTimer = setTimeout(() => {
+            // Hiding would take the close button away from someone panning
+            // a zoomed image or driving the viewer from the keyboard.
+            if (isZoomed || lightbox.querySelector(':focus-visible')) return;
             lightbox.classList.add('controls-hidden');
         }, 2500);
     }
@@ -2455,6 +2458,8 @@ function initDrawingLightbox() {
     // Navigation Clavier
     document.addEventListener('keydown', (e) => {
         if (lightbox.getAttribute('aria-hidden') === 'false') {
+            // Any key counts as activity, like a mouse move.
+            showControls();
             if (e.key === 'Escape') closeLightbox();
             if (e.key === 'Tab') trapFocus(e);
             if (!isSingleMode) {
