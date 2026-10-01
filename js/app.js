@@ -957,7 +957,9 @@ function urlForPage(pageId) {
 // « page suivante », et desormais l'ouverture directe sur #contact.
 function scrollToContactSection() {
     const contactEl = document.getElementById('home-contact');
-    if (!contactEl) return;
+    // On another page the scroller would be asked to reach an element it
+    // does not contain.
+    if (!contactEl || currentPage !== 'home') return;
     if (window._lenis) {
         window._lenis.scrollTo(contactEl, { offset: -40, duration: 1.2 });
     } else {
@@ -970,11 +972,34 @@ function scrollToContactSection() {
 // scroll once its transition has settled. Never touches the history, so
 // the caller decides whether this navigation adds an entry.
 function revealContact(outerDelay = 0) {
+    cancelContactReveal();
     const wasOnHome = currentPage === 'home';
-    setTimeout(() => {
-        if (!wasOnHome) showPage('home', true, false);
-        setTimeout(scrollToContactSection, wasOnHome ? 100 : 750);
-    }, outerDelay);
+    contactTimers.push(setTimeout(() => {
+        // The visitor may have gone back while the menu was closing.
+        if (pageFromHash() !== 'contact') return;
+        if (currentPage !== 'home') showPage('home', true, false);
+        contactTimers.push(setTimeout(scrollToContactSection, wasOnHome ? 100 : 750));
+    }, outerDelay));
+}
+
+// A reveal still pending belongs to a navigation that has been superseded:
+// left alone, it would switch page or scroll after the visitor moved on.
+let contactTimers = [];
+function cancelContactReveal() {
+    contactTimers.forEach(clearTimeout);
+    contactTimers = [];
+}
+
+// Leaving the #contact entry for the plain home address stays on the same
+// page, so the only thing left to undo is the scroll.
+function scrollHomeToTop() {
+    cancelContactReveal();
+    if (window._lenis) {
+        window._lenis.scrollTo(0);
+    } else {
+        const homeEl = document.getElementById('page-home');
+        if (homeEl) homeEl.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 }
 
 // One navigation, one history entry: the #contact entry stands for the
@@ -989,6 +1014,7 @@ function goToContact(outerDelay) {
 
 function showPage(pageId, animate = true, updateHistory = true) {
     if (pageId === currentPage && animate) return;
+    cancelContactReveal();
 
     const outEl = document.getElementById(`page-${currentPage}`);
     const inEl  = document.getElementById(`page-${pageId}`);
