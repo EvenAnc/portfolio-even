@@ -20,34 +20,34 @@
 //     (requestIdleCallback), donc jamais en concurrence avec le visiteur ;
 //   - on ne DEMARRE pas un rendu si le visiteur vient d'interagir
 //     (defilement, molette, doigt) — un rendu lance ne peut plus etre
-//     interrompu, il faut donc choisir le bon moment pour le lancer ;
+//     interrompu, il faut donc choisir le bon moment pour le run ;
 //   - un seul rendu a la fois en fond, contre deux a la demande.
 // ─────────────────────────────────────
-const REPOS_APRES_INTERACTION = 450;   // ms de calme exiges avant de relancer
+const IDLE_AFTER_INTERACTION_MS = 450;   // ms de calme exiges avant de relancer
 
-let _dernierGeste = 0;
+let lastInteractionAt = 0;
 
-let _prechargeDemarree = false;
+let preloadStarted = false;
 
-function marquerGeste() { _dernierGeste = Date.now(); }
+function markInteraction() { lastInteractionAt = Date.now(); }
 
-function ecouterGestes() {
+function listenForInteractions() {
     ['wheel', 'touchmove', 'pointerdown', 'keydown'].forEach(ev =>
-        window.addEventListener(ev, marquerGeste, { passive: true }));
+        window.addEventListener(ev, markInteraction, { passive: true }));
     document.querySelectorAll('.page').forEach(pg =>
-        pg.addEventListener('scroll', marquerGeste, { passive: true }));
+        pg.addEventListener('scroll', markInteraction, { passive: true }));
 }
 
-function canvasParPriorite() {
-    const tous = Array.from(document.querySelectorAll('.pdf-inline-render'));
-    const prioritaire = c => c.closest('.stack-item')
+function previewsByPriority() {
+    const all = Array.from(document.querySelectorAll('.pdf-inline-render'));
+    const isPriority = c => c.closest('.stack-item')
         || (c.closest('.bd-slide') && c.closest('.bd-slide').classList.contains('active'));
-    return [...tous.filter(prioritaire), ...tous.filter(c => !prioritaire(c))];
+    return [...all.filter(isPriority), ...all.filter(c => !isPriority(c))];
 }
 
-export function demarrerPrechargeFond() {
-    if (_prechargeDemarree) return;
-    _prechargeDemarree = true;
+export function startBackgroundPreload() {
+    if (preloadStarted) return;
+    preloadStarted = true;
 
     // Background preloading spends data the visitor did not ask for: skip
     // it when they asked to save data or when the connection is slow.
@@ -55,40 +55,40 @@ export function demarrerPrechargeFond() {
     const connection = navigator.connection;
     if (connection && (connection.saveData || /(^|-)2g$/.test(connection.effectiveType || ''))) return;
 
-    ecouterGestes();
+    listenForInteractions();
 
     // Les plans sont desormais de simples images : le prechargement se
     // resume a les demander au reseau. Le navigateur les decode ensuite
     // hors du fil principal, ce qui ne peut plus faire saccader la page.
     // The srcset travels with the address so that the preload requests the
     // same candidate the page will display, not a second file.
-    const liste = canvasParPriorite()
+    const queue = previewsByPriority()
         .map(el => ({ src: el.getAttribute('src'), srcset: el.getAttribute('srcset') }))
         .filter(entry => entry.src);
     let i = 0;
 
-    const planifier = (delai) => {
-        const lancer = () => etape();
+    const schedule = (delay) => {
+        const run = () => step();
         if (typeof requestIdleCallback === 'function') {
-            requestIdleCallback(lancer, { timeout: 4000 });
+            requestIdleCallback(run, { timeout: 4000 });
         } else {
-            setTimeout(lancer, delai || 250);
+            setTimeout(run, delay || 250);
         }
     };
 
-    const etape = () => {
-        if (i >= liste.length) return;                       // tout est en cache
-        if (document.visibilityState !== 'visible') return planifier(2000);
-        if (Date.now() - _dernierGeste < REPOS_APRES_INTERACTION) return planifier(500);
+    const step = () => {
+        if (i >= queue.length) return;                       // tout est en cache
+        if (document.visibilityState !== 'visible') return schedule(2000);
+        if (Date.now() - lastInteractionAt < IDLE_AFTER_INTERACTION_MS) return schedule(500);
 
-        const entry = liste[i++];
+        const entry = queue[i++];
         const img = new Image();
         img.decoding = 'async';
         // on enchaine des que l'image est en cache, succes ou non
-        img.onload = img.onerror = () => planifier(80);
+        img.onload = img.onerror = () => schedule(80);
         if (entry.srcset) img.srcset = entry.srcset;
         img.src = entry.src;
     };
 
-    planifier();
+    schedule();
 }
