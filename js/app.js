@@ -114,7 +114,7 @@ const i18n = {
         diploma_scan_placeholder_sub: "Espace réservé pour le document officiel de fin de cycle (A4 Paysage)",
         contact_intro: "Discutons de votre projet d'aménagement intérieur, une proposition d'embauche, une question, ou juste l'envie d'échanger, n'hésitez pas !",
         form_name: "NOM", form_email: "EMAIL",
-        form_message: "MESSAGE", form_send: "ENVOYER",
+        form_message: "MESSAGE", form_send: "ENVOYER", form_sending: "ENVOI...",
         contact_direct:   "CONTACT DIRECT",
         contact_social:   "RÉSEAUX",
         contact_location: "LOCALISATION",
@@ -216,7 +216,7 @@ const i18n = {
         diploma_scan_placeholder_sub: "Reserved space for the official graduation document (A4 Landscape)",
         contact_intro: "Let's talk about your interior project, a job offer, a question, or simply the wish to exchange, do get in touch!",
         form_name: "NAME", form_email: "EMAIL",
-        form_message: "MESSAGE", form_send: "SEND",
+        form_message: "MESSAGE", form_send: "SEND", form_sending: "SENDING...",
         contact_direct:   "DIRECT CONTACT",
         contact_social:   "SOCIALS",
         contact_location: "LOCATION",
@@ -1264,6 +1264,16 @@ function initContactForm() {
         gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration });
     }
 
+    // The label shows whichever dictionary key it carries, so a language
+    // switch during a request translates the pending label and the
+    // restored one alike.
+    function setSubmitLabel(button, key) {
+        const label = button.querySelector('[data-i18n]');
+        if (!label) return;
+        label.setAttribute('data-i18n', key);
+        label.textContent = i18n[currentLang][key];
+    }
+
     // Pressing Enter in a field submits the form without going through the
     // button, so the lock has to live on the submit event itself.
     let isSubmitting = false;
@@ -1316,12 +1326,8 @@ function initContactForm() {
         // Soumission AJAX à Formspree
         const formData = new FormData(form);
         const submitBtn = document.getElementById('contact-submit');
-        // Read under the lock: a second submission would otherwise capture
-        // the pending label as the one to restore.
         isSubmitting = true;
-        const originalBtnText = submitBtn.innerHTML;
-
-        submitBtn.innerHTML = currentLang === 'fr' ? 'ENVOI...' : 'SENDING...';
+        setSubmitLabel(submitBtn, 'form_sending');
         submitBtn.style.pointerEvents = 'none';
         submitBtn.disabled = true;
 
@@ -1356,7 +1362,7 @@ function initContactForm() {
             animateFeedback(0.35);
         }).finally(() => {
             clearTimeout(timeoutId);
-            submitBtn.innerHTML = originalBtnText;
+            setSubmitLabel(submitBtn, 'form_send');
             submitBtn.style.pointerEvents = 'auto';
             submitBtn.disabled = false;
             isSubmitting = false;
