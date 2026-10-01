@@ -51,11 +51,9 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 .header-right { display: flex; align-items: center; gap: 54px; pointer-events: auto; }
 .lang-switcher { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; }
 
-/* ── FIX R-02 : zones tactiles conformes ───────────────────────────
-   Les pastilles ci-dessous agrandissent UNIQUEMENT la surface cliquable
-   via un pseudo-element transparent. Aucun pixel dessine ne bouge.
-   Les debordements horizontaux s'arretent au milieu du gap : deux
-   cibles voisines se touchent sans jamais se chevaucher. */
+/* Touch targets: the transparent pseudo-element enlarges only the hit area, nothing drawn moves.
+   Horizontal overflow stops at the middle of the gap so neighbouring targets touch without
+   overlapping. */
 .lang-btn {
     opacity: 0.35;
     transition: opacity var(--dur-fast);
@@ -66,12 +64,11 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     content: '';
     position: absolute;
     inset: -14px -6px;
-    /* pas de background : purement une surface de contact */
+    /* contact surface only, no background */
 }
 
-/* Les icones sociales sont trop rapprochees pour s'elargir des deux cotes
-   sans se chevaucher. On elargit donc largement vers l'exterieur (aucun
-   voisin) et seulement jusqu'au milieu du gap vers l'interieur. */
+/* Social icons are too close to widen both ways: extend far outwards (no neighbour) and only to the
+   gap middle inwards. */
 .social-lnk::before {
     content: '';
     position: absolute;
@@ -105,11 +102,8 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 .social-lnk:hover { opacity: 1; color: var(--red); transform: translateY(-2px); }
 .social-lnk:hover::after { width: 100%; }
 
-/* ── 3. iPhone : encoche et barre d'accueil ────────────────────────
-   Avec viewport-fit=cover le fond sombre va jusqu'au bord de la
-   dalle, mais le contenu doit rester en dehors des zones systeme.
-   Les valeurs safe-area valent 0 partout ailleurs : aucun effet sur
-   les autres appareils ni sur le bureau. */
+/* Keep content out of the notch and home-bar areas. Safe-area insets are 0 elsewhere, so other
+   devices are unaffected. */
 .site-header {
     position: fixed;
     top: 0;
@@ -124,58 +118,9 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     padding-top: env(safe-area-inset-top);
 }
 
-/* ── 17. La barre du haut n'avait pas de fond utilisable ────────
-
-   Even : « la barre du haut n'a pas de fond, quand du texte passe
-   derriere ca devient illisible » — et le meme souci sur PC, juste
-   moins visible parce que l'ecran est plus large.
-
-   Un fond existait pourtant : un degrade de rgba(26,26,26,0.85) vers
-   le transparent. Mais il s'eteignait sur la hauteur de l'entete,
-   alors que TOUT son contenu est centre verticalement dedans.
-   Mesure : le logo occupe 8 -> 63px sur 72, soit le milieu exact ; a
-   cette hauteur le degrade ne valait plus que 0,44.
-
-   Le fond descend donc maintenant 40px SOUS l'entete : le fondu se
-   joue dans ce debord, en dehors de la zone qui porte le texte.
-
-   POURQUOI AUTANT DE PALIERS
-   Ma premiere version n'en avait que cinq, et Even a vu « un genre de
-   trait dans le degrade ». Ce n'etait pas un defaut d'affichage mais
-   de courbe : la pente changeait brutalement d'un palier a l'autre
-   (x42 a 60%, x4 a 74%). L'oeil ne voit pas une valeur, il voit une
-   RUPTURE de pente — c'est l'effet de bande de Mach, et il dessine un
-   trait la ou il n'y en a aucun.
-   Les paliers ci-dessous suivent une courbe « smootherstep », dont la
-   pente est nulle aux deux extremites et varie continument entre les
-   deux. Saut de pente maximal par pixel : 0,0217 avant, 0,0044 apres
-   — cinq fois moins — et reparti sur trente paliers au lieu d'etre
-   concentre sur deux. Trente paliers ne coutent rien : le navigateur
-   rasterise le degrade une seule fois.
-
-   Pose en ::before et non sur l'entete elle-meme : il faut pouvoir
-   deborder vers le bas sans changer la hauteur de la barre, qui sert
-   de reference au bouton retour et aux marges hautes des pages.
-
-   Pas de backdrop-filter, volontairement : un flou permanent sur une
-   bande toujours a l'ecran coute cher au defilement sur les appareils
-   modestes, et le degrade suffit a rendre le texte lisible. */
-/* — Le bandeau ne peint plus, il floute ———————————————
-   Il portait une couleur fixe, puis une couleur par page. Even : « vu
-   que j'ai des changements de couleur ca rend mal, mets-le en
-   transparent et fais juste un effet de flou, comme ca plus de soucis
-   de couleur vu que ca prendra la couleur qui est derriere ». C'est la
-   bonne reponse : un flou n'a pas de teinte propre, il reprend
-   forcement ce qu'il y a dessous.
-
-   Le voile noir a 0,3 qui l'accompagne n'est pas une couleur mais un
-   assombrissement. Il ne peut pas jurer avec le fond puisqu'il ne fait
-   que le foncer, et il garantit la lisibilite du logo blanc quand un
-   plan clair passe derriere. Le flou seul ne suffirait pas : il
-   melange les couleurs sans les assombrir.
-
-   Le masque fait disparaitre flou et voile ensemble vers le bas, pour
-   qu'aucun bord net ne trahisse la bande. */
+/* The header paints no colour of its own: a blur takes whatever lies behind it. The 0.30 black veil
+   only darkens, which keeps the white logo readable over light content; the mask fades blur and
+   veil out together so no hard edge shows. */
 .site-header::before {
     content: '';
     position: absolute;
@@ -193,7 +138,6 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 }
 
 @media (max-width: 768px) {
-    /* ── Header ── */
     .header-inner { padding: 0 18px; }
 
     .header-right { gap: 14px; }
@@ -201,12 +145,8 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     .social-icon { width: 15px; height: 15px; }
     .lang-switcher { gap: 4px; font-size: 0.75rem; }
 
-    /* ── 7. En-tete : le retour recouvrait le logo ─────────────────────
-       Mesure sur Pixel 8a (412px) : bouton retour a 94-204, logo centre a
-       130-282 — 74px de recouvrement, les deux textes s'ecrivaient l'un
-       par-dessus l'autre. Il n'y a pas la place pour les deux sur un
-       telephone : sur une page projet le retour prime, le logo s'efface.
-       Le logo reste present sur toutes les autres pages. */
+    /* On phones there is no room for both the back button and the centred logo: on a project page
+       the back button wins and the logo fades out. */
     body.a-bouton-retour .header-logo {
         opacity: 0;
         pointer-events: none;
@@ -258,7 +198,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     animation: logoWobbleMini 0.3s steps(1) infinite;
 }
 
-/* Items alignés, espacement vertical régulier */
 .menu-nav {
     display: flex; flex-direction: column;
     gap: 18px;
@@ -314,7 +253,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 @media (max-width: 768px) {
-    /* ── Menu overlay ── */
     .menu-overlay { padding: 0 20px 30px; }
 
     .menu-logo-wrap { padding-top: 85px; padding-bottom: 20px; }
@@ -339,25 +277,13 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
 
+/* Keeps !important: an inactive page must never take pointer events, whatever its children declare. */
 .page:not(.is-active) * { pointer-events: none !important; }
 
-/* ── FIX P-01 : masquage REEL des pages inactives ──────────────────
-   Avant : opacity:0 seul. Le navigateur continuait a mettre en page,
-   peindre et animer les 7 pages invisibles (61 animations infinies et
-   46 filtres feTurbulence tournaient dans le vide), et le
-   loading="lazy" des images etait neutralise -> 47,5 Mo au chargement.
-
-   visibility:hidden       -> retire du flux de tabulation clavier (21 elements)
-   content-visibility:hidden -> le navigateur saute entierement le rendu
-                                du sous-arbre, donc les images lazy ne se
-                                telechargent plus tant que la page n'est pas ouverte.
-
-   Les navigateurs anciens (Safari < 15.4, Firefox < 125) ignorent
-   content-visibility et retombent sur visibility:hidden : degradation
-   propre, aucun element casse.
-
-   contain-intrinsic-size reserve une hauteur plausible pour que la
-   barre de defilement ne saute pas a l'ouverture de la page. */
+/* Inactive pages are really hidden, not just transparent. visibility:hidden removes them from the
+   tab order; content-visibility:hidden skips their rendering so lazy images do not load before the
+   page opens. Browsers without content-visibility fall back to visibility alone. contain-intrinsic-
+   size keeps the scrollbar from jumping when a page opens. */
 .page:not(.is-active) {
     visibility: hidden;
     content-visibility: hidden;
@@ -393,70 +319,31 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     max-width: 1200px;
 }
 
-/* ── 22. La citation de fin, et la page qui respire autour ──────
-
-   Even a valide le mouvement : « le deroulement est parfait, HYPER
-   fluide, ca agrandit bien ». Mais il bloquait : « une fois centree,
-   je ne peux pas descendre plus bas, la molette ne marche plus ».
-
-   POURQUOI CA BLOQUAIT
-   Les deux vides qui s'ouvraient etaient de vrais elements de mise en
-   page. Les faire grandir changeait la HAUTEUR DE LA PAGE en plein
-   defilement. Deux consequences, chacune suffisante :
-     Lenis, qui pilote le defilement, garde en memoire la hauteur
-     maximale atteignable. Elle devenait fausse a chaque image, et il
-     bloquait sur l'ancienne.
-     Le vide du haut poussait la citation vers le bas exactement
-     pendant qu'on essayait de la depasser. Mesure : la phrase ne
-     montait plus qu'a 43% de la vitesse du doigt.
-
-   CE QUI CHANGE
-   Plus rien ne touche a la mise en page. L'ecart est cree en
-   DEPLACANT les blocs voisins : le bloc du dessus monte, celui du
-   dessous descend, chacun jusqu'a 20vh. Une transformation ne change
-   ni la hauteur de la page ni la position de quoi que ce soit dans le
-   flux. Lenis ne voit rien, il n'a plus rien a recalculer, et le
-   defilement reste exactement aussi fluide qu'ailleurs.
-   Bonus : une transformation est calculee par la carte graphique,
-   c'est moins cher qu'un changement de mise en page a chaque image.
-
-   La citation, elle, ne bouge plus d'un pixel. C'est ce qui permet
-   d'ancrer la piste d'animation sur elle sans aucune boucle.
-
-   Meme courbe qu'avant, sin^2(pi*t), que Even a trouvee juste :
-   pente nulle aux deux bouts, sommet au centre, quinze paliers. */
-/* Le nom de piste doit etre visible aux voisins de la citation. Les
-   deux pages qui en portent une ont leur propre portee : chaque
-   .page-inner resout son --citation dans son sous-arbre, sans que les
-   deux se melangent. */
+/* Quote band animation: the gap opens by translating the neighbouring blocks, never by resizing
+   layout (a page height that changes mid-scroll breaks the maximum scroll Lenis caches). The quote
+   itself never moves, so the animation track can anchor on it. Curve: sin^2(pi*t), flat at both
+   ends. */
+/* The track name is scoped per page so the two pages that use it do not share it. */
 #page-project-diploma .page-inner,
 #page-drawings .page-inner {
     timeline-scope: --citation;
 }
 
 @media (max-width: 991px) {
-    /* Responsive */
     .page {
         padding: 100px 30px 40px 30px;
     }
 }
 
 @media (max-width: 768px) {
-    /* ── Pages intérieures ── */
     .page-inner { padding: 95px 20px 80px; }
 
     .page-title { font-size: clamp(2.2rem, 8vw, 3.5rem); }
     .page-intro { font-size: 0.95rem; margin-bottom: 36px; }
 
-    /* ── 8. Pages projet : les panneaux jusqu'au bord ──────────────────
-       .project-detail-page portait 30px de padding horizontal. Les
-       panneaux, leur fond colore et les traits dechires — tous des
-       pseudo-elements calques sur la largeur du panneau — s'arretaient
-       donc a 30px des bords : le trait ne rejoignait jamais le bord de
-       l'ecran et le changement de fond laissait deux bandes noires.
-       Sur telephone on retire ce padding : les panneaux vont d'un bord a
-       l'autre, et leur propre padding interne (20px) garde le contenu a
-       distance des bords. */
+    /* Project pages: on phones the panels run edge to edge, so their coloured background and torn
+       lines (pseudo-elements sized to the panel) reach the screen edge. Their own padding keeps
+       content off the edges. */
     .page.project-detail-page {
         padding-left: 0;
         padding-right: 0;
@@ -475,9 +362,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     padding-right: 60px;
     position: relative;
     clear: both;
-    /* FIX R-01 : 100vw inclut la barre de defilement de .page (4px),
-       ce qui faisait deborder le footer de ~5px sur toutes les pages.
-       --sbw est mesure au runtime par app.js ; 0px = comportement d'avant. */
+    /* 100vw includes the 4px scrollbar of .page, which made the footer overflow by about 5px. --sbw
+       is measured at runtime by app.js. */
     width: calc(100vw - var(--sbw, 0px));
     left: 50%;
     right: 50%;
@@ -495,20 +381,17 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 .footer-bottom { display: flex; gap: 14px; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.3; }
 .footer-sep { opacity: 0.3; }
 
-/* Footer in projects: no negative margins needed since page-inner has no horizontal padding */
+/* Project pages: the footer clears what is above it. */
 .project-detail-page .site-footer {
     clear: both;
 }
 
 @media (max-width: 768px) {
-    /* ── Footer ── */
     .footer-inner { padding: 36px 20px 28px; }
 
     .footer-bottom { flex-wrap: wrap; gap: 8px; }
 
-    /* ── 2. Lisibilite des petits textes sur telephone ─────────────────
-       Mesure : mentions legales 12px, code RNCP 12,8px. Sous 14px la
-       lecture devient penible sur un ecran tenu a bout de bras. */
+    /* Keep the legal text readable on a phone held at arm's length. */
     .footer-legal          { font-size: 0.875rem; line-height: 1.75; }
 
     .footer-bottom,
@@ -570,16 +453,9 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     margin-right: 60px;
 }
 
-/* En dessous, l'inverse : Even veut de la place entre la citation et
-   « suivant », et « suivant » colle au pied de page.
-   Cette reserve sert donc deux fois. Elle donne l'air qu'il veut sous
-   la citation, et elle fournit la course dont l'animation a besoin
-   pour redescendre — la citation etant le dernier bloc de la page, il
-   ne reste sinon presque plus rien a defiler une fois qu'elle est
-   centree.
-   32vh : le minimum pour tenir 864px de course sur un ultra-large, qui
-   est le cas le plus contraint. Les 40px du bas remettent « suivant »
-   contre le pied de page. */
+/* Reserve below the quote: gives it air and supplies the scroll travel the animation needs to
+   settle, since the quote is the last block of the page. The 40px at the bottom keep the next-page
+   link against the footer. */
 #page-project-diploma .page-next,
 #page-drawings .page-next {
     margin-top: 32vh;
@@ -587,7 +463,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 @media (max-width: 768px) {
-    /* le contenu hors panneau garde sa respiration */
+    /* Content outside the panels keeps its breathing room. */
     .project-detail-page .page-next {
         padding-left: 20px;
         padding-right: 20px;
@@ -595,10 +471,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    /* Le pied de page n'est deliberement PAS de la partie. S'il
-               etait deplace et que l'animation n'allait pas jusqu'au bout,
-               il resterait pousse vers le bas et une partie deviendrait
-               inaccessible. C'est exactement ce qui s'est produit. */
+    /* The footer is deliberately excluded: if it moved and the animation did not run to its end,
+       part of it would stay out of reach. */
     #page-project-diploma .page-next,
     #page-drawings .page-next {
         animation: qb-ecarter-bas linear both;

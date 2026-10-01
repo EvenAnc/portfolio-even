@@ -83,13 +83,10 @@
     z-index: 5;
 }
 
-/* Pagination and Progress */
-/* --- PROJECTS PAGE REDESIGN --- */
 .project-detail-page {
     background: #111111;
 }
 
-/* PROJECTS REDESIGN (FORTICHE STYLE) */
 .fortiche-projects-board {
     padding: 0;
     margin: 0;
@@ -110,7 +107,7 @@
     margin-bottom: 0;
 }
 
-/* Project Description Notebook */
+/* Project description notebook */
 .project-description-notebook {
     max-width: 800px;
     margin: 0 auto 40px;
@@ -149,8 +146,8 @@
 .panel-section {
     position: relative;
     width: 100%;
-    padding: 120px 4vw 80px;   /* FIX: padding top généreux pour le sticker qui dépasse */
-    margin-top: 80px;          /* FIX: marge obligatoire entre description et section */
+    padding: 120px 4vw 80px;   /* Generous top padding for the sticker that overhangs. */
+    margin-top: 80px;          /* Mandatory gap between the description and the section. */
 }
 
 .panel-section:first-of-type {
@@ -194,9 +191,8 @@
     right: clamp(20px, 5vw, 60px);
 }
 
-/* Quinconce Layout (Fixed) */
-/* Quinconce (Staggered) layout for Coupes */
-/* 3. CUT STACK (Coupes) */
+/* Staggered layout for the cut views. */
+/* Cut stack */
 .cut-stack {
     margin-top: 30px;
     align-items: center;
@@ -261,8 +257,7 @@
 }
 
 /* Sticker hover interaction (depth effect) */
-/* sticker-right is now handled above via .sticker-title-wrap override */
-/* Base Sticker styling (removed inline styles) */
+/* Base sticker styling */
 .sticker-title {
     font-family: var(--font-sketch);
     font-size: clamp(2.5rem, 5vw, 4.5rem);
@@ -283,7 +278,7 @@
     box-shadow: 12px 12px 0px #1a1a1a, 0 20px 40px rgba(0,0,0,0.4);
 }
 
-/* Cut stack coupe aspect ratio */
+/* Cut stack aspect ratio */
 .cut-stack .stack-item {
     width: 85%;
     max-width: 900px;
@@ -312,27 +307,20 @@
     right: 12px;
 }
 
-/* ── 20. L'ossature de recit du projet de diplome ─────────────
-
-   La page presentait de belles planches mises bout a bout. Un
-   professionnel ne lit pas des planches, il lit un raisonnement : la
-   commande, le site, la contrainte, l'arbitrage. Ces emplacements
-   attendent ce texte-la.
-
-   Tout est cale sur la charte existante : Bebas pour les etiquettes,
-   Space Grotesk pour la lecture, le rouge en pointe. Aucun nouvel
-   element ne doit avoir l'air rapporte. */
-/* — Chapeau sous le titre d'un panneau ———————————————— */
+/* Narrative skeleton of the diploma project: the page used to show boards end to end, but a
+   professional reads a line of reasoning (the brief, the site, the constraint, the trade-off).
+   Everything follows the existing charter: Bebas for labels, Space Grotesk for reading, red as the
+   accent. */
+/* Panel lede */
 .panel-lede {
     font-family: var(--font-body);
     font-weight: 300;
     font-size: clamp(0.98rem, 2vw, 1.08rem);
     line-height: 1.7;
     color: rgba(255, 255, 255, 0.72);
-    /* 43rem = les 62 caracteres visés, mais exprimes dans une unite qui
-       ne depend pas de la police. .panel-tools, ecrit en Bebas, doit
-       partager EXACTEMENT cette largeur pour s'aligner dessus : en « ch »
-       il obtenait une boite plus etroite, donc un bord gauche decale. */
+    /* 43rem = the targeted 62 characters, in a unit that does not depend on the font. .panel-tools,
+       set in Bebas, must share exactly this width to line up with it; in ch it got a narrower box
+       and a shifted left edge. */
     max-width: 43rem;
     margin: 4px auto 30px;
     padding: 0 20px;
@@ -354,7 +342,7 @@
     color: var(--red);
     line-height: 1;
     margin-bottom: 14px;
-    transform: rotate(-1.5deg);   /* la main, comme partout ailleurs */
+    transform: rotate(-1.5deg);
     transform-origin: left center;
 }
 
@@ -379,20 +367,9 @@
     max-width: 62ch;
 }
 
-/* ── 21. Les logiciels employes, sous chaque serie de planches ───
-
-   Even les avait notes entre parentheses dans ses textes. Sortis de la
-   phrase et poses en dessous, ils deviennent lisibles d'un coup d'oeil :
-   un professionnel qui recrute cherche precisement cette information, et
-   ne devrait pas avoir a la pecher au milieu d'un paragraphe.
-
-   Traitement de legende technique : petites capitales espacees, en
-   rouge et centrees sous le paragraphe qu'elles completent — le rouge
-   est la couleur d'accent du site, il signale l'information sans avoir
-   besoin d'un cadre ni d'un intitule.
-   Centrees dans la COLONNE DE TEXTE, pas dans la page : d'ou la meme
-   largeur maximale que .panel-lede, sinon la ligne se centrerait par
-   rapport a l'ecran et flotterait a cote du texte. */
+/* Software used, under each series of boards: small spaced capitals in red, centred in the text
+   column rather than the page (same maximum width as .panel-lede), so the line does not float
+   beside the text. */
 .panel-tools {
     font-family: var(--font-display);
     font-size: 0.82rem;
@@ -400,36 +377,30 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--red);
-    text-align: center;        /* centre dans la colonne de texte, pas dans la page */
-    max-width: 43rem;          /* meme largeur que .panel-lede, voir plus haut */
-    margin: -14px auto 30px;   /* remonte contre le chapeau qu'il complete */
+    text-align: center;        /* centred in the text column, not in the page */
+    max-width: 43rem;          /* same width as .panel-lede */
+    margin: -14px auto 30px;   /* pulled up against the lede it completes */
     padding: 0 20px;
 }
 
-/* Le second paragraphe du bloc « problematiques » : meme corps, un
-   ecart franc pour marquer le retournement du recit. */
+/* Second paragraph of the problems block: same size, a clear gap to mark the turn in the story. */
 .choice-text + .choice-text {
     margin-top: 16px;
 }
 
-/* Les marges des deux blocs qui encadrent la citation doivent etre
-   EGALES, sinon le texte ne peut pas etre a la fois centre et a egale
-   distance des deux. Mesure : le bas du panneau du dessus vaut 120px
-   sur grand ecran et 219 sur telephone, la marge haute de « suivant »
-   valait 80 dans les deux cas. On l'aligne.
-   Aucune reserve de defilement ici : Even veut « suivant » colle au
-   pied de page. Ce qui rend la fin de l'animation atteignable, c'est
-   la plage resserree, pas de l'espace ajoute. */
-/* Le bas du panneau du dessus : 40px, serre. C'est la demande d'Even,
-   et c'est ce qui rend l'animation lisible — son amplitude etant fixe,
-   plus l'ecart de depart est grand moins le mouvement se voit. */
+/* The margins of the two blocks around the quote must be equal, otherwise the text cannot be both
+   centred and equidistant from them. The panel above measured 120px on desktop and 219px on phones
+   against 80px for the next-page link; align them. No scroll reserve here: the link sits against
+   the footer. */
+/* Bottom of the panel above: a tight 40px. The animation amplitude is fixed, so the larger the
+   starting gap, the less visible the movement. */
 #page-project-diploma .panel-choice,
 #page-drawings .bd-carousel-section {
     padding-bottom: 40px;
 }
 
 @media (max-width: 900px) {
-    /* Responsive */
+    /* Keeps !important: must beat the staggered nth-child offsets. */
     .stack-item {
         width: 100%;
         align-self: center !important;
@@ -438,7 +409,6 @@
 }
 
 @media (max-width: 768px) {
-    /* Responsive 3D Grid & Projects page */
     .render3d-grid {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -449,6 +419,7 @@
         padding: 10px 25px;
     }
 
+    /* Keeps !important: must beat the staggered nth-child offsets. */
     .cut-stack .stack-item {
         width: 100%;
         max-width: 100%;
@@ -475,21 +446,11 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    /* — L'ecartement, lie au defilement ————————————————
-       Natif, sans une ligne de script. Hors de @supports, l'etat de repos
-       ci-dessus reste en place : la citation s'affiche simplement, bien
-       mise en page, et rien ne bouge. */
-    /* PLAGE : de 25% a 75% de la traversee, et non de 0 a 100.
-               Deux raisons.
-               Le sommet reste exactement au centre — c'est le milieu de la
-               plage, quelle qu'elle soit.
-               Et surtout la fin devient ATTEIGNABLE : aller jusqu'a 100%
-               demanderait que la citation sorte entierement par le haut,
-               ce que la page ne permet pas puisqu'il ne reste presque rien
-               en dessous. Mesure : il manquait 374px, puis 14px apres la
-               reserve. En s'arretant a 75%, l'animation revient a zero
-               bien avant la fin de course, sur toutes les hauteurs
-               d'ecran, y compris un ultra-large. */
+    /* Scroll-linked opening of the gap: native, no script. Outside @supports the rest state above
+       stays in place and the quote is simply displayed. */
+    /* Range: 25% to 75% of the crossing rather than 0 to 100. The peak stays exactly centred, and
+       the end becomes reachable: going to 100% would need the quote to leave through the top, which
+       the page does not allow since almost nothing is left below it. */
     #page-project-diploma .panel-choice,
     #page-drawings .bd-carousel-section {
         animation: qb-ecarter-haut linear both;
@@ -498,7 +459,7 @@
     }
 }
 
-/* — L'arbitrage : le bloc que cherche un professionnel —————— */
+/* Trade-off block */
 .panel-choice {
     padding-top: 70px;
     padding-bottom: 70px;
@@ -518,55 +479,39 @@
 
 /* Quote band */
 
-/* PAS DE FOND SOUS LA CITATION, ET C'EST UN CHOIX.
-   Il y en avait un : un degrade qui assombrissait la bande a l'approche
-   du centre. Il a produit deux defauts visuels de suite.
-     D'abord des bandes horizontales. Un degrade aussi sombre ne dispose
-     que d'une douzaine de valeurs sur 8 bits, etalees sur 600px : les
-     paliers se voient, quelle que soit la finesse de la courbe.
-     Puis, en voulant les casser avec un bruit de tramage, des nuages.
-     Mon bruit avait quatre octaves, il fabriquait donc des structures a
-     grande echelle — exactement l'inverse d'un tramage, qui doit etre
-     un grain fin et rien d'autre.
-   Le fond est donc supprime. L'effet repose sur les deux choses
-   qu'Even a validees des le debut : les ecarts qui s'ouvrent et le
-   texte qui s'eclaircit. Aucun artefact possible, puisqu'il n'y a plus
-   rien a rendre. */
+/* No background behind the quote, on purpose: a gradient this dark has only a dozen 8-bit values
+   over 600px, so bands are visible whatever the curve, and a dithering noise with several octaves
+   produced clouds instead of fine grain. With no background there is no artefact to render. */
 .quote-band {
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Pleine largeur. Sans ca, la bande s'arrete a la largeur du contenu
-       (1200px) et son fond dessine un rectangle aux bords verticaux
-       nets, tres visible sur la page Dessins ou le fond de page est plus
-       clair que celui de la bande. Meme procede que le pied de page :
-       --sbw est mesure au runtime, sinon la barre de defilement de .page
-       ferait deborder de quelques pixels. */
+    /* Full width: otherwise the band stops at the content width (1200px) and its background draws a
+       rectangle with sharp vertical edges, very visible on the Drawings page. Same approach as the
+       footer: --sbw is measured at runtime, otherwise the scrollbar of .page would make it overflow
+       by a few pixels. */
     width: calc(100vw - var(--sbw, 0px));
     margin-left: calc(-50vw + var(--sbw, 0px) / 2 + 50%);
     margin-right: calc(-50vw + var(--sbw, 0px) / 2 + 50%);
     box-sizing: border-box;
-    /* Rembourrage SYMETRIQUE, et c'est important.
-       Rattraper l'ecart des blocs voisins par le rembourrage du bas
-       donnait bien deux ecarts egaux, mais decalait le texte vers le
-       haut de la moitie du rattrapage. Les deux exigences d'Even —
-       ecarts egaux ET texte centre — sont incompatibles tant que les
-       marges des voisins different. On les egalise donc a la source
-       (voir .page-next plus bas), et ici tout redevient symetrique. */
+    /* Symmetric padding: catching up the neighbours' gap with bottom padding gave two equal gaps
+       but shifted the text up by half the catch-up. Equal gaps and centred text are incompatible
+       while the neighbours' margins differ, so they are equalised at the source (see .page-next)
+       and everything stays symmetric here. */
     padding-top: 14vh;
     padding-bottom: 14vh;
 }
 
-/* Le fond s'etend au-dela du bloc pour suivre l'ecart qui s'ouvre.
-   Positionne en absolu, il ne compte pas dans la mise en page. */
+/* The background extends beyond the block to follow the opening gap; absolutely positioned, it does
+   not count in the layout. */
 .qb-body {
-    /* taille et position fixes : c'est la reference de la piste */
+    /* fixed size and position: the reference of the track */
     view-timeline-name: --citation;
     view-timeline-axis: block;
     margin: 0;
     padding: 0 40px;
-    max-width: 80rem;       /* assez large pour tenir sur une ligne */
+    max-width: 80rem;       /* wide enough to fit on one line */
     text-align: center;
 }
 
@@ -574,8 +519,7 @@
     margin: 0;
     font-family: var(--font-body);
     font-weight: 300;
-    /* Corps volontairement discret : Even trouvait la phrase deja tres
-       lisible, et une ligne unique demande de la retenue. */
+    /* Deliberately discreet body: a single line needs restraint. */
     font-size: clamp(0.9rem, 1.2vw, 1.06rem);
     line-height: 1.6;
     letter-spacing: 0.01em;

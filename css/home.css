@@ -4,7 +4,7 @@
     width: 100%; min-height: 100vh; min-height: 100dvh;
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 80px 40px 60px; position: relative;
-    /* FIX: évite que le hero capture les événements de scroll/click en dehors des zones interactives */
+    /* Keeps the hero from capturing scroll and click events outside its interactive areas. */
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;
@@ -24,7 +24,7 @@
     font-size: clamp(1rem, 2.2vw, 1.6rem); font-weight: 300;
     letter-spacing: 0.25em; text-transform: uppercase;
     color: var(--red); margin-top: 14px;
-    /* Initialement invisible, GSAP anime l'entrée */
+    /* Initially invisible; GSAP animates the entrance. */
     opacity: 0;
 }
 
@@ -44,8 +44,8 @@
 .home-showcase {
     padding: 0 60px;
     margin-bottom: 110px;
-    pointer-events: auto;  /* FIX: explicite auto hors du hero */
-    opacity: 0;             /* Animé par GSAP au chargement */
+    pointer-events: auto;  /* Pointer events are restored outside the hero. */
+    opacity: 0;             /* Animated by GSAP on load. */
 }
 
 .showcase-frame {
@@ -76,16 +76,16 @@
     margin-bottom: 20px;
     cursor: pointer;
     text-align: center;
-    user-select: none;        /* FIX: empêche la sélection de texte au double-click */
+    user-select: none;        /* Prevents text selection on double-click. */
     -webkit-user-select: none;
-    pointer-events: auto;     /* FIX: réactive les événements sur ce bouton (parent est none) */
+    pointer-events: auto;     /* Re-enables pointer events on this button (its parent has none). */
     transition: transform var(--dur-med) var(--ease-out);
 }
 
 .shortcut-sub-text {
     font-family: var(--font-sketch);
     font-size: clamp(1.8rem, 3.5vw, 2.8rem);
-    color: var(--white); /* Devient blanc par défaut */
+    color: var(--white);
     transform: translateY(18px) rotate(-4deg);
     z-index: 2;
     pointer-events: none;
@@ -105,22 +105,20 @@
     transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
 }
 
-/* Effets au survol */
 .home-projects-shortcut:hover {
     transform: scale(1.03);
 }
 
 .home-projects-shortcut:hover .shortcut-sub-text {
     transform: translateY(10px) rotate(-6deg) scale(1.08);
-    color: var(--red); /* Devient rouge au survol pour vibrer */
+    color: var(--red);
 }
 
 .home-projects-shortcut:hover .shortcut-main-text {
     transform: scaleY(1.06);
-    color: #ff4a5c; /* Rouge légèrement plus lumineux */
+    color: #ff4a5c;
 }
 
-/* Underline crayonné animé */
 .shortcut-underline-svg {
     width: min(400px, 50vw);
     height: 16px;
@@ -139,11 +137,10 @@
     stroke-dashoffset: 0;
 }
 
-/* Annotation flèche "cliquez !" */
 .shortcut-click-hint {
     position: absolute;
     left: calc(50% + min(290px, 25vw));
-    top: 15px; /* Aligné dans l'angle droit de "MES PROJETS", au niveau de la fin du texte */
+    top: 15px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -154,25 +151,24 @@
 }
 
 .click-hint-text {
-    font-size: 3.0rem; /* Taille augmentée encore plus */
+    font-size: 3.0rem;
     color: var(--red);
     white-space: nowrap;
     animation: logoWobbleMini 0.28s steps(1) infinite;
-    transform: translateY(-8px) rotate(4deg); /* Légèrement surélevé par rapport à la flèche */
+    transform: translateY(-8px) rotate(4deg);
 }
 
 .click-hint-arrow {
-    width: 72px; /* Flèche augmentée */
+    width: 72px;
     height: 48px;
-    transform: scaleX(-1); /* Retourne horizontalement le tracé courbe pour pointer vers la gauche */
+    transform: scaleX(-1); /* Flips the curved stroke horizontally so it points left. */
 }
 
-/* Feedback au survol pour la flèche et le texte */
 .home-projects-shortcut:hover .shortcut-click-hint {
     transform: scale(1.08) rotate(7deg);
 }
 
-/* Évite les repaints inutiles sur les éléments animés par GSAP */
+/* Avoid needless repaints on GSAP-animated elements. */
 .home-showcase,
 .home-projects-shortcut,
 .hero-logo-wrap,
@@ -180,24 +176,14 @@
     will-change: opacity, transform;
 }
 
-/* Nettoie will-change après entrée (GSAP le fait mais en CSS c'est plus sûr) */
-/* Nettoie will-change après entrée (GSAP le fait mais en CSS c'est plus sûr) */
+/* Reset will-change after the entrance (GSAP does it too; this is a safety net). */
 .page.is-active .home-showcase,
 .page.is-active .home-projects-shortcut {
     will-change: auto;
 }
 
-/* ── 18. Ce qu'Even cherche, dit des la premiere seconde ────────
-
-   Un recruteur accorde quelques secondes avant de decider s'il continue.
-   Rien sur le site ne disait ce qu'Even cherche : c'etait la premiere
-   information manquante, avant toute question de technique.
-
-   Volontairement discret : la ligne ne doit pas concurrencer le logo,
-   qui reste le morceau de bravoure de la page. Corps petit, capitales
-   espacees, blanc attenue. Elle entre avec le reste du hero, apres la
-   profession, pour ne pas alourdir la premiere seconde.
-   Le tiret rouge qui la precedait a ete retire a la demande d'Even. */
+/* Quiet by design: the line must not compete with the logo. Small body, spaced capitals, muted
+   white. It enters after the profession line so the first second stays light. */
 .hero-seeking {
     font-family: var(--font-body);
     font-size: clamp(0.68rem, 1.5vw, 0.82rem);
@@ -206,11 +192,10 @@
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.62);
     margin-top: 22px;
-    opacity: 0;              /* l'entree est animee, comme la profession */
+    opacity: 0;              /* Animated entrance, like the profession line. */
 }
 
 @media (max-width: 768px) {
-    /* ── Accueil ── */
     .home-showcase { padding: 0 16px; margin-bottom: 36px; }
 
     .home-projects-shortcut { margin-top: -10px; margin-bottom: 10px; }
@@ -221,8 +206,8 @@
         transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
         transform: translateY(-40px) scale(1.2) rotate(5deg);
         left: auto;
-        right: -10px; /* Décalé vers la droite, dans la zone anthracite */
-        top: -15px; /* Décalé vers le haut */
+        right: -10px;
+        top: -15px;
     }
 
     .click-hint-text {
@@ -240,8 +225,8 @@
     .hero-seeking {
         margin-top: 16px;
         letter-spacing: 0.11em;
-        /* Sur telephone la phrase passe a deux lignes : on borne la
-           largeur pour qu'elle se coupe proprement plutot qu'au hasard. */
+        /* On phones the sentence wraps onto two lines: cap its width so it breaks cleanly instead
+           of at random. */
         max-width: 30ch;
         margin-left: auto;
         margin-right: auto;
@@ -249,7 +234,6 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* ── Bouton "MES PROJETS" : animer à l'entrée ── */
     .home-projects-shortcut {
         opacity: 0;
         transform: translateY(20px) scale(0.97);
@@ -266,7 +250,6 @@
     .home-projects-shortcut:hover .shortcut-main-text { transform: none; }
     .home-projects-shortcut:hover .shortcut-underline-path { stroke-dashoffset: 400; }
 
-    /* ── Cliquez ! au scroll ── */
     .home-projects-shortcut.is-inview .shortcut-click-hint {
         opacity: 1;
         transform: translateY(0) scale(1) rotate(5deg);
@@ -314,13 +297,13 @@
     clip-path: polygon(0% 2.5%, 10% 1.8%, 25% 2.8%, 40% 1.5%, 55% 3.2%, 70% 1.8%, 85% 2.8%, 100% 1.8%, 100% 97.2%, 85% 98.2%, 70% 97.2%, 55% 98.5%, 40% 97.2%, 25% 98.2%, 10% 97.2%, 0% 98.2%);
     z-index: 0;
     filter: url(#paper-tear);
-    will-change: transform;  /* FIX: promotion GPU réduit le repaint au hover */
+    will-change: transform;  /* GPU promotion reduces repaint on hover. */
     transition: transform 0.8s cubic-bezier(0.25, 1, 0.36, 1), clip-path 0.8s cubic-bezier(0.25, 1, 0.36, 1);
     transform-origin: center;
     pointer-events: none;
 }
 
-/* Au survol de la section cahier, la feuille de papier se déroule (scaleX/Y) et les bords déchirés se déforment dynamiquement (morphing) */
+/* Hovering the notebook section unrolls the paper (scaleX/Y) and the torn edges morph. */
 .notebook-section:hover .notebook-bg-sheet {
     transform: scale(1.015, 1.07);
     clip-path: polygon(0% 3.5%, 10% 2.2%, 25% 3.8%, 40% 2%, 55% 4.2%, 70% 2.2%, 85% 3.8%, 100% 2.2%, 100% 96.2%, 85% 97.5%, 70% 96.2%, 55% 97.8%, 40% 96.2%, 25% 97.5%, 10% 96.2%, 0% 97.5%);
@@ -334,7 +317,7 @@
     z-index: 1;
 }
 
-/* Lignes : conteneur vide, rempli par JS avec des longueurs aléatoires */
+/* Empty container, filled by the script with random line lengths. */
 .notebook-lines {
     position: absolute;
     inset: 0;
@@ -342,7 +325,7 @@
     overflow: hidden;
 }
 
-/* Chaque ligne générée par JS */
+/* Each line is generated by the script. */
 .nb-line {
     position: absolute;
     height: 4px;
@@ -350,7 +333,7 @@
     border-radius: 2px;
 }
 
-/* Marge rouge de cahier (placée sur la feuille d'arrière-plan pour suivre son étirement) */
+/* The red margin lives on the background sheet so it follows its stretch. */
 .notebook-bg-sheet::before {
     content: '';
     position: absolute;
@@ -392,16 +375,15 @@
 
 .notebook-text {
     font-size: 1.1rem;
-    line-height: 34px; /* Correspond exactement au pas des lignes du cahier (spacing = 34px) */
+    line-height: 34px; /* Matches the notebook line spacing (34px). */
     color: rgba(26,26,26,0.75);
     max-width: 640px;
-    margin-bottom: 34px; /* Permet aux paragraphes de rester calés sur la grille */
+    margin-bottom: 34px; /* Keeps paragraphs on the line grid. */
     transition: transform 0.3s var(--ease-out);
     position: relative;
-    top: -2px; /* Ajustement fin de 5px entre la ligne et l'écriture */
+    top: -2px; /* Fine 5px offset between the ruled line and the writing. */
 }
 
-/* Hover wobble sur le texte du cahier */
 .notebook-hover-zone:hover .notebook-text {
     animation: notebookWobble 0.4s ease-out;
 }
@@ -419,7 +401,7 @@
     opacity: 0.85;
 }
 
-/* Signature "EVEN" avec flèche courbée - cachée par défaut */
+/* Signature with a curved arrow, hidden by default. */
 .notebook-signature {
     position: absolute;
     bottom: 25%;
@@ -433,7 +415,7 @@
     align-items: flex-end;
 }
 
-/* Affichage de la signature uniquement au survol du titre "Qui suis-je ?" */
+/* Shown only while the title is hovered. */
 .notebook-title-wrap:hover .notebook-signature {
     opacity: 1;
     transform: translateY(0) translateX(0);
@@ -452,11 +434,11 @@
     color: var(--red);
     transform: rotate(-6deg);
     white-space: nowrap;
-    margin-left: 65px; /* Décalage pour laisser la place à la flèche */
-    margin-bottom: 25px; /* Surélève le nom pour que la flèche pointe dessus */
+    margin-left: 65px;
+    margin-bottom: 25px;
 }
 
-/* La section contact et les autres sections hors hero-screen doivent rester interactives */
+/* Contact and the other sections outside the hero must stay interactive. */
 .page.is-active .notebook-section,
 .page.is-active .home-contact,
 .page.is-active .page-next {
@@ -469,12 +451,9 @@
     cursor: default;
 }
 
-/* 3. LE PAPIER DU CAHIER, PRECALCULE
-   Voir initPapierSafari() dans app.js : sur Safari seulement, le filtre
-   de papier dechire est dessine une fois dans une image. Ces regles ne
-   s'appliquent qu'une fois cette image posee, donc jamais sur Chrome.
-   Les deux traits de la marge rouge sont dans l'image, les pseudo-
-   elements d'origine se retirent pour ne pas les doubler. */
+/* Safari only: the torn-paper filter is drawn once into an image (see initPapierSafari in app.js).
+   These rules apply only once that image is in place, so never on Chrome. The red margin lines are
+   part of the image, so the original pseudo-elements are removed to avoid doubling them. */
 .notebook-bg-sheet.papier-precalcule {
     filter: none;
     background-color: transparent;
@@ -488,7 +467,6 @@
 }
 
 @media (max-width: 768px) {
-    /* ── Cahier de brouillon ── */
     .notebook-bg-sheet { top: -45px; }
 
     .notebook-inner { padding: 80px 20px 100px; }
@@ -498,19 +476,20 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* ── Base Bounce States for Mobile ── */
+    /* Touch: !important keeps the resting and in-view states ahead of the hover rules. */
     .notebook-signature, .ref-photo, .ref-arrow {
         transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s !important;
     }
 
+    /* Touch: !important keeps the resting and in-view states ahead of the hover rules. */
     .notebook-signature { transform: translateY(-40px) translateX(20px) scale(1.2) !important; }
 
-    /* ── Agrandissement du brouillon au scroll ── */
     .notebook-section.is-inview .notebook-bg-sheet {
         transform: scale(1.02) rotate(-1deg);
         transition-delay: 0.3s;
     }
 
+    /* Touch: !important keeps the resting and in-view states ahead of the hover rules. */
     .notebook-section.is-inview .notebook-signature {
         opacity: 1;
         transform: translateY(0) translateX(0) scale(1) !important;
@@ -518,9 +497,9 @@
 }
 
 @media (max-width: 991px) {
-    /* La signature manuscrite etait calee a left:95% puis decalee vers la
-           droite et agrandie : elle sortait du cadre. On l'ancre a droite, en
-           reservant la marge que prend l'agrandissement (scale 1,2). */
+    /* The signature is anchored on the right, reserving the margin its scale(1.2) needs; anchoring
+       at left:95% made it overflow the frame. */
+    /* Keeps !important: must beat the hover transform and the desktop offsets of the signature. */
     .notebook-signature {
         left: auto !important;
         right: 22px !important;
@@ -529,6 +508,7 @@
 }
 
 @media (max-width: 480px) {
+    /* Keeps !important: must beat the hover transform and the desktop offsets of the signature. */
     .notebook-signature {
         right: 16px !important;
         transform: translateY(-36px) scale(1) !important;
@@ -598,7 +578,7 @@
     transform: translateY(-24px) scale(0.82); color: var(--red);
 }
 
-/* La ligne rouge animée est gérée uniquement par le span .fb pour éviter tout dédoublement */
+/* The animated red line is handled by the .fb span alone, to avoid doubling it. */
 .fb { position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-med) var(--ease-out); }
 
 .fi:focus ~ .fb { width: 100%; }
@@ -615,11 +595,12 @@
 
 .submit-btn:hover { border-color: var(--red); color: var(--red); }
 
-/* ── Validation formulaire (BUG-07 FIX) ── */
+/* Form validation states. */
 .fi-error {
     border-bottom-color: var(--red);
 }
 
+/* Keeps !important: the error state must stay ahead of the focus state of the label. */
 .fi-error ~ .fl {
     color: var(--red) !important;
     transform: translateY(-24px) scale(0.82) !important;
@@ -639,7 +620,7 @@
 }
 
 .form-feedback--success {
-    color: #4ade80; /* vert succès */
+    color: #4ade80;
     opacity: 1;
 }
 
@@ -673,14 +654,12 @@
 .ci-text { font-size: 1rem; font-weight: 300; opacity: 0.5; }
 
 @media (max-width: 768px) {
-    /* ── Contact ── */
     .home-contact-inner { padding: 60px 20px 80px; }
 
     .contact-layout { grid-template-columns: 1fr; gap: 40px; }
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* ── Blocs d'infos contact ── */
     .ci-block {
         opacity: 0;
         transform: translateX(16px);
@@ -695,7 +674,6 @@
     .ci-block:nth-child(2) { transition-delay: 0.1s; }
     .ci-block:nth-child(3) { transition-delay: 0.2s; }
 
-    /* ── Groupes de champs formulaire ── */
     .fg {
         opacity: 0;
         transform: translateY(16px);

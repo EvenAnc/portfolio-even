@@ -39,25 +39,25 @@
 
 .diploma-cert-stamp {
     position: absolute;
-    top: -15px;      /* Déplacé vers le haut pour chevaucher la bordure */
-    right: -25px;    /* Déplacé vers la droite pour chevaucher la bordure */
-    font-size: 1.5rem; /* Beaucoup plus gros */
+    top: -15px;
+    right: -25px;
+    font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: 0.15em;
     color: var(--red);
-    border: 3.5px solid var(--red); /* Bordure plus épaisse */
+    border: 3.5px solid var(--red);
     padding: 8px 20px;
     border-radius: 6px;
-    transform: rotate(-12deg); /* Rotation négative (incliné vers le haut-droit) */
+    transform: rotate(-12deg);
     opacity: 0.95;
-    z-index: 20; /* Passer par-dessus le cadre */
-    background: var(--bg); /* Fond opaque pour masquer la bordure du cadre en dessous */
+    z-index: 20;
+    background: var(--bg);
     animation: logoWobbleMini 0.3s steps(1) infinite;
 }
 
 .diploma-cert-title {
     font-family: var(--font-display);
-    font-size: 1.5rem; /* Augmenté de 1.25rem */
+    font-size: 1.5rem;
     letter-spacing: 0.05em;
     color: var(--white);
     margin-bottom: 6px;
@@ -65,7 +65,7 @@
 }
 
 .diploma-cert-subtitle {
-    font-size: 0.95rem; /* Augmenté de 0.8rem */
+    font-size: 0.95rem;
     color: var(--red);
     font-weight: 600;
     text-transform: uppercase;
@@ -76,7 +76,7 @@
 .diploma-cert-body {
     display: flex;
     flex-direction: column;
-    gap: 18px; /* Ajusté pour s'adapter aux polices plus grandes */
+    gap: 18px;
     margin-top: 18px;
     flex-grow: 1;
 }
@@ -89,14 +89,14 @@
 
 .diploma-section-label {
     font-family: var(--font-display);
-    font-size: 0.9rem; /* Augmenté de 0.82rem */
+    font-size: 0.9rem;
     letter-spacing: 0.08em;
     color: rgba(255, 255, 255, 0.35);
     text-transform: uppercase;
 }
 
 .diploma-section-text {
-    font-size: 0.92rem; /* Augmenté de 0.82rem */
+    font-size: 0.92rem;
     line-height: 1.5;
     color: rgba(255, 255, 255, 0.65);
     font-weight: 300;
@@ -106,11 +106,11 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Ajusté */
+    gap: 8px;
 }
 
 .diploma-skills-list li {
-    font-size: 0.9rem; /* Augmenté de 0.8rem */
+    font-size: 0.9rem;
     line-height: 1.45;
     color: rgba(255, 255, 255, 0.65);
     padding-left: 14px;
@@ -133,7 +133,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.8rem; /* Augmenté de 0.72rem */
+    font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.35);
 }
 
@@ -164,7 +164,7 @@
 
 .diploma-scan-frame {
     width: 100%;
-    aspect-ratio: 1.414 / 1; /* A4 Paysage */
+    aspect-ratio: 1.414 / 1; /* A4 landscape */
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -179,28 +179,16 @@
 }
 
 @supports (min-height: 1cqw) {
-    /* ── FIX DIPLOME : la carte de certification rognait son pied ──────
-       .diploma-card-inner etait verrouillee au format A4 (aspect-ratio
-       1/1.414) avec overflow:hidden. A 1280px la boite fait 633px alors
-       que le contenu en reclame 676 en francais : les 43px du bas — le
-       code RNCP et « Enregistre par France Competences » — etaient
-       purement et simplement coupes. Deja 23px de trop en anglais ; le
-       francais, plus long, ne faisait qu'aggraver un defaut existant.
-
-       Le format A4 devient un PLANCHER au lieu d'une contrainte : la
-       carte garde ses proportions quand le contenu tient, et s'allonge
-       juste ce qu'il faut sinon. Plus rien ne peut etre rogne, quelle
-       que soit la langue ou la longueur d'un futur texte.
-
-       Sous @supports : les navigateurs sans unites de conteneur gardent
-       le comportement actuel, sans regression. */
+    /* The A4 ratio becomes a floor instead of a lock: the card keeps its proportions when the
+       content fits and grows just enough otherwise, so nothing (RNCP code, registration line) is
+       cropped whatever the language. Under @supports so browsers without container units keep the
+       previous behaviour. */
     .diploma-placeholder {
         container-type: inline-size;
     }
 }
 
 @media (max-width: 768px) {
-    /* ── Diplôme ── */
     .diploma-layout { grid-template-columns: 1fr; }
 
     .diploma-placeholder .media-frame-inner,
@@ -212,17 +200,8 @@
     .diploma-cert-code,
     .diploma-cert-authority { font-size: 0.875rem; }
 
-    /* ── 9. Diplome : le tampon mordait sur le titre ───────────────────
-       Mesure sur Pixel 8a : tampon « CERTIFIED » a 241-374, titre
-       « CERTIFICATION RNCP » a 69-343 — 102px de recouvrement, et le
-       tampon debordait de 12px hors de la carte (qui s'arrete a 362).
-       Sur grand ecran la carte est assez large pour que les deux
-       cohabitent ; sur telephone le titre court jusque sous le tampon.
-
-       On rentre le tampon dans la carte et on reserve sa largeur au
-       titre, qui passe alors a la ligne au lieu de disparaitre dessous.
-       Le chevauchement volontaire avec la BORDURE de la carte est
-       conserve, c'est le parti pris d'origine. */
+    /* Phones: the stamp is pulled inside the card and its width reserved from the title, which
+       wraps instead of running under it. The deliberate overlap with the card border is kept. */
     .diploma-cert-stamp {
         top: -10px;
         right: -8px;
@@ -232,12 +211,11 @@
     }
 
     .diploma-cert-title {
-        padding-right: 96px;   /* largeur du tampon incline + garde */
+        padding-right: 96px;   /* width of the tilted stamp plus a guard */
     }
 }
 
 @media (max-width: 480px) {
-    /* ── Inline PDF Loader ── */
     .diploma-card-inner {
         padding: 22px 18px;
     }
