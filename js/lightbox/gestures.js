@@ -68,12 +68,20 @@ export function attachGestures({ lightbox, canvasWrap, zoomRange, view, isOpen, 
         updateTransform();
     });
 
-    canvasWrap.addEventListener('pointerup', event => {
+    // The system can take the pointer away (system gesture, lost capture)
+    // without any pointerup: the drag must end all the same.
+    function endDrag(event) {
         if (!isDragging) return;
         isDragging = false;
         event.target.classList.remove('dragging');
-        event.target.releasePointerCapture(event.pointerId);
-    });
+        if (event.target.hasPointerCapture(event.pointerId)) {
+            event.target.releasePointerCapture(event.pointerId);
+        }
+    }
+
+    canvasWrap.addEventListener('pointerup', endDrag);
+    canvasWrap.addEventListener('pointercancel', endDrag);
+    canvasWrap.addEventListener('lostpointercapture', endDrag);
 
     canvasWrap.addEventListener('wheel', event => {
         if (!isOpen()) return;
