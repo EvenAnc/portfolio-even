@@ -1268,6 +1268,10 @@ function initContactForm() {
     // button, so the lock has to live on the submit event itself.
     let isSubmitting = false;
 
+    // Past this delay the request is treated as lost: the visitor gets an
+    // error and a usable form back instead of a button stuck on "sending".
+    const SUBMIT_TIMEOUT_MS = 8000;
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (isSubmitting) return;
@@ -1321,12 +1325,16 @@ function initContactForm() {
         submitBtn.style.pointerEvents = 'none';
         submitBtn.disabled = true;
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), SUBMIT_TIMEOUT_MS);
+
         fetch(form.action, {
             method: 'POST',
             body: formData,
             headers: {
                 'Accept': 'application/json'
-            }
+            },
+            signal: controller.signal
         }).then(response => {
             if (response.ok) {
                 const successMsg = currentLang === 'fr'
@@ -1347,6 +1355,7 @@ function initContactForm() {
             feedback.classList.add('form-feedback--error');
             animateFeedback(0.35);
         }).finally(() => {
+            clearTimeout(timeoutId);
             submitBtn.innerHTML = originalBtnText;
             submitBtn.style.pointerEvents = 'auto';
             submitBtn.disabled = false;
