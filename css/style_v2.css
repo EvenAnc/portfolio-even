@@ -3101,11 +3101,12 @@ textarea:focus-visible,
 
 /* Between the desktop and narrow layouts the gallery's right edge is less
    than 110px from the screen edge, so the pinned reference photo stuck out
-   of the screen and was cut off. Pull it back so it ends 14px short of the
-   edge; the offset reaches the desktop value of -110px at 1328px. */
+   of the screen and was cut off. Pull it back inside. The offset keeps 8px
+   in hand over the bare geometry: the photo is tilted, so its painted box
+   is wider than its slot, and the page scrollbar takes its share too. */
 @media (min-width: 992px) and (max-width: 1328px) {
     .ref-photo-wrap {
-        right: max(-110px, min(-46px, calc(554px - 50vw)));
+        right: max(-110px, min(-38px, calc(562px - 50vw)));
     }
 }
 
