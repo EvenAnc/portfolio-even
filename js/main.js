@@ -5,12 +5,15 @@
  */
 
 import { state } from './core/state.js';
-import { REQUETE_TACTILE, gsapMissing, hasScrollTrigger } from './core/env.js';
+import { REQUETE_TACTILE, hasScrollTrigger } from './core/env.js';
 import { installGsapFallback } from './core/gsap-fallback.js';
 import { t, resolveInitialLanguage, majMetaPage, applyLang, initLangSwitcher } from './i18n/i18n.js';
 import { allDrawings, diplomePlans, diplomeCoupes, diplomeAnalyses } from './lightbox/galleries.js';
 import { animateFavicon } from './favicon.js';
 import { demarrerPrechargeFond } from './preload.js';
+import { destroyPageLenis, initPageLenis, updateScrollbarWidth, watchScrollbarWidth } from './page-scroll.js';
+import { updateHeaderLogo, updateBackButton } from './header.js';
+import { playHeroIntro, resetHomeHero, bindHeroScroll } from './hero.js';
 
 // Au doigt, un appui ouvre la visionneuse instantanement : le rectangle
 // rouge n'a pas le temps de se dessiner, et Even ne voit jamais
@@ -57,15 +60,8 @@ function tracerPuis(element, action) {
 // transitions. Quand le CDN repond normalement, ce bloc ne fait rien.
 // ─────────────────────────────────────
 
-// Resting opacity of the scroll hint under the hero. The hint is shown at
-// full strength so that its label keeps enough contrast; the thin line is
-// dimmed on its own in the stylesheet. Must match .scroll-invite there.
-const SCROLL_INVITE_OPACITY = 1;
-
 let isMenuOpen  = false;
-let lenis       = null;
 let _historyInitialised = false;
-let lenisTickerFn = null;
 let openDrawingGallery = null;
 let closeDrawingLightbox = null;
 
@@ -173,71 +169,14 @@ function init() {
     // 2,5 s de délai pour ne pas concurrencer l'affichage initial.
     setTimeout(demarrerPrechargeFond, 2500);
 
-    // FIX R-01 : mesurer la barre de défilement une fois la page active.
-    // ResizeObserver plutôt que l'événement 'resize' seul : la barre peut
-    // apparaître ou disparaître sans redimensionnement de fenêtre (contenu
-    // qui grandit, images qui se chargent, rotation d'écran sur mobile).
-    updateScrollbarWidth();
-    if (typeof ResizeObserver !== 'undefined') {
-        const sbwObserver = new ResizeObserver(() => updateScrollbarWidth());
-        document.querySelectorAll('.page').forEach(pg => sbwObserver.observe(pg));
-    }
-    let _sbwTimer = null;
-    window.addEventListener('resize', () => {
-        clearTimeout(_sbwTimer);
-        _sbwTimer = setTimeout(updateScrollbarWidth, 150);
-    }, { passive: true });
+    watchScrollbarWidth();
 
     // Animations au scroll pour les appareils tactiles (mobile)
     // Appelé APRÈS showPage pour que is-active soit bien présent
     initScrollAnimationsMobile();
 
-    // Animation d'entrée du hero — décalée pour laisser la page se monter
-    requestAnimationFrame(() => {
-        const heroWrap  = document.getElementById('hero-logo-wrap');
-        const profession = document.querySelector('.hero-profession');
-        const scrollInv = document.getElementById('scroll-invite');
-        const showcase  = document.querySelector('.home-showcase');
-        const shortcut  = document.querySelector('.home-projects-shortcut');
+    playHeroIntro();
 
-        if (heroWrap) {
-            gsap.fromTo(heroWrap,
-                { opacity: 0, y: 40, scale: 0.94 },
-                { opacity: 1, y: 0, scale: 1, duration: 1.1, ease: 'power3.out', delay: 0.1 }
-            );
-        }
-        if (profession) {
-            gsap.fromTo(profession,
-                { opacity: 0, y: 16, letterSpacing: '0.4em' },
-                { opacity: 1, y: 0, letterSpacing: '0.25em', duration: 0.9, ease: 'power2.out', delay: 0.55 }
-            );
-        }
-        const seeking = document.querySelector('.hero-seeking');
-        if (seeking) {
-            gsap.fromTo(seeking,
-                { opacity: 0, y: 12 },
-                { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', delay: 0.85 }
-            );
-        }
-        if (scrollInv) {
-            gsap.fromTo(scrollInv,
-                { opacity: 0 },
-                { opacity: SCROLL_INVITE_OPACITY, duration: 0.8, delay: 1.5 }
-            );
-        }
-        if (showcase) {
-            gsap.fromTo(showcase,
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.4 }
-            );
-        }
-        if (shortcut) {
-            gsap.fromTo(shortcut,
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.7 }
-            );
-        }
-    });
 }
 
 // ─────────────────────────────────────
@@ -262,23 +201,6 @@ function hydratePageImages(pageEl) {
             if (src) { img.setAttribute('src', src); }
         }
     });
-}
-
-// ─────────────────────────────────────
-// FIX R-01 — LARGEUR REELLE DE LA BARRE DE DEFILEMENT
-// Le footer pleine largeur utilise 100vw, qui INCLUT la barre de
-// defilement de .page (4px) : il debordait donc de ~5px sur les 8
-// pages, a toutes les tailles d'ecran. On mesure la valeur reelle
-// (elle varie : 4px sur Chrome via ::-webkit-scrollbar, autre chose
-// sur Firefox « thin », 0px sur les overlay scrollbars de macOS/mobile)
-// et la CSS s'en sert via var(--sbw). Valeur de repli : 0px, ce qui
-// redonne exactement le comportement d'avant.
-// ─────────────────────────────────────
-function updateScrollbarWidth() {
-    const page = document.querySelector('.page.is-active') || document.querySelector('.page');
-    if (!page) return;
-    const sbw = Math.max(0, Math.round(page.offsetWidth - page.clientWidth));
-    document.documentElement.style.setProperty('--sbw', sbw + 'px');
 }
 
 // ─────────────────────────────────────
@@ -508,8 +430,8 @@ function scrollToContactSection() {
     // On another page the scroller would be asked to reach an element it
     // does not contain.
     if (!contactEl || state.page !== 'home') return;
-    if (window._lenis) {
-        window._lenis.scrollTo(contactEl, { offset: -40, duration: 1.2 });
+    if (state.scroll) {
+        state.scroll.scrollTo(contactEl, { offset: -40, duration: 1.2 });
     } else {
         const homeEl = document.getElementById('page-home');
         if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - 40, behavior: 'smooth' });
@@ -542,8 +464,8 @@ function cancelContactReveal() {
 // page, so the only thing left to undo is the scroll.
 function scrollHomeToTop() {
     cancelContactReveal();
-    if (window._lenis) {
-        window._lenis.scrollTo(0);
+    if (state.scroll) {
+        state.scroll.scrollTo(0);
     } else {
         const homeEl = document.getElementById('page-home');
         if (homeEl) homeEl.scrollTo({ top: 0, behavior: 'smooth' });
@@ -584,15 +506,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
         _historyInitialised = true;
     }
 
-    const backBtn = document.getElementById('header-back-btn');
-    if (backBtn) {
-        const surProjet = pageId.startsWith('project-');
-        backBtn.style.display = surProjet ? 'flex' : 'none';
-        // Sur telephone le bouton retour et le logo centre se chevauchent
-        // (mesure : 74px de recouvrement sur un ecran de 412px). La CSS
-        // s'appuie sur cette classe pour masquer le logo dans ce cas.
-        document.body.classList.toggle('a-bouton-retour', surProjet);
-    }
+    updateBackButton(pageId);
 
     // Détruire le Lenis de l'ancienne page
     destroyPageLenis();
@@ -606,7 +520,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
         inEl.setAttribute('aria-hidden', 'false');
         inEl.scrollTop = 0;
         resetHomeHero(pageId);
-        initPageLenis(inEl);
+        startPageScroll(inEl);
         if (hasScrollTrigger) ScrollTrigger.refresh();
         updateHeaderLogo(pageId);
         
@@ -633,7 +547,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
                 { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out' }
             );
 
-            initPageLenis(inEl);
+            startPageScroll(inEl);
             if (hasScrollTrigger) ScrollTrigger.refresh();
             updateHeaderLogo(pageId);
 
@@ -644,140 +558,18 @@ function showPage(pageId, animate = true, updateHistory = true) {
     });
 }
 
+// The hero follows the scroll position of the home page only.
+function startPageScroll(pageEl) {
+    initPageLenis(pageEl);
+    if (state.page === 'home' && state.scroll) bindHeroScroll(state.scroll);
+}
+
 // Pages scroll inside their own box: unless focus sits in the visible one,
 // Space and PageDown scroll nothing after a navigation. Not done on the
 // first display, where focus must stay at the top of the document.
 function focusPage(pageEl) {
     if (!pageEl.hasAttribute('tabindex')) pageEl.setAttribute('tabindex', '-1');
     pageEl.focus({ preventScroll: true });
-}
-
-// Quand on revient sur la page home, remettre le hero logo en état initial
-function resetHomeHero(pageId) {
-    if (pageId !== 'home') return;
-    const heroLogoWrap = document.getElementById('hero-logo-wrap');
-    const scrollInvite = document.getElementById('scroll-invite');
-    if (heroLogoWrap) {
-        gsap.set(heroLogoWrap, { y: 0, opacity: 1 });
-    }
-    if (scrollInvite) {
-        gsap.set(scrollInvite, { opacity: SCROLL_INVITE_OPACITY });
-    }
-}
-
-// ─────────────────────────────────────
-// LOGO BANDEAU — APPARAÎT AU SCROLL SUR HOME
-// ─────────────────────────────────────
-function updateHeaderLogo(pageId) {
-    const headerLogo = document.getElementById('header-logo');
-    if (!headerLogo) return;
-
-    if (pageId === 'home') {
-        // Sur la page home, masquer le logo header (le hero logo est visible)
-        headerLogo.classList.remove('is-visible');
-    } else {
-        // Sur les autres pages, afficher le logo header
-        headerLogo.classList.add('is-visible');
-    }
-}
-
-// ─────────────────────────────────────
-// LENIS SCROLL PAR PAGE
-// ─────────────────────────────────────
-// The ticker callback and the exposed reference both point at the
-// instance: they go with it, otherwise the ticker keeps calling raf on
-// nothing for the whole page transition.
-function destroyPageLenis() {
-    if (lenisTickerFn) {
-        gsap.ticker.remove(lenisTickerFn);
-        lenisTickerFn = null;
-    }
-    if (lenis) {
-        lenis.destroy();
-        lenis = null;
-    }
-    window._lenis = null;
-}
-
-function initPageLenis(scrollContainer) {
-    // Lenis takes over the wheel but only moves when the GSAP ticker drives
-    // it: without GSAP the page keeps its native scrolling.
-    if (typeof Lenis === 'undefined' || gsapMissing) return;
-
-    const contentWrapper = scrollContainer.querySelector('.page-inner') || null;
-
-    const lenisOptions = {
-        wrapper: scrollContainer,
-        eventsTarget: scrollContainer,  // FIX: cible le container de la page, pas le document entier
-        duration: 1.0,                  // FIX: réduit de 1.15 → 1.0 pour un scroll plus réactif
-        easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        smooth: true,
-        wheelMultiplier: 1.0,           // FIX: remplace mouseMultiplier (API Lenis v2)
-        touchMultiplier: 1.5,
-        smoothTouch: false,
-        infinite: false,
-        orientation: 'vertical',
-    };
-
-    // Only set content if we found a specific wrapper
-    if (contentWrapper) {
-        lenisOptions.content = contentWrapper;
-    }
-
-    lenis = new Lenis(lenisOptions);
-
-    // FIX Q-07 : garde — si le CDN GSAP/ScrollTrigger n'a pas repondu,
-    // cette ligne levait une erreur et stoppait tout le JS de la page.
-    if (hasScrollTrigger) lenis.on('scroll', ScrollTrigger.update);
-
-    // BUG-04 FIX : stocker la référence du ticker pour pouvoir le supprimer plus tard
-    // et éviter l'accumulation de tickers à chaque navigation entre pages.
-    if (lenisTickerFn) {
-        gsap.ticker.remove(lenisTickerFn);
-    }
-    lenisTickerFn = time => lenis.raf(time * 1000);
-    gsap.ticker.add(lenisTickerFn);
-    gsap.ticker.lagSmoothing(0);
-
-    // Sur la page home : animer le logo vers le header au scroll
-    if (state.page === 'home') {
-        const heroLogoWrap = document.getElementById('hero-logo-wrap');
-        const headerLogo   = document.getElementById('header-logo');
-        const scrollInvite = document.getElementById('scroll-invite');
-
-        let logoInHeader = false;
-
-        lenis.on('scroll', ({ scroll }) => {
-            const threshold = 120;
-
-            if (scroll > threshold && !logoInHeader) {
-                logoInHeader = true;
-
-                // Hero logo disparaît vers le haut
-                gsap.to(heroLogoWrap, {
-                    y: -50, opacity: 0,
-                    duration: 0.5, ease: 'power3.in',
-                    onComplete: () => {
-                        headerLogo.classList.add('is-visible');
-                    }
-                });
-
-                gsap.to(scrollInvite, { opacity: 0, duration: 0.3 });
-
-            } else if (scroll <= threshold && logoInHeader) {
-                logoInHeader = false;
-
-                headerLogo.classList.remove('is-visible');
-                gsap.to(heroLogoWrap, {
-                    y: 0, opacity: 1,
-                    duration: 0.5, ease: 'power3.out', delay: 0.1
-                });
-                gsap.to(scrollInvite, { opacity: SCROLL_INVITE_OPACITY, duration: 0.4 });
-            }
-        });
-    }
-
-    window._lenis = lenis;
 }
 
 // ─────────────────────────────────────
@@ -1062,7 +854,7 @@ function initContactForm() {
     // FIX: Observer les changements de taille du formulaire (textarea focus) pour Lenis/ScrollTrigger
     if (window.ResizeObserver) {
         const ro = new ResizeObserver(() => {
-            if (window._lenis) window._lenis.resize();
+            if (state.scroll) state.scroll.resize();
             if (hasScrollTrigger) ScrollTrigger.refresh();
         });
         ro.observe(form);
@@ -1791,7 +1583,7 @@ function initDrawingLightbox() {
         openedAt = performance.now();
         lightbox.setAttribute('aria-hidden', 'false');
         takeFocus();
-        if (window._lenis) window._lenis.stop();
+        if (state.scroll) state.scroll.stop();
         document.body.style.overflow = 'hidden';
         generateDots();
         showDrawing(index);
@@ -1808,7 +1600,7 @@ function initDrawingLightbox() {
         openedAt = performance.now();
         lightbox.setAttribute('aria-hidden', 'false');
         takeFocus();
-        if (window._lenis) window._lenis.stop();
+        if (state.scroll) state.scroll.stop();
         document.body.style.overflow = 'hidden';
         // En mode single, index = { url, title }
         showDrawing({ url, title });
@@ -1833,7 +1625,7 @@ function initDrawingLightbox() {
         if (loader) loader.classList.remove('active');
         // Emptied only once the closing fade has played.
         clearTimer = setTimeout(clearCanvasWrap, 350);
-        if (window._lenis) window._lenis.start();
+        if (state.scroll) state.scroll.start();
         document.body.style.overflow = '';
         giveFocusBack();
     }

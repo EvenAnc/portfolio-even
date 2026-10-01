@@ -6,6 +6,8 @@
 export const state = {
     lang: 'fr',
     page: 'home',
+    // Smooth-scroll instance of the page on display, or null.
+    scroll: null,
 };
 
 const handlers = new Map();
