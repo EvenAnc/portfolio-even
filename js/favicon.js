@@ -5,7 +5,7 @@
 import { prefersReducedMotion } from './core/env.js';
 
 /* --- FAVICON ANIMATION (CANVAS BASED) --- */
-export function animateFavicon() {
+export function initFavicon() {
     const favicon = document.getElementById('favicon');
     if (!favicon) return;
     

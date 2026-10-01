@@ -8,7 +8,7 @@ import { installGsapFallback } from './core/gsap-fallback.js';
 import { resolveInitialLanguage, applyLanguage, initLanguageSwitcher } from './i18n/i18n.js';
 import { initLightbox } from './lightbox/lightbox.js';
 import { initLightboxTriggers, initSectionTriggers } from './lightbox/triggers.js';
-import { animateFavicon } from './favicon.js';
+import { initFavicon } from './favicon.js';
 import { startBackgroundPreload } from './preload.js';
 import { watchScrollbarWidth } from './page-scroll.js';
 import { playHeroIntro } from './hero.js';
@@ -18,7 +18,7 @@ import { initSafariPaperCache, initNotebookLines } from './notebook.js';
 import { initCarousels } from './carousel.js';
 import { initTouchReveal } from './touch-reveal.js';
 import { initKeyboardActivation } from './keyboard-activation.js';
-import { initCopyEmail, initContactAnimation, initContactForm } from './contact.js';
+import { initCopyEmail, initContactReveal, initContactForm } from './contact.js';
 
 // ─────────────────────────────────────
 // INIT
@@ -26,7 +26,7 @@ import { initCopyEmail, initContactAnimation, initContactForm } from './contact.
 function init() {
     installGsapFallback();
     initSectionTriggers();
-    animateFavicon();
+    initFavicon();
 
     applyLanguage(resolveInitialLanguage());
     initLanguageSwitcher();
@@ -35,7 +35,7 @@ function init() {
     initNotebookLines();
     initSafariPaperCache();
     initPageLinks();
-    initContactAnimation();
+    initContactReveal();
     initContactForm();
     initCarousels();
 
