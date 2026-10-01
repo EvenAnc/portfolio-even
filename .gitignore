@@ -54,9 +54,7 @@ chunks.txt
 extracted_v1.txt
 script.txt
 
-# ── Bibliotheques dupliquees localement ──────────────────────
-# pdf.js est charge depuis le CDN : les copies locales sont inutiles
-pdf.min.js
+# ── Donnees dupliquees localement ────────────────────────────
 js/dessins_base64.js
 
 # ── Sources de polices non servies ───────────────────────────
