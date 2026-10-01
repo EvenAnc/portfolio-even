@@ -1900,9 +1900,11 @@ function demarrerPrechargeFond() {
     // Les plans sont desormais de simples images : le prechargement se
     // resume a les demander au reseau. Le navigateur les decode ensuite
     // hors du fil principal, ce qui ne peut plus faire saccader la page.
+    // The srcset travels with the address so that the preload requests the
+    // same candidate the page will display, not a second file.
     const liste = canvasParPriorite()
-        .map(el => el.getAttribute('src'))
-        .filter(Boolean);
+        .map(el => ({ src: el.getAttribute('src'), srcset: el.getAttribute('srcset') }))
+        .filter(entry => entry.src);
     let i = 0;
 
     const planifier = (delai) => {
@@ -1919,12 +1921,13 @@ function demarrerPrechargeFond() {
         if (document.visibilityState !== 'visible') return planifier(2000);
         if (Date.now() - _dernierGeste < REPOS_APRES_INTERACTION) return planifier(500);
 
-        const url = liste[i++];
+        const entry = liste[i++];
         const img = new Image();
         img.decoding = 'async';
         // on enchaine des que l'image est en cache, succes ou non
         img.onload = img.onerror = () => planifier(80);
-        img.src = url;
+        if (entry.srcset) img.srcset = entry.srcset;
+        img.src = entry.src;
     };
 
     planifier();
