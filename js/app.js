@@ -795,7 +795,13 @@ const SLUG_TO_PAGE = Object.fromEntries(
 // Lit le fragment courant. Renvoie null si l'adresse ne correspond a rien
 // de connu, pour qu'un vieux lien casse retombe proprement sur l'accueil.
 function pageFromHash() {
-    const raw = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim();
+    let raw;
+    try {
+        raw = decodeURIComponent((location.hash || '').replace(/^#/, '')).trim();
+    } catch {
+        // A malformed escape sequence (#%) is just another unknown address.
+        return null;
+    }
     if (!raw) return 'home';
     if (raw === 'contact') return 'contact';
     return SLUG_TO_PAGE[raw] || null;
