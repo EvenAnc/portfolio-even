@@ -797,7 +797,10 @@ function initMenu() {
     }
 
     document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && isMenuOpen) closeMenu();
+        if (e.key !== 'Escape' || !isMenuOpen) return;
+        closeMenu();
+        // Focus was on a menu link that has just become hidden.
+        burger.focus({ preventScroll: true });
     });
 }
 
