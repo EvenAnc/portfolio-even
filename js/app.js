@@ -2068,8 +2068,10 @@ function initDrawingLightbox() {
 
     function updateTransform() {
         const item = canvasWrap.querySelector('img, canvas');
-        if (item) clampTranslation(item);
-        if (item) item.style.transform =`translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        if (item) {
+            clampTranslation(item);
+            item.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
         
         if (sliderRedPath && zoomRange) {
             const percent = (scale - zoomRange.min) / (zoomRange.max - zoomRange.min);
@@ -2514,7 +2516,8 @@ function initDrawingLightbox() {
             showControls();
             if (e.key === 'Escape') closeLightbox();
             if (e.key === 'Tab') trapFocus(e);
-            if (!isSingleMode) {
+            // On the zoom slider the arrow keys already change the zoom.
+            if (!isSingleMode && e.target !== zoomRange) {
                 if (e.key === 'ArrowRight') showDrawing((current + 1) % currentGallery.length);
                 else if (e.key === 'ArrowLeft') showDrawing((current - 1 + currentGallery.length) % currentGallery.length);
             }
