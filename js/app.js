@@ -702,6 +702,14 @@ function applyLang(lang) {
     else adresse.searchParams.delete('lang');
     if (adresse.href !== location.href) history.replaceState(history.state, '', adresse.href);
 
+    // The canonical address names the language version on display, in line
+    // with the hreflang alternates declared in the head.
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+        const base = canonical.href.split('?')[0];
+        canonical.href = lang === 'en' ? base + '?lang=en' : base;
+    }
+
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (i18n[lang][key] !== undefined) el.textContent = i18n[lang][key];
