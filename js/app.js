@@ -1191,8 +1191,13 @@ function initContactAnimation() {
         ro.observe(form);
     }
 
+    // Pressing Enter in a field submits the form without going through the
+    // button, so the lock has to live on the submit event itself.
+    let isSubmitting = false;
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
+        if (isSubmitting) return;
 
         const nameEl  = document.getElementById('fn');
         const emailEl = document.getElementById('fe');
@@ -1234,10 +1239,14 @@ function initContactAnimation() {
         // Soumission AJAX à Formspree
         const formData = new FormData(form);
         const submitBtn = document.getElementById('contact-submit');
+        // Read under the lock: a second submission would otherwise capture
+        // the pending label as the one to restore.
+        isSubmitting = true;
         const originalBtnText = submitBtn.innerHTML;
-        
+
         submitBtn.innerHTML = currentLang === 'fr' ? 'ENVOI...' : 'SENDING...';
         submitBtn.style.pointerEvents = 'none';
+        submitBtn.disabled = true;
 
         fetch(form.action, {
             method: 'POST',
@@ -1267,6 +1276,8 @@ function initContactAnimation() {
         }).finally(() => {
             submitBtn.innerHTML = originalBtnText;
             submitBtn.style.pointerEvents = 'auto';
+            submitBtn.disabled = false;
+            isSubmitting = false;
             setTimeout(() => {
                 feedback.textContent = '';
                 feedback.classList.remove('form-feedback--success', 'form-feedback--error');
