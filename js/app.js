@@ -405,6 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initPapierSafari();
     initNextPageLinks();
     initContactAnimation();
+    initContactForm();
     initBDCarousel();
 
     initDrawingLightbox();
@@ -1237,8 +1238,12 @@ function initContactAnimation() {
         { opacity: 1, x: 0, duration: 0.7, stagger: 0.12, ease: "power3.out" },
         "-=0.6"
     );
+}
 
-    // BUG-07 FIX : Validation formulaire contact avec feedback visuel
+// Kept apart from the entrance animation: the form must be intercepted even
+// when the animation library failed to load, otherwise the browser posts it
+// natively and lands on the raw JSON answer.
+function initContactForm() {
     const form = document.getElementById('contact-form');
     const feedback = document.getElementById('form-feedback');
     if (!form || !feedback) return;
@@ -1250,6 +1255,13 @@ function initContactAnimation() {
             if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
         });
         ro.observe(form);
+    }
+
+    // The message is readable through its CSS class alone; the slide-in is
+    // an extra that needs the animation library.
+    function animateFeedback(duration) {
+        if (typeof gsap === 'undefined') return;
+        gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration });
     }
 
     // Pressing Enter in a field submits the form without going through the
@@ -1293,7 +1305,7 @@ function initContactAnimation() {
                 
             feedback.textContent = errMsg;
             feedback.classList.add('form-feedback--error');
-            gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.35 });
+            animateFeedback(0.35);
             return;
         }
 
@@ -1322,7 +1334,7 @@ function initContactAnimation() {
                     : '✓ Message sent successfully!';
                 feedback.textContent = successMsg;
                 feedback.classList.add('form-feedback--success');
-                gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.4 });
+                animateFeedback(0.4);
                 form.reset();
             } else {
                 throw new Error('Network response was not ok.');
@@ -1333,7 +1345,7 @@ function initContactAnimation() {
                 : 'Error sending message. Please try again.';
             feedback.textContent = errorMsg;
             feedback.classList.add('form-feedback--error');
-            gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.35 });
+            animateFeedback(0.35);
         }).finally(() => {
             submitBtn.innerHTML = originalBtnText;
             submitBtn.style.pointerEvents = 'auto';
