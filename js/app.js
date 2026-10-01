@@ -1721,6 +1721,7 @@ function initDrawingLightbox() {
     let currentRenderId = 0;
     let activePdfJob = null;
     let openedAt = 0;
+    let clearTimer = null;
 
     // The second click of a double-click lands on the viewer that the first
     // one just opened; it must neither close it nor zoom.
@@ -1843,6 +1844,8 @@ function initDrawingLightbox() {
         }
 
         // Préparer l'image
+        // A reopening during the closing fade must not be emptied by it.
+        clearTimeout(clearTimer);
         clearCanvasWrap();
         if (loader) loader.classList.add('active');
 
@@ -1999,7 +2002,8 @@ function initDrawingLightbox() {
         ++currentRenderId;
         if (activePdfJob) releasePdfJob(activePdfJob);
         if (loader) loader.classList.remove('active');
-        setTimeout(clearCanvasWrap, 350);
+        // Emptied only once the closing fade has played.
+        clearTimer = setTimeout(clearCanvasWrap, 350);
         if (window._lenis) window._lenis.start();
         document.body.style.overflow = '';
     }
