@@ -3,33 +3,36 @@
  * from the keyboard.
  */
 
+import { t } from './i18n/i18n.js';
+import { SECTION_TRIGGER_SELECTOR } from './lightbox/triggers.js';
+
+const ACTIVATABLE_SELECTOR = [
+    '.polaroid-card',
+    '#page-drawings .drawing-item .frame-wrap',
+    '.bd-slide .drawing-sheet-wrap',
+    SECTION_TRIGGER_SELECTOR,
+    '.single-lightbox-trigger',
+].join(', ');
+
 // The element keeps its markup and its look: it becomes focusable, is
 // announced as a button and is activated by Enter or Space.
-function makeKeyboardActivable(el, label) {
-    if (el.closest('a[href], button')) return;
-    el.setAttribute('role', 'button');
+function makeKeyboardActivatable(element, label) {
+    if (element.closest('a[href], button')) return;
+    element.setAttribute('role', 'button');
     // Sheets of a carousel that are not on display stay out of the tab order.
-    el.setAttribute('tabindex', el.closest('.bd-slide:not(.active)') ? '-1' : '0');
-    if (label) el.setAttribute('aria-label', label);
-    el.addEventListener('keydown', e => {
-        if (e.target !== el || (e.key !== 'Enter' && e.key !== ' ')) return;
-        e.preventDefault();
-        el.click();
+    element.setAttribute('tabindex', element.closest('.bd-slide:not(.active)') ? '-1' : '0');
+    if (label) element.setAttribute('aria-label', label);
+    element.addEventListener('keydown', event => {
+        if (event.target !== element || (event.key !== 'Enter' && event.key !== ' ')) return;
+        event.preventDefault();
+        element.click();
     });
 }
 
+/** Gives a button role, a tab stop and key handling to every click-only element. */
 export function initKeyboardActivation() {
-    const activable = [
-        '.polaroid-card',
-        '#page-drawings .drawing-item .frame-wrap',
-        '.bd-slide .drawing-sheet-wrap',
-        '[data-coupe-gallery] .stack-item[data-coupe-index]',
-        '.single-lightbox-trigger',
-    ].join(', ');
-    document.querySelectorAll(activable).forEach(el => makeKeyboardActivable(el));
-    // "Page" reads the same in both languages, so this name needs no
-    // dictionary entry.
+    document.querySelectorAll(ACTIVATABLE_SELECTOR).forEach(element => makeKeyboardActivatable(element));
     document.querySelectorAll('.bd-dot').forEach(dot => {
-        makeKeyboardActivable(dot, 'Page ' + (Number(dot.dataset.goto) + 1));
+        makeKeyboardActivatable(dot, `${t('carousel_page')} ${Number(dot.dataset.goto) + 1}`);
     });
 }

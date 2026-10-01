@@ -3,11 +3,11 @@
  * opening, closing, navigation, zoom controls, keyboard and focus.
  */
 
-import { state, on } from '../core/state.js';
+import { state, on, EVENTS } from '../core/state.js';
 import { isTouch } from '../core/env.js';
 import { t } from '../i18n/i18n.js';
 import { DRAWINGS } from './galleries.js';
-import { attachGestures } from './gestures.js';
+import { initGestures, isItem } from './gestures.js';
 import { loadPdfJs, renderPdfPage } from './pdf-renderer.js';
 
 // The second click of a double-click lands on the viewer that the first
@@ -54,7 +54,9 @@ let focusBeforeOpen = null;
 // rejects as a selector: the last input device used decides.
 let keyboardDriven = false;
 
-/** @returns {boolean} */
+/**
+ * @returns {boolean} true while the viewer is on display
+ */
 export function isLightboxOpen() {
     return Boolean(lightbox) && lightbox.getAttribute('aria-hidden') === 'false';
 }
@@ -104,10 +106,14 @@ function setZoomed(isZoomed) {
     lightbox.classList.toggle('zoomed', isZoomed);
 }
 
-function resetView() {
-    view.scale = 1;
+function resetPan() {
     view.translateX = 0;
     view.translateY = 0;
+}
+
+function resetView() {
+    view.scale = 1;
+    resetPan();
     if (zoomRange) zoomRange.value = 1;
     updateTransform();
     setZoomed(false);
@@ -119,19 +125,18 @@ function toggleZoom() {
         view.scale = BUTTON_ZOOM;
     } else {
         view.scale = 1;
-        view.translateX = 0;
-        view.translateY = 0;
+        resetPan();
     }
     if (zoomRange) zoomRange.value = view.scale;
     updateTransform();
 }
 
-function generateDots() {
+function renderDots() {
     if (!dotsWrap) return;
     dotsWrap.innerHTML = '';
-    gallery.forEach((_, index) => {
+    gallery.forEach((item, index) => {
         const dot = document.createElement('span');
-        dot.className = 'lb-dot' + (index === current ? ' active' : '');
+        dot.className = index === current ? 'lb-dot active' : 'lb-dot';
         dot.addEventListener('click', event => {
             event.stopPropagation();
             showItem(index);
@@ -141,6 +146,7 @@ function generateDots() {
 }
 
 function updateDots() {
+    if (!dotsWrap) return;
     dotsWrap.querySelectorAll('.lb-dot').forEach((dot, index) => {
         dot.classList.toggle('active', index === current);
     });
@@ -172,7 +178,6 @@ function placeItem(element) {
 
 function showPdf(url, altText, isStale) {
     const canvas = document.createElement('canvas');
-    canvas.style.backgroundColor = '#ffffff';
     // A canvas has no alt: it is exposed as an image with a name.
     canvas.setAttribute('role', 'img');
     canvas.setAttribute('aria-label', altText);
@@ -297,7 +302,7 @@ function trapFocus(event) {
     }
 }
 
-function open() {
+function openViewer() {
     openedAt = performance.now();
     lightbox.setAttribute('aria-hidden', 'false');
     takeFocus();
@@ -316,8 +321,8 @@ export function openGallery(items, index) {
     if (!Number.isInteger(index) || index < 0 || index >= items.length) return;
     gallery = items;
     singleItem = null;
-    open();
-    generateDots();
+    openViewer();
+    renderDots();
     showItem(index);
 }
 
@@ -329,11 +334,13 @@ export function openGallery(items, index) {
 export function openSingleImage(url, title) {
     if (!lightbox) return;
     singleItem = { url, title };
-    open();
+    openViewer();
     showItem(0);
 }
 
+/** Closes the viewer and gives scrolling and focus back to the page. */
 export function closeLightbox() {
+    if (!lightbox) return;
     lightbox.setAttribute('aria-hidden', 'true');
     resetView();
     if (document.fullscreenElement) {
@@ -370,8 +377,7 @@ function bindZoomControls() {
             // The zoomed state is kept until the slider is released: dropping
             // it here would hide the slider under the pointer, and the
             // release would land on the backdrop and close the viewer.
-            view.translateX = 0;
-            view.translateY = 0;
+            resetPan();
         }
         updateTransform();
     });
@@ -379,8 +385,7 @@ function bindZoomControls() {
     zoomRange.addEventListener('change', () => {
         if (view.scale <= 1 && view.isZoomed) {
             setZoomed(false);
-            view.translateX = 0;
-            view.translateY = 0;
+            resetPan();
             updateTransform();
         }
     });
@@ -425,10 +430,9 @@ function onKeydown(event) {
 // A click outside the item closes; a click on the item zooms in.
 function onBackdropClick(event) {
     if (performance.now() - openedAt < OPEN_CLICK_GUARD_MS) return;
-    const tagName = event.target.tagName.toLowerCase();
     if (event.target === lightbox || event.target.classList.contains('lb-canvas-wrap')) {
         closeLightbox();
-    } else if (tagName === 'img' || tagName === 'canvas') {
+    } else if (isItem(event.target)) {
         // On touch devices the natural gesture is the pinch, and a plain
         // tap must not zoom: click-to-zoom is for the mouse only.
         if (isTouch()) return;
@@ -436,6 +440,23 @@ function onBackdropClick(event) {
     }
 }
 
+/**
+ * Shows an element in the stage until the item itself has loaded.
+ * @param {HTMLElement} element
+ */
+export function showPlaceholder(element) {
+    if (canvasWrap) canvasWrap.appendChild(element);
+}
+
+/**
+ * Turns the opening fade off while another animation stands in for it.
+ * @param {boolean} isEnabled
+ */
+export function setFadeEnabled(isEnabled) {
+    if (lightbox) lightbox.classList.toggle('sans-fondu', !isEnabled);
+}
+
+/** Finds the viewer in the document and wires its controls, keys and gestures. */
 export function initLightbox() {
     const root = document.getElementById('drawing-lightbox');
     const wrap = document.getElementById('lb-canvas-wrap');
@@ -481,13 +502,14 @@ export function initLightbox() {
     }
     lightbox.addEventListener('click', onBackdropClick);
 
-    attachGestures({
+    initGestures({
         lightbox,
         canvasWrap,
         zoomRange,
         view,
         isOpen: isLightboxOpen,
         setZoomed,
+        resetPan,
         updateTransform,
         showNext,
         showPrevious,
@@ -495,14 +517,14 @@ export function initLightbox() {
 
     // History navigation swaps the page underneath: a viewer left open
     // would cover the new page and keep scrolling locked.
-    on('history-navigation', () => {
+    on(EVENTS.HISTORY_NAVIGATION, () => {
         if (isLightboxOpen()) closeLightbox();
     });
 
     // The diploma project is the only page with PDF sheets: fetch the
     // library ahead of the first opening. A failure here is retried when a
     // sheet is opened.
-    on('page-change', ({ to }) => {
+    on(EVENTS.PAGE_CHANGE, ({ to }) => {
         if (to === 'project-diploma') loadPdfJs().catch(() => {});
     });
 }

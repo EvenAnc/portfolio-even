@@ -4,8 +4,15 @@
  */
 
 import { isTouch, prefersReducedMotion } from '../core/env.js';
+import { t } from '../i18n/i18n.js';
 import { DRAWINGS, DIPLOMA_SECTIONS, findGalleryByUrl } from './galleries.js';
-import { openGallery, openSingleImage } from './lightbox.js';
+import { openGallery, openSingleImage, showPlaceholder, setFadeEnabled } from './lightbox.js';
+
+/** Section cuts of the diploma project, which open the viewer. */
+export const SECTION_TRIGGER_SELECTOR = '[data-coupe-gallery] .stack-item[data-coupe-index]';
+
+const DRAWING_ITEM_SELECTOR = '#page-drawings .drawing-item, #page-drawings .bd-slide';
+const DRAWING_TRIGGER_SELECTOR = '#page-drawings .drawing-item .frame-wrap, #page-drawings .bd-slide .drawing-sheet-wrap';
 
 // On touch devices a tap would open the viewer before the red frame had
 // time to draw itself. The opening waits for the trace, which the
@@ -13,16 +20,17 @@ import { openGallery, openSingleImage } from './lightbox.js';
 // enough for the tap not to feel ignored.
 const TOUCH_TRACE_DELAY_MS = 460;
 
+// Must match the view-transition rules of the stylesheet.
 const BOARD_TRANSITION_NAME = 'planche-ouverte';
-const FALLBACK_SHEET_TITLE = 'Plan Architecture';
 
 // Plays the trace of the red frame, then runs the action. With a mouse, or
 // when the element has no frame to draw, nothing is delayed.
 function traceFrameThen(element, action) {
-    if (!isTouch()) { action(); return; }
-
-    const frame = element.closest('.frame-wrap');
-    if (!frame || !frame.querySelector('.sketch-rect-svg')) { action(); return; }
+    const frame = isTouch() ? element.closest('.frame-wrap') : null;
+    if (!frame || !frame.querySelector('.sketch-rect-svg')) {
+        action();
+        return;
+    }
 
     // A second tap during the animation must not open twice.
     if (frame.dataset.traceEnCours) return;
@@ -38,28 +46,32 @@ function traceFrameThen(element, action) {
     }, TOUCH_TRACE_DELAY_MS);
 }
 
+// A copy of the thumbnail, already decoded, that stands in the viewer as
+// the target of the movement until the PDF render replaces it.
+function createPlaceholder(thumbnail) {
+    const placeholder = thumbnail.cloneNode();
+    placeholder.removeAttribute('id');
+    placeholder.style.viewTransitionName = BOARD_TRANSITION_NAME;
+    placeholder.style.maxWidth = '100%';
+    placeholder.style.maxHeight = '100%';
+    placeholder.style.objectFit = 'contain';
+    // The thumbnail is cropped with a transform of its own.
+    placeholder.style.transform = 'none';
+    return placeholder;
+}
+
 // Grows the thumbnail from its place in the page up to the viewer with a
-// view transition. The PDF takes a moment to render, so a copy of the
-// thumbnail, already decoded, stands in as the target of the movement
-// until the render replaces it. Without view transitions, or when reduced
-// motion is requested, the viewer opens normally.
+// view transition. Without view transitions, or when reduced motion is
+// requested, the viewer opens normally.
 function liftBoard(source, open) {
     const thumbnail = source.querySelector('img');
-    const stage = document.getElementById('lb-canvas-wrap');
-    const lightbox = document.getElementById('drawing-lightbox');
 
-    if (!document.startViewTransition || !thumbnail || !stage || !lightbox ||
-        prefersReducedMotion()) {
+    if (!document.startViewTransition || !thumbnail || prefersReducedMotion()) {
         open();
         return;
     }
 
-    function cleanup() {
-        thumbnail.style.viewTransitionName = '';
-        lightbox.classList.remove('sans-fondu');
-        stage.querySelectorAll('img').forEach(img => { img.style.viewTransitionName = ''; });
-    }
-
+    let placeholder = null;
     thumbnail.style.viewTransitionName = BOARD_TRANSITION_NAME;
 
     const transition = document.startViewTransition(() => {
@@ -73,45 +85,39 @@ function liftBoard(source, open) {
         // The viewer normally fades in; captured mid-fade it would still be
         // transparent. The transition is the animation, so the fade is
         // skipped while it runs.
-        lightbox.classList.add('sans-fondu');
+        setFadeEnabled(false);
 
-        const placeholder = thumbnail.cloneNode();
-        placeholder.removeAttribute('id');
-        placeholder.style.viewTransitionName = BOARD_TRANSITION_NAME;
-        placeholder.style.maxWidth = '100%';
-        placeholder.style.maxHeight = '100%';
-        placeholder.style.objectFit = 'contain';
-        // The thumbnail is cropped with a transform of its own.
-        placeholder.style.transform = 'none';
-        stage.appendChild(placeholder);
+        placeholder = createPlaceholder(thumbnail);
+        showPlaceholder(placeholder);
     });
 
-    transition.finished.catch(() => {}).finally(cleanup);
+    transition.finished.catch(() => {}).finally(() => {
+        thumbnail.style.viewTransitionName = '';
+        setFadeEnabled(true);
+        if (placeholder) placeholder.style.viewTransitionName = '';
+    });
 }
 
-const isOnActivePage = element => {
+function isOnActivePage(element) {
     const page = element.closest('.page');
     return !page || page.classList.contains('is-active');
-};
+}
 
-const isOnHiddenSlide = element => {
+function isOnHiddenSlide(element) {
     const slide = element.closest('.bd-slide');
     return Boolean(slide) && !slide.classList.contains('active');
-};
+}
 
 // Drawings page: framed drawings and comic sheets, in document order, map
 // onto the drawings gallery. Scoped to that page because other pages reuse
 // .drawing-item for cards that have nothing to open.
 function bindDrawings() {
-    const selector = '#page-drawings .drawing-item .frame-wrap, #page-drawings .bd-slide .drawing-sheet-wrap';
-    document.querySelectorAll(selector).forEach(trigger => {
+    document.querySelectorAll(DRAWING_TRIGGER_SELECTOR).forEach(trigger => {
         trigger.addEventListener('click', () => {
             const item = trigger.closest('.drawing-item, .bd-slide');
-            if (!item || !isOnActivePage(trigger)) return;
-            if (item.classList.contains('bd-slide') && !item.classList.contains('active')) return;
+            if (!item || !isOnActivePage(trigger) || isOnHiddenSlide(trigger)) return;
 
-            const items = Array.from(document.querySelectorAll('#page-drawings .drawing-item, #page-drawings .bd-slide'));
-            const index = items.indexOf(item);
+            const index = Array.from(document.querySelectorAll(DRAWING_ITEM_SELECTOR)).indexOf(item);
             if (index !== -1) {
                 traceFrameThen(trigger, () => openGallery(DRAWINGS, index));
             }
@@ -133,7 +139,7 @@ function bindProjectSheets() {
 
             traceFrameThen(sheet, () => {
                 if (match) openGallery(match.gallery, match.index);
-                else openSingleImage(url, FALLBACK_SHEET_TITLE);
+                else openSingleImage(url, t('sheet_fallback'));
             });
         });
     });
@@ -149,18 +155,21 @@ function bindSingleImages() {
     });
 }
 
-export function initLightboxTriggers() {
-    bindDrawings();
-    bindProjectSheets();
-    bindSingleImages();
-}
-
-/** Section cuts of the diploma project: the sheet lifts off the page into the viewer. */
-export function initSectionTriggers() {
-    document.querySelectorAll('[data-coupe-gallery] .stack-item[data-coupe-index]').forEach(item => {
+// Section cuts of the diploma project: the sheet lifts off the page into
+// the viewer.
+function bindSections() {
+    document.querySelectorAll(SECTION_TRIGGER_SELECTOR).forEach(item => {
         item.addEventListener('click', () => {
             const index = parseInt(item.getAttribute('data-coupe-index'), 10);
             traceFrameThen(item, () => liftBoard(item, () => openGallery(DIPLOMA_SECTIONS, index || 0)));
         });
     });
+}
+
+/** Wires every element of the pages that opens the viewer. */
+export function initLightboxTriggers() {
+    bindSections();
+    bindDrawings();
+    bindProjectSheets();
+    bindSingleImages();
 }
