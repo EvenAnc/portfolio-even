@@ -1326,12 +1326,17 @@ function initNotebookLines() {
     // number of lines. Height alone is ignored, since the lines themselves
     // and late-loading content would otherwise trigger needless redraws.
     let drawnWidth = null;
+    let drawnHeight = null;
+    const draw = () => {
+        generateLines(container);
+        drawnHeight = container.parentElement.offsetHeight;
+    };
     let redrawTimer = null;
     const observer = new ResizeObserver(entries => {
         const width = Math.round(entries[0].contentRect.width);
         if (drawnWidth === null) {
             drawnWidth = width;
-            generateLines(container);
+            draw();
             return;
         }
         if (width === drawnWidth) return;
@@ -1341,13 +1346,23 @@ function initNotebookLines() {
             // Emptied first so that the old lines do not count in the
             // height the new ones are measured against.
             container.innerHTML = '';
-            generateLines(container);
+            draw();
         }, 200);
     });
     observer.observe(container.parentElement);
 
+    // Fonts that arrive after the first draw change the height of the sheet
+    // without changing its width, which the observer above ignores.
+    if (document.fonts && document.fonts.addEventListener) {
+        document.fonts.addEventListener('loadingdone', () => {
+            if (drawnHeight === null || container.parentElement.offsetHeight === drawnHeight) return;
+            container.innerHTML = '';
+            draw();
+        });
+    }
+
     // Génération immédiate aussi
-    setTimeout(() => generateLines(container), 200);
+    setTimeout(() => draw(), 200);
 }
 
 function generateLines(container) {
