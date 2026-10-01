@@ -6,7 +6,7 @@
 import { state, on } from '../core/state.js';
 import { isTouch } from '../core/env.js';
 import { t } from '../i18n/i18n.js';
-import { allDrawings } from './galleries.js';
+import { DRAWINGS } from './galleries.js';
 import { attachGestures } from './gestures.js';
 import { loadPdfJs, renderPdfPage } from './pdf-renderer.js';
 
@@ -40,7 +40,7 @@ const view = {
     maxZoom: IMAGE_MAX_ZOOM,
 };
 
-let gallery = allDrawings;
+let gallery = DRAWINGS;
 let current = 0;
 // A single image is shown without counter, dots or arrows.
 let singleItem = null;
