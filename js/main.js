@@ -9,7 +9,7 @@ import { resolveInitialLanguage, applyLanguage, initLanguageSwitcher } from './i
 import { initLightbox } from './lightbox/lightbox.js';
 import { initLightboxTriggers, initSectionTriggers } from './lightbox/triggers.js';
 import { animateFavicon } from './favicon.js';
-import { demarrerPrechargeFond } from './preload.js';
+import { startBackgroundPreload } from './preload.js';
 import { watchScrollbarWidth } from './page-scroll.js';
 import { playHeroIntro } from './hero.js';
 import { resetActivePages, initPageLinks, showInitialPage, initHistory } from './router.js';
@@ -66,7 +66,7 @@ function init() {
 
     // PERF-04 : préparer les plans en fond, une fois l'accueil installé.
     // 2,5 s de délai pour ne pas concurrencer l'affichage initial.
-    setTimeout(demarrerPrechargeFond, 2500);
+    setTimeout(startBackgroundPreload, 2500);
 
     watchScrollbarWidth();
 
