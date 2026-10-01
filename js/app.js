@@ -522,6 +522,10 @@ document.addEventListener('DOMContentLoaded', () => {
             revealContact();
             return;
         }
+        if ((cible || 'home') === 'home' && currentPage === 'home') {
+            scrollHomeToTop();
+            return;
+        }
         showPage(cible || 'home', true, false);
     });
 
@@ -535,7 +539,9 @@ document.addEventListener('DOMContentLoaded', () => {
             history.replaceState({ page: 'home' }, '', location.pathname + location.search);
             return;
         }
-        if (cible !== 'contact' && cible !== currentPage) {
+        if (cible === 'home' && currentPage === 'home') {
+            scrollHomeToTop();
+        } else if (cible !== 'contact' && cible !== currentPage) {
             showPage(cible, true, false);
         }
     });
