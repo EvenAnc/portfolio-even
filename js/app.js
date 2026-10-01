@@ -788,7 +788,9 @@ const PAGE_SLUGS = {
     'diploma':         'diplome',
     'hobbies':         'hobbies',
 };
-const SLUG_TO_PAGE = Object.fromEntries(
+// A Map, not a plain object: fragments such as #constructor would otherwise
+// resolve to members inherited from Object.prototype.
+const SLUG_TO_PAGE = new Map(
     Object.entries(PAGE_SLUGS).filter(([, slug]) => slug).map(([id, slug]) => [slug, id])
 );
 
@@ -804,7 +806,7 @@ function pageFromHash() {
     }
     if (!raw) return 'home';
     if (raw === 'contact') return 'contact';
-    return SLUG_TO_PAGE[raw] || null;
+    return SLUG_TO_PAGE.get(raw) || null;
 }
 
 function urlForPage(pageId) {
