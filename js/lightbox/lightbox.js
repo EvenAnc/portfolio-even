@@ -4,7 +4,7 @@
  */
 
 import { state, on } from '../core/state.js';
-import { REQUETE_TACTILE } from '../core/env.js';
+import { isTouch } from '../core/env.js';
 import { t } from '../i18n/i18n.js';
 import { allDrawings } from './galleries.js';
 import { attachGestures } from './gestures.js';
@@ -151,7 +151,7 @@ function showControls() {
     clearTimeout(hideTimer);
     // A pointer brings the controls back by moving; a finger has no such
     // movement, so on touch devices the controls stay.
-    if (window.matchMedia(REQUETE_TACTILE).matches) return;
+    if (isTouch()) return;
     hideTimer = setTimeout(() => {
         // Hiding would take the close button away from someone panning
         // a zoomed image or driving the viewer from the keyboard.
@@ -431,7 +431,7 @@ function onBackdropClick(event) {
     } else if (tagName === 'img' || tagName === 'canvas') {
         // On touch devices the natural gesture is the pinch, and a plain
         // tap must not zoom: click-to-zoom is for the mouse only.
-        if (window.matchMedia(REQUETE_TACTILE).matches) return;
+        if (isTouch()) return;
         if (!view.isZoomed) toggleZoom();
     }
 }

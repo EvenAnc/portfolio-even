@@ -2,7 +2,7 @@
  * Touch reveal: on touch devices, plays on scroll the animations that a pointer triggers on hover.
  */
 
-import { REQUETE_TACTILE } from './core/env.js';
+import { TOUCH_MEDIA_QUERY } from './core/env.js';
 
 // ─────────────────────────────────────
 // ─────────────────────────────────────
@@ -17,7 +17,7 @@ const TACTILE_MARGE  = '0px 0px -12% 0px';
 const TACTILE_DELAI  = 160;    // ms : laisse le temps de poser le regard
 
 export function initScrollAnimationsMobile() {
-    const mq = window.matchMedia(REQUETE_TACTILE);
+    const mq = window.matchMedia(TOUCH_MEDIA_QUERY);
     if (!mq.matches) {
         // Le mode peut changer en cours de route : tablette dont on detache
         // le clavier, fenetre passee sur un ecran tactile. On reessaie alors

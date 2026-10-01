@@ -2,7 +2,7 @@
  * PDF renderer: loads PDF.js on demand and draws the first page of a document into a canvas.
  */
 
-import { REQUETE_TACTILE } from '../core/env.js';
+import { isTouch } from '../core/env.js';
 
 // Resolved from this module, so the paths hold wherever the page is served from.
 const PDFJS_URL = new URL('../../vendor/pdfjs-3.11.174/pdf.min.js', import.meta.url).href;
@@ -55,7 +55,7 @@ function pdfRenderScale(page) {
     const base = page.getViewport({ scale: 1 });
     const fit = Math.min(window.innerWidth / base.width, window.innerHeight / base.height);
     const wanted = fit * (window.devicePixelRatio || 1) * PDF_ZOOM_RESERVE;
-    const budget = window.matchMedia(REQUETE_TACTILE).matches ? PDF_MAX_PIXELS_TOUCH : PDF_MAX_PIXELS;
+    const budget = isTouch() ? PDF_MAX_PIXELS_TOUCH : PDF_MAX_PIXELS;
     const budgetScale = Math.sqrt(budget / (base.width * base.height * PDF_VISIBLE_HEIGHT));
     return Math.min(PDF_MAX_SCALE, wanted, budgetScale);
 }

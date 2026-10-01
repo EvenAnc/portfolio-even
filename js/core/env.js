@@ -6,7 +6,17 @@
 // pointeur est grossier (doigt). Le second critere rattrape les tablettes
 // et PC tactiles qui se declarent a tort comme ayant un survol : sans lui
 // ils n'avaient NI le survol reel, NI l'equivalent tactile.
-export const REQUETE_TACTILE = '(hover: none), (pointer: coarse)';
+export const TOUCH_MEDIA_QUERY = '(hover: none), (pointer: coarse)';
+
+/** @returns {boolean} */
+export function isTouch() {
+    return window.matchMedia(TOUCH_MEDIA_QUERY).matches;
+}
+
+/** @returns {boolean} */
+export function prefersReducedMotion() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
 
 // GSAP may be missing when its file failed to load; see gsap-fallback.js.
 export const gsapMissing = typeof window.gsap === 'undefined';

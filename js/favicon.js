@@ -2,6 +2,8 @@
  * Animated favicon: three hand-drawn frames cycled while the tab is visible.
  */
 
+import { prefersReducedMotion } from './core/env.js';
+
 /* --- FAVICON ANIMATION (CANVAS BASED) --- */
 export function animateFavicon() {
     const favicon = document.getElementById('favicon');
@@ -57,8 +59,7 @@ export function animateFavicon() {
         // permanence). Elle est desormais suspendue des que l'onglet n'est
         // plus visible, et desactivee si l'utilisateur demande moins d'animation.
         // Comportement a l'ecran, onglet au premier plan : strictement identique.
-        const reduceMotion = window.matchMedia
-            && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const reduceMotion = prefersReducedMotion();
 
         let currentFrame = 0;
         let faviconTimer = null;
