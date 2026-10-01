@@ -3,47 +3,41 @@
  * item.
  */
 
+import { SWIPE_MIN_DISTANCE_PX } from '../core/env.js';
+
 const WHEEL_ZOOM_STEP = 0.15;
-const SWIPE_MIN_DISTANCE_PX = 40;
 // Below this scale a pinch counts as back to the fitted size.
 const PINCH_ZOOMED_THRESHOLD = 1.05;
 
-const isItem = element => {
+/**
+ * @param {Element} element
+ * @returns {boolean} true for the image or the canvas on display
+ */
+export function isItem(element) {
     const tagName = element.tagName.toLowerCase();
     return tagName === 'img' || tagName === 'canvas';
-};
+}
 
-const distanceBetween = (touchA, touchB) =>
-    Math.hypot(touchB.clientX - touchA.clientX, touchB.clientY - touchA.clientY);
+function distanceBetween(touchA, touchB) {
+    return Math.hypot(touchB.clientX - touchA.clientX, touchB.clientY - touchA.clientY);
+}
 
-/**
- * @param {object} api
- * @param {HTMLElement} api.lightbox
- * @param {HTMLElement} api.canvasWrap
- * @param {HTMLInputElement|null} api.zoomRange
- * @param {{scale: number, translateX: number, translateY: number, isZoomed: boolean, maxZoom: number}} api.view
- * @param {() => boolean} api.isOpen
- * @param {(isZoomed: boolean) => void} api.setZoomed
- * @param {() => void} api.updateTransform
- * @param {() => void} api.showNext
- * @param {() => void} api.showPrevious
- */
-export function attachGestures({ lightbox, canvasWrap, zoomRange, view, isOpen, setZoomed, updateTransform, showNext, showPrevious }) {
-    // Scales around a point given from the centre of the frame, so that the
-    // content under the pointer or between the fingers stays in place.
-    function zoomAround(clientX, clientY, newScale) {
-        const rect = canvasWrap.getBoundingClientRect();
-        const pointX = clientX - rect.left - rect.width / 2;
-        const pointY = clientY - rect.top - rect.height / 2;
-        const ratio = newScale / view.scale;
+// Scales around a point given from the centre of the frame, so that the
+// content under the pointer or between the fingers stays in place.
+function zoomAround({ canvasWrap, zoomRange, view }, clientX, clientY, newScale) {
+    const rect = canvasWrap.getBoundingClientRect();
+    const pointX = clientX - rect.left - rect.width / 2;
+    const pointY = clientY - rect.top - rect.height / 2;
+    const ratio = newScale / view.scale;
 
-        view.translateX = pointX - (pointX - view.translateX) * ratio;
-        view.translateY = pointY - (pointY - view.translateY) * ratio;
-        view.scale = newScale;
-        if (zoomRange) zoomRange.value = view.scale;
-    }
+    view.translateX = pointX - (pointX - view.translateX) * ratio;
+    view.translateY = pointY - (pointY - view.translateY) * ratio;
+    view.scale = newScale;
+    if (zoomRange) zoomRange.value = view.scale;
+}
 
-    // Drag to pan a zoomed item.
+// Drag to pan a zoomed item.
+function bindDrag({ canvasWrap, view, updateTransform }) {
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
@@ -82,32 +76,35 @@ export function attachGestures({ lightbox, canvasWrap, zoomRange, view, isOpen, 
     canvasWrap.addEventListener('pointerup', endDrag);
     canvasWrap.addEventListener('pointercancel', endDrag);
     canvasWrap.addEventListener('lostpointercapture', endDrag);
+}
+
+function bindWheelZoom(api) {
+    const { canvasWrap, view, isOpen, setZoomed, resetPan, updateTransform } = api;
 
     canvasWrap.addEventListener('wheel', event => {
         if (!isOpen()) return;
         if (!view.isZoomed && event.deltaY > 0) return;
         event.preventDefault();
 
-        let newScale = view.scale + (event.deltaY < 0 ? WHEEL_ZOOM_STEP : -WHEEL_ZOOM_STEP);
-        if (zoomRange) {
-            newScale = Math.max(parseFloat(zoomRange.min), Math.min(parseFloat(zoomRange.max), newScale));
-        }
+        const step = event.deltaY < 0 ? WHEEL_ZOOM_STEP : -WHEEL_ZOOM_STEP;
+        const newScale = Math.min(view.maxZoom, Math.max(1, view.scale + step));
         if (newScale === view.scale) return;
 
-        zoomAround(event.clientX, event.clientY, newScale);
+        zoomAround(api, event.clientX, event.clientY, newScale);
 
         if (view.scale <= 1) {
-            view.scale = 1;
             setZoomed(false);
-            view.translateX = 0;
-            view.translateY = 0;
+            resetPan();
         } else if (!view.isZoomed) {
             setZoomed(true);
         }
         updateTransform();
     }, { passive: false });
+}
 
-    // Pinch to zoom, swipe to change item.
+function bindPinchAndSwipe(api) {
+    const { lightbox, view, setZoomed, resetPan, updateTransform, showNext, showPrevious } = api;
+
     let touchStartX = 0;
     let touchStartY = 0;
     let initialPinchDistance = null;
@@ -137,14 +134,13 @@ export function attachGestures({ lightbox, canvasWrap, zoomRange, view, isOpen, 
         const newScale = Math.min(view.maxZoom, Math.max(1, initialPinchScale * pinchRatio));
         if (newScale === view.scale) return;
 
-        zoomAround((touchA.clientX + touchB.clientX) / 2, (touchA.clientY + touchB.clientY) / 2, newScale);
+        zoomAround(api, (touchA.clientX + touchB.clientX) / 2, (touchA.clientY + touchB.clientY) / 2, newScale);
 
         if (view.scale > PINCH_ZOOMED_THRESHOLD && !view.isZoomed) {
             setZoomed(true);
         } else if (view.scale <= PINCH_ZOOMED_THRESHOLD && view.isZoomed) {
             setZoomed(false);
-            view.translateX = 0;
-            view.translateY = 0;
+            resetPan();
         }
         updateTransform();
     }, { passive: false });
@@ -174,5 +170,25 @@ export function attachGestures({ lightbox, canvasWrap, zoomRange, view, isOpen, 
             if (deltaX < 0) showNext();
             else showPrevious();
         }
-    }, { passive: false });
+    });
+}
+
+/**
+ * Wires the pointer, wheel and touch gestures of the viewer.
+ * @param {object} api
+ * @param {HTMLElement} api.lightbox
+ * @param {HTMLElement} api.canvasWrap
+ * @param {HTMLInputElement|null} api.zoomRange
+ * @param {{scale: number, translateX: number, translateY: number, isZoomed: boolean, maxZoom: number}} api.view
+ * @param {() => boolean} api.isOpen
+ * @param {(isZoomed: boolean) => void} api.setZoomed
+ * @param {() => void} api.resetPan
+ * @param {() => void} api.updateTransform
+ * @param {() => void} api.showNext
+ * @param {() => void} api.showPrevious
+ */
+export function initGestures(api) {
+    bindDrag(api);
+    bindWheelZoom(api);
+    bindPinchAndSwipe(api);
 }

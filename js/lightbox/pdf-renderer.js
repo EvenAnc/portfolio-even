@@ -11,6 +11,14 @@ const PDFJS_URL = new URL('../../vendor/pdfjs-3.11.174/pdf.min.js', import.meta.
 const PDFJS_WORKER_URL = new URL('../../vendor/pdfjs-3.11.174/pdf.worker.min.js', import.meta.url).href;
 const PDFJS_INTEGRITY = 'sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e';
 
+// Share of the page height that is drawn: the bottom strip only holds
+// the sheet's page number.
+const PDF_VISIBLE_HEIGHT = 0.95;
+const PDF_MAX_SCALE = 3;
+const PDF_ZOOM_RESERVE = 4;
+const PDF_MAX_PIXELS = 9e6;
+const PDF_MAX_PIXELS_TOUCH = 4e6;
+
 let pdfJsPromise = null;
 
 /**
@@ -26,6 +34,7 @@ export function loadPdfJs() {
             script.integrity = PDFJS_INTEGRITY;
             script.onload = () => {
                 if (!window.pdfjsLib) {
+                    script.remove();
                     reject(new Error('PDF.js did not initialise.'));
                     return;
                 }
@@ -44,14 +53,6 @@ export function loadPdfJs() {
     }
     return pdfJsPromise;
 }
-
-// Share of the page height that is drawn: the bottom strip only holds
-// the sheet's page number.
-const PDF_VISIBLE_HEIGHT = 0.95;
-const PDF_MAX_SCALE = 3;
-const PDF_ZOOM_RESERVE = 4;
-const PDF_MAX_PIXELS = 9e6;
-const PDF_MAX_PIXELS_TOUCH = 4e6;
 
 // Scale = what the screen can show (fitted size x pixel ratio x zoom
 // reserve), never above PDF_MAX_SCALE, then capped by a pixel budget so
@@ -107,11 +108,7 @@ export async function renderPdfPage(url, canvas, { signal } = {}) {
         context.fillStyle = '#ffffff';
         context.fillRect(0, 0, canvas.width, canvas.height);
 
-        renderTask = page.render({
-            canvasContext: context,
-            viewport: viewport,
-            background: 'white'
-        });
+        renderTask = page.render({ canvasContext: context, viewport });
         await renderTask.promise;
         renderTask = null;
         return !isAborted();
