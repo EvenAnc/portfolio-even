@@ -2144,8 +2144,13 @@ function initDrawingLightbox() {
         zoomRange.parentNode.addEventListener('click', e => e.stopPropagation());
     }
 
+    // Some browsers (iPhone Safari) have no element fullscreen at all: a
+    // button that does nothing is worse than no button.
+    if (fullBtn && !lightbox.requestFullscreen) fullBtn.style.display = 'none';
+
     if (fullBtn) fullBtn.addEventListener('click', (e) => {
         e.stopPropagation();
+        if (!lightbox.requestFullscreen) return;
         if (!document.fullscreenElement) {
             lightbox.requestFullscreen().catch(err => console.error(err));
         } else {
