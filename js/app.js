@@ -38,6 +38,8 @@ function tracerPuis(element, action) {
     setTimeout(() => {
         cadre.classList.remove('trace-tactile');
         delete cadre.dataset.traceEnCours;
+        // The page may have changed while the frame was being drawn.
+        if (element.closest('.page') && !element.closest('.page.is-active')) return;
         action();
     }, TACTILE_TRACE);
 }
