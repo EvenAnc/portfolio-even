@@ -33,13 +33,13 @@ function traceFrameThen(element, action) {
     }
 
     // A second tap during the animation must not open twice.
-    if (frame.dataset.traceEnCours) return;
-    frame.dataset.traceEnCours = '1';
+    if (frame.dataset.tracing) return;
+    frame.dataset.tracing = '1';
     frame.classList.add('trace-tactile');
 
     setTimeout(() => {
         frame.classList.remove('trace-tactile');
-        delete frame.dataset.traceEnCours;
+        delete frame.dataset.tracing;
         // The page may have changed while the frame was being drawn.
         if (element.closest('.page') && !element.closest('.page.is-active')) return;
         action();

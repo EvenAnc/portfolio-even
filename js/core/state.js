@@ -3,6 +3,7 @@
  * other without importing each other.
  */
 
+/** What every module may read: the language, the page on display and its scroll instance. */
 export const state = {
     lang: 'fr',
     page: 'home',
