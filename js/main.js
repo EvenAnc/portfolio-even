@@ -5,7 +5,7 @@
  */
 
 import { installGsapFallback } from './core/gsap-fallback.js';
-import { resolveInitialLanguage, applyLang, initLangSwitcher } from './i18n/i18n.js';
+import { resolveInitialLanguage, applyLanguage, initLanguageSwitcher } from './i18n/i18n.js';
 import { initLightbox } from './lightbox/lightbox.js';
 import { initLightboxTriggers, initSectionTriggers } from './lightbox/triggers.js';
 import { animateFavicon } from './favicon.js';
@@ -28,8 +28,8 @@ function init() {
     initSectionTriggers();
     animateFavicon();
 
-    applyLang(resolveInitialLanguage());
-    initLangSwitcher();
+    applyLanguage(resolveInitialLanguage());
+    initLanguageSwitcher();
     initMenu();
     initSPA();
     initNotebookLines();

@@ -5,7 +5,7 @@
 // ─────────────────────────────────────
 // TRADUCTIONS FR / EN
 // ─────────────────────────────────────
-export const i18n = {
+export const TRANSLATIONS = {
     fr: {
         choice_text2: "Restait à le rendre viable. Installer une station essence en zone inflammable, juste à côté d'une oliveraie, ça ne va pas de soi. Ce sont ces contraintes qui ont fini par donner au projet ses lignes directrices et qui l'ont rendu réalisable.",
         quote_text: "Quand les détails réussissent, ils ne distraient pas et n'amusent pas. Ils conduisent à la compréhension de l'ensemble dont ils font partie.",
@@ -293,7 +293,7 @@ export const i18n = {
 // sans executer le moindre script. Les faire varier par page demande un
 // vrai fichier HTML par page — un autre chantier.
 // ───────────────────────────────────
-export const META_PAGES = {
+export const PAGE_META = {
     fr: {
         'home':            ["Even ANICET | Architecte d'intérieur",
                             "Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse. Recherche un contrat en Suisse romande."],
