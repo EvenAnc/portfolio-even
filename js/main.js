@@ -4,9 +4,10 @@
  * Rectangle SVG dessiné main + Menu habillé + Carrousel inertie
  */
 
-import { REQUETE_TACTILE, gsapMissing, hasScrollTrigger, readStored, writeStored } from './core/env.js';
+import { state } from './core/state.js';
+import { REQUETE_TACTILE, gsapMissing, hasScrollTrigger } from './core/env.js';
 import { installGsapFallback } from './core/gsap-fallback.js';
-import { i18n, META_PAGES } from './i18n/dictionary.js';
+import { t, resolveInitialLanguage, majMetaPage, applyLang, initLangSwitcher } from './i18n/i18n.js';
 import { allDrawings, diplomePlans, diplomeCoupes, diplomeAnalyses } from './lightbox/galleries.js';
 import { animateFavicon } from './favicon.js';
 import { demarrerPrechargeFond } from './preload.js';
@@ -61,22 +62,12 @@ function tracerPuis(element, action) {
 // dimmed on its own in the stylesheet. Must match .scroll-invite there.
 const SCROLL_INVITE_OPACITY = 1;
 
-let currentLang = 'fr';
-let currentPage = 'home';
 let isMenuOpen  = false;
 let lenis       = null;
 let _historyInitialised = false;
 let lenisTickerFn = null;
 let openDrawingGallery = null;
 let closeDrawingLightbox = null;
-
-function majMetaPage(pageId) {
-    const table = META_PAGES[currentLang] || META_PAGES.fr;
-    const paire = table[pageId] || table['home'];
-    document.title = paire[0];
-    const balise = document.querySelector('meta[name="description"]');
-    if (balise) balise.content = paire[1];
-}
 
 // ─────────────────────────────────────
 // INIT
@@ -86,15 +77,7 @@ function init() {
     initCoupeClicks();
     animateFavicon();
 
-    // Priorite : l'adresse (un lien partage impose sa langue), puis le
-    // choix precedent du visiteur, puis la langue de son navigateur.
-    const langueDemandee = new URLSearchParams(location.search).get('lang');
-    const saved = readStored('lang');
-    currentLang = (langueDemandee === 'fr' || langueDemandee === 'en') ? langueDemandee
-        : (saved === 'fr' || saved === 'en') ? saved
-        : (navigator.language || '').startsWith('fr') ? 'fr' : 'en';
-
-    applyLang(currentLang);
+    applyLang(resolveInitialLanguage());
     initLangSwitcher();
     initMenu();
     initSPA();
@@ -145,7 +128,7 @@ function init() {
             revealContact();
             return;
         }
-        if ((cible || 'home') === 'home' && currentPage === 'home') {
+        if ((cible || 'home') === 'home' && state.page === 'home') {
             scrollHomeToTop();
             return;
         }
@@ -162,9 +145,9 @@ function init() {
             history.replaceState({ page: 'home' }, '', location.pathname + location.search);
             return;
         }
-        if (cible === 'home' && currentPage === 'home') {
+        if (cible === 'home' && state.page === 'home') {
             scrollHomeToTop();
-        } else if (cible !== 'contact' && cible !== currentPage) {
+        } else if (cible !== 'contact' && cible !== state.page) {
             showPage(cible, true, false);
         }
     });
@@ -298,55 +281,6 @@ function updateScrollbarWidth() {
     document.documentElement.style.setProperty('--sbw', sbw + 'px');
 }
 
-function applyLang(lang) {
-    currentLang = lang;
-    writeStored('lang', lang);
-    document.documentElement.setAttribute('lang', lang);
-    majMetaPage(typeof currentPage === 'string' ? currentPage : 'home');
-
-    // La langue vit dans l'adresse : c'est ce qui permet d'envoyer un lien
-    // qui s'ouvrira en anglais, et ce qui donne un sens aux balises
-    // hreflang. Le francais reste l'adresse nue.
-    const adresse = new URL(location.href);
-    if (lang === 'en') adresse.searchParams.set('lang', 'en');
-    else adresse.searchParams.delete('lang');
-    if (adresse.href !== location.href) history.replaceState(history.state, '', adresse.href);
-
-    // The canonical address names the language version on display, in line
-    // with the hreflang alternates declared in the head.
-    const canonical = document.querySelector('link[rel="canonical"]');
-    if (canonical) {
-        const base = canonical.href.split('?')[0];
-        canonical.href = lang === 'en' ? base + '?lang=en' : base;
-    }
-
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (i18n[lang][key] !== undefined) el.textContent = i18n[lang][key];
-    });
-
-    // Text that lives in attributes (accessible names, image descriptions)
-    // is translated the same way, through a sibling data attribute.
-    [['data-i18n-aria', 'aria-label'], ['data-i18n-alt', 'alt']].forEach(([source, target]) => {
-        document.querySelectorAll('[' + source + ']').forEach(el => {
-            const text = i18n[lang][el.getAttribute(source)];
-            if (text !== undefined) el.setAttribute(target, text);
-        });
-    });
-
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.lang === lang);
-    });
-}
-
-function initLangSwitcher() {
-    document.querySelectorAll('.lang-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            if (btn.dataset.lang !== currentLang) applyLang(btn.dataset.lang);
-        });
-    });
-}
-
 // ─────────────────────────────────────
 // MENU OVERLAY
 // ─────────────────────────────────────
@@ -382,7 +316,7 @@ function initMenu() {
     if (headerLogo) {
         headerLogo.addEventListener('click', e => {
             e.preventDefault();
-            if (currentPage !== 'home') showPage('home');
+            if (state.page !== 'home') showPage('home');
         });
     }
 
@@ -573,7 +507,7 @@ function scrollToContactSection() {
     const contactEl = document.getElementById('home-contact');
     // On another page the scroller would be asked to reach an element it
     // does not contain.
-    if (!contactEl || currentPage !== 'home') return;
+    if (!contactEl || state.page !== 'home') return;
     if (window._lenis) {
         window._lenis.scrollTo(contactEl, { offset: -40, duration: 1.2 });
     } else {
@@ -587,11 +521,11 @@ function scrollToContactSection() {
 // the caller decides whether this navigation adds an entry.
 function revealContact(outerDelay = 0) {
     cancelContactReveal();
-    const wasOnHome = currentPage === 'home';
+    const wasOnHome = state.page === 'home';
     contactTimers.push(setTimeout(() => {
         // The visitor may have gone back while the menu was closing.
         if (pageFromHash() !== 'contact') return;
-        if (currentPage !== 'home') showPage('home', true, false);
+        if (state.page !== 'home') showPage('home', true, false);
         contactTimers.push(setTimeout(scrollToContactSection, wasOnHome ? 100 : 750));
     }, outerDelay));
 }
@@ -627,14 +561,14 @@ function goToContact(outerDelay) {
 }
 
 function showPage(pageId, animate = true, updateHistory = true) {
-    if (pageId === currentPage && animate) return;
+    if (pageId === state.page && animate) return;
     cancelContactReveal();
 
-    const outEl = document.getElementById(`page-${currentPage}`);
+    const outEl = document.getElementById(`page-${state.page}`);
     const inEl  = document.getElementById(`page-${pageId}`);
     if (!inEl) return;
 
-    currentPage = pageId;
+    state.page = pageId;
     majMetaPage(pageId);
 
     // The only page with PDF sheets: fetch the library ahead of the first
@@ -806,7 +740,7 @@ function initPageLenis(scrollContainer) {
     gsap.ticker.lagSmoothing(0);
 
     // Sur la page home : animer le logo vers le header au scroll
-    if (currentPage === 'home') {
+    if (state.page === 'home') {
         const heroLogoWrap = document.getElementById('hero-logo-wrap');
         const headerLogo   = document.getElementById('header-logo');
         const scrollInvite = document.getElementById('scroll-invite');
@@ -1055,7 +989,7 @@ function initCopyEmail() {
                 if (feedback && feedback.classList.contains('copy-feedback')) {
                     const key = copied ? 'copied' : 'copy_manual';
                     feedback.setAttribute('data-i18n', key);
-                    feedback.textContent = i18n[currentLang][key];
+                    feedback.textContent = t(key);
                     feedback.style.opacity = '1';
                     feedback.style.transform = 'translateX(5px)';
                     setTimeout(() => {
@@ -1148,7 +1082,7 @@ function initContactForm() {
         const label = button.querySelector('[data-i18n]');
         if (!label) return;
         label.setAttribute('data-i18n', key);
-        label.textContent = i18n[currentLang][key];
+        label.textContent = t(key);
     }
 
     // Pressing Enter in a field submits the form without going through the
@@ -1190,7 +1124,7 @@ function initContactForm() {
         if (!msg) { msgEl.classList.add('fi-error'); hasError = true; }
 
         if (hasError) {
-            const errMsg = currentLang === 'fr'
+            const errMsg = state.lang === 'fr'
                 ? 'Merci de remplir tous les champs correctement.'
                 : 'Please fill in all fields correctly.';
                 
@@ -1229,7 +1163,7 @@ function initContactForm() {
             const refused = flag === false || flag === 0
                 || ['false', '0'].includes(String(flag).toLowerCase());
             if (!refused) {
-                const successMsg = currentLang === 'fr'
+                const successMsg = state.lang === 'fr'
                     ? '✓ Message envoyé avec succès !'
                     : '✓ Message sent successfully!';
                 feedback.textContent = successMsg;
@@ -1240,7 +1174,7 @@ function initContactForm() {
                 throw new Error('The form service refused the message.');
             }
         }).catch(error => {
-            const errorMsg = currentLang === 'fr'
+            const errorMsg = state.lang === 'fr'
                 ? 'Erreur lors de l\'envoi. Veuillez réessayer.'
                 : 'Error sending message. Please try again.';
             feedback.textContent = errorMsg;
@@ -1746,7 +1680,7 @@ function initDrawingLightbox() {
 
         const url = isSingleMode ? index.url : currentGallery[index].url;
         const entry = isSingleMode ? index : currentGallery[index];
-        const altText = (entry.altKey && i18n[currentLang][entry.altKey]) || entry.title || '';
+        const altText = (entry.altKey && t(entry.altKey)) || entry.title || '';
 
         const isPdf = url.toLowerCase().endsWith('.pdf');
         maxZoom = isPdf ? 10 : 4;
