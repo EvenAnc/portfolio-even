@@ -80,14 +80,7 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; -webkit-user
 }
 
 
-/* Not yet reorganised */
-
-.site-header {
-    position: fixed; top: 0; left: 0;
-    width: 100%; height: 72px;
-    z-index: 100; pointer-events: none;
-    background: linear-gradient(180deg, rgba(26,26,26,0.85) 0%, transparent 100%);
-}
+/* Header */
 
 .header-inner {
     display: flex; align-items: center; justify-content: space-between;
@@ -127,36 +120,19 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     animation: logoWobbleMini 0.3s steps(1) infinite;
 }
 
-@media (max-width: 303px) {
-    /* Narrowest phones (Galaxy Fold closed): the logo only gets half the header
-       and wrapped onto two lines. Shrink it onto one line and nudge it left so
-       it clears the language switcher. */
-    .header-logo {
-        left: calc(50% - 28px);
-        white-space: nowrap;
-    }
-
-    .header-logo-text {
-        font-size: 1.3rem;
-    }
-}
-
-@keyframes logoWobbleMini {
-    0%,33%   { filter: url(#sketch-1); }
-    34%,66%  { filter: url(#sketch-2); }
-    67%,100% { filter: url(#sketch-3); }
-}
-
 .header-right { display: flex; align-items: center; gap: 54px; pointer-events: auto; }
 .lang-switcher { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; }
-.lang-btn { opacity: 0.35; transition: opacity var(--dur-fast); }
 
 /* ── FIX R-02 : zones tactiles conformes ───────────────────────────
    Les pastilles ci-dessous agrandissent UNIQUEMENT la surface cliquable
    via un pseudo-element transparent. Aucun pixel dessine ne bouge.
    Les debordements horizontaux s'arretent au milieu du gap : deux
    cibles voisines se touchent sans jamais se chevaucher. */
-.lang-btn { position: relative; }
+.lang-btn {
+    opacity: 0.35;
+    transition: opacity var(--dur-fast);
+    position: relative;
+}
 
 .lang-btn::after {
     content: '';
@@ -200,6 +176,334 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 .social-lnk::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-fast); }
 .social-lnk:hover { opacity: 1; color: var(--red); transform: translateY(-2px); }
 .social-lnk:hover::after { width: 100%; }
+
+/* ── 3. iPhone : encoche et barre d'accueil ────────────────────────
+   Avec viewport-fit=cover le fond sombre va jusqu'au bord de la
+   dalle, mais le contenu doit rester en dehors des zones systeme.
+   Les valeurs safe-area valent 0 partout ailleurs : aucun effet sur
+   les autres appareils ni sur le bureau. */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 72px;
+    z-index: 100;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(26,26,26,0.85) 0%, transparent 100%);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+}
+
+/* ── 17. La barre du haut n'avait pas de fond utilisable ────────
+
+   Even : « la barre du haut n'a pas de fond, quand du texte passe
+   derriere ca devient illisible » — et le meme souci sur PC, juste
+   moins visible parce que l'ecran est plus large.
+
+   Un fond existait pourtant : un degrade de rgba(26,26,26,0.85) vers
+   le transparent. Mais il s'eteignait sur la hauteur de l'entete,
+   alors que TOUT son contenu est centre verticalement dedans.
+   Mesure : le logo occupe 8 -> 63px sur 72, soit le milieu exact ; a
+   cette hauteur le degrade ne valait plus que 0,44.
+
+   Le fond descend donc maintenant 40px SOUS l'entete : le fondu se
+   joue dans ce debord, en dehors de la zone qui porte le texte.
+
+   POURQUOI AUTANT DE PALIERS
+   Ma premiere version n'en avait que cinq, et Even a vu « un genre de
+   trait dans le degrade ». Ce n'etait pas un defaut d'affichage mais
+   de courbe : la pente changeait brutalement d'un palier a l'autre
+   (x42 a 60%, x4 a 74%). L'oeil ne voit pas une valeur, il voit une
+   RUPTURE de pente — c'est l'effet de bande de Mach, et il dessine un
+   trait la ou il n'y en a aucun.
+   Les paliers ci-dessous suivent une courbe « smootherstep », dont la
+   pente est nulle aux deux extremites et varie continument entre les
+   deux. Saut de pente maximal par pixel : 0,0217 avant, 0,0044 apres
+   — cinq fois moins — et reparti sur trente paliers au lieu d'etre
+   concentre sur deux. Trente paliers ne coutent rien : le navigateur
+   rasterise le degrade une seule fois.
+
+   Pose en ::before et non sur l'entete elle-meme : il faut pouvoir
+   deborder vers le bas sans changer la hauteur de la barre, qui sert
+   de reference au bouton retour et aux marges hautes des pages.
+
+   Pas de backdrop-filter, volontairement : un flou permanent sur une
+   bande toujours a l'ecran coute cher au defilement sur les appareils
+   modestes, et le degrade suffit a rendre le texte lisible. */
+/* — Le bandeau ne peint plus, il floute ———————————————
+   Il portait une couleur fixe, puis une couleur par page. Even : « vu
+   que j'ai des changements de couleur ca rend mal, mets-le en
+   transparent et fais juste un effet de flou, comme ca plus de soucis
+   de couleur vu que ca prendra la couleur qui est derriere ». C'est la
+   bonne reponse : un flou n'a pas de teinte propre, il reprend
+   forcement ce qu'il y a dessous.
+
+   Le voile noir a 0,3 qui l'accompagne n'est pas une couleur mais un
+   assombrissement. Il ne peut pas jurer avec le fond puisqu'il ne fait
+   que le foncer, et il garantit la lisibilite du logo blanc quand un
+   plan clair passe derriere. Le flou seul ne suffirait pas : il
+   melange les couleurs sans les assombrir.
+
+   Le masque fait disparaitre flou et voile ensemble vers le bas, pour
+   qu'aucun bord net ne trahisse la bande. */
+.site-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -40px;
+    z-index: -1;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.30);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
+}
+
+@media (max-width: 768px) {
+    /* ── Header ── */
+    .header-inner { padding: 0 18px; }
+
+    .header-right { gap: 14px; }
+    .social-nav { display: flex; gap: 8px; }
+    .social-icon { width: 15px; height: 15px; }
+    .lang-switcher { gap: 4px; font-size: 0.75rem; }
+
+    /* ── 7. En-tete : le retour recouvrait le logo ─────────────────────
+       Mesure sur Pixel 8a (412px) : bouton retour a 94-204, logo centre a
+       130-282 — 74px de recouvrement, les deux textes s'ecrivaient l'un
+       par-dessus l'autre. Il n'y a pas la place pour les deux sur un
+       telephone : sur une page projet le retour prime, le logo s'efface.
+       Le logo reste present sur toutes les autres pages. */
+    body.a-bouton-retour .header-logo {
+        opacity: 0 !important;
+        pointer-events: none;
+    }
+}
+
+@media (max-width: 303px) {
+    /* Narrowest phones (Galaxy Fold closed): the logo only gets half the header
+       and wrapped onto two lines. Shrink it onto one line and nudge it left so
+       it clears the language switcher. */
+    .header-logo {
+        left: calc(50% - 28px);
+        white-space: nowrap;
+    }
+
+    .header-logo-text {
+        font-size: 1.3rem;
+    }
+}
+
+@keyframes logoWobbleMini {
+    0%,33%   { filter: url(#sketch-1); }
+    34%,66%  { filter: url(#sketch-2); }
+    67%,100% { filter: url(#sketch-3); }
+}
+
+
+/* Pages */
+
+#page-wrapper { width: 100%; height: 100%; position: relative; }
+
+.page {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    opacity: 0; pointer-events: none;
+    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.page:not(.is-active) * { pointer-events: none !important; }
+
+/* ── FIX P-01 : masquage REEL des pages inactives ──────────────────
+   Avant : opacity:0 seul. Le navigateur continuait a mettre en page,
+   peindre et animer les 7 pages invisibles (61 animations infinies et
+   46 filtres feTurbulence tournaient dans le vide), et le
+   loading="lazy" des images etait neutralise -> 47,5 Mo au chargement.
+
+   visibility:hidden       -> retire du flux de tabulation clavier (21 elements)
+   content-visibility:hidden -> le navigateur saute entierement le rendu
+                                du sous-arbre, donc les images lazy ne se
+                                telechargent plus tant que la page n'est pas ouverte.
+
+   Les navigateurs anciens (Safari < 15.4, Firefox < 125) ignorent
+   content-visibility et retombent sur visibility:hidden : degradation
+   propre, aucun element casse.
+
+   contain-intrinsic-size reserve une hauteur plausible pour que la
+   barre de defilement ne saute pas a l'ouverture de la page. */
+.page:not(.is-active) {
+    visibility: hidden;
+    content-visibility: hidden;
+    contain-intrinsic-size: auto 100vh;
+}
+
+.page.is-active {
+    opacity: 1;
+    pointer-events: auto;
+    visibility: visible;
+    content-visibility: visible;
+}
+
+.page::-webkit-scrollbar { width: 4px; }
+.page::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
+.page-inner { max-width: 1200px; margin: 0 auto; padding: 120px 60px 100px; overflow: visible; }
+.page-heading { display: flex; align-items: baseline; gap: 16px; margin-bottom: 16px; }
+.page-num { font-family: var(--font-display); font-size: 1.1rem; color: var(--red); letter-spacing: 0.05em; }
+.page-title { font-family: var(--font-display); font-size: clamp(3rem, 7vw, 6rem); line-height: 0.9; letter-spacing: 0.02em; text-transform: uppercase; }
+.page-intro { font-size: 1.05rem; color: var(--muted); font-weight: 300; max-width: 550px; margin-bottom: 60px; line-height: 1.7; }
+
+.project-detail-page .page-inner {
+    max-width: none;
+    margin: 0;
+    padding: 120px 0 0;
+    overflow: visible;
+}
+
+.project-detail-page .page-heading,
+.project-detail-page .page-intro {
+    padding-left: 60px;
+    padding-right: 60px;
+    max-width: 1200px;
+}
+
+/* ── 22. La citation de fin, et la page qui respire autour ──────
+
+   Even a valide le mouvement : « le deroulement est parfait, HYPER
+   fluide, ca agrandit bien ». Mais il bloquait : « une fois centree,
+   je ne peux pas descendre plus bas, la molette ne marche plus ».
+
+   POURQUOI CA BLOQUAIT
+   Les deux vides qui s'ouvraient etaient de vrais elements de mise en
+   page. Les faire grandir changeait la HAUTEUR DE LA PAGE en plein
+   defilement. Deux consequences, chacune suffisante :
+     Lenis, qui pilote le defilement, garde en memoire la hauteur
+     maximale atteignable. Elle devenait fausse a chaque image, et il
+     bloquait sur l'ancienne.
+     Le vide du haut poussait la citation vers le bas exactement
+     pendant qu'on essayait de la depasser. Mesure : la phrase ne
+     montait plus qu'a 43% de la vitesse du doigt.
+
+   CE QUI CHANGE
+   Plus rien ne touche a la mise en page. L'ecart est cree en
+   DEPLACANT les blocs voisins : le bloc du dessus monte, celui du
+   dessous descend, chacun jusqu'a 20vh. Une transformation ne change
+   ni la hauteur de la page ni la position de quoi que ce soit dans le
+   flux. Lenis ne voit rien, il n'a plus rien a recalculer, et le
+   defilement reste exactement aussi fluide qu'ailleurs.
+   Bonus : une transformation est calculee par la carte graphique,
+   c'est moins cher qu'un changement de mise en page a chaque image.
+
+   La citation, elle, ne bouge plus d'un pixel. C'est ce qui permet
+   d'ancrer la piste d'animation sur elle sans aucune boucle.
+
+   Meme courbe qu'avant, sin^2(pi*t), que Even a trouvee juste :
+   pente nulle aux deux bouts, sommet au centre, quinze paliers. */
+/* Le nom de piste doit etre visible aux voisins de la citation. Les
+   deux pages qui en portent une ont leur propre portee : chaque
+   .page-inner resout son --citation dans son sous-arbre, sans que les
+   deux se melangent. */
+#page-project-diploma .page-inner,
+#page-drawings .page-inner {
+    timeline-scope: --citation;
+}
+
+@media (max-width: 991px) {
+    /* Responsive */
+    .page {
+        padding: 100px 30px 40px 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* ── Pages intérieures ── */
+    .page-inner { padding: 95px 20px 80px; }
+
+    .page-title { font-size: clamp(2.2rem, 8vw, 3.5rem); }
+    .page-intro { font-size: 0.95rem; margin-bottom: 36px; }
+
+    /* ── 8. Pages projet : les panneaux jusqu'au bord ──────────────────
+       .project-detail-page portait 30px de padding horizontal. Les
+       panneaux, leur fond colore et les traits dechires — tous des
+       pseudo-elements calques sur la largeur du panneau — s'arretaient
+       donc a 30px des bords : le trait ne rejoignait jamais le bord de
+       l'ecran et le changement de fond laissait deux bandes noires.
+       Sur telephone on retire ce padding : les panneaux vont d'un bord a
+       l'autre, et leur propre padding interne (20px) garde le contenu a
+       distance des bords. */
+    .page.project-detail-page {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+
+/* Footer */
+
+.site-footer {
+    background: #111111;
+    color: rgba(255,255,255,0.4);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: -100px;
+    padding-left: 60px;
+    padding-right: 60px;
+    position: relative;
+    clear: both;
+    /* FIX R-01 : 100vw inclut la barre de defilement de .page (4px),
+       ce qui faisait deborder le footer de ~5px sur toutes les pages.
+       --sbw est mesure au runtime par app.js ; 0px = comportement d'avant. */
+    width: calc(100vw - var(--sbw, 0px));
+    left: 50%;
+    right: 50%;
+    margin-left: calc(-50vw + var(--sbw, 0px) / 2) !important;
+    margin-right: calc(-50vw + var(--sbw, 0px) / 2) !important;
+    box-sizing: border-box;
+}
+
+.footer-inner { max-width: 1200px; margin: 0 auto; padding: 50px 60px 40px; }
+.footer-top { display: flex; align-items: baseline; gap: 16px; margin-bottom: 30px; }
+.footer-logo { font-size: 1.6rem; color: var(--white); animation: logoWobbleMini 0.3s steps(1) infinite; }
+.footer-year { font-size: 0.85rem; opacity: 0.5; }
+.footer-legal { font-size: 0.8rem; line-height: 1.7; opacity: 0.5; max-width: 800px; margin-bottom: 26px; }
+.footer-legal p { margin-bottom: 12px; }
+.footer-bottom { display: flex; gap: 14px; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.3; }
+.footer-sep { opacity: 0.3; }
+
+/* Footer in projects: no negative margins needed since page-inner has no horizontal padding */
+.project-detail-page .site-footer {
+    margin-left: 0;
+    margin-right: 0;
+    clear: both;
+}
+
+@media (max-width: 768px) {
+    /* ── Footer ── */
+    .footer-inner { padding: 36px 20px 28px; }
+
+    .footer-bottom { flex-wrap: wrap; gap: 8px; }
+
+    /* ── 2. Lisibilite des petits textes sur telephone ─────────────────
+       Mesure : mentions legales 12px, code RNCP 12,8px. Sous 14px la
+       lecture devient penible sur un ecran tenu a bout de bras. */
+    .footer-legal          { font-size: 0.875rem; line-height: 1.75; }
+
+    .footer-bottom,
+    .footer-bottom a,
+    .footer-sep            { font-size: 0.8125rem; }
+
+    .footer-year           { font-size: 0.875rem; }
+}
+
+.footer-inner {
+    padding-bottom: max(40px, calc(40px + env(safe-area-inset-bottom)));
+}
+
+
+/* Not yet reorganised */
 
 .menu-overlay {
     position: fixed; inset: 0; z-index: 90;
@@ -268,48 +572,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 .menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
 .menu-footer-social a { transition: color var(--dur-fast); }
 .menu-footer-social a:hover { color: var(--red); }
-#page-wrapper { width: 100%; height: 100%; position: relative; }
-
-.page {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    overflow-y: auto; overflow-x: hidden;
-    opacity: 0; pointer-events: none;
-    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
-}
-
-.page.is-active { opacity: 1; pointer-events: auto; }
-.page:not(.is-active) * { pointer-events: none !important; }
-
-/* ── FIX P-01 : masquage REEL des pages inactives ──────────────────
-   Avant : opacity:0 seul. Le navigateur continuait a mettre en page,
-   peindre et animer les 7 pages invisibles (61 animations infinies et
-   46 filtres feTurbulence tournaient dans le vide), et le
-   loading="lazy" des images etait neutralise -> 47,5 Mo au chargement.
-
-   visibility:hidden       -> retire du flux de tabulation clavier (21 elements)
-   content-visibility:hidden -> le navigateur saute entierement le rendu
-                                du sous-arbre, donc les images lazy ne se
-                                telechargent plus tant que la page n'est pas ouverte.
-
-   Les navigateurs anciens (Safari < 15.4, Firefox < 125) ignorent
-   content-visibility et retombent sur visibility:hidden : degradation
-   propre, aucun element casse.
-
-   contain-intrinsic-size reserve une hauteur plausible pour que la
-   barre de defilement ne saute pas a l'ouverture de la page. */
-.page:not(.is-active) {
-    visibility: hidden;
-    content-visibility: hidden;
-    contain-intrinsic-size: auto 100vh;
-}
-
-.page.is-active {
-    visibility: visible;
-    content-visibility: visible;
-}
-
-.page::-webkit-scrollbar { width: 4px; }
-.page::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 
 .hero-screen {
     width: 100%; min-height: 100vh; min-height: 100dvh;
@@ -1038,40 +1300,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 .ci-text { font-size: 1rem; font-weight: 300; opacity: 0.5; }
-
-.site-footer {
-    background: #111111;
-    color: rgba(255,255,255,0.4);
-    border-top: 1px solid rgba(255,255,255,0.05);
-    margin-bottom: -100px;
-    padding-left: 60px;
-    padding-right: 60px;
-    position: relative;
-    clear: both;
-    /* FIX R-01 : 100vw inclut la barre de defilement de .page (4px),
-       ce qui faisait deborder le footer de ~5px sur toutes les pages.
-       --sbw est mesure au runtime par app.js ; 0px = comportement d'avant. */
-    width: calc(100vw - var(--sbw, 0px));
-    left: 50%;
-    right: 50%;
-    margin-left: calc(-50vw + var(--sbw, 0px) / 2) !important;
-    margin-right: calc(-50vw + var(--sbw, 0px) / 2) !important;
-    box-sizing: border-box;
-}
-
-.footer-inner { max-width: 1200px; margin: 0 auto; padding: 50px 60px 40px; }
-.footer-top { display: flex; align-items: baseline; gap: 16px; margin-bottom: 30px; }
-.footer-logo { font-size: 1.6rem; color: var(--white); animation: logoWobbleMini 0.3s steps(1) infinite; }
-.footer-year { font-size: 0.85rem; opacity: 0.5; }
-.footer-legal { font-size: 0.8rem; line-height: 1.7; opacity: 0.5; max-width: 800px; margin-bottom: 26px; }
-.footer-legal p { margin-bottom: 12px; }
-.footer-bottom { display: flex; gap: 14px; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.3; }
-.footer-sep { opacity: 0.3; }
-.page-inner { max-width: 1200px; margin: 0 auto; padding: 120px 60px 100px; overflow: visible; }
-.page-heading { display: flex; align-items: baseline; gap: 16px; margin-bottom: 16px; }
-.page-num { font-family: var(--font-display); font-size: 1.1rem; color: var(--red); letter-spacing: 0.05em; }
-.page-title { font-family: var(--font-display); font-size: clamp(3rem, 7vw, 6rem); line-height: 0.9; letter-spacing: 0.02em; text-transform: uppercase; }
-.page-intro { font-size: 1.05rem; color: var(--muted); font-weight: 300; max-width: 550px; margin-bottom: 60px; line-height: 1.7; }
 .drawings-gallery { display: grid; grid-template-columns: 1fr 1.6fr 1fr; gap: 40px; align-items: end; }
 
 .drawing-item { 
@@ -1661,13 +1889,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     color: rgba(255, 255, 255, 0.5);
 }
 
-@media (max-width: 991px) {
-    /* Responsive */
-    .page {
-        padding: 100px 30px 40px 30px;
-    }
-}
-
 @media (max-width: 480px) {
     /* ── Inline PDF Loader ── */
     .diploma-card-inner {
@@ -2023,26 +2244,12 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 @media (max-width: 768px) {
-    /* ── Header ── */
-    .header-inner { padding: 0 18px; }
-
-    .header-right { gap: 14px; }
-    .social-nav { display: flex; gap: 8px; }
-    .social-icon { width: 15px; height: 15px; }
-    .lang-switcher { gap: 4px; font-size: 0.75rem; }
-
     /* ── Menu overlay ── */
     .menu-overlay { padding: 0 20px 30px; }
 
     .menu-logo-wrap { padding-top: 85px; padding-bottom: 20px; }
     .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
     .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
-
-    /* ── Pages intérieures ── */
-    .page-inner { padding: 95px 20px 80px; }
-
-    .page-title { font-size: clamp(2.2rem, 8vw, 3.5rem); }
-    .page-intro { font-size: 0.95rem; margin-bottom: 36px; }
 
     /* ── Accueil ── */
     .home-showcase { padding: 0 16px; margin-bottom: 36px; }
@@ -2083,11 +2290,6 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .home-contact-inner { padding: 60px 20px 80px; }
 
     .contact-layout { grid-template-columns: 1fr; gap: 40px; }
-
-    /* ── Footer ── */
-    .footer-inner { padding: 36px 20px 28px; }
-
-    .footer-bottom { flex-wrap: wrap; gap: 8px; }
 
     /* ── Galerie Dessins ── */
     .drawings-gallery { grid-template-columns: 1fr; gap: 28px; }
@@ -2500,29 +2702,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     background: #111111;
 }
 
-.project-detail-page .page-inner {
-    max-width: none;
-    margin: 0;
-    padding: 120px 0 0;
-    overflow: visible;
-}
-
-.project-detail-page .page-heading,
-.project-detail-page .page-intro {
-    padding-left: 60px;
-    padding-right: 60px;
-    max-width: 1200px;
-}
-
 .project-detail-page .page-next {
     margin-right: 60px;
-}
-
-/* Footer in projects: no negative margins needed since page-inner has no horizontal padding */
-.project-detail-page .site-footer {
-    margin-left: 0;
-    margin-right: 0;
-    clear: both;
 }
 
 .fortiche-projects-board {
@@ -3202,39 +3383,13 @@ textarea:focus-visible,
 }
 
 @media (max-width: 768px) {
-    /* ── 2. Lisibilite des petits textes sur telephone ─────────────────
-       Mesure : mentions legales 12px, code RNCP 12,8px. Sous 14px la
-       lecture devient penible sur un ecran tenu a bout de bras. */
-    .footer-legal          { font-size: 0.875rem; line-height: 1.75; }
-
-    .footer-bottom,
-    .footer-bottom a,
-    .footer-sep            { font-size: 0.8125rem; }
-
-    .footer-year           { font-size: 0.875rem; }
-
     .diploma-cert-code,
     .diploma-cert-authority { font-size: 0.875rem; }
-}
-
-/* ── 3. iPhone : encoche et barre d'accueil ────────────────────────
-   Avec viewport-fit=cover le fond sombre va jusqu'au bord de la
-   dalle, mais le contenu doit rester en dehors des zones systeme.
-   Les valeurs safe-area valent 0 partout ailleurs : aucun effet sur
-   les autres appareils ni sur le bureau. */
-.site-header {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    padding-top: env(safe-area-inset-top);
 }
 
 .menu-overlay {
     padding-top: max(0px, env(safe-area-inset-top));
     padding-bottom: max(30px, env(safe-area-inset-bottom));
-}
-
-.footer-inner {
-    padding-bottom: max(40px, calc(40px + env(safe-area-inset-bottom)));
 }
 
 .drawing-lightbox .lb-close {
@@ -3290,33 +3445,6 @@ textarea:focus-visible,
 }
 
 @media (max-width: 768px) {
-    /* ── 7. En-tete : le retour recouvrait le logo ─────────────────────
-       Mesure sur Pixel 8a (412px) : bouton retour a 94-204, logo centre a
-       130-282 — 74px de recouvrement, les deux textes s'ecrivaient l'un
-       par-dessus l'autre. Il n'y a pas la place pour les deux sur un
-       telephone : sur une page projet le retour prime, le logo s'efface.
-       Le logo reste present sur toutes les autres pages. */
-    body.a-bouton-retour .header-logo {
-        opacity: 0 !important;
-        pointer-events: none;
-    }
-}
-
-@media (max-width: 768px) {
-    /* ── 8. Pages projet : les panneaux jusqu'au bord ──────────────────
-       .project-detail-page portait 30px de padding horizontal. Les
-       panneaux, leur fond colore et les traits dechires — tous des
-       pseudo-elements calques sur la largeur du panneau — s'arretaient
-       donc a 30px des bords : le trait ne rejoignait jamais le bord de
-       l'ecran et le changement de fond laissait deux bandes noires.
-       Sur telephone on retire ce padding : les panneaux vont d'un bord a
-       l'autre, et leur propre padding interne (20px) garde le contenu a
-       distance des bords. */
-    .page.project-detail-page {
-        padding-left: 0;
-        padding-right: 0;
-    }
-
     /* le contenu hors panneau garde sa respiration */
     .project-detail-page .page-next {
         padding-left: 20px;
@@ -3686,74 +3814,6 @@ textarea:focus-visible,
     }
 }
 
-/* ── 17. La barre du haut n'avait pas de fond utilisable ────────
-
-   Even : « la barre du haut n'a pas de fond, quand du texte passe
-   derriere ca devient illisible » — et le meme souci sur PC, juste
-   moins visible parce que l'ecran est plus large.
-
-   Un fond existait pourtant : un degrade de rgba(26,26,26,0.85) vers
-   le transparent. Mais il s'eteignait sur la hauteur de l'entete,
-   alors que TOUT son contenu est centre verticalement dedans.
-   Mesure : le logo occupe 8 -> 63px sur 72, soit le milieu exact ; a
-   cette hauteur le degrade ne valait plus que 0,44.
-
-   Le fond descend donc maintenant 40px SOUS l'entete : le fondu se
-   joue dans ce debord, en dehors de la zone qui porte le texte.
-
-   POURQUOI AUTANT DE PALIERS
-   Ma premiere version n'en avait que cinq, et Even a vu « un genre de
-   trait dans le degrade ». Ce n'etait pas un defaut d'affichage mais
-   de courbe : la pente changeait brutalement d'un palier a l'autre
-   (x42 a 60%, x4 a 74%). L'oeil ne voit pas une valeur, il voit une
-   RUPTURE de pente — c'est l'effet de bande de Mach, et il dessine un
-   trait la ou il n'y en a aucun.
-   Les paliers ci-dessous suivent une courbe « smootherstep », dont la
-   pente est nulle aux deux extremites et varie continument entre les
-   deux. Saut de pente maximal par pixel : 0,0217 avant, 0,0044 apres
-   — cinq fois moins — et reparti sur trente paliers au lieu d'etre
-   concentre sur deux. Trente paliers ne coutent rien : le navigateur
-   rasterise le degrade une seule fois.
-
-   Pose en ::before et non sur l'entete elle-meme : il faut pouvoir
-   deborder vers le bas sans changer la hauteur de la barre, qui sert
-   de reference au bouton retour et aux marges hautes des pages.
-
-   Pas de backdrop-filter, volontairement : un flou permanent sur une
-   bande toujours a l'ecran coute cher au defilement sur les appareils
-   modestes, et le degrade suffit a rendre le texte lisible. */
-/* — Le bandeau ne peint plus, il floute ———————————————
-   Il portait une couleur fixe, puis une couleur par page. Even : « vu
-   que j'ai des changements de couleur ca rend mal, mets-le en
-   transparent et fais juste un effet de flou, comme ca plus de soucis
-   de couleur vu que ca prendra la couleur qui est derriere ». C'est la
-   bonne reponse : un flou n'a pas de teinte propre, il reprend
-   forcement ce qu'il y a dessous.
-
-   Le voile noir a 0,3 qui l'accompagne n'est pas une couleur mais un
-   assombrissement. Il ne peut pas jurer avec le fond puisqu'il ne fait
-   que le foncer, et il garantit la lisibilite du logo blanc quand un
-   plan clair passe derriere. Le flou seul ne suffirait pas : il
-   melange les couleurs sans les assombrir.
-
-   Le masque fait disparaitre flou et voile ensemble vers le bas, pour
-   qu'aucun bord net ne trahisse la bande. */
-.site-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: -40px;
-    z-index: -1;
-    pointer-events: none;
-    background: rgba(0, 0, 0, 0.30);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
-    mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
-}
-
 /* ── 18. Ce qu'Even cherche, dit des la premiere seconde ────────
 
    Un recruteur accorde quelques secondes avant de decider s'il continue.
@@ -3958,47 +4018,6 @@ textarea:focus-visible,
         margin: -10px auto 24px;
         padding: 0 14px;
     }
-}
-
-/* ── 22. La citation de fin, et la page qui respire autour ──────
-
-   Even a valide le mouvement : « le deroulement est parfait, HYPER
-   fluide, ca agrandit bien ». Mais il bloquait : « une fois centree,
-   je ne peux pas descendre plus bas, la molette ne marche plus ».
-
-   POURQUOI CA BLOQUAIT
-   Les deux vides qui s'ouvraient etaient de vrais elements de mise en
-   page. Les faire grandir changeait la HAUTEUR DE LA PAGE en plein
-   defilement. Deux consequences, chacune suffisante :
-     Lenis, qui pilote le defilement, garde en memoire la hauteur
-     maximale atteignable. Elle devenait fausse a chaque image, et il
-     bloquait sur l'ancienne.
-     Le vide du haut poussait la citation vers le bas exactement
-     pendant qu'on essayait de la depasser. Mesure : la phrase ne
-     montait plus qu'a 43% de la vitesse du doigt.
-
-   CE QUI CHANGE
-   Plus rien ne touche a la mise en page. L'ecart est cree en
-   DEPLACANT les blocs voisins : le bloc du dessus monte, celui du
-   dessous descend, chacun jusqu'a 20vh. Une transformation ne change
-   ni la hauteur de la page ni la position de quoi que ce soit dans le
-   flux. Lenis ne voit rien, il n'a plus rien a recalculer, et le
-   defilement reste exactement aussi fluide qu'ailleurs.
-   Bonus : une transformation est calculee par la carte graphique,
-   c'est moins cher qu'un changement de mise en page a chaque image.
-
-   La citation, elle, ne bouge plus d'un pixel. C'est ce qui permet
-   d'ancrer la piste d'animation sur elle sans aucune boucle.
-
-   Meme courbe qu'avant, sin^2(pi*t), que Even a trouvee juste :
-   pente nulle aux deux bouts, sommet au centre, quinze paliers. */
-/* Le nom de piste doit etre visible aux voisins de la citation. Les
-   deux pages qui en portent une ont leur propre portee : chaque
-   .page-inner resout son --citation dans son sous-arbre, sans que les
-   deux se melangent. */
-#page-project-diploma .page-inner,
-#page-drawings .page-inner {
-    timeline-scope: --citation;
 }
 
 /* PAS DE FOND SOUS LA CITATION, ET C'EST UN CHOIX.
