@@ -75,6 +75,7 @@ const i18n = {
         proj_03_title:       "PROJET 03 : À SUIVRE...",
         proj_loading:        "en cours...",
         copied:              "copié !",
+        copy_manual:         "sélectionnée, à copier",
         video_placeholder:   "une vidéo arrive !",
         showcase_sub:        "Rendu 3D — 2025",
         showcase_btn:        "voir les projets",
@@ -177,6 +178,7 @@ const i18n = {
         proj_03_title:       "PROJECT 03: COMING SOON...",
         proj_loading:        "loading...",
         copied:              "copied !",
+        copy_manual:         "selected, copy it",
         video_placeholder:   "video coming soon !",
         showcase_sub:        "3D Render — 2025",
         showcase_btn:        "view projects",
@@ -1171,14 +1173,57 @@ function initNextPageLinks() {
 }
 
 // Fonction pour copier l'email
+// Resolves to true when the text reached the clipboard. The async API only
+// exists in secure contexts and recent browsers, hence the legacy command.
+function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        return navigator.clipboard.writeText(text).then(() => true, () => legacyCopy(text));
+    }
+    return Promise.resolve(legacyCopy(text));
+}
+
+function legacyCopy(text) {
+    const previousFocus = document.activeElement;
+    const field = document.createElement('textarea');
+    field.value = text;
+    field.setAttribute('readonly', '');
+    field.style.position = 'fixed';
+    field.style.opacity = '0';
+    document.body.appendChild(field);
+    field.select();
+    let copied = false;
+    try {
+        copied = document.execCommand('copy');
+    } catch {
+        copied = false;
+    }
+    field.remove();
+    if (previousFocus && previousFocus.focus) previousFocus.focus({ preventScroll: true });
+    return copied;
+}
+
+function selectContents(element) {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+}
+
 function initCopyEmail() {
     document.querySelectorAll('.copy-email').forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const email = this.dataset.email || this.innerText.trim();
-            navigator.clipboard.writeText(email).then(() => {
+            copyText(email).then(copied => {
+                // Nothing could be copied: select the address so that the
+                // visitor can copy it by hand, and say so.
+                if (!copied) selectContents(this);
                 const feedback = this.nextElementSibling;
                 if (feedback && feedback.classList.contains('copy-feedback')) {
+                    const key = copied ? 'copied' : 'copy_manual';
+                    feedback.setAttribute('data-i18n', key);
+                    feedback.textContent = i18n[currentLang][key];
                     feedback.style.opacity = '1';
                     feedback.style.transform = 'translateX(5px)';
                     setTimeout(() => {
