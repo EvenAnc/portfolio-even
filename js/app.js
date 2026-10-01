@@ -1050,6 +1050,10 @@ function showPage(pageId, animate = true, updateHistory = true) {
     currentPage = pageId;
     majMetaPage(pageId);
 
+    // The only page with PDF sheets: fetch the library ahead of the first
+    // opening. A failure here is retried when a sheet is opened.
+    if (pageId === 'project-diploma') loadPdfJs().catch(() => {});
+
     // Synchronise l'adresse. replaceState au tout premier affichage pour ne
     // pas creer une entree d'historique fantome avant meme la 1re navigation.
     if (updateHistory) {
@@ -2040,7 +2044,118 @@ const diplomeAnalyses = [
     { url: 'PDF/zooning-circulation.pdf', title: 'Zoning Circulations', altKey: 'alt_zoning_circulation' }
 ];
 
-// Removed PDF.js rendering logic
+// ─────────────────────────────────────
+// PDF.JS, LOADED ON DEMAND
+// ─────────────────────────────────────
+const PDFJS_URL = 'vendor/pdfjs-3.11.174/pdf.min.js';
+const PDFJS_WORKER_URL = 'vendor/pdfjs-3.11.174/pdf.worker.min.js';
+const PDFJS_INTEGRITY = 'sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e';
+
+let pdfJsPromise = null;
+
+// Injects the library once. A failed attempt is forgotten, so that the next
+// sheet opened can try again.
+function loadPdfJs() {
+    if (!pdfJsPromise) {
+        pdfJsPromise = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = PDFJS_URL;
+            script.integrity = PDFJS_INTEGRITY;
+            script.onload = () => {
+                if (!window.pdfjsLib) {
+                    reject(new Error('PDF.js did not initialise.'));
+                    return;
+                }
+                window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_URL;
+                resolve(window.pdfjsLib);
+            };
+            script.onerror = () => {
+                script.remove();
+                reject(new Error('PDF.js could not be loaded.'));
+            };
+            document.head.appendChild(script);
+        }).catch(error => {
+            pdfJsPromise = null;
+            throw error;
+        });
+    }
+    return pdfJsPromise;
+}
+
+// Share of the page height that is drawn: the bottom strip only holds
+// the sheet's page number.
+const PDF_VISIBLE_HEIGHT = 0.95;
+const PDF_MAX_SCALE = 3;
+const PDF_ZOOM_RESERVE = 4;
+const PDF_MAX_PIXELS = 9e6;
+const PDF_MAX_PIXELS_TOUCH = 4e6;
+
+// Scale = what the screen can show (fitted size x pixel ratio x zoom
+// reserve), never above PDF_MAX_SCALE, then capped by a pixel budget so
+// that one sheet cannot exhaust canvas memory on a phone or tablet.
+function pdfRenderScale(page) {
+    const base = page.getViewport({ scale: 1 });
+    const fit = Math.min(window.innerWidth / base.width, window.innerHeight / base.height);
+    const wanted = fit * (window.devicePixelRatio || 1) * PDF_ZOOM_RESERVE;
+    const budget = window.matchMedia(REQUETE_TACTILE).matches ? PDF_MAX_PIXELS_TOUCH : PDF_MAX_PIXELS;
+    const budgetScale = Math.sqrt(budget / (base.width * base.height * PDF_VISIBLE_HEIGHT));
+    return Math.min(PDF_MAX_SCALE, wanted, budgetScale);
+}
+
+// Draws the first page of a PDF into the canvas. Resolves to true once the
+// page is drawn and to false when the signal aborted the work; rejects when
+// the document cannot be loaded or rendered.
+async function renderPdfPage(url, canvas, { signal } = {}) {
+    const isAborted = () => Boolean(signal && signal.aborted);
+
+    const pdfLib = await loadPdfJs();
+    if (isAborted()) return false;
+
+    const loadingTask = pdfLib.getDocument(encodeURI(url));
+    let renderTask = null;
+
+    // Destroying the loading task also destroys the document it produced.
+    const release = () => Promise.resolve(loadingTask.destroy()).catch(() => {});
+    const onAbort = () => {
+        if (renderTask) renderTask.cancel();
+        release();
+    };
+    if (signal) signal.addEventListener('abort', onAbort);
+
+    try {
+        const pdf = await loadingTask.promise;
+        if (isAborted()) return false;
+        const page = await pdf.getPage(1);
+        if (isAborted()) return false;
+
+        const viewport = page.getViewport({ scale: pdfRenderScale(page) });
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height * PDF_VISIBLE_HEIGHT;
+
+        const context = canvas.getContext('2d');
+
+        // Fill canvas with white before rendering
+        context.fillStyle = '#ffffff';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        renderTask = page.render({
+            canvasContext: context,
+            viewport: viewport,
+            background: 'white'
+        });
+        await renderTask.promise;
+        renderTask = null;
+        return !isAborted();
+    } catch (error) {
+        if (isAborted()) return false;
+        throw error;
+    } finally {
+        if (signal) signal.removeEventListener('abort', onAbort);
+        // The canvas keeps its pixels: the document is no longer needed.
+        release();
+    }
+}
 
 // ─────────────────────────────────────
 // LIGHTBOX ULTRA-ÉPURÉE (STYLE FORTICHE)
@@ -2076,7 +2191,7 @@ function initDrawingLightbox() {
     let currentGallery = allDrawings;
     let maxZoom = 4;
     let currentRenderId = 0;
-    let activePdfJob = null;
+    let activeRender = null;
     let openedAt = 0;
     let clearTimer = null;
     let focusBeforeOpen = null;
@@ -2085,32 +2200,12 @@ function initDrawingLightbox() {
     // one just opened; it must neither close it nor zoom.
     const OPEN_CLICK_GUARD_MS = 400;
 
-    // Share of the page height that is drawn: the bottom strip only holds
-    // the sheet's page number.
-    const PDF_VISIBLE_HEIGHT = 0.95;
-    const PDF_MAX_SCALE = 3;
-    const PDF_ZOOM_RESERVE = 4;
-    const PDF_MAX_PIXELS = 9e6;
-    const PDF_MAX_PIXELS_TOUCH = 4e6;
 
-    // Scale = what the screen can show (fitted size x pixel ratio x zoom
-    // reserve), never above PDF_MAX_SCALE, then capped by a pixel budget so
-    // that one sheet cannot exhaust canvas memory on a phone or tablet.
-    function pdfRenderScale(page) {
-        const base = page.getViewport({ scale: 1 });
-        const fit = Math.min(window.innerWidth / base.width, window.innerHeight / base.height);
-        const wanted = fit * (window.devicePixelRatio || 1) * PDF_ZOOM_RESERVE;
-        const budget = window.matchMedia(REQUETE_TACTILE).matches ? PDF_MAX_PIXELS_TOUCH : PDF_MAX_PIXELS;
-        const budgetScale = Math.sqrt(budget / (base.width * base.height * PDF_VISIBLE_HEIGHT));
-        return Math.min(PDF_MAX_SCALE, wanted, budgetScale);
-    }
-
-    // Aborts whatever the job is still doing and frees its document.
-    // Destroying the loading task also destroys the document it produced.
-    function releasePdfJob(job) {
-        if (activePdfJob === job) activePdfJob = null;
-        if (job.renderTask) job.renderTask.cancel();
-        Promise.resolve(job.loadingTask.destroy()).catch(() => {});
+    // Aborts a PDF render still in flight and frees its document.
+    function cancelActiveRender() {
+        if (!activeRender) return;
+        activeRender.abort();
+        activeRender = null;
     }
 
     // Zeroing a canvas frees its backing store at once; mobile Safari
@@ -2231,7 +2326,7 @@ function initDrawingLightbox() {
         if (loader) loader.classList.add('active');
 
         const renderId = ++currentRenderId;
-        if (activePdfJob) releasePdfJob(activePdfJob);
+        cancelActiveRender();
 
         const url = isSingleMode ? index.url : currentGallery[index].url;
         const entry = isSingleMode ? index : currentGallery[index];
@@ -2251,69 +2346,30 @@ function initDrawingLightbox() {
             canvas.setAttribute('role', 'img');
             canvas.setAttribute('aria-label', altText);
             
-            let pdfLib = null;
-            if (window.pdfjsLib) {
-                pdfLib = window.pdfjsLib;
-            }
-            
-            if (pdfLib) {
-                pdfLib.GlobalWorkerOptions.workerSrc = 'vendor/pdfjs-3.11.174/pdf.worker.min.js';
-                
-                const job = { loadingTask: pdfLib.getDocument(encodeURI(url)), renderTask: null };
-                activePdfJob = job;
-                const isStale = () => renderId !== currentRenderId;
+            const controller = new AbortController();
+            activeRender = controller;
+            const isStale = () => renderId !== currentRenderId;
 
-                job.loadingTask.promise.then(pdf => {
-                    return isStale() ? null : pdf.getPage(1);
-                }).then(page => {
-                    if (!page || isStale()) return;
-
-                    const viewport = page.getViewport({ scale: pdfRenderScale(page) });
-
-                    canvas.width = viewport.width;
-                    canvas.height = viewport.height * PDF_VISIBLE_HEIGHT;
-                    
-                    const context = canvas.getContext('2d');
-                    
-                    // Fill canvas with white before rendering
-                    context.fillStyle = '#ffffff';
-                    context.fillRect(0, 0, canvas.width, canvas.height);
-                    
-                    const renderContext = {
-                        canvasContext: context,
-                        viewport: viewport,
-                        background: 'white'
-                    };
-                    
-                    job.renderTask = page.render(renderContext);
-                    return job.renderTask.promise;
-                }).then(() => {
-                    // The canvas keeps its pixels: the document is no longer needed.
-                    job.renderTask = null;
-                    releasePdfJob(job);
-                    if (isStale()) {
-                        canvas.width = canvas.height = 0;
-                        return;
-                    }
-                    if (canvasWrap) {
-                        canvasWrap.innerHTML = '';
-                        canvasWrap.appendChild(canvas);
-                    }
-                    if (loader) loader.classList.remove('active');
-                }).catch(err => {
-                    job.renderTask = null;
-                    releasePdfJob(job);
-                    if (isStale()) {
-                        canvas.width = canvas.height = 0;
-                    } else {
-                        if (loader) loader.classList.remove('active');
-                        console.error('Erreur lors du chargement du PDF:', err);
-                    }
-                });
-            } else {
+            renderPdfPage(url, canvas, { signal: controller.signal }).then(drawn => {
+                if (activeRender === controller) activeRender = null;
+                if (!drawn || isStale()) {
+                    canvas.width = canvas.height = 0;
+                    return;
+                }
+                if (canvasWrap) {
+                    canvasWrap.innerHTML = '';
+                    canvasWrap.appendChild(canvas);
+                }
                 if (loader) loader.classList.remove('active');
-                console.error('pdfLib introuvable');
-            }
+            }).catch(err => {
+                if (activeRender === controller) activeRender = null;
+                if (isStale()) {
+                    canvas.width = canvas.height = 0;
+                } else {
+                    if (loader) loader.classList.remove('active');
+                    console.error('Erreur lors du chargement du PDF:', err);
+                }
+            });
 
         } else {
             // Render as standard image
@@ -2423,7 +2479,7 @@ function initDrawingLightbox() {
         clearTimeout(hideTimer);
         // A render still in flight must not land in the closed viewer.
         ++currentRenderId;
-        if (activePdfJob) releasePdfJob(activePdfJob);
+        cancelActiveRender();
         if (loader) loader.classList.remove('active');
         // Emptied only once the closing fade has played.
         clearTimer = setTimeout(clearCanvasWrap, 350);
