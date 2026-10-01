@@ -4,8 +4,6 @@
  * Rectangle SVG dessiné main + Menu habillé + Carrousel inertie
  */
 
-'use strict';
-
 // Un appareil est considere tactile s'il n'a pas de survol OU si son
 // pointeur est grossier (doigt). Le second critere rattrape les tablettes
 // et PC tactiles qui se declarent a tort comme ayant un survol : sans lui
@@ -3131,7 +3129,7 @@ function animateFavicon() {
 }
 
 // Last statement of the file: every declaration above must exist before
-// init runs. Deferred scripts run once the document is parsed; the guard also covers a
+// init runs. A module runs once the document is parsed; the guard also covers a
 // late injection, when DOMContentLoaded has already fired.
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
