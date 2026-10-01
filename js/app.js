@@ -440,8 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
         closeOverlays();
         const cible = pageFromHash();
         if (cible === 'contact') {
-            if (currentPage !== 'home') showPage('home', true, false);
-            setTimeout(scrollToContactSection, currentPage === 'home' ? 100 : 750);
+            revealContact();
             return;
         }
         showPage(cible || 'home', true, false);
