@@ -3,7 +3,7 @@
  * images of the pages to the viewer.
  */
 
-import { REQUETE_TACTILE } from '../core/env.js';
+import { isTouch, prefersReducedMotion } from '../core/env.js';
 import { allDrawings, diplomeCoupes, findGalleryByUrl } from './galleries.js';
 import { openGallery, openSingleImage } from './lightbox.js';
 
@@ -19,7 +19,7 @@ const FALLBACK_SHEET_TITLE = 'Plan Architecture';
 // Plays the trace of the red frame, then runs the action. With a mouse, or
 // when the element has no frame to draw, nothing is delayed.
 function traceFrameThen(element, action) {
-    if (!window.matchMedia(REQUETE_TACTILE).matches) { action(); return; }
+    if (!isTouch()) { action(); return; }
 
     const frame = element.closest('.frame-wrap');
     if (!frame || !frame.querySelector('.sketch-rect-svg')) { action(); return; }
@@ -49,7 +49,7 @@ function liftBoard(source, open) {
     const lightbox = document.getElementById('drawing-lightbox');
 
     if (!document.startViewTransition || !thumbnail || !stage || !lightbox ||
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        prefersReducedMotion()) {
         open();
         return;
     }
