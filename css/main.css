@@ -4197,7 +4197,33 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 }
 
 
-/* Not yet reorganised */
+/* Overrides */
+
+/* ── Focus clavier visible ─────────────────────────────────────────
+   Uniquement :focus-visible : la bordure n'apparait donc jamais au
+   clic souris, seulement lors d'une navigation au clavier. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+/* A page takes focus after a navigation only so that the keyboard scrolls
+   it; it is not a control, so it shows no focus ring. The two rules stay
+   apart: a browser that does not know :focus-visible drops any rule whose
+   selector list contains it, and must still get the first one. */
+.page:focus {
+    outline: none;
+}
+
+.page:focus-visible {
+    outline: none;
+    border-radius: 0;
+}
 
 @media (prefers-reduced-motion: reduce) {
     .hero-logo,
@@ -4230,35 +4256,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     .notebook-hover-zone:hover .notebook-text {
         animation: none !important;
     }
-}
 
-/* ── Focus clavier visible ─────────────────────────────────────────
-   Uniquement :focus-visible : la bordure n'apparait donc jamais au
-   clic souris, seulement lors d'une navigation au clavier. */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-[tabindex]:focus-visible {
-    outline: 2px solid var(--red);
-    outline-offset: 4px;
-    border-radius: 2px;
-}
-
-/* A page takes focus after a navigation only so that the keyboard scrolls
-   it; it is not a control, so it shows no focus ring. The two rules stay
-   apart: a browser that does not know :focus-visible drops any rule whose
-   selector list contains it, and must still get the first one. */
-.page:focus {
-    outline: none;
-}
-
-.page:focus-visible {
-    outline: none;
-    border-radius: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
     ::view-transition-group(*),
     ::view-transition-old(*),
     ::view-transition-new(*) {
