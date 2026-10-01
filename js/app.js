@@ -693,6 +693,10 @@ function initMenu() {
             }
         });
     }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && isMenuOpen) closeMenu();
+    });
 }
 
 function toggleMenu() {
