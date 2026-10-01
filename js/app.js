@@ -1722,6 +1722,7 @@ function initDrawingLightbox() {
     let activePdfJob = null;
     let openedAt = 0;
     let clearTimer = null;
+    let focusBeforeOpen = null;
 
     // The second click of a double-click lands on the viewer that the first
     // one just opened; it must neither close it nor zoom.
@@ -1966,6 +1967,42 @@ function initDrawingLightbox() {
         showControls();
     }
 
+    // The viewer is modal: focus moves in on open, stays in while it is
+    // open, and goes back to where it was on close.
+    function takeFocus() {
+        if (!lightbox.contains(document.activeElement)) focusBeforeOpen = document.activeElement;
+        if (closeBtn) closeBtn.focus({ preventScroll: true });
+    }
+
+    function giveFocusBack() {
+        const target = focusBeforeOpen;
+        focusBeforeOpen = null;
+        if (target && target !== document.body && target.isConnected) {
+            target.focus({ preventScroll: true });
+        } else if (lightbox.contains(document.activeElement)) {
+            document.activeElement.blur();
+        }
+    }
+
+    function trapFocus(e) {
+        const focusables = Array.from(lightbox.querySelectorAll('button, input'))
+            .filter(el => el.offsetParent !== null);
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        const active = document.activeElement;
+        if (!lightbox.contains(active)) {
+            e.preventDefault();
+            first.focus();
+        } else if (e.shiftKey && active === first) {
+            e.preventDefault();
+            last.focus();
+        } else if (!e.shiftKey && active === last) {
+            e.preventDefault();
+            first.focus();
+        }
+    }
+
     // ── Ouvrir / Fermer ──
     function openLightbox(index) {
         // Opening on a missing entry would lock scrolling behind an empty viewer.
@@ -1973,6 +2010,7 @@ function initDrawingLightbox() {
         isSingleMode = false;
         openedAt = performance.now();
         lightbox.setAttribute('aria-hidden', 'false');
+        takeFocus();
         if (window._lenis) window._lenis.stop();
         document.body.style.overflow = 'hidden';
         generateDots();
@@ -1989,6 +2027,7 @@ function initDrawingLightbox() {
         isSingleMode = true;
         openedAt = performance.now();
         lightbox.setAttribute('aria-hidden', 'false');
+        takeFocus();
         if (window._lenis) window._lenis.stop();
         document.body.style.overflow = 'hidden';
         // En mode single, index = { url, title }
@@ -2016,6 +2055,7 @@ function initDrawingLightbox() {
         clearTimer = setTimeout(clearCanvasWrap, 350);
         if (window._lenis) window._lenis.start();
         document.body.style.overflow = '';
+        giveFocusBack();
     }
 
     // Lets the router close the viewer; a no-op when it is already closed,
@@ -2162,6 +2202,7 @@ function initDrawingLightbox() {
     document.addEventListener('keydown', (e) => {
         if (lightbox.getAttribute('aria-hidden') === 'false') {
             if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'Tab') trapFocus(e);
             if (!isSingleMode) {
                 if (e.key === 'ArrowRight') showDrawing((current + 1) % currentGallery.length);
                 else if (e.key === 'ArrowLeft') showDrawing((current - 1 + currentGallery.length) % currentGallery.length);
