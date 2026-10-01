@@ -1,24 +1,18 @@
 /**
- * Notebook section: hand-ruled lines, and a cached rendering of the torn-paper sheet for Safari.
+ * Notebook section: hand-ruled lines, and a cached rendering of the
+ * torn-paper sheet for Safari.
  */
 
-// ─────────────────────────────────────
-// SAFARI : LE PAPIER DECHIRE CALCULE UNE SEULE FOIS
-// ─────────────────────────────────────
-// La sheet du cahier porte filter:url(#paper-tear), un bruit
-// feTurbulence a 3 octaves sur toute la section. Chrome le garde en
-// memoire. Safari le recalcule sur le processeur a chaque image des
-// qu'une animation bouge ailleurs sur la page (logo qui tremble...).
-// Mesure dans WebKit : 2,5 images par seconde au repos sur l'accueil,
-// c'etait le lag du Mac.
-//
-// Sur Safari seulement, on dessine la meme sheet UNE fois dans une
-// image SVG : meme filterEl, memes coordonnees, meme graine, donc memes
-// dechirures et meme margins rouge ondulee. Safari la garde en cache
-// comme n'importe quelle image : 40 images par seconde au repos.
-//
-// -webkit-hyphens n'est reconnu que par WebKit (Safari Mac, iPhone,
-// iPad). Chrome ne passe jamais ici : son rendu ne change pas d'un pixel.
+/**
+ * The sheet carries an feTurbulence filter over the whole section. Safari
+ * recomputes it on the CPU on every frame as soon as anything animates
+ * elsewhere on the page, which makes the home page crawl. On WebKit only,
+ * the same sheet is painted once into an SVG image (same filter, same
+ * coordinates, same seed), which the browser caches like any other image.
+ *
+ * -webkit-hyphens is only recognised by WebKit: other engines return here
+ * and keep the live filter.
+ */
 export function initSafariPaperCache() {
     if (!(window.CSS && CSS.supports('-webkit-hyphens', 'none'))) return;
     const sheet = document.querySelector('#notebook-section .notebook-bg-sheet');
@@ -28,8 +22,8 @@ export function initSafariPaperCache() {
     const filterMarkup = new XMLSerializer().serializeToString(filterEl);
     let lastSignature = '';
 
-    // Les deux traits de la margins rouge (::before et ::after) sont relus
-    // dans la sheet de style : ils changent de place sur mobile.
+    // The two rules of the red margin (::before and ::after) are read back
+    // from the stylesheet: they move on small screens.
     function marginRect(pseudo, h) {
         const s = getComputedStyle(sheet, pseudo);
         if (s.content === 'none') return '';
@@ -43,7 +37,7 @@ export function initSafariPaperCache() {
         const background  = getComputedStyle(sheet).getPropertyValue('--notebook-bg').trim() || '#f2f0eb';
         const margins = marginRect('::before', h) + marginRect('::after', h);
         const signature = w + 'x' + h + '|' + background + '|' + margins;
-        if (signature === lastSignature) return;   // meme taille, rien a redessiner
+        if (signature === lastSignature) return;  // nothing changed
         lastSignature = signature;
         const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h +
                     '" viewBox="0 0 ' + w + ' ' + h + '"><defs>' + filterMarkup + '</defs>' +
@@ -53,25 +47,22 @@ export function initSafariPaperCache() {
         sheet.classList.add('papier-precalcule');
     }
 
-    // Redessine si la sheet change de taille (rotation, changement de
-    // langue qui rallonge le texte, chargement des polices).
+    // Repainted when the sheet changes size (rotation, a language switch
+    // that lengthens the text, fonts loading).
     new ResizeObserver(paint).observe(sheet);
     paint();
 }
 
-// ─────────────────────────────────────
-// LIGNES DE CAHIER ALÉATOIRES
-// ─────────────────────────────────────
+/** Draws the ruled lines of the notebook and keeps them in step with the sheet. */
 export function initNotebookLines() {
     const container = document.getElementById('notebook-lines');
     if (!container) return;
 
-    // Attendre que la section soit visible pour mesurer
-    // The first notification draws the lines, as it always did. Later ones
-    // redraw them only when the width has changed (window resize, device
-    // rotation): the text then reflows and the sheet needs a different
-    // number of lines. Height alone is ignored, since the lines themselves
-    // and late-loading content would otherwise trigger needless redraws.
+    // The first notification draws the lines. Later ones redraw them only
+    // when the width has changed (window resize, device rotation): the text
+    // then reflows and the sheet needs a different number of lines. Height
+    // alone is ignored, since the lines themselves and late-loading content
+    // would otherwise trigger needless redraws.
     let drawnWidth = null;
     let drawnHeight = null;
     const draw = () => {
@@ -108,7 +99,7 @@ export function initNotebookLines() {
         });
     }
 
-    // Génération immédiate aussi
+    // Drawn once regardless, in case the observer is slow to report.
     setTimeout(() => draw(), 200);
 }
 
@@ -125,10 +116,11 @@ function renderLines(container) {
         const line = document.createElement('div');
         line.className = 'nb-line';
 
-        // Longueurs aléatoires : début et fin varient
-        const leftOffset  = 4 + Math.random() * 20;   // 4-24px
-        const rightOffset = 6 + Math.random() * 35;   // 6-41px
-        const opacity     = 0.18 + Math.random() * 0.12; // 0.18-0.30
+        // Each line starts, ends and fades a little differently, as if drawn
+        // by hand.
+        const leftOffset  = 4 + Math.random() * 20;
+        const rightOffset = 6 + Math.random() * 35;
+        const opacity     = 0.18 + Math.random() * 0.12;
 
         line.style.left    = leftOffset + 'px';
         line.style.right   = rightOffset + 'px';

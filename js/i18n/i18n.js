@@ -1,18 +1,26 @@
 /**
- * Language: resolves, applies and switches the interface language, and keeps the page title and description in step.
+ * Language: resolves, applies and switches the interface language, and
+ * keeps the page title and description in step.
  */
 
 import { state } from '../core/state.js';
 import { readStored, writeStored } from '../core/env.js';
 import { TRANSLATIONS, PAGE_META } from './dictionary.js';
 
-// Looks a key up in the dictionary of the current language.
+/**
+ * Looks a key up in the dictionary of the current language.
+ * @param {string} key
+ * @returns {string|undefined}
+ */
 export function t(key) {
     return TRANSLATIONS[state.lang][key];
 }
 
-// Priorite : l'url (un lien partage impose sa langue), puis le
-// choix precedent du visiteur, puis la langue de son navigateur.
+/**
+ * Priority: the address (a shared link imposes its language), then the
+ * visitor's previous choice, then the browser language.
+ * @returns {'fr'|'en'}
+ */
 export function resolveInitialLanguage() {
     const requestedLang = new URLSearchParams(location.search).get('lang');
     const storedLang = readStored('lang');
@@ -35,9 +43,9 @@ export function applyLanguage(lang) {
     document.documentElement.setAttribute('lang', lang);
     updatePageMeta(state.page);
 
-    // La langue vit dans l'url : c'est ce qui permet d'envoyer un lien
-    // qui s'ouvrira en anglais, et ce qui donne un sens aux balises
-    // hreflang. Le francais reste l'url nue.
+    // The language lives in the address, which makes a link open in the
+    // language it was shared in and gives the hreflang tags a meaning.
+    // French is the bare address.
     const url = new URL(location.href);
     if (lang === 'en') url.searchParams.set('lang', 'en');
     else url.searchParams.delete('lang');

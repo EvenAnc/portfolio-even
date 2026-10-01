@@ -1,10 +1,10 @@
 /**
- * Galleries: the ordered lists of drawings and plans that the viewer can browse.
+ * Galleries: the ordered lists of drawings and plans that the viewer can
+ * browse.
  */
 
-// ─────────────────────────────────────
-// CONFIGURATION ET RENDU PDF.JS DESSINS
-// ─────────────────────────────────────
+// In the order of the drawings page: the viewer maps the position of a
+// clicked drawing onto this list.
 export const DRAWINGS = [
     {
         url: "dessin/opt/cartographie@2x.webp",

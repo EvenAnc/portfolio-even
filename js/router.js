@@ -1,5 +1,10 @@
 /**
- * Router: maps URL fragments to pages, runs the page transition and keeps browser history in sync.
+ * Router: maps URL fragments to pages, runs the page transition and keeps
+ * browser history in sync.
+ *
+ * Routing uses fragments (#dessins) rather than paths (/dessins): on a
+ * static host a path would need a redirect through 404.html, with a flash
+ * on every direct opening.
  */
 
 import { state, emit } from './core/state.js';
@@ -9,24 +14,11 @@ import { destroyPageScroll, createPageScroll, updateScrollbarWidth } from './pag
 import { updateHeaderLogo, updateBackButton } from './header.js';
 import { resetHero, bindHeroScroll } from './hero.js';
 
+// False until the landing entry is written: the first display replaces the
+// current history entry instead of adding one.
 let hasHistoryEntry = false;
 
-// ─────────────────────────────────────
-// FIX Q-03 — ADRESSES PARTAGEABLES ET BOUTON RETOUR
-// Avant : une seule URL pour tout le site. Le bouton Retour du
-// navigateur (et le geste de retour sur mobile, le plus utilise de
-// tous) faisait SORTIR du site, impossible d'envoyer un lien vers un
-// projet precis, et un rafraichissement ramenait toujours a l'accueil.
-//
-// Routage par fragment (#dessins) et non par chemin (/dessins) : sur
-// un hebergement statique comme GitHub Pages, un chemin exigerait une
-// redirection via 404.html, avec un clignotement a chaque ouverture.
-// Le fragment fonctionne partout, sans configuration serveur.
-//
-// La logique est placee DANS showPage() : les points d'appel existants
-// (menu, fleches page suivante, logo, bouton retour) en beneficient
-// sans etre modifies.
-// ─────────────────────────────────────
+// Page id -> URL fragment. The fragments are public addresses.
 const PAGE_SLUGS = {
     'home':            '',
     'projects':        'projets',
@@ -44,8 +36,10 @@ const SLUG_TO_PAGE = new Map(
     Object.entries(PAGE_SLUGS).filter(([, slug]) => slug).map(([id, slug]) => [slug, id])
 );
 
-// Lit le fragment courant. Renvoie null si l'adresse ne correspond a rien
-// de connu, pour qu'un vieux lien casse retombe proprement sur l'accueil.
+/**
+ * Reads the current fragment.
+ * @returns {string|null} a page id, 'contact', or null for an unknown address
+ */
 export function pageFromHash() {
     let raw;
     try {
@@ -61,15 +55,13 @@ export function pageFromHash() {
 
 function urlForPage(pageId) {
     const slug = PAGE_SLUGS[pageId];
-    // location.search est conserve : sans lui, naviguer depuis /?lang=en
-    // ramenait silencieusement le visiteur au francais.
+    // The query string carries the language (?lang=en) and must survive
+    // navigation.
     const base = location.pathname + location.search;
     return slug ? base + '#' + slug : base;
 }
 
-// Amene le visiteur au bloc Contact, en bas de la page d'accueil.
-// Extrait ici parce que trois chemins y menent : le menu, les fleches
-// « page suivante », et desormais l'ouverture directe sur #contact.
+// Contact is not a page: it is the last block of the home page.
 function scrollToContact() {
     const contactEl = document.getElementById('home-contact');
     // On another page the scroller would be asked to reach an element it
@@ -83,9 +75,9 @@ function scrollToContact() {
     }
 }
 
-// Contact is the bottom of the home page: bring home in if needed, then
-// scroll once its transition has settled. Never touches the history, so
-// the caller decides whether this navigation adds an entry.
+// Brings home in if needed, then scrolls once its transition has settled.
+// Never touches the history, so the caller decides whether this navigation
+// adds an entry.
 function revealContact(outerDelay = 0) {
     cancelContactReveal();
     const wasOnHome = state.page === 'home';
@@ -118,8 +110,12 @@ function scrollHomeToTop() {
     }
 }
 
-// One navigation, one history entry: the #contact entry stands for the
-// whole move, including the switch to the home page.
+/**
+ * Navigates to the contact block. One navigation, one history entry: the
+ * #contact entry stands for the whole move, including the switch to the
+ * home page.
+ * @param {number} [outerDelay] milliseconds to wait before moving
+ */
 export function goToContact(outerDelay) {
     revealContact(outerDelay);
     if (location.hash !== '#contact') {
@@ -128,6 +124,12 @@ export function goToContact(outerDelay) {
     }
 }
 
+/**
+ * Displays a page.
+ * @param {string} pageId
+ * @param {boolean} [animate] false swaps the pages at once
+ * @param {boolean} [updateHistory] false when following the history rather than adding to it
+ */
 export function showPage(pageId, animate = true, updateHistory = true) {
     if (pageId === state.page && animate) return;
     cancelContactReveal();
@@ -141,8 +143,6 @@ export function showPage(pageId, animate = true, updateHistory = true) {
     updatePageMeta(pageId);
     emit('page-change', { from: previousPage, to: pageId });
 
-    // Synchronise l'adresse. replaceState au tout premier affichage pour ne
-    // pas creer une entree d'historique fantome avant meme la 1re navigation.
     if (updateHistory) {
         const url = urlForPage(pageId);
         const method = hasHistoryEntry ? 'pushState' : 'replaceState';
@@ -152,7 +152,7 @@ export function showPage(pageId, animate = true, updateHistory = true) {
 
     updateBackButton(pageId);
 
-    // Détruire le Lenis de l'ancienne page
+    // The scroll instance belongs to the page that is leaving.
     destroyPageScroll();
 
     if (!animate || !outEl) {
@@ -167,13 +167,12 @@ export function showPage(pageId, animate = true, updateHistory = true) {
         startPageScroll(inEl);
         if (hasScrollTrigger) ScrollTrigger.refresh();
         updateHeaderLogo(pageId);
-        
+
         loadPageImages(inEl);
         updateScrollbarWidth();
         return;
     }
 
-    // Transition GSAP
     gsap.to(outEl, {
         opacity: 0, duration: 0.35, ease: 'power2.in',
         onComplete: () => {
@@ -216,23 +215,15 @@ function focusPage(pageEl) {
     pageEl.focus({ preventScroll: true });
 }
 
-// ─────────────────────────────────────
-// FIX P-01c — REVEIL DES IMAGES A L'OUVERTURE D'UNE PAGE
-// Les pages inactives sont en content-visibility:hidden : le navigateur
-// saute entierement leur rendu, ce qui est precisement l'effet recherche
-// (c'est ce qui fait tomber le chargement initial de 47,5 Mo a 1,5 Mo).
-// Corollaire : le declenchement de loading="lazy" repose sur le calcul
-// d'intersection, qui n'a pas lieu dans un sous-arbre non rendu. On ne
-// laisse donc pas au navigateur le soin de rattraper le coup : a
-// l'ouverture d'une page, on bascule explicitement SES images en
-// chargement immediat. Chaque page ne charge ainsi que ses propres
-// images, et seulement quand on l'ouvre.
-// ─────────────────────────────────────
+// Inactive pages are in content-visibility: hidden, which skips their
+// rendering and keeps the first load light. Lazy loading relies on an
+// intersection that is never computed in a skipped subtree, so the images
+// of a page are switched to eager loading when that page opens.
 function loadPageImages(pageEl) {
     if (!pageEl) return;
     pageEl.querySelectorAll('img[loading="lazy"]').forEach(img => {
         img.loading = 'eager';
-        // relance le telechargement si le navigateur l'avait mis de cote
+        // Setting src again restarts a download the browser had deferred.
         if (!img.complete || img.naturalWidth === 0) {
             const src = img.getAttribute('src');
             if (src) { img.setAttribute('src', src); }
@@ -240,9 +231,7 @@ function loadPageImages(pageEl) {
     });
 }
 
-// ─────────────────────────────────────
-// SPA — GESTION DES PAGES
-// ─────────────────────────────────────
+/** Hides every page; the router then reveals the one the address asks for. */
 export function resetActivePages() {
     document.querySelectorAll('.page').forEach(p => {
         // Hidden state is set here rather than in the markup: declared
@@ -253,9 +242,7 @@ export function resetActivePages() {
     });
 }
 
-// ─────────────────────────────────────
-// FLÈCHES "SUIVANT" → PAGE SUIVANTE
-// ─────────────────────────────────────
+/** Wires the "next page" arrows, the home shortcut and the project cards. */
 export function initPageLinks() {
     document.querySelectorAll('.page-next, .showcase-projects-btn').forEach(link => {
         link.addEventListener('click', e => {
@@ -274,14 +261,13 @@ export function initPageLinks() {
     });
 }
 
+/** Displays the page the address asks for; an unknown fragment falls back to home. */
 export function showInitialPage() {
-    // Révéler la page correspondant à l'adresse demandée (accueil par défaut).
-    // Un fragment inconnu retombe sur l'accueil plutôt que sur une page blanche.
     const requestedPage = pageFromHash();
     const initialPage = (requestedPage && requestedPage !== 'contact') ? requestedPage : 'home';
-    // updateHistory=false pour #contact : showPage remettrait l'adresse a
-    // celle de l'accueil et effacerait le fragment, si bien qu'un
-    // rafraichissement ne ramenerait plus au bloc contact.
+    // For #contact the history is left alone: showPage would write the home
+    // address and drop the fragment, so a reload would no longer come back
+    // to the contact block.
     showPage(initialPage, false, requestedPage !== 'contact');
     if (requestedPage === 'contact') {
         history.replaceState({ page: 'contact' }, '', '#contact');
@@ -290,22 +276,18 @@ export function showInitialPage() {
     // navigation must add an entry, not overwrite this one.
     hasHistoryEntry = true;
 
-    // Fragment inconnu (vieux lien, faute de frappe) : on est retombe sur
-    // l'accueil, on nettoie aussi la barre d'adresse pour ne pas laisser
-    // une adresse qui a l'air cassee.
+    // An unknown fragment is also removed from the address bar.
     if (requestedPage === null) {
         history.replaceState({ page: 'home' }, '', location.pathname + location.search);
     }
 
-    // Ouverture directe sur #contact : afficher l'accueil puis descendre.
     if (requestedPage === 'contact') {
         setTimeout(scrollToContact, 600);
     }
 }
 
+/** Follows the browser history: Back and Forward, and fragments typed by hand. */
 export function initHistory() {
-    // Boutons Précédent / Suivant du navigateur, et geste de retour sur mobile.
-    // updateHistory=false : on suit l'historique, on n'y ajoute rien.
     window.addEventListener('popstate', () => {
         const targetPage = pageFromHash();
         emit('history-navigation', { from: state.page, to: targetPage });
@@ -320,12 +302,10 @@ export function initHistory() {
         showPage(targetPage || 'home', true, false);
     });
 
-    // Adresse modifiée à la main dans la barre du navigateur.
     window.addEventListener('hashchange', () => {
         const targetPage = pageFromHash();
         emit('history-navigation', { from: state.page, to: targetPage });
         if (targetPage === null) {
-            // adresse inconnue saisie a la main : repli sur l'accueil
             showPage('home', true, false);
             history.replaceState({ page: 'home' }, '', location.pathname + location.search);
             return;

@@ -1,11 +1,11 @@
 /**
- * Environment detection: input type, available libraries, safe storage access.
+ * Environment detection: input type, motion preference, available
+ * libraries, and storage access that cannot throw.
  */
 
-// Un appareil est considere tactile s'il n'a pas de survol OU si son
-// pointeur est grossier (doigt). Le second critere rattrape les tablettes
-// et PC tactiles qui se declarent a tort comme ayant un survol : sans lui
-// ils n'avaient NI le survol reel, NI l'equivalent tactile.
+// A device counts as touch when it has no hover OR when its pointer is
+// coarse. The second test catches tablets and touch laptops that wrongly
+// report a hover capability.
 export const TOUCH_MEDIA_QUERY = '(hover: none), (pointer: coarse)';
 
 /** @returns {boolean} */
@@ -18,16 +18,13 @@ export function prefersReducedMotion() {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
-// GSAP may be missing when its file failed to load; see gsap-fallback.js.
+// GSAP is missing when its file failed to load; see gsap-fallback.js.
 export const gsapMissing = typeof window.gsap === 'undefined';
 
 // ScrollTrigger can load on its own when GSAP did not; it then throws on
 // first use, so it only counts when the real GSAP is there to drive it.
 export const hasScrollTrigger = !gsapMissing && typeof window.ScrollTrigger !== 'undefined';
 
-// ─────────────────────────────────────
-// LANGUE
-// ─────────────────────────────────────
 // Storage access throws when site data is blocked (privacy settings, some
 // embedded browsers). A remembered preference must never stop the page
 // from starting, so both directions fail silently.

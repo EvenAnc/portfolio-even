@@ -1,18 +1,23 @@
 /**
- * PDF renderer: loads PDF.js on demand and draws the first page of a document into a canvas.
+ * PDF renderer: loads PDF.js on demand and draws the first page of a
+ * document into a canvas.
  */
 
 import { isTouch } from '../core/env.js';
 
-// Resolved from this module, so the paths hold wherever the page is served from.
+// Resolved from this module, so the paths hold wherever the page is served
+// from.
 const PDFJS_URL = new URL('../../vendor/pdfjs-3.11.174/pdf.min.js', import.meta.url).href;
 const PDFJS_WORKER_URL = new URL('../../vendor/pdfjs-3.11.174/pdf.worker.min.js', import.meta.url).href;
 const PDFJS_INTEGRITY = 'sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e';
 
 let pdfJsPromise = null;
 
-// Injects the library once. A failed attempt is forgotten, so that the next
-// sheet opened can try again.
+/**
+ * Injects the library once. A failed attempt is forgotten, so that the next
+ * sheet opened can try again.
+ * @returns {Promise<object>} the pdfjsLib namespace
+ */
 export function loadPdfJs() {
     if (!pdfJsPromise) {
         pdfJsPromise = new Promise((resolve, reject) => {
@@ -60,9 +65,14 @@ function pdfRenderScale(page) {
     return Math.min(PDF_MAX_SCALE, wanted, budgetScale);
 }
 
-// Draws the first page of a PDF into the canvas. Resolves to true once the
-// page is drawn and to false when the signal aborted the work; rejects when
-// the document cannot be loaded or rendered.
+/**
+ * Draws the first page of a PDF into the canvas.
+ * @param {string} url
+ * @param {HTMLCanvasElement} canvas
+ * @param {{signal?: AbortSignal}} [options]
+ * @returns {Promise<boolean>} true once drawn, false when the signal aborted
+ *     the work; rejects when the document cannot be loaded or rendered
+ */
 export async function renderPdfPage(url, canvas, { signal } = {}) {
     const isAborted = () => Boolean(signal && signal.aborted);
 
@@ -93,7 +103,7 @@ export async function renderPdfPage(url, canvas, { signal } = {}) {
 
         const context = canvas.getContext('2d');
 
-        // Fill canvas with white before rendering
+        // PDF pages are transparent where nothing is drawn.
         context.fillStyle = '#ffffff';
         context.fillRect(0, 0, canvas.width, canvas.height);
 

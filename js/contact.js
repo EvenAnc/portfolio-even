@@ -1,12 +1,12 @@
 /**
- * Contact section: entrance animation, form validation and submission, and copying the e-mail address.
+ * Contact section: entrance animation, form validation and submission,
+ * and copying the e-mail address.
  */
 
 import { state } from './core/state.js';
 import { hasScrollTrigger } from './core/env.js';
 import { t } from './i18n/i18n.js';
 
-// Fonction pour copier l'email
 // Resolves to true when the text reached the clipboard. The async API only
 // exists in secure contexts and recent browsers, hence the legacy command.
 function copyText(text) {
@@ -94,11 +94,11 @@ export function initContactReveal() {
         }
     });
 
-    tl.fromTo(heading, 
+    tl.fromTo(heading,
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" }
     );
-    
+
     tl.fromTo(intro,
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
@@ -119,15 +119,18 @@ export function initContactReveal() {
     );
 }
 
-// Kept apart from the entrance animation: the form must be intercepted even
-// when the animation library failed to load, otherwise the browser posts it
-// natively and lands on the raw JSON answer.
+/**
+ * Kept apart from the entrance animation: the form must be intercepted even
+ * when the animation library failed to load, otherwise the browser posts it
+ * natively and lands on the raw JSON answer.
+ */
 export function initContactForm() {
     const form = document.getElementById('contact-form');
     const feedback = document.getElementById('form-feedback');
     if (!form || !feedback) return;
 
-    // FIX: Observer les changements de taille du formulaire (textarea focus) pour Lenis/ScrollTrigger
+    // The form changes height (growing textarea, feedback message): the
+    // scroll length and the scroll triggers must follow.
     if (window.ResizeObserver) {
         const ro = new ResizeObserver(() => {
             if (state.scroll) state.scroll.resize();
@@ -173,36 +176,33 @@ export function initContactForm() {
         const email = emailEl.value.trim();
         const msg   = msgEl.value.trim();
 
-        // Nettoyage des erreurs précédentes
         [nameEl, emailEl, msgEl].forEach(el => el.classList.remove('fi-error'));
         feedback.className = 'form-feedback';
         feedback.textContent = '';
 
-        // Validation
         let hasError = false;
-        
+
         if (!name) { nameEl.classList.add('fi-error'); hasError = true; }
-        
-        // Validation basique pour autoriser les emails étranges (ex: sans .com)
+
+        // Deliberately loose: unusual but valid addresses must pass.
         if (!email || !/^[^\s@]+@[^\s@]+$/.test(email)) {
-            emailEl.classList.add('fi-error'); 
+            emailEl.classList.add('fi-error');
             hasError = true;
         }
-        
+
         if (!msg) { msgEl.classList.add('fi-error'); hasError = true; }
 
         if (hasError) {
             const errMsg = state.lang === 'fr'
                 ? 'Merci de remplir tous les champs correctement.'
                 : 'Please fill in all fields correctly.';
-                
+
             feedback.textContent = errMsg;
             feedback.classList.add('form-feedback--error');
             animateFeedback(0.35);
             return;
         }
 
-        // Soumission AJAX à Formspree
         const formData = new FormData(form);
         const submitBtn = document.getElementById('contact-submit');
         isSubmitting = true;

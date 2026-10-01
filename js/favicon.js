@@ -1,21 +1,22 @@
 /**
- * Animated favicon: three hand-drawn frames cycled while the tab is visible.
+ * Animated favicon: three hand-drawn frames cycled while the tab is
+ * visible.
  */
 
 import { prefersReducedMotion } from './core/env.js';
 
-/* --- FAVICON ANIMATION (CANVAS BASED) --- */
+/** Draws the frames once the display font is ready, then cycles them. */
 export function initFavicon() {
     const favicon = document.getElementById('favicon');
     if (!favicon) return;
-    
-    // Attendre que la police soit chargée
+
+    // The letter is drawn with the display font, which must be loaded.
     document.fonts.ready.then(() => {
         const canvas = document.createElement('canvas');
         canvas.width = 100;
         canvas.height = 100;
         const ctx = canvas.getContext('2d');
-        
+
         const frames = [];
         const transforms = [
             { r: -0.01, x: -3, y: -1, s: 1.02 },
@@ -25,40 +26,37 @@ export function initFavicon() {
 
         for (let i = 0; i < 3; i++) {
             ctx.clearRect(0, 0, 100, 100);
-            
-            // Fond noir arrondi
+
+            // Rounded dark background.
             ctx.fillStyle = "#111111";
             ctx.beginPath();
             if (ctx.roundRect) {
                 ctx.roundRect(0, 0, 100, 100, 25);
             } else {
-                ctx.rect(0, 0, 100, 100); // Fallback
+                ctx.rect(0, 0, 100, 100);  // roundRect is missing before Safari 16
             }
             ctx.fill();
-            
-            // Texte E
+
+            // The letter, slightly moved, turned and scaled on each frame.
             ctx.save();
             ctx.translate(50, 50);
             ctx.rotate(transforms[i].r);
             ctx.scale(transforms[i].s, transforms[i].s);
             ctx.translate(transforms[i].x, transforms[i].y);
-            
+
             ctx.fillStyle = "#ffffff";
             ctx.font = "105px 'Skribblugh', cursive";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText("E", 0, 15); // Offset X et Y pour centrer parfaitement la lettre
-            
+            ctx.fillText("E", 0, 15);  // offset that centres the glyph
+
             ctx.restore();
-            
+
             frames.push(canvas.toDataURL('image/png'));
         }
 
-        // FIX Q-02 : la boucle tournait a 8 img/s indefiniment, y compris
-        // onglet en arriere-plan (batterie mobile + main thread reveille en
-        // permanence). Elle est desormais suspendue des que l'onglet n'est
-        // plus visible, et desactivee si l'utilisateur demande moins d'animation.
-        // Comportement a l'ecran, onglet au premier plan : strictement identique.
+        // The loop is suspended while the tab is hidden and never starts when
+        // reduced motion is requested.
         const reduceMotion = prefersReducedMotion();
 
         let currentFrame = 0;
@@ -84,7 +82,7 @@ export function initFavicon() {
         });
 
         if (reduceMotion) {
-            favicon.href = frames[0];   // une frame fixe, pas d'animation
+            favicon.href = frames[0];  // a single still frame
         } else if (document.visibilityState === 'visible') {
             startFavicon();
         }

@@ -2,18 +2,18 @@
  * Header: logo visibility and the back button shown on project pages.
  */
 
-// ─────────────────────────────────────
-// LOGO BANDEAU — APPARAÎT AU SCROLL SUR HOME
-// ─────────────────────────────────────
+/**
+ * On the home page the hero shows the logo, so the header one stays hidden
+ * until the hero scrolls away.
+ * @param {string} pageId
+ */
 export function updateHeaderLogo(pageId) {
     const headerLogo = document.getElementById('header-logo');
     if (!headerLogo) return;
 
     if (pageId === 'home') {
-        // Sur la page home, masquer le logo header (le hero logo est visible)
         headerLogo.classList.remove('is-visible');
     } else {
-        // Sur les autres pages, afficher le logo header
         headerLogo.classList.add('is-visible');
     }
 }
@@ -23,9 +23,8 @@ export function updateBackButton(pageId) {
     if (backBtn) {
         const isProjectPage = pageId.startsWith('project-');
         backBtn.style.display = isProjectPage ? 'flex' : 'none';
-        // Sur telephone le bouton retour et le logo centre se chevauchent
-        // (mesure : 74px de recouvrement sur un ecran de 412px). La CSS
-        // s'appuie sur cette classe pour masquer le logo dans ce cas.
+        // On phones the back button and the centred logo overlap: the
+        // stylesheet hides the logo when this class is set.
         document.body.classList.toggle('a-bouton-retour', isProjectPage);
     }
 }

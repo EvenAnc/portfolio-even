@@ -1,7 +1,9 @@
 /**
- * Portfolio Even ANICET — app.js V3
- * SPA + Logo Bandeau Scroll + Contact = scroll bas accueil
- * Rectangle SVG dessiné main + Menu habillé + Carrousel inertie
+ * Entry point: starts every feature in a fixed order.
+ *
+ * The order matters: the language is applied before anything reads the
+ * text, the router displays a page only once every listener is in place,
+ * and the touch reveal starts after a page is active.
  */
 
 import { installGsapFallback } from './core/gsap-fallback.js';
@@ -20,9 +22,6 @@ import { initTouchReveal } from './touch-reveal.js';
 import { initKeyboardActivation } from './keyboard-activation.js';
 import { initCopyEmail, initContactReveal, initContactForm } from './contact.js';
 
-// ─────────────────────────────────────
-// INIT
-// ─────────────────────────────────────
 function init() {
     installGsapFallback();
     initSectionTriggers();
@@ -47,16 +46,13 @@ function init() {
     showInitialPage();
     initHistory();
 
-    // CACHE-01 : cache longue durée via un service worker.
-    // GitHub Pages force un cache de 10 minutes seulement, non modifiable :
-    // passé ce délai un visiteur qui revient retélécharge tout. Le service
-    // worker garde les médias sur son disque et les ressert instantanément.
-    // Enregistré après le chargement pour ne pas concurrencer l'affichage.
+    // The host caps HTTP caching at ten minutes; the service worker keeps
+    // media on the visitor's device. Registered after load so that it does
+    // not compete with the first display.
     if ('serviceWorker' in navigator) {
         const registerServiceWorker = () => {
             navigator.serviceWorker.register('sw.js').catch(err => {
-                // Un échec ici n'a aucune conséquence : le site fonctionne
-                // exactement comme avant, simplement sans cache longue durée.
+                // Harmless: the site works the same, without the long-lived cache.
                 console.warn('[portfolio] long-lived cache unavailable:', err.message);
             });
         };
@@ -64,22 +60,19 @@ function init() {
         else window.addEventListener('load', registerServiceWorker);
     }
 
-    // PERF-04 : préparer les plans en fond, une fois l'accueil installé.
-    // 2,5 s de délai pour ne pas concurrencer l'affichage initial.
+    // Delayed so that the preload does not compete with the first display.
     setTimeout(startBackgroundPreload, 2500);
 
     watchScrollbarWidth();
 
-    // Animations au scroll pour les appareils tactiles (mobile)
-    // Appelé APRÈS showPage pour que is-active soit bien présent
+    // Must run after the initial page is active.
     initTouchReveal();
 
     playHeroIntro();
-
 }
 
-// Last statement of the file: every declaration above must exist before
-// init runs. A module runs once the document is parsed; the guard also covers a
+// Last statement of the file: every import must be evaluated before init
+// runs. A module runs once the document is parsed; the guard also covers a
 // late injection, when DOMContentLoaded has already fired.
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
