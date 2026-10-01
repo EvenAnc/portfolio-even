@@ -3420,6 +3420,41 @@ textarea:focus-visible,
     }
 }
 
+/* Small phone held sideways: the logo, counter, dots and bottom toolbar
+   left under 45% of the screen height to the image. Put the dots and the
+   counter on the logo row, shrink the toolbar, and give the room to the
+   image. Close button and arrows stay on the bottom row. */
+@media (orientation: landscape) and (max-height: 500px) and (max-width: 768px) {
+    .lb-logo {
+        top: 4px;
+        font-size: 1.3rem;
+    }
+    .lb-counter {
+        top: 12px;
+        left: calc(50% + 56px);
+        transform: none;
+    }
+    .lb-dots {
+        top: 16px;
+        bottom: auto;
+        left: auto;
+        right: 14px;
+        transform: none;
+    }
+    .lb-tools {
+        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+        padding: 4px 22px;
+    }
+    .lb-arrow {
+        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+        height: 54px;
+        min-height: 54px;
+    }
+    #lb-canvas-wrap {
+        padding: 40px 10px calc(62px + env(safe-area-inset-bottom, 0px));
+    }
+}
+
 /* ── 13. Carrousels des pages projet : fleches ramenees sous la planche
    Deux etats successifs, tous deux mauvais :
      - avant : le conteneur elargi les poussait a -22px et 402px, on
