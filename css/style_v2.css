@@ -1995,6 +1995,20 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     pointer-events: none;
 }
 
+/* Phone held sideways: the viewer and its canvas each reserve room for the
+   controls, and the two stacked paddings leave about a fifth of a 393px-high
+   screen to the image. The canvas padding alone clears the logo, the counter
+   (top) and the dots (bottom). Narrower screens use the bottom toolbar layout
+   below and are left alone. */
+@media (orientation: landscape) and (max-height: 500px) and (min-width: 769px) {
+    .drawing-lightbox {
+        padding: 0;
+    }
+    .lb-canvas-wrap {
+        padding: 104px 70px 44px;
+    }
+}
+
 /* ─────────────────────────────────────
    18. RESPONSIVE — MOBILE (≤ 768px)
 ───────────────────────────────────── */
