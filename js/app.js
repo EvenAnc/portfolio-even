@@ -2306,6 +2306,13 @@ function initScrollAnimationsMobile() {
         setTimeout(() => observeInPage(homePage), 300);
     }
 
+    // A deep link activates its page before the class watchers below exist,
+    // so they never fire for it: observe the page that is already active.
+    const activePage = document.querySelector('.page.is-active');
+    if (activePage && activePage !== homePage) {
+        setTimeout(() => observeInPage(activePage), 300);
+    }
+
     // Pour chaque autre page : observer dès qu'elle devient active (navigation SPA)
     document.querySelectorAll('.page').forEach(page => {
         if (page.id === 'page-home') return; // déjà géré ci-dessus
