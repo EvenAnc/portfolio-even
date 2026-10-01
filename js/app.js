@@ -421,6 +421,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (demandee === 'contact') {
         history.replaceState({ page: 'contact' }, '', '#contact');
     }
+    // The landing entry now exists whichever branch ran: the next
+    // navigation must add an entry, not overwrite this one.
+    _historyInitialised = true;
 
     // Fragment inconnu (vieux lien, faute de frappe) : on est retombe sur
     // l'accueil, on nettoie aussi la barre d'adresse pour ne pas laisser
