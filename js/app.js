@@ -484,6 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initDrawingLightbox();
     initCopyEmail();
+    initKeyboardActivation();
 
     // Révéler la page correspondant à l'adresse demandée (accueil par défaut).
     // Un fragment inconnu retombe sur l'accueil plutôt que sur une page blanche.
@@ -801,6 +802,7 @@ function openMenu() {
     // BUG-12 FIX : mettre à jour aria-hidden pour les screen readers
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) menuOverlay.setAttribute('aria-hidden', 'false');
+    setBurgerExpanded(true);
 
     // Animation d'entrée des items avec décalage vertical
     const items = document.querySelectorAll('.menu-nav-item');
@@ -836,6 +838,42 @@ function closeMenu() {
     // BUG-12 FIX : mettre à jour aria-hidden pour les screen readers
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) menuOverlay.setAttribute('aria-hidden', 'true');
+    setBurgerExpanded(false);
+}
+
+function setBurgerExpanded(expanded) {
+    const burger = document.getElementById('burger-btn');
+    if (burger) burger.setAttribute('aria-expanded', String(expanded));
+}
+
+// Click-only elements (cards, sheets, dots) become reachable and operable
+// from the keyboard without touching their markup or their look: focusable,
+// announced as buttons, activated by Enter or Space.
+function makeKeyboardActivable(el, label) {
+    if (el.closest('a[href], button')) return;
+    el.setAttribute('role', 'button');
+    // Sheets of a carousel that are not on display stay out of the tab order.
+    el.setAttribute('tabindex', el.closest('.bd-slide:not(.active)') ? '-1' : '0');
+    if (label) el.setAttribute('aria-label', label);
+    el.addEventListener('keydown', e => {
+        if (e.target !== el || (e.key !== 'Enter' && e.key !== ' ')) return;
+        e.preventDefault();
+        el.click();
+    });
+}
+
+function initKeyboardActivation() {
+    const activable = [
+        '.polaroid-card',
+        '#page-drawings .drawing-item .frame-wrap',
+        '.bd-slide .drawing-sheet-wrap',
+        '[data-coupe-gallery] .stack-item[data-coupe-index]',
+        '.single-lightbox-trigger',
+    ].join(', ');
+    document.querySelectorAll(activable).forEach(el => makeKeyboardActivable(el));
+    document.querySelectorAll('.bd-dot').forEach(dot => {
+        makeKeyboardActivable(dot, 'Page ' + (Number(dot.dataset.goto) + 1));
+    });
 }
 
 // History navigation swaps the page underneath: an overlay left open would
@@ -1572,6 +1610,10 @@ function initBDCarousel() {
 
             slides.forEach((slide, i) => {
                 slide.classList.toggle('active', i === currentIndex);
+                // Hidden slides stay in the DOM: only the visible sheet may
+                // take keyboard focus.
+                const sheet = slide.querySelector('.drawing-sheet-wrap');
+                if (sheet && sheet.hasAttribute('tabindex')) sheet.tabIndex = i === currentIndex ? 0 : -1;
             });
 
             if (dots.length > 0) {
@@ -1616,8 +1658,12 @@ function initBDCarousel() {
             if (progressBar) progressBar.style.width = '0%';
         }
 
+        // The button is a toggle named after autoplay: pressed while it runs.
+        if (playPauseBtn) playPauseBtn.setAttribute('aria-pressed', 'true');
+
         function togglePlayPause() {
             isPlaying = !isPlaying;
+            playPauseBtn.setAttribute('aria-pressed', String(isPlaying));
             if (isPlaying) {
                 if(iconPause) iconPause.style.display = 'block';
                 if(iconPlay) iconPlay.style.display = 'none';
