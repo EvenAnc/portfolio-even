@@ -46,6 +46,7 @@ function selectContents(element) {
 
 export function initCopyEmail() {
     document.querySelectorAll('.copy-email').forEach(link => {
+        let feedbackTimer = null;
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const email = this.dataset.email || this.innerText.trim();
@@ -60,7 +61,8 @@ export function initCopyEmail() {
                     feedback.textContent = t(key);
                     feedback.style.opacity = '1';
                     feedback.style.transform = 'translateX(5px)';
-                    setTimeout(() => {
+                    clearTimeout(feedbackTimer);
+                    feedbackTimer = setTimeout(() => {
                         feedback.style.opacity = '0';
                         feedback.style.transform = 'translateX(-10px)';
                     }, 2000);
@@ -164,9 +166,14 @@ export function initContactForm() {
     // error and a usable form back instead of a button stuck on "sending".
     const SUBMIT_TIMEOUT_MS = 15000;
 
+    // Clears the message once it has been read. A new attempt cancels it, or
+    // the timer of the previous attempt would wipe the new message early.
+    let feedbackTimer = null;
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (isSubmitting) return;
+        clearTimeout(feedbackTimer);
 
         const nameEl  = document.getElementById('fn');
         const emailEl = document.getElementById('fe');
@@ -254,7 +261,8 @@ export function initContactForm() {
             submitBtn.style.pointerEvents = 'auto';
             submitBtn.disabled = false;
             isSubmitting = false;
-            setTimeout(() => {
+            clearTimeout(feedbackTimer);
+            feedbackTimer = setTimeout(() => {
                 feedback.textContent = '';
                 feedback.classList.remove('form-feedback--success', 'form-feedback--error');
             }, 5000);
