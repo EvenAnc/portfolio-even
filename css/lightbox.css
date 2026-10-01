@@ -24,7 +24,6 @@
     transition: opacity 0.35s ease, visibility 0s linear 0s;
 }
 
-/* ── Logo centré en haut ── */
 .lb-logo {
     position: absolute;
     top: 26px;
@@ -39,7 +38,6 @@
     animation: logoWobbleMini 0.3s steps(1) infinite;
 }
 
-/* ── Compteur discret sous le logo ── */
 .lb-counter {
     position: absolute;
     top: 78px;
@@ -52,7 +50,6 @@
     transition: opacity 0.4s ease;
 }
 
-/* ── Outils (Plein écran, Zoom, Fermer) ── */
 .lb-tools {
     position: absolute;
     top: 20px;
@@ -85,7 +82,6 @@
     transform: scale(1.15);
 }
 
-/* ── Flèches de navigation ── */
 .lb-arrow {
     position: absolute;
     top: 50%;
@@ -107,7 +103,6 @@
     transform: translateY(-50%) scale(1.2);
 }
 
-/* ── Conteneur du canvas (l'image) ── */
 .lb-canvas-wrap {
     display: flex;
     align-items: center;
@@ -137,7 +132,6 @@
     transition: transform 0.3s ease;
 }
 
-/* ── Slider de Zoom (Crayonné) ── */
 .lb-zoom-slider-container {
     position: relative;
     width: 120px;
@@ -196,7 +190,6 @@
     border: none;
 }
 
-/* ── État zoomé (Pan & Zoom) ── */
 .drawing-lightbox.zoomed .lb-canvas-wrap {
     overflow: hidden; 
     touch-action: none;
@@ -209,12 +202,13 @@
 }
 
 .drawing-lightbox.zoomed .lb-canvas-wrap img.dragging,
+/* Keeps !important: a dragged image must follow the finger without easing. */
 .drawing-lightbox.zoomed .lb-canvas-wrap canvas.dragging {
     cursor: grabbing;
     transition: none !important;
 }
 
-/* Fallback embed PDF — supprimer le cadre gris du viewer natif */
+/* PDF embed fallback: removes the grey frame of the native viewer. */
 .lb-canvas-wrap embed,
 .lb-canvas-wrap object {
     display: block;
@@ -223,7 +217,6 @@
     background: #121212;
 }
 
-/* ── Loader spinner ── */
 .lb-loader {
     position: absolute;
     inset: 0;
@@ -249,7 +242,6 @@
     animation: lb-spin 0.9s linear infinite;
 }
 
-/* ── Points indicateurs en bas ── */
 .lb-dots {
     position: absolute;
     bottom: 28px;
@@ -278,7 +270,6 @@
     background: rgba(255, 255, 255, 0.5);
 }
 
-/* ── Auto-masquage des contrôles (classe JS) ── */
 .drawing-lightbox.controls-hidden .lb-logo,
 .drawing-lightbox.controls-hidden .lb-counter,
 .drawing-lightbox.controls-hidden .lb-close,
@@ -292,14 +283,10 @@
     top: max(18px, calc(18px + env(safe-area-inset-top)));
 }
 
-/* La visionneuse s'ouvre normalement en fondu sur 0,35s. Pendant une
-   transition de vue, ce fondu est nuisible : au moment ou le navigateur
-   photographie l'image d'arrivee, l'opacite vaut encore 0 et la planche
-   grandit vers du vide. On la rend visible d'un coup — l'animation, c'est
-   la transition qui la fait. La classe est retiree juste apres, pour que
-   la fermeture retrouve son fondu.
-   Meme poids que .drawing-lightbox[aria-hidden="false"], mais posee plus
-   loin dans le fichier : c'est elle qui l'emporte. */
+/* The viewer normally fades in over 0.35s. During a view transition that fade is harmful: when the
+   browser snapshots the incoming image the opacity is still 0 and the sheet grows towards nothing.
+   This class makes it visible at once and is removed right after so closing keeps its fade. Same
+   weight as .drawing-lightbox[aria-hidden="false"] but declared later, so it wins. */
 .drawing-lightbox.sans-fondu {
     opacity: 1;
     visibility: visible;
@@ -323,14 +310,14 @@
 }
 
 @media (max-width: 768px) {
-    /* Conteneur global : padding safe-area pour les encoches */
+    /* Safe-area padding for notches. */
     .drawing-lightbox {
         padding: 0;
         padding-top: env(safe-area-inset-top, 0px);
         padding-bottom: env(safe-area-inset-bottom, 0px);
     }
 
-    /* Logo : remonté, taille ajustée, reste centré */
+    /* Logo: raised, resized, still centred. */
     .lb-logo {
         font-size: 1.6rem;
         top: calc(12px + env(safe-area-inset-top, 0px));
@@ -339,14 +326,13 @@
         white-space: nowrap;
     }
 
-    /* Compteur sous le logo, plus petit */
+    /* Smaller counter under the logo. */
     .lb-counter {
         top: calc(50px + env(safe-area-inset-top, 0px));
         font-size: 0.9rem;
     }
 
-    /* Barre d'outils — sur mobile, on la déplace EN BAS
-           pour éviter toute superposition avec le logo haut */
+    /* On phones the toolbar moves to the bottom so it never overlaps the top logo. */
     .lb-tools {
         top: auto;
         bottom: calc(44px + env(safe-area-inset-bottom, 0px));
@@ -362,7 +348,7 @@
         border: 1px solid rgba(255,255,255,0.08);
     }
 
-    /* Boutons outils : plus grands pour les doigts */
+    /* Bigger tool buttons for fingers. */
     .lb-tool-btn {
         padding: 8px;
         min-width: 44px;
@@ -371,7 +357,7 @@
 
     .lb-tool-btn svg { width: 22px; height: 22px; }
 
-    /* Bouton fermer : intégré dans la barre du bas */
+    /* The close button joins the bottom bar. */
     .lb-close {
         font-size: 2rem;
         padding: 8px;
@@ -379,14 +365,14 @@
         min-height: 44px;
     }
 
-    /* Slider de zoom : visible mais dans la barre du bas, plein largeur */
+    /* Zoom slider: visible, in the bottom bar, full width. */
     .lb-zoom-slider-container {
         width: 90px;
         height: 36px;
         margin-right: 0;
     }
 
-    /* Canvas : prend tout l'écran avec espace pour logo et barre du bas */
+    /* Canvas: the whole screen, leaving room for the logo and the bottom bar. */
     .lb-canvas-wrap {
         padding: 90px 45px 140px 45px;
         padding-top: calc(90px + env(safe-area-inset-top, 0px));
@@ -395,7 +381,7 @@
 
     .lb-arrow svg { width: 18px; height: 18px; }
 
-    /* Points indicateurs : remontés pour ne pas chevaucher la barre */
+    /* Dots raised so they clear the bar. */
     .lb-dots {
         bottom: calc(125px + env(safe-area-inset-bottom, 0px));
         gap: 12px;
@@ -403,37 +389,23 @@
 
     .lb-dot { width: 10px; height: 10px; }
 
-    /* ── 5. Visionneuse sur telephone : recuperer la place perdue ──────
-       Mesure sur iPhone 390x844 : le conteneur reservait 45px de marge de
-       chaque cote pour degager les fleches, et l'image n'occupait que
-       300x424 — a peine plus que la vignette du carrousel. Ouvrir une
-       planche « en grand » n'apportait presque rien.
-
-       Les fleches ne font que 60px de haut et sont centrees : elles ne
-       croisent l'image que sur une bande etroite. On les laisse donc
-       flotter par-dessus, comme sur toutes les visionneuses mobiles, et
-       l'image reprend la largeur. Le glissement lateral reste de toute
-       facon le geste principal.
-       Resultat : 300x424 -> environ 370x523, soit +50% de surface. */
+    /* Phones: the container reserved 45px on each side for the arrows, so an enlarged board was
+       barely bigger than the carousel thumbnail. The arrows are only 60px tall and centred, so they
+       cross the image over a narrow band: let them float over it and give the width back to the
+       image (about +50% surface). Swiping stays the main gesture. */
     #lb-canvas-wrap {
         padding: 70px 10px 120px;
     }
 
     .lb-prev, .lb-next {
-        /* legere ombre pour rester lisibles au-dessus d'une planche claire */
+        /* slight shadow to stay legible over a light sheet */
         filter: drop-shadow(0 0 6px rgba(0,0,0,0.85));
     }
 
-    /* ── 12. Visionneuse : fleches ramenees dans la barre du bas ───────
-       Au doigt, des fleches collees aux bords de l'ecran se confondent
-       avec le geste de retour du systeme et passent inapercues. Even
-       demande a les retrouver a cote des boutons zoom et plein ecran.
-
-       Mesures : la barre d'outils occupe 93 -> 319 et laisse 93px libres
-       de chaque cote — exactement la place des fleches. On les aligne sur
-       sa hauteur (bottom: 44px), ce qui regroupe TOUTES les commandes en
-       une seule rangee : precedent | plein ecran  zoom  fermer | suivant */
-    /* Flèches de navigation : plus petites, sans fond (Swipe disponible) */
+    /* Touch: the arrows move next to the zoom and fullscreen buttons so all controls form one
+       bottom row: previous | fullscreen zoom close | next. Aligned on the toolbar height (bottom:
+       44px). */
+    /* Smaller arrows without background (swiping is available). */
     .lb-arrow {
         padding: 12px 8px;
         min-width: 44px;
@@ -454,11 +426,9 @@
         right: 14px;
     }
 
-    /* Au doigt, l'etat :hover reste colle apres l'appui. Le survol
-           reappliquait translateY(-50%), heritee de la disposition bureau ou
-           la fleche est centree verticalement : la fleche touchee sautait de
-           35px vers le haut et se desalignait de sa voisine. On ne garde que
-           l'eclaircissement de la couleur. */
+    /* On touch, :hover sticks after a tap and re-applied the desktop translateY(-50%), so the
+       tapped arrow jumped 35px up and misaligned with its neighbour. Only the colour lightening is
+       kept. */
     .lb-arrow:hover,
     .lb-arrow:focus,
     .lb-arrow:active {
@@ -512,16 +482,10 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    /* ── 19. Le rythme de la planche qui se souleve ───────────────
-
-       Sans ces regles le navigateur applique sa duree par defaut a tout,
-       fond compris, et le mouvement se noie dans le fondu general.
-       On donne le premier role a la planche — un peu plus lente, avec une
-       courbe qui decelere franchement, comme une feuille qu'on souleve — et
-       on abrege le fondu du reste pour qu'il ne la concurrence pas.
-
-       La regle « reduced motion » est deja assuree cote script, qui ouvre
-       sans transition ; celle-ci est une ceinture de plus. */
+    /* View-transition timing: the browser's default duration applies to everything, which buries
+       the movement. The sheet gets the lead role (slower, with a strongly decelerating curve, like
+       lifting a sheet) and the rest fades out faster. Reduced motion is already handled by the
+       script, which opens without a transition; this is an extra safety. */
     ::view-transition-group(planche-ouverte) {
         animation-duration: 460ms;
         animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);

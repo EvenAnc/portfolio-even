@@ -9,7 +9,7 @@
     overflow: hidden;
     width: 100%;
     clip-path: url(#torn-1);
-    /* Webkit prefix pour compatibilité maximale */
+    /* -webkit- prefix for older browsers. */
     -webkit-clip-path: url(#torn-1);
 }
 
@@ -45,22 +45,20 @@
     pointer-events: none;
     transform: rotate(2deg);
     opacity: 0;
-    transition: opacity 0.2s var(--ease-out); /* Révélation rapide pour voir le tracé dès le début */
+    transition: opacity 0.2s var(--ease-out);
 }
 
 .sketch-rect-path {
     stroke-dasharray: 1800;
     stroke-dashoffset: 1800;
-    transition: stroke-dashoffset 1.5s var(--ease-out); /* Dessin progressif en 1.5s */
+    transition: stroke-dashoffset 1.5s var(--ease-out);
     animation: rectWobble 0.3s steps(1) infinite;
 }
 
-/* Rotations et vitesses de dessin alternées pour casser la répétition visuelle */
 .drawing-item:nth-child(2n) .sketch-rect-svg { transform: rotate(-1.5deg); }
 
 .drawing-item:nth-child(2n) .sketch-rect-path { transition: stroke-dashoffset 1.3s var(--ease-out); }
 
-/* Hover sur le frame-wrap → dessine le rectangle */
 .frame-wrap:hover > .sketch-rect-svg {
     opacity: 1;
 }
@@ -69,7 +67,6 @@
     stroke-dashoffset: 0;
 }
 
-/* Variante bouton */
 .btn-wrap {
     display: inline-block;
     align-self: flex-start;
@@ -86,7 +83,6 @@
 .btn-wrap:hover > .sketch-rect-svg { opacity: 1; }
 .btn-wrap:hover > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
 
-/* Red Scribble Integration */
 .polaroid-card .sketch-rect-svg {
     pointer-events: none;
     z-index: 20;
@@ -104,7 +100,7 @@
     stroke-dashoffset: 0;
 }
 
-/* Curseur "loupe" uniquement quand la page Dessins est active et visible */
+/* Magnifier cursor only while the Drawings page is active and visible. */
 .page.is-active .drawing-item .frame-wrap,
 .page.is-active .bd-slide.active .drawing-sheet-wrap {
     cursor: zoom-in;
@@ -132,9 +128,9 @@
     stroke-dashoffset: 0;
 }
 
+/* Keeps !important: must beat the later, equally specific .ref-photo padding. */
 .bd-slide .media-frame-inner {
     padding: 0 !important;
-    /* removed transparent */
 }
 
 .school-img-wrap .media-frame-inner { aspect-ratio: 4/3; }
@@ -153,12 +149,11 @@
 }
 
 @supports (min-height: 1cqw) {
-    /* Selecteur volontairement long : .diploma-placeholder .media-frame-inner
-           impose deja le rapport A4 avec une specificite superieure. Un simple
-           .diploma-card-inner perdait la cascade sans rien changer. */
+    /* Long selector on purpose: .diploma-placeholder .media-frame-inner already sets the A4 ratio
+       with higher specificity, so a bare .diploma-card-inner lost the cascade. */
     .diploma-placeholder .media-frame-inner.diploma-card-inner {
         aspect-ratio: auto;
-        min-height: 141.4cqw;   /* 1 / 1,414 exprime en largeur de conteneur */
+        min-height: 141.4cqw;
     }
 }
 
@@ -178,11 +173,11 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* meme critere que REQUETE_TACTILE dans app.js : le second cas
-       rattrape les appareils tactiles qui se declarent avec survol */
-    /* ── Cadres : rectangle rouge se dessine au clic/touch (active) ── */
+    /* Same criterion as REQUETE_TACTILE in app.js; the second query catches touch devices that
+       report hover. */
+    /* Frames: the red rectangle draws on touch (:active). */
     .frame-wrap > .sketch-rect-svg {
-        transition: opacity 0.15s 0.1s var(--ease-out); /* Délai de 0.1s pour éviter le flash au scroll */
+        transition: opacity 0.15s 0.1s var(--ease-out); /* A 0.1s delay avoids a flash while scrolling. */
     }
 
     .frame-wrap:active > .sketch-rect-svg {
@@ -194,7 +189,7 @@
         stroke-dashoffset: 0;
     }
 
-    /* ── Cadres : image légèrement zoomée au touch ── */
+    /* Frames: the image zooms slightly on touch. */
     .frame-wrap .torn-frame .media-frame-img {
         transition: transform 0.2s 0.1s ease;
     }
@@ -204,23 +199,21 @@
         transition-delay: 0s;
     }
 
-    /* ── Bouton ENVOYER : rect rouge au touch ── */
+    /* Send button: red rectangle on touch. */
     .btn-wrap:active > .sketch-rect-svg { opacity: 1; }
 
     .btn-wrap:active > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
 
-    /* ── Désactiver les hover visuels sur mobile (ils ne font rien
-           mais laissent un état intermédiaire bloqué sur certains OS) ── */
+    /* No hover visuals on touch: they do nothing but can leave a stuck intermediate state on some
+       systems. */
     .frame-wrap:hover .torn-frame .media-frame-img { transform: none; }
 
     .torn-frame:hover .media-frame-img { transform: none; }
 
-    /* ── 4. Confort tactile general ────────────────────────────────────
-       Sur iOS un appui long fait apparaitre un menu de copie d'image et
-       un cadre de selection : penible sur une galerie ou l'on fait
-       surtout defiler et glisser. */
-    /* meme critere que REQUETE_TACTILE dans app.js : le second cas
-       rattrape les appareils tactiles qui se declarent avec survol */
+    /* On iOS a long press opens an image copy menu and a selection frame, which is a nuisance on
+       galleries made for scrolling and swiping. */
+    /* Same criterion as REQUETE_TACTILE in app.js; the second query catches touch devices that
+       report hover. */
     .media-frame-img,
     .pdf-img,
     .bd-slide img,
@@ -230,26 +223,10 @@
         user-select: none;
     }
 
-    /* ── 16. Le cadre rouge n'avait pas le temps de se dessiner ──────
-
-       A la souris, survoler un cadre dessine le rectangle rouge en 1,5 s.
-       Au doigt, l'equivalent est :active — qui ne dure que le temps de
-       l'appui, une centaine de millisecondes — et la visionneuse s'ouvrait
-       dans la foulee. Even voyait donc le rouge apparaitre puis disparaitre
-       aussitot, sans jamais voir le trace : « j'ai l'impression que le
-       doigt ne marche pas ».
-
-       tracerPuis() dans app.js pose la classe ci-dessous, attend 460 ms,
-       puis ouvre. Ici on accelere le trace a 0,40 s pour qu'il tienne
-       entierement dans ce delai — a 1,5 s on n'en verrait qu'un quart.
-
-       Selecteur en descendance et non en enfant direct : le cadre des
-       carrousels (.bd-frame-svg) est bien un enfant direct, mais rien ne
-       garantit que ce soit toujours le cas.
-
-       Vaut pour tous les appareils tactiles, Android comme iPhone : le
-       declencheur est un evenement « click », que les deux emettent, et
-       non un evenement de survol propre a l'un ou a l'autre. */
+    /* Touch: :active lasts about 100 ms and the viewer opens right after, so app.js sets this
+       class, waits 460 ms, then opens. The stroke is sped up to 0.40s to fit that delay. Descendant
+       selector: the carousel frame (.bd-frame-svg) is a direct child today but nothing guarantees
+       it. */
     .frame-wrap.trace-tactile .sketch-rect-svg {
         opacity: 1;
         transition-delay: 0s;
@@ -324,9 +301,8 @@
 
 /* Polaroid */
 
-/* Polaroid Design */
 .polaroid-card {
-    background: #e8e8e8; /* Off-white slightly textured look */
+    background: #e8e8e8;
     padding: 12px 12px 60px 12px;
     border-radius: 2px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 2px 10px rgba(0,0,0,0.1);
@@ -356,7 +332,6 @@
     transform: scale(1.05);
 }
 
-/* Tape */
 .polaroid-tape {
     position: absolute;
     top: -15px;
@@ -376,7 +351,6 @@
     top: -10px;
 }
 
-/* Polaroid Text Label */
 .polaroid-label {
     position: absolute;
     bottom: 5px;
@@ -408,20 +382,10 @@
 .prio-1 .polaroid-label .pl-text { font-size: 2.5rem; }
 
 @media (max-width: 768px) {
-    /* ── 10. Polaroids : le titre remontait sur l'image ────────────────
-       .polaroid-card reserve 60px en bas (padding) et .polaroid-label est
-       pose en absolu par-dessus, tandis que .polaroid-img-wrap (flex:1)
-       occupe TOUTE la hauteur restante. Tant que le titre tient sur une
-       ligne, l'illusion fonctionne. Sur un ecran de 412px il passe a deux
-       lignes : mesure 85px de haut pour 60px reserves, soit 25px qui
-       remontent sur l'image — « PROJET 01 : » s'ecrivait sur la photo et
-       « DIPLOME » sur la marge blanche.
-
-       On remet l'etiquette DANS LE FLUX sur telephone : l'image, etant en
-       flex:1, cede exactement la place qu'il faut. Le probleme ne peut
-       plus revenir, quelle que soit la longueur d'un futur titre.
-       Les corps sont aussi ramenes a une echelle de telephone : a 40px le
-       titre partait a la ligne pour rien. */
+    /* Phones: the label goes back into the flow. With the label absolutely positioned over a flex:1
+       image, a two-line title overflowed the 60px reserved for it and ran onto the photo. In the
+       flow, the image yields exactly the room needed whatever the title length. Sizes are scaled
+       down for phones. */
     .polaroid-card {
         padding-bottom: 14px;
     }
@@ -443,22 +407,16 @@
         font-size: 2.2rem;
     }
 
-    /* ── 11. Polaroid « a suivre » : l'icone passait sous le ruban ─────
-       La carte 3 n'a pas de photo : son cadre se dimensionne sur son seul
-       contenu et tombait a 126px de haut sur telephone. L'icone occupait
-       alors le haut du cadre (y = 3 a 54) alors que le ruban adhesif
-       descend jusqu'a y = 20 : elle apparaissait coupee.
-
-       On lui donne une hauteur proche de celle des cartes voisines, et on
-       degage le haut pour laisser passer le ruban. Ciblage par l'absence
-       d'image, ce qui evite de toucher au HTML. */
+    /* The third card has no photo, so its frame sized to its content alone (126px on phones) and
+       the icon was cut by the tape. Give it a height close to its neighbours and clear the top;
+       targeted by the absence of an image so the HTML stays untouched. */
     .polaroid-img-wrap:not(:has(img)) {
         min-height: 190px;
         flex-direction: column;
         align-items: center;
         justify-content: center;
         gap: 14px;
-        padding: 34px 12px 16px;   /* 34px en haut : le ruban s'arrete a 20px */
+        padding: 34px 12px 16px;   /* 34px at the top: the tape ends at 20px. */
         box-sizing: border-box;
     }
 }
@@ -503,7 +461,7 @@
 
 .drawing-sheet img,
 .drawing-sheet object {
-    transform: scale(1.18); /* Zoom 18% to crop white borders and fill beautifully */
+    transform: scale(1.18); /* Zoom 18% to crop the white borders of the scans. */
     transform-origin: center center;
     width: 100%;
     height: 100%;
@@ -515,7 +473,6 @@
 .drawing-title { font-family: var(--font-display); font-size: 1.35rem; letter-spacing: 0.02em; line-height: 1.2; margin-bottom: 6px; }
 .drawing-detail { font-size: 1.3rem; color: var(--red); }
 
-/* Animation photo de référence Noir & Blanc */
 .ref-photo-wrap {
     position: absolute;
     top: -15px;
@@ -533,14 +490,10 @@
     filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
 }
 
-/* 2. LA PHOTO DE REFERENCE (page Dessins)
-   Meme famille de desaccord. Le cadre polaroid tire sa hauteur d'un
-   aspect-ratio et porte un rembourrage. Avec height:100% sur la photo,
-   Chrome compte le 100% sans le rembourrage (124px) et Safari avec
-   (170px) : la photo sortait par le bas du cadre blanc.
-   En colonne flex, la photo prend exactement la place qui reste entre
-   les rembourrages, dans les deux moteurs : 124px, 116px sur
-   telephone. */
+/* Reference photo: the polaroid frame takes its height from an aspect-ratio and has padding. With
+   height:100% on the photo, Chrome ignores the padding (124px) and Safari includes it (170px), so
+   the photo overflowed the white frame. In a flex column the photo gets exactly the space left
+   between the paddings in both engines. */
 .ref-photo .media-frame-inner {
     padding: 10px 10px 36px 10px;
     background: #fdfdfd;
@@ -591,7 +544,6 @@
     stroke-dashoffset: 0;
 }
 
-/* Animation épingle Cartographie */
 .map-pin-wrap {
     position: absolute;
     top: 42%;
@@ -646,7 +598,6 @@
     box-sizing: border-box;
 }
 
-/* Animation hover sur les plans avant (même style que les coupes) */
 .bd-slide .drawing-sheet-wrap {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -656,7 +607,8 @@
     box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
 }
 
-/* Professional Document Styling (replaces torn paper) */
+/* Document style for the sheets (replaces the torn paper). */
+/* Keeps !important on the radius: must beat the focus ring radius. */
 .drawing-sheet-wrap {
     border-radius: 8px !important;
     overflow: hidden;
@@ -673,7 +625,7 @@
     aspect-ratio: auto;
     background: white;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border: none !important;                   /* FIX: retire bord blanc des coupes */
+    border: none;                              /* Removes the white border on the cut views. */
     position: relative;
     overflow: hidden;
 }
@@ -707,14 +659,9 @@
 }
 
 @media (max-width: 991px) {
-    /* ── FIX R-03 : deux blocs sortaient du cadre ──────────────────────
-       .ref-photo-wrap etait epingle a right:-110px et
-       .animation-explosion-detail a 285px a gauche du centre : des
-       valeurs fixes, calees pour le bureau, qui debordaient sous 992px.
-       Le debordement etant masque par overflow-x:hidden, le contenu
-       etait rogne SANS barre de defilement — donc invisible au test.
-       On rapatrie les deux dans le cadre en gardant le parti pris
-       « epingle de travers ». */
+    /* Fixed pixel offsets tuned for desktop made two blocks overflow below 992px. Because
+       overflow-x is hidden the content was clipped without a scrollbar. Both are pulled back into
+       the frame, keeping the pinned, crooked look. */
     .ref-photo-wrap {
         right: -18px;
         top: -8px;
@@ -722,7 +669,7 @@
     }
 
     .ref-photo .media-frame-img {
-        aspect-ratio: 3 / 4;   /* proportions reelles de la photo source */
+        aspect-ratio: 3 / 4;   /* real proportions of the source photo */
     }
 
     .ref-photo .media-frame-inner {
@@ -735,26 +682,9 @@
         aspect-ratio: auto;
     }
 
-    /* ── 14. Page Dessins sur telephone ───────────────────────────
-
-       a) LES DESSINS SONT TROP PETITS
-       La page reserve 30px de marge et .page-inner 20px de plus : 50px de
-       chaque cote, soit 312px utiles sur les 412 de l'ecran. Pour un dessin
-       a l'encre charge en details, c'est un quart de la surface perdu.
-       La galerie ressort de ces marges (elle seule : le titre et le chapeau
-       de page gardent leur alignement) et passe a 368px, soit +18%.
-
-       b) LA PHOTO DE REFERENCE ETAIT MINUSCULE ET MAL RECADREE
-       Deux defauts distincts. La vignette tombait a 78px de large, dont 20
-       de marge blanche : il restait 58px d'image. Et son cadre etait force
-       au carre (aspect-ratio: 1/1) alors que la photo source est un
-       portrait 600x800 — un quart de la hauteur etait coupe.
-       On l'agrandit et on lui rend ses proportions : plus rien n'est rogne.
-
-       c) LE TITRE TOMBAIT TROP LOIN SOUS LE DESSIN
-       18px mesures, mais le bord dechire de la feuille creuse encore
-       l'ecart a l'oeil. Resserre a 10px. */
-    /* ── Galerie Dessins ── */
+    /* Drawings on phones: the gallery breaks out of the page margins (it alone; title and intro
+       keep their alignment) to gain width. The reference photo is enlarged and keeps its portrait
+       proportions. The title sits closer under the drawing. */
     .drawings-gallery {
         grid-template-columns: 1fr;
         gap: 28px;
@@ -768,8 +698,7 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* ── Galerie dessins : désactiver le blur global au hover
-           et animer chaque item individuellement à son entrée ── */
+    /* Drawings gallery: no global blur on hover; each item animates on its own when it enters. */
     .drawings-gallery:hover .drawing-item {
         filter: none;
         opacity: 1;
@@ -788,21 +717,24 @@
         transform: translateY(0);
     }
 
-    /* Délais en cascade pour les dessins */
+    /* Staggered delays for the drawings. */
     .drawing-item:nth-child(1) { transition-delay: 0s; }
 
     .drawing-item:nth-child(2) { transition-delay: 0.1s; }
     .drawing-item:nth-child(3) { transition-delay: 0.2s; }
     .drawings-gallery .drawing-item:hover { transform: none; filter: none; }
+    /* Touch: !important keeps the resting and in-view states ahead of the hover rules. */
     .ref-photo { transform: translateY(-40px) scale(1.2) !important; }
     .ref-arrow { transform: translateY(-40px) scale(1.2) !important; }
 
-    /* ── Extras sur dessins (mobile au scroll) ── */
+    /* Extras on the drawings (touch, on scroll). */
+    /* Touch: !important keeps the in-view state ahead of the hover rules. */
     .drawing-item.is-inview .ref-photo {
         opacity: 1 !important;
         transform: rotate(15deg) translateY(0) scale(1) !important;
     }
 
+    /* Touch: !important keeps the in-view state ahead of the hover rules. */
     .drawing-item.is-inview .ref-arrow {
         opacity: 1 !important;
         transform: translateY(0) scale(1) !important;
@@ -813,37 +745,21 @@
         transition: stroke-dashoffset 0.6s var(--ease-out) 0.8s;
     }
 
+    /* Touch: !important keeps the in-view state ahead of the hover rules. */
     .drawing-item.is-inview .map-pin-icon {
         opacity: 1 !important;
         transform: translateY(0) scale(1);
         transition-delay: 0.8s;
     }
 
+    /* Touch: !important keeps the in-view state ahead of the hover rules. */
     .drawing-item.is-inview .map-pin-text {
         opacity: 1 !important;
         transform: rotate(-15deg) scale(1);
         transition-delay: 0.9s;
     }
 
-    /* ── Dessin Noir et Blanc (3eme) ─────────────────────────
-           Il y avait ici un « retrecissement pour faire de la place » :
-           scale(0.70) translateX(-18%), declenche a l'entree a l'ecran et
-           sur tactile uniquement. Il faisait passer la planche de 368 a
-           258px et la decalait de 46px vers la gauche — c'est le dessin
-           « mal cadre » signale par Even, et le « il s'agrandit quand je
-           scroll » (l'observateur retire .is-inview quand l'element sort
-           de l'ecran, la planche revient a 100% en 0,8s).
-
-           La place a gagner etait celle de la photo de reference, alors
-           epinglee a right: -110px. Elle est depuis rapatriee dans le
-           cadre (right: -6px) : le retrecissement ne servait plus a rien,
-           il ne faisait plus que du degat. Supprime.
-
-           Il etait invisible dans mon navigateur d'essai pour deux raisons
-           cumulees : .is-inview n'y est jamais pose (l'observateur ne
-           repond pas) et la transition y est gelee, donc meme en posant la
-           classe a la main on ne lit que la valeur de depart. */
-    /* Disable hover rules for mobile on extras when not in view */
+    /* Disable the hover rules on touch for extras that are not in view. */
     .drawing-item:not(.is-inview):hover .ref-photo { opacity: 0; }
 
     .drawing-item:not(.is-inview):hover .ref-arrow { opacity: 0; }
@@ -1000,7 +916,7 @@
     transform: scale(1.15) rotate(-5deg);
 }
 
-/* 3-Frame Sketch Animation for arrows */
+/* Three-frame sketch animation for the arrows. */
 .sketch-f1 { animation: frame-toggle 0.45s infinite; animation-delay: 0s; }
 
 .sketch-f2 { animation: frame-toggle 0.45s infinite; animation-delay: 0.15s; }
@@ -1077,7 +993,6 @@
 .panel-light .bd-nav-btn { z-index: 20; color: #fff; background: transparent; border: none; }
 .panel-light .bd-nav-btn:hover { color: #1a1a1a; background: #fff; }
 
-/* Fix bd-carousel-ui width */
 .panel-section .bd-carousel-ui {
     z-index: 20;
     position: relative;
@@ -1090,27 +1005,11 @@
     gap: 20px;
 }
 
-/* Carnet de croquis style for viewport */
-/* ── 23. Safari (Mac, iPhone, iPad) : le meme rendu que Chrome ──
-
-   Un ami d'Even a ouvert le site sous Safari sur un Mac M1 : planches
-   geantes qui debordent du cadre rouge, barre de progression par-dessus
-   l'image, et lag. Reproduit a l'identique dans WebKit, le moteur de
-   Safari, pilote depuis Windows. Chrome et le Pixel n'avaient rien, et
-   ces regles ne changent pas un pixel chez eux : verifie par captures
-   comparees pixel a pixel, avant et apres, en ultra-large, portable et
-   format Pixel 8a.
-
-   1. LES PLANCHES DU PROJET DIPLOME
-   La fenetre du carrousel demandait height:100% a un parent dont la
-   hauteur vient d'un aspect-ratio borne par max-height:65vh. Chrome
-   considere cette hauteur comme connue (533px sur un portable). Safari
-   la considere comme inconnue, abandonne le 100% et prend la hauteur
-   naturelle de l'image, 849px. La planche depassait donc du cadre rouge
-   de 316px et passait sous la barre de progression.
-   Le parent est un conteneur flex en ligne : sans hauteur imposee,
-   l'enfant s'etire sur toute la hauteur du parent, et les deux moteurs
-   font ce calcul de la meme facon. */
+/* Safari: the window asked for height:100% from a parent whose height comes from an aspect-ratio
+   bounded by max-height. Chrome treats it as definite, Safari falls back to the image's natural
+   height and the sheet overflowed the frame. Without a forced height the flex child stretches to
+   the parent, which both engines compute the same way. */
+/* Keeps !important: must beat the id-scoped viewport width. */
 .carousel-landscape .bd-carousel-viewport {
     width: 100% !important;
     max-width: 100%;
@@ -1127,11 +1026,11 @@
 }
 
 .panel-light .bd-carousel-viewport {
-    border: none;                              /* FIX: retire le bord gris sur fond clair */
+    border: none;                              /* Removes the grey border on a light background. */
     box-shadow: 8px 8px 24px rgba(0,0,0,0.18);
 }
 
-/* Fix bd-carousel-container width so arrows aren't at extreme edges */
+/* Container width keeps the arrows away from the extreme edges. */
 .panel-section .bd-carousel-container { align-items: center;
     max-width: 1300px;
     margin: 0 auto;
@@ -1160,7 +1059,7 @@
     overflow: hidden;
 }
 
-/* Light Mode Overrides */
+/* Light panels. */
 .panel-light .bd-carousel-pagination {
     color: #fff;
     font-weight: bold;
@@ -1170,7 +1069,6 @@
     background: rgba(255,255,255,0.15);
 }
 
-/* Panel carousel nav buttons visible */
 .panel-section .bd-nav-btn {
     z-index: 20;
     color: var(--white);
@@ -1183,10 +1081,8 @@
     color: var(--red);
 }
 
-/* ── PLANS EN IMAGE (remplacent les rendus PDF a la volee) ─────────
-   .drawing-sheet img applique un zoom de 18% et un recadrage « cover »,
-   pensé pour les dessins a main levee dont on coupe les marges blanches.
-   Applique a un plan cote, il rognerait les cotations. On neutralise. */
+/* Plans as images: .drawing-sheet img applies an 18% zoom and cover cropping meant for freehand
+   drawings. On a dimensioned plan it would crop the dimensions, so it is neutralised. */
 .drawing-sheet img.pdf-img,
 .stack-item img.pdf-img {
     transform: none;
@@ -1197,11 +1093,8 @@
     background: #fff;
 }
 
-/* ── 1. Commandes de carrousel : surfaces de contact ───────────────
-   Mesure sur iPhone 390px : fleches 32x44, lecture/pause 30x36,
-   pastilles 10x10. Le minimum recommande est 44x44.
-   On agrandit la SURFACE DE CONTACT par pseudo-element transparent :
-   le dessin reste identique, seule la zone tactile grandit. */
+/* Touch targets: the transparent pseudo-element enlarges only the contact area, the drawing stays
+   identical (recommended minimum 44x44). */
 .bd-nav-btn, .bd-play-pause-btn, .bd-dot { position: relative; }
 
 .bd-nav-btn::after,
@@ -1235,7 +1128,6 @@
         width: min(320px, calc(100vw - 92px), max(120px, calc((100dvh - 143px) / 1.414)));
     }
 
-    /* ── BD Carousel ── */
     .bd-carousel-container { align-items: center; gap: 10px; }
 
     .carousel-landscape .bd-carousel-viewport { width: 90vw; }
@@ -1243,31 +1135,16 @@
     .bd-progress-container { width: 80px; }
     .bd-section-title { font-size: 1.6rem; margin-bottom: 20px; }
 
-    /* ── 6. Carrousel : occuper la largeur disponible ──────────────
-           Le conteneur ne mesurait que 290px sur un ecran de 390 : 100px
-           restaient inutilises. La planche gagne ce qui reste une fois
-           les fleches et leurs ecarts deduits. */
+    /* The carousel uses the available width: the board takes what remains once the arrows and their
+       gaps are deducted. */
     .bd-carousel-viewport {
         width: min(320px, calc(100vw - 92px));
     }
 
-    /* ── 13. Carrousels des pages projet : fleches ramenees sous la planche
-       Deux etats successifs, tous deux mauvais :
-         - avant : le conteneur elargi les poussait a -22px et 402px, on
-           n'en voyait qu'un liseré collé au bord de l'ecran ;
-         - apres mon premier correctif : posees sur les bords de la
-           planche, elles se confondaient avec le dessin.
-       Even tranche : elles doivent descendre dans la rangee du bas, une a
-       gauche, une a droite, sur le fond noir de la page.
-
-       Ancrage sur .bd-carousel-container plutot que sur la section : sa
-       hauteur suit celle de la planche, qui varie d'un panneau a l'autre
-       (paysage / portrait). top: calc(100% + 48px) = 30px de marge de la
-       rangee + la moitie de sa bande de contenu (36px). La fleche reste
-       donc centree sur le compteur quelle que soit la planche affichee.
-
-       La rangee recoit 56px de retrait de chaque cote pour que le
-       compteur et la barre de progression ne passent pas dessous. */
+    /* Project-page carousels: the arrows sit in the bottom row on the black background, where they
+       do not blend into the drawing. Anchored on .bd-carousel-container because its height follows
+       the board; top: calc(100% + 48px) centres each arrow on the counter whatever the board. The
+       row is inset 56px each side so the counter and progress bar pass clear. */
     .panel-section .bd-carousel-container {
         position: relative;
     }
@@ -1294,38 +1171,10 @@
         margin-left: 0;
     }
 
-    /* ── 15. Le dessin changeait de cadrage sous le doigt ────────────
-
-       Even : « toujours mal cadre le dessin en noir et blanc sur telephone,
-       mais quand je scroll vers le haut j'ai l'impression qu'il s'agrandit ».
-       Les deux phrases decrivent le meme defaut, vu a deux instants.
-
-       Les planches portent un recadrage de base : .drawing-sheet img est
-       agrandi de 18% pour manger les marges blanches du scan.
-
-       Trois regles ecrasent ce recadrage au lieu de s'y ajouter, parce
-       qu'elles reecrivent « transform » en entier :
-         .frame-wrap:active ... { transform: scale(1.04) }  (retour tactile)
-         .frame-wrap:hover  ... { transform: none }         (annulation mobile)
-         .torn-frame:hover  ... { transform: none }
-
-       La coupable principale est :active. Elle est active TANT QUE LE
-       DOIGT EST POSE — donc pendant tout un geste de defilement. L'image
-       retombait alors de 118% a 104% : les marges blanches du scan
-       revenaient dans le cadre, d'ou le dessin « mal cadre ». Doigt leve,
-       retour a 118% en 0,2s : c'est le « il s'agrandit quand je scroll ».
-       Invisible sur PC, ou l'on ne maintient jamais le clic sur une image.
-
-       On ne supprime pas le retour tactile — Even y tient — on le calcule
-       a partir du recadrage au lieu de le remplacer : 1,18 x 1,04 = 1,23.
-       Le survol colle, lui, ne doit rien changer du tout : il revient a la
-       valeur de repos.
-
-       :not(.pdf-img) est indispensable : les plans cotes ont deliberement
-       transform: none pour ne pas rogner leurs cotations.
-
-       Vaut pour les dessins de la galerie ET pour les planches de bande
-       dessinee : meme structure, meme defaut. */
+    /* Touch feedback is derived from the base crop instead of replacing it: sheets carry an 18%
+       zoom that crops the scan margins, and rewriting transform made the image fall back to 104%
+       while a finger was down (1.18 x 1.04 = 1.23). :not(.pdf-img) is required: dimensioned plans
+       keep transform: none. */
     .frame-wrap:hover .torn-frame .drawing-sheet img:not(.pdf-img),
     .torn-frame:hover .drawing-sheet img:not(.pdf-img),
     .drawing-sheet:hover img:not(.pdf-img) {
@@ -1339,28 +1188,22 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* Les pastilles ne sont espacees que de 22px d'axe en axe. Etendre
-       naivement leur zone de contact les ferait se chevaucher : on
-       taperait la diapo voisine. On les ecarte donc d'abord sur tactile,
-       puis on etend jusqu'a la moitie du nouvel ecart — les zones se
-       touchent sans jamais empieter l'une sur l'autre. */
+    /* The dots are 22px apart centre to centre. Widening their hit area naively would make them
+       overlap and tap the neighbouring slide: spread them on touch first, then extend to half the
+       new gap so zones touch without overlapping. */
     .bd-dots { gap: 30px; }
 
     .bd-dot::after {
         content: '';
         position: absolute;
-        inset: -14px -13px;   /* laisse 2px de garde entre deux zones */
+        inset: -14px -13px;   /* 2px guard between two zones */
     }
 }
 
 @media (hover: hover) {
-    /* Le meme defaut existe sur grand ecran, en plus discret : au survol,
-       .torn-frame:hover remplace le recadrage de 1,18 par 1,04, donc le
-       dessin RETRECIT au lieu de zoomer legerement — l'inverse de ce que
-       la regle voulait faire. On ne le remarque pas parce que la carte
-       entiere grandit de 8% en meme temps. Meme correction, meme calcul.
-       Enferme dans (hover: hover) pour ne pas repasser devant la regle
-       tactile ci-dessus. */
+    /* The same defect exists on large screens: .torn-frame:hover replaces the 1.18 crop by 1.04, so
+       the drawing shrinks instead of zooming slightly. Same computation. Scoped to (hover: hover)
+       so it does not override the touch rule above. */
     .frame-wrap:hover .torn-frame .drawing-sheet img:not(.pdf-img),
     .torn-frame:hover .drawing-sheet img:not(.pdf-img) {
         transform: scale(1.23);
@@ -1368,12 +1211,11 @@
 }
 
 @media (max-width: 991px) {
-    /* L'element porte une rotation de 45deg : sa boite englobante depasse
-           de largeur x 0,207 de chaque cote (~25px pour 120px). La marge doit
-           donc etre superieure a ce debord, sinon il ressort a gauche. */
+    /* The element is rotated 45deg: its bounding box overflows by width x 0.207 on each side (about
+       25px for 120px), so the margin must exceed that or it sticks out on the left. */
     .animation-explosion-detail {
         left: 0;
-        margin-left: 44px;   /* debord mesure de la boite tournee : 38px par cote */
+        margin-left: 44px;   /* measured overflow of the rotated box: 38px per side */
         width: 120px;
         height: 120px;
     }
@@ -1383,7 +1225,7 @@
     .animation-explosion-detail {
         width: 96px;
         height: 96px;
-        margin-left: 36px;   /* debord proportionnel : ~30px par cote */
+        margin-left: 36px;   /* proportional overflow: about 30px per side */
         bottom: -24px;
     }
 }

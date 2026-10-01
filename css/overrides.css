@@ -30,9 +30,7 @@
 
 /* Overrides */
 
-/* ── Focus clavier visible ─────────────────────────────────────────
-   Uniquement :focus-visible : la bordure n'apparait donc jamais au
-   clic souris, seulement lors d'une navigation au clavier. */
+/* Keyboard focus ring: :focus-visible only, so the outline never shows on a mouse click. */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -56,6 +54,7 @@ textarea:focus-visible,
     border-radius: 0;
 }
 
+/* Reduced motion: !important is needed to beat running animations and the hover and touch transforms of the components. */
 @media (prefers-reduced-motion: reduce) {
     .hero-logo,
     .menu-logo,

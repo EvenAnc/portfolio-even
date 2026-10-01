@@ -20,9 +20,8 @@
 
 @font-face {
     font-family: 'Skribblugh';
-    /* woff2 d'abord : 11 Ko de moins, et c'est la premiere police que
-       le visiteur voit — le logo. Le woff reste en secours pour les
-       navigateurs anciens, qui ignorent simplement la premiere source. */
+    /* Serve woff2 first (11 KB lighter, and it is the first font the visitor sees: the logo).
+       Browsers without it fall back to woff. */
     src: url('../fonts/SkribblughRegular-XGW02.woff2') format('woff2'),
          url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
     font-weight: normal;
@@ -48,9 +47,7 @@ a, button { color: inherit; text-decoration: none; background: none; border: non
 img { display: block; width: 100%; height: 100%; object-fit: cover; -webkit-user-select: none; user-select: none; }
 .font-sketch { font-family: var(--font-sketch); }
 
-/* ── Lien d'evitement ──────────────────────────────────────────────
-   Invisible tant qu'on ne tabule pas, il apparait au premier Tab et
-   permet de sauter le header pour aller droit au contenu. */
+/* Skip link: hidden until the first Tab, then lets keyboard users jump past the header. */
 .skip-link {
     position: absolute;
     top: 0;
@@ -73,7 +70,7 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; -webkit-user
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* Retire le voile bleu d'appui sur Android */
+    /* Remove the Android tap highlight. */
     a, button, .stack-item, .drawing-sheet-wrap {
         -webkit-tap-highlight-color: transparent;
     }
