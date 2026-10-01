@@ -264,7 +264,13 @@ const i18n = {
 // Resultat : le site reste entierement navigable, simplement sans
 // transitions. Quand le CDN repond normalement, ce bloc ne fait rien.
 // ─────────────────────────────────────
-if (typeof window.gsap === 'undefined') {
+const gsapMissing = typeof window.gsap === 'undefined';
+
+// ScrollTrigger can load on its own when GSAP did not; it then throws on
+// first use, so it only counts when the real GSAP is there to drive it.
+const hasScrollTrigger = !gsapMissing && typeof window.ScrollTrigger !== 'undefined';
+
+if (gsapMissing) {
     console.warn('[portfolio] GSAP indisponible — mode degrade sans animations.');
 
     const TWEEN_KEYS = ['duration', 'ease', 'delay', 'onComplete', 'onStart',
@@ -897,7 +903,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
         inEl.scrollTop = 0;
         resetHomeHero(pageId);
         initPageLenis(inEl);
-        if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+        if (hasScrollTrigger)ScrollTrigger.refresh();
         updateHeaderLogo(pageId);
         
         hydratePageImages(inEl);
@@ -924,7 +930,7 @@ function showPage(pageId, animate = true, updateHistory = true) {
             );
 
             initPageLenis(inEl);
-            if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+            if (hasScrollTrigger)ScrollTrigger.refresh();
             updateHeaderLogo(pageId);
 
             hydratePageImages(inEl);
@@ -975,7 +981,9 @@ function updateHeaderLogo(pageId) {
 // LENIS SCROLL PAR PAGE
 // ─────────────────────────────────────
 function initPageLenis(scrollContainer) {
-    if (typeof Lenis === 'undefined') return;
+    // Lenis takes over the wheel but only moves when the GSAP ticker drives
+    // it: without GSAP the page keeps its native scrolling.
+    if (typeof Lenis === 'undefined' || gsapMissing) return;
 
     const contentWrapper = scrollContainer.querySelector('.page-inner') || null;
 
@@ -1001,7 +1009,7 @@ function initPageLenis(scrollContainer) {
 
     // FIX Q-07 : garde — si le CDN GSAP/ScrollTrigger n'a pas repondu,
     // cette ligne levait une erreur et stoppait tout le JS de la page.
-    if (typeof ScrollTrigger !== 'undefined') lenis.on('scroll', ScrollTrigger.update);
+    if (hasScrollTrigger)lenis.on('scroll', ScrollTrigger.update);
 
     // BUG-04 FIX : stocker la référence du ticker pour pouvoir le supprimer plus tard
     // et éviter l'accumulation de tickers à chaque navigation entre pages.
@@ -1237,7 +1245,7 @@ function initCopyEmail() {
 }
 
 function initContactAnimation() {
-    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+    if (!hasScrollTrigger) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -1297,7 +1305,7 @@ function initContactForm() {
     if (window.ResizeObserver) {
         const ro = new ResizeObserver(() => {
             if (window._lenis) window._lenis.resize();
-            if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+            if (hasScrollTrigger)ScrollTrigger.refresh();
         });
         ro.observe(form);
     }
