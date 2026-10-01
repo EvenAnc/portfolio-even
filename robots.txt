@@ -2,7 +2,7 @@
 User-agent: *
 Allow: /
 
-# Fichiers de travail et originaux pleine resolution : inutiles a l'indexation
+# Working files and full-resolution originals: no need to index.
 Disallow: /dessin/*.pdf$
 Disallow: /photo/
 Disallow: /fonts/
