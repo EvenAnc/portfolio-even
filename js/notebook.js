@@ -3,6 +3,31 @@
  * torn-paper sheet for Safari.
  */
 
+const DEFAULT_PAPER_COLOR = '#f2f0eb';
+const LINE_SPACING_PX = 34;
+const FIRST_LINE_TOP_PX = 10;
+const MIN_SHEET_HEIGHT_PX = 800;
+// Lines added past the measured height.
+const EXTRA_LINES = 2;
+const REDRAW_DEBOUNCE_MS = 200;
+const FALLBACK_DRAW_DELAY_MS = 200;
+
+// The two rules of the red margin (::before and ::after) are read back
+// from the stylesheet: they move on small screens.
+function marginRect(sheet, pseudo, height) {
+    const style = getComputedStyle(sheet, pseudo);
+    if (style.content === 'none') return '';
+    return `<rect x="${parseFloat(style.left)}" y="0" width="${parseFloat(style.width)}" `
+        + `height="${height}" fill="${style.backgroundColor}"/>`;
+}
+
+function paperSvg(width, height, background, margins, filterMarkup) {
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" `
+        + `viewBox="0 0 ${width} ${height}"><defs>${filterMarkup}</defs>`
+        + `<g filter="url(#paper-tear)"><rect width="${width}" height="${height}" `
+        + `fill="${background}"/>${margins}</g></svg>`;
+}
+
 /**
  * The sheet carries an feTurbulence filter over the whole section. Safari
  * recomputes it on the CPU on every frame as soon as anything animates
@@ -14,36 +39,25 @@
  * and keep the live filter.
  */
 export function initSafariPaperCache() {
-    if (!(window.CSS && CSS.supports('-webkit-hyphens', 'none'))) return;
+    if (!CSS.supports('-webkit-hyphens', 'none')) return;
     const sheet = document.querySelector('#notebook-section .notebook-bg-sheet');
-    const filterEl  = document.getElementById('paper-tear');
-    if (!sheet || !filterEl || typeof ResizeObserver === 'undefined' || typeof XMLSerializer === 'undefined') return;
+    const filterEl = document.getElementById('paper-tear');
+    if (!sheet || !filterEl) return;
 
     const filterMarkup = new XMLSerializer().serializeToString(filterEl);
     let lastSignature = '';
 
-    // The two rules of the red margin (::before and ::after) are read back
-    // from the stylesheet: they move on small screens.
-    function marginRect(pseudo, h) {
-        const s = getComputedStyle(sheet, pseudo);
-        if (s.content === 'none') return '';
-        return '<rect x="' + parseFloat(s.left) + '" y="0" width="' + parseFloat(s.width) +
-               '" height="' + h + '" fill="' + s.backgroundColor + '"/>';
-    }
-
     function paint() {
-        const w = sheet.offsetWidth, h = sheet.offsetHeight;
-        if (!w || !h) return;
-        const background  = getComputedStyle(sheet).getPropertyValue('--notebook-bg').trim() || '#f2f0eb';
-        const margins = marginRect('::before', h) + marginRect('::after', h);
-        const signature = w + 'x' + h + '|' + background + '|' + margins;
-        if (signature === lastSignature) return;  // nothing changed
+        const width = sheet.offsetWidth;
+        const height = sheet.offsetHeight;
+        if (!width || !height) return;
+        const background = getComputedStyle(sheet).getPropertyValue('--notebook-bg').trim() || DEFAULT_PAPER_COLOR;
+        const margins = marginRect(sheet, '::before', height) + marginRect(sheet, '::after', height);
+        const signature = `${width}x${height}|${background}|${margins}`;
+        if (signature === lastSignature) return;
         lastSignature = signature;
-        const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h +
-                    '" viewBox="0 0 ' + w + ' ' + h + '"><defs>' + filterMarkup + '</defs>' +
-                    '<g filter="url(#paper-tear)"><rect width="' + w + '" height="' + h +
-                    '" fill="' + background + '"/>' + margins + '</g></svg>';
-        sheet.style.backgroundImage = 'url("data:image/svg+xml,' + encodeURIComponent(svg) + '")';
+        const svg = paperSvg(width, height, background, margins, filterMarkup);
+        sheet.style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
         sheet.classList.add('papier-precalcule');
     }
 
@@ -53,10 +67,41 @@ export function initSafariPaperCache() {
     paint();
 }
 
+// Each line starts, ends and fades a little differently, as if drawn by
+// hand.
+function createLine(index) {
+    const line = document.createElement('div');
+    line.className = 'nb-line';
+
+    const leftOffset = 4 + Math.random() * 20;
+    const rightOffset = 6 + Math.random() * 35;
+    const opacity = 0.18 + Math.random() * 0.12;
+
+    line.style.left = `${leftOffset}px`;
+    line.style.right = `${rightOffset}px`;
+    line.style.top = `${FIRST_LINE_TOP_PX + index * LINE_SPACING_PX}px`;
+    line.style.opacity = opacity;
+    return line;
+}
+
+// Callers that redraw after a change of layout empty the container first,
+// so that the old lines do not count in the height measured here.
+function renderLines(container) {
+    const sheet = container.parentElement;
+    const height = Math.max(sheet.scrollHeight, sheet.offsetHeight, MIN_SHEET_HEIGHT_PX);
+    container.innerHTML = '';
+
+    const lineCount = Math.ceil(height / LINE_SPACING_PX) + EXTRA_LINES;
+    for (let index = 0; index < lineCount; index++) {
+        container.appendChild(createLine(index));
+    }
+}
+
 /** Draws the ruled lines of the notebook and keeps them in step with the sheet. */
 export function initNotebookLines() {
     const container = document.getElementById('notebook-lines');
     if (!container) return;
+    const sheet = container.parentElement;
 
     // The first notification draws the lines. Later ones redraw them only
     // when the width has changed (window resize, device rotation): the text
@@ -65,12 +110,18 @@ export function initNotebookLines() {
     // would otherwise trigger needless redraws.
     let drawnWidth = null;
     let drawnHeight = null;
+    let redrawTimer = null;
+
     const draw = () => {
         renderLines(container);
-        drawnHeight = container.parentElement.offsetHeight;
+        drawnHeight = sheet.offsetHeight;
     };
-    let redrawTimer = null;
-    const observer = new ResizeObserver(entries => {
+    const redraw = () => {
+        container.innerHTML = '';
+        draw();
+    };
+
+    new ResizeObserver(entries => {
         const width = Math.round(entries[0].contentRect.width);
         if (drawnWidth === null) {
             drawnWidth = width;
@@ -81,52 +132,16 @@ export function initNotebookLines() {
         clearTimeout(redrawTimer);
         redrawTimer = setTimeout(() => {
             drawnWidth = width;
-            // Emptied first so that the old lines do not count in the
-            // height the new ones are measured against.
-            container.innerHTML = '';
-            draw();
-        }, 200);
-    });
-    observer.observe(container.parentElement);
+            redraw();
+        }, REDRAW_DEBOUNCE_MS);
+    }).observe(sheet);
 
     // Fonts that arrive after the first draw change the height of the sheet
     // without changing its width, which the observer above ignores.
-    if (document.fonts && document.fonts.addEventListener) {
-        document.fonts.addEventListener('loadingdone', () => {
-            if (drawnHeight === null || container.parentElement.offsetHeight === drawnHeight) return;
-            container.innerHTML = '';
-            draw();
-        });
-    }
+    document.fonts.addEventListener('loadingdone', () => {
+        if (drawnHeight !== null && sheet.offsetHeight !== drawnHeight) redraw();
+    });
 
     // Drawn once regardless, in case the observer is slow to report.
-    setTimeout(() => draw(), 200);
-}
-
-function renderLines(container) {
-    const parent = container.parentElement;
-    if (!parent) return;
-    const h = Math.max(parent.scrollHeight, parent.offsetHeight, 800);
-    container.innerHTML = '';
-
-    const spacing = 34;
-    const numLines = Math.ceil(h / spacing) + 2;
-
-    for (let i = 0; i < numLines; i++) {
-        const line = document.createElement('div');
-        line.className = 'nb-line';
-
-        // Each line starts, ends and fades a little differently, as if drawn
-        // by hand.
-        const leftOffset  = 4 + Math.random() * 20;
-        const rightOffset = 6 + Math.random() * 35;
-        const opacity     = 0.18 + Math.random() * 0.12;
-
-        line.style.left    = leftOffset + 'px';
-        line.style.right   = rightOffset + 'px';
-        line.style.top     = (10 + i * spacing) + 'px';
-        line.style.opacity = opacity;
-
-        container.appendChild(line);
-    }
+    setTimeout(draw, FALLBACK_DRAW_DELAY_MS);
 }
