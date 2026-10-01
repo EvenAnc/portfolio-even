@@ -437,6 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Boutons Précédent / Suivant du navigateur, et geste de retour sur mobile.
     // updateHistory=false : on suit l'historique, on n'y ajoute rien.
     window.addEventListener('popstate', () => {
+        closeOverlays();
         const cible = pageFromHash();
         if (cible === 'contact') {
             if (currentPage !== 'home') showPage('home', true, false);
@@ -448,6 +449,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Adresse modifiée à la main dans la barre du navigateur.
     window.addEventListener('hashchange', () => {
+        closeOverlays();
         const cible = pageFromHash();
         if (cible === null) {
             // adresse inconnue saisie a la main : repli sur l'accueil
@@ -717,6 +719,13 @@ function closeMenu() {
     // BUG-12 FIX : mettre à jour aria-hidden pour les screen readers
     const menuOverlay = document.getElementById('menu-overlay');
     if (menuOverlay) menuOverlay.setAttribute('aria-hidden', 'true');
+}
+
+// History navigation swaps the page underneath: an overlay left open would
+// cover the new page and keep scrolling locked.
+function closeOverlays() {
+    if (typeof window._closeDrawingLightbox === 'function') window._closeDrawingLightbox();
+    if (isMenuOpen) closeMenu();
 }
 
 // ─────────────────────────────────────
@@ -1904,6 +1913,12 @@ function initDrawingLightbox() {
         if (window._lenis) window._lenis.start();
         document.body.style.overflow = '';
     }
+
+    // Lets the router close the viewer; a no-op when it is already closed,
+    // so page scrolling is never restarted behind another lock.
+    window._closeDrawingLightbox = function() {
+        if (lightbox.getAttribute('aria-hidden') === 'false') closeLightbox();
+    };
 
     // ── Clic sur les dessins de la galerie et les slides BD ──
     // Scoped to the drawings page: the index below maps onto allDrawings, and
