@@ -306,6 +306,96 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 }
 
 
+/* Menu */
+
+.menu-overlay {
+    position: fixed; inset: 0; z-index: 90;
+    background: var(--bg);
+    display: flex; flex-direction: column;
+    padding: 0 60px 50px;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
+    overflow-y: auto;
+}
+
+body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
+.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
+
+.menu-logo {
+    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
+    animation: logoWobbleMini 0.3s steps(1) infinite;
+}
+
+/* Items alignés, espacement vertical régulier */
+.menu-nav {
+    display: flex; flex-direction: column;
+    gap: 18px;
+    flex: 1;
+    justify-content: center;
+}
+
+.menu-nav-item {
+    display: flex; align-items: baseline; gap: 18px;
+    width: fit-content; padding: 10px 0;
+    position: relative;
+}
+
+.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
+
+.mn-label {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1; letter-spacing: 0.02em;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+}
+
+.mn-deco {
+    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+    color: var(--red); opacity: 0;
+    transform: translateX(-8px) rotate(-3deg);
+    transition: opacity 0.3s, transform 0.4s var(--ease-out);
+    white-space: nowrap;
+}
+
+.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
+.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
+
+.menu-scribble {
+    position: absolute; top: 110px; right: 60px;
+    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
+}
+
+.menu-footer {
+    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; gap: 40px;
+}
+
+.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
+.menu-mail:hover { opacity: 1; color: var(--red); }
+.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
+.menu-footer-social a { transition: color var(--dur-fast); }
+.menu-footer-social a:hover { color: var(--red); }
+
+.menu-nav-item:active .mn-label {
+    color: var(--red);
+    transform: translateX(16px);
+}
+
+@media (max-width: 768px) {
+    /* ── Menu overlay ── */
+    .menu-overlay { padding: 0 20px 30px; }
+
+    .menu-logo-wrap { padding-top: 85px; padding-bottom: 20px; }
+    .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
+    .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
+}
+
+.menu-overlay {
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(30px, env(safe-area-inset-bottom));
+}
+
+
 /* Pages */
 
 #page-wrapper { width: 100%; height: 100%; position: relative; }
@@ -1418,6 +1508,89 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     50%  { transform: rotate(0.2deg) translateX(1px); }
     75%  { transform: rotate(-0.15deg); }
     100% { transform: rotate(0deg); }
+}
+
+
+/* Next-page link */
+
+.page-next {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 80px;
+    margin-bottom: 40px;
+    float: right;
+    clear: both;
+    padding: 10px 0;
+    transition: transform 0.3s var(--ease-out);
+}
+
+.page-next:hover {
+    transform: translateX(10px);
+}
+
+.page-next-label {
+    font-family: var(--font-sketch);
+    font-size: 3.5rem;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    transition: color 0.3s;
+}
+
+.page-next:hover .page-next-label {
+    color: var(--red);
+}
+
+.page-next-arrow {
+    width: 60px;
+    height: 30px;
+    animation: rectWobble 0.3s steps(1) infinite;
+}
+
+.page-next-arrow path {
+    stroke: var(--red);
+}
+
+.project-detail-page .page-next {
+    margin-right: 60px;
+}
+
+/* En dessous, l'inverse : Even veut de la place entre la citation et
+   « suivant », et « suivant » colle au pied de page.
+   Cette reserve sert donc deux fois. Elle donne l'air qu'il veut sous
+   la citation, et elle fournit la course dont l'animation a besoin
+   pour redescendre — la citation etant le dernier bloc de la page, il
+   ne reste sinon presque plus rien a defiler une fois qu'elle est
+   centree.
+   32vh : le minimum pour tenir 864px de course sur un ultra-large, qui
+   est le cas le plus contraint. Les 40px du bas remettent « suivant »
+   contre le pied de page. */
+#page-project-diploma .page-next,
+#page-drawings .page-next {
+    margin-top: 32vh;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+    /* le contenu hors panneau garde sa respiration */
+    .project-detail-page .page-next {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* Le pied de page n'est deliberement PAS de la partie. S'il
+               etait deplace et que l'animation n'allait pas jusqu'au bout,
+               il resterait pousse vers le bas et une partie deviendrait
+               inaccessible. C'est exactement ce qui s'est produit. */
+    #page-project-diploma .page-next,
+    #page-drawings .page-next {
+        animation: qb-ecarter-bas linear both;
+        animation-timeline: --citation;
+        animation-range: cover 21% cover 79%;
+    }
 }
 
 
@@ -3869,212 +4042,7 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 }
 
 
-/* Not yet reorganised */
-
-.menu-overlay {
-    position: fixed; inset: 0; z-index: 90;
-    background: var(--bg);
-    display: flex; flex-direction: column;
-    padding: 0 60px 50px;
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
-    overflow-y: auto;
-}
-
-body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
-.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
-
-.menu-logo {
-    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
-    animation: logoWobbleMini 0.3s steps(1) infinite;
-}
-
-/* Items alignés, espacement vertical régulier */
-.menu-nav {
-    display: flex; flex-direction: column;
-    gap: 18px;
-    flex: 1;
-    justify-content: center;
-}
-
-.menu-nav-item {
-    display: flex; align-items: baseline; gap: 18px;
-    width: fit-content; padding: 10px 0;
-    position: relative;
-}
-
-.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
-
-.mn-label {
-    font-family: var(--font-display);
-    font-size: clamp(2.8rem, 6vw, 4.8rem);
-    line-height: 1; letter-spacing: 0.02em;
-    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
-}
-
-.mn-deco {
-    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
-    color: var(--red); opacity: 0;
-    transform: translateX(-8px) rotate(-3deg);
-    transition: opacity 0.3s, transform 0.4s var(--ease-out);
-    white-space: nowrap;
-}
-
-.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
-.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
-
-.menu-scribble {
-    position: absolute; top: 110px; right: 60px;
-    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
-}
-
-.menu-footer {
-    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
-    display: flex; align-items: center; gap: 40px;
-}
-
-.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
-.menu-mail:hover { opacity: 1; color: var(--red); }
-.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
-.menu-footer-social a { transition: color var(--dur-fast); }
-.menu-footer-social a:hover { color: var(--red); }
-
-.page-next {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 80px;
-    margin-bottom: 40px;
-    float: right;
-    clear: both;
-    padding: 10px 0;
-    transition: transform 0.3s var(--ease-out);
-}
-
-.page-next:hover {
-    transform: translateX(10px);
-}
-
-.page-next-label {
-    font-family: var(--font-sketch);
-    font-size: 3.5rem;
-    text-transform: lowercase;
-    letter-spacing: 0.03em;
-    color: var(--white);
-    transition: color 0.3s;
-}
-
-.page-next:hover .page-next-label {
-    color: var(--red);
-}
-
-.page-next-arrow {
-    width: 60px;
-    height: 30px;
-    animation: rectWobble 0.3s steps(1) infinite;
-}
-
-.page-next-arrow path {
-    stroke: var(--red);
-}
-
-@media (max-width: 768px) {
-    /* ── Menu overlay ── */
-    .menu-overlay { padding: 0 20px 30px; }
-
-    .menu-logo-wrap { padding-top: 85px; padding-bottom: 20px; }
-    .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
-    .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
-}
-
-.project-detail-page .page-next {
-    margin-right: 60px;
-}
-
-.menu-nav-item:active .mn-label {
-    color: var(--red);
-    transform: translateX(16px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .hero-logo,
-    .menu-logo,
-    .header-logo-text,
-    .shortcut-sub-text,
-    .click-hint-text,
-    .page-next-arrow,
-    .sketch-rect-path {
-        animation: none !important;
-        filter: none !important;
-    }
-
-    .scroll-line {
-        animation: none !important;
-        opacity: 0.4;
-        transform: scaleY(0.7);
-    }
-
-    .torn-frame:hover .media-frame-img,
-    .frame-wrap:hover .torn-frame .media-frame-img {
-        transform: none !important;
-        transition: none !important;
-    }
-
-    .notebook-bg-sheet {
-        transition: none !important;
-    }
-
-    .notebook-hover-zone:hover .notebook-text {
-        animation: none !important;
-    }
-}
-
-/* ── Focus clavier visible ─────────────────────────────────────────
-   Uniquement :focus-visible : la bordure n'apparait donc jamais au
-   clic souris, seulement lors d'une navigation au clavier. */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
-[tabindex]:focus-visible {
-    outline: 2px solid var(--red);
-    outline-offset: 4px;
-    border-radius: 2px;
-}
-
-/* A page takes focus after a navigation only so that the keyboard scrolls
-   it; it is not a control, so it shows no focus ring. The two rules stay
-   apart: a browser that does not know :focus-visible drops any rule whose
-   selector list contains it, and must still get the first one. */
-.page:focus {
-    outline: none;
-}
-
-.page:focus-visible {
-    outline: none;
-    border-radius: 0;
-}
-
-.menu-overlay {
-    padding-top: max(0px, env(safe-area-inset-top));
-    padding-bottom: max(30px, env(safe-area-inset-bottom));
-}
-
-@media (max-width: 768px) {
-    /* le contenu hors panneau garde sa respiration */
-    .project-detail-page .page-next {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    ::view-transition-group(*),
-    ::view-transition-old(*),
-    ::view-transition-new(*) {
-        animation: none !important;
-    }
-}
+/* Quote band */
 
 /* PAS DE FOND SOUS LA CITATION, ET C'EST UN CHOIX.
    Il y en avait un : un degrade qui assombrissait la bande a l'approche
@@ -4155,34 +4123,18 @@ textarea:focus-visible,
     color: rgba(255, 255, 255, 0.5);
 }
 
-/* En dessous, l'inverse : Even veut de la place entre la citation et
-   « suivant », et « suivant » colle au pied de page.
-   Cette reserve sert donc deux fois. Elle donne l'air qu'il veut sous
-   la citation, et elle fournit la course dont l'animation a besoin
-   pour redescendre — la citation etant le dernier bloc de la page, il
-   ne reste sinon presque plus rien a defiler une fois qu'elle est
-   centree.
-   32vh : le minimum pour tenir 864px de course sur un ultra-large, qui
-   est le cas le plus contraint. Les 40px du bas remettent « suivant »
-   contre le pied de page. */
-#page-project-diploma .page-next,
-#page-drawings .page-next {
-    margin-top: 32vh;
-    margin-bottom: 40px;
+@media (max-width: 768px) {
+    .quote-band {
+        padding-top: 12vh;
+        padding-bottom: 12vh;
+    }
+
+    .qb-body { padding: 0 26px; max-width: 30rem; }
+    .qb-text { font-size: 1rem; line-height: 1.65; }
+    .qb-author { margin-top: 15px; }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    /* Le pied de page n'est deliberement PAS de la partie. S'il
-               etait deplace et que l'animation n'allait pas jusqu'au bout,
-               il resterait pousse vers le bas et une partie deviendrait
-               inaccessible. C'est exactement ce qui s'est produit. */
-    #page-project-diploma .page-next,
-    #page-drawings .page-next {
-        animation: qb-ecarter-bas linear both;
-        animation-timeline: --citation;
-        animation-range: cover 21% cover 79%;
-    }
-
     .qb-body {
         animation: qb-monter linear both;
         animation-timeline: --citation;
@@ -4244,13 +4196,72 @@ textarea:focus-visible,
         100% { opacity: 0.32; }
 }
 
-@media (max-width: 768px) {
-    .quote-band {
-        padding-top: 12vh;
-        padding-bottom: 12vh;
+
+/* Not yet reorganised */
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-logo,
+    .menu-logo,
+    .header-logo-text,
+    .shortcut-sub-text,
+    .click-hint-text,
+    .page-next-arrow,
+    .sketch-rect-path {
+        animation: none !important;
+        filter: none !important;
     }
 
-    .qb-body { padding: 0 26px; max-width: 30rem; }
-    .qb-text { font-size: 1rem; line-height: 1.65; }
-    .qb-author { margin-top: 15px; }
+    .scroll-line {
+        animation: none !important;
+        opacity: 0.4;
+        transform: scaleY(0.7);
+    }
+
+    .torn-frame:hover .media-frame-img,
+    .frame-wrap:hover .torn-frame .media-frame-img {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .notebook-bg-sheet {
+        transition: none !important;
+    }
+
+    .notebook-hover-zone:hover .notebook-text {
+        animation: none !important;
+    }
+}
+
+/* ── Focus clavier visible ─────────────────────────────────────────
+   Uniquement :focus-visible : la bordure n'apparait donc jamais au
+   clic souris, seulement lors d'une navigation au clavier. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+/* A page takes focus after a navigation only so that the keyboard scrolls
+   it; it is not a control, so it shows no focus ring. The two rules stay
+   apart: a browser that does not know :focus-visible drops any rule whose
+   selector list contains it, and must still get the first one. */
+.page:focus {
+    outline: none;
+}
+
+.page:focus-visible {
+    outline: none;
+    border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
 }
