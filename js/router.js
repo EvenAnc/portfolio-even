@@ -5,7 +5,7 @@
 import { state, emit } from './core/state.js';
 import { hasScrollTrigger } from './core/env.js';
 import { updatePageMeta } from './i18n/i18n.js';
-import { destroyPageLenis, initPageLenis, updateScrollbarWidth } from './page-scroll.js';
+import { destroyPageScroll, createPageScroll, updateScrollbarWidth } from './page-scroll.js';
 import { updateHeaderLogo, updateBackButton } from './header.js';
 import { resetHomeHero, bindHeroScroll } from './hero.js';
 
@@ -153,7 +153,7 @@ export function showPage(pageId, animate = true, updateHistory = true) {
     updateBackButton(pageId);
 
     // Détruire le Lenis de l'ancienne page
-    destroyPageLenis();
+    destroyPageScroll();
 
     if (!animate || !outEl) {
         if (outEl) {
@@ -204,7 +204,7 @@ export function showPage(pageId, animate = true, updateHistory = true) {
 
 // The hero follows the scroll position of the home page only.
 function startPageScroll(pageEl) {
-    initPageLenis(pageEl);
+    createPageScroll(pageEl);
     if (state.page === 'home' && state.scroll) bindHeroScroll(state.scroll);
 }
 

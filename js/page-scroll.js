@@ -5,7 +5,7 @@
 import { state } from './core/state.js';
 import { gsapMissing, hasScrollTrigger } from './core/env.js';
 
-let lenisTickerFn = null;
+let tickerCallback = null;
 
 // ─────────────────────────────────────
 // LENIS SCROLL PAR PAGE
@@ -13,10 +13,10 @@ let lenisTickerFn = null;
 // The ticker callback and the exposed reference both point at the
 // instance: they go with it, otherwise the ticker keeps calling raf on
 // nothing for the whole page transition.
-export function destroyPageLenis() {
-    if (lenisTickerFn) {
-        gsap.ticker.remove(lenisTickerFn);
-        lenisTickerFn = null;
+export function destroyPageScroll() {
+    if (tickerCallback) {
+        gsap.ticker.remove(tickerCallback);
+        tickerCallback = null;
     }
     if (state.scroll) {
         state.scroll.destroy();
@@ -24,14 +24,14 @@ export function destroyPageLenis() {
     }
 }
 
-export function initPageLenis(scrollContainer) {
+export function createPageScroll(scrollContainer) {
     // Lenis takes over the wheel but only moves when the GSAP ticker drives
     // it: without GSAP the page keeps its native scrolling.
     if (typeof Lenis === 'undefined' || gsapMissing) return;
 
     const contentWrapper = scrollContainer.querySelector('.page-inner') || null;
 
-    const lenisOptions = {
+    const options = {
         wrapper: scrollContainer,
         eventsTarget: scrollContainer,  // FIX: cible le container de la page, pas le document entier
         duration: 1.0,                  // FIX: réduit de 1.15 → 1.0 pour un scroll plus réactif
@@ -46,10 +46,10 @@ export function initPageLenis(scrollContainer) {
 
     // Only set content if we found a specific wrapper
     if (contentWrapper) {
-        lenisOptions.content = contentWrapper;
+        options.content = contentWrapper;
     }
 
-    const lenis = new Lenis(lenisOptions);
+    const lenis = new Lenis(options);
 
     // FIX Q-07 : garde — si le CDN GSAP/ScrollTrigger n'a pas repondu,
     // cette ligne levait une erreur et stoppait tout le JS de la page.
@@ -57,11 +57,11 @@ export function initPageLenis(scrollContainer) {
 
     // BUG-04 FIX : stocker la référence du ticker pour pouvoir le supprimer plus tard
     // et éviter l'accumulation de tickers à chaque navigation entre pages.
-    if (lenisTickerFn) {
-        gsap.ticker.remove(lenisTickerFn);
+    if (tickerCallback) {
+        gsap.ticker.remove(tickerCallback);
     }
-    lenisTickerFn = time => lenis.raf(time * 1000);
-    gsap.ticker.add(lenisTickerFn);
+    tickerCallback = time => lenis.raf(time * 1000);
+    gsap.ticker.add(tickerCallback);
     gsap.ticker.lagSmoothing(0);
 
     state.scroll = lenis;
@@ -80,8 +80,8 @@ export function initPageLenis(scrollContainer) {
 export function updateScrollbarWidth() {
     const page = document.querySelector('.page.is-active') || document.querySelector('.page');
     if (!page) return;
-    const sbw = Math.max(0, Math.round(page.offsetWidth - page.clientWidth));
-    document.documentElement.style.setProperty('--sbw', sbw + 'px');
+    const scrollbarWidth = Math.max(0, Math.round(page.offsetWidth - page.clientWidth));
+    document.documentElement.style.setProperty('--sbw', scrollbarWidth + 'px');
 }
 
 export function watchScrollbarWidth() {
@@ -91,12 +91,12 @@ export function watchScrollbarWidth() {
     // qui grandit, images qui se chargent, rotation d'écran sur mobile).
     updateScrollbarWidth();
     if (typeof ResizeObserver !== 'undefined') {
-        const sbwObserver = new ResizeObserver(() => updateScrollbarWidth());
-        document.querySelectorAll('.page').forEach(pg => sbwObserver.observe(pg));
+        const observer = new ResizeObserver(() => updateScrollbarWidth());
+        document.querySelectorAll('.page').forEach(pg => observer.observe(pg));
     }
-    let _sbwTimer = null;
+    let resizeTimer = null;
     window.addEventListener('resize', () => {
-        clearTimeout(_sbwTimer);
-        _sbwTimer = setTimeout(updateScrollbarWidth, 150);
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(updateScrollbarWidth, 150);
     }, { passive: true });
 }
