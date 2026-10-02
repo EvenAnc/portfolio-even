@@ -266,7 +266,8 @@ body.is-menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-event
     scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
 
-/* An inactive page never takes pointer events, whatever its children declare. */
+/* !important: an inactive page never takes pointer events, whatever weight its children use to
+   turn them back on. */
 .page:not(.is-active) * { pointer-events: none !important; }
 
 /* Inactive pages are really hidden, not just transparent. visibility:hidden removes them from the

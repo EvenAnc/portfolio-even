@@ -59,30 +59,6 @@
     z-index: 3;
 }
 
-.section-stack-item {
-    position: relative;
-    width: 60vw;
-    max-width: 1200px;
-    margin: 0 auto;
-    transition: transform 0.3s ease;
-    cursor: pointer;
-}
-
-.section-stack-item:nth-child(even) {
-    align-self: flex-end;
-    transform: rotate(1deg);
-}
-
-.section-stack-item:nth-child(odd) {
-    align-self: flex-start;
-    transform: rotate(-1deg);
-}
-
-.section-stack-item:hover {
-    transform: scale(1.02) rotate(0deg);
-    z-index: 5;
-}
-
 .project-detail-page {
     background: #111111;
 }
@@ -203,16 +179,37 @@
     margin: 40px auto 0;
 }
 
-.section-stack .section-stack-item:nth-child(odd) {
+.section-stack-item {
+    position: relative;
+    width: 85%;
+    max-width: 900px;
+    margin: 0;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.section-stack-item:nth-child(odd) {
     align-self: flex-start;
+    transform: rotate(-1deg);
 }
 
-.section-stack .section-stack-item:nth-child(even) {
+.section-stack-item:nth-child(even) {
     align-self: flex-end;
+    transform: rotate(1deg);
 }
 
-.section-stack .section-stack-item:hover {
+.section-stack-item:hover {
     transform: scale(1.02);
+    z-index: 5;
+}
+
+@media (max-width: 900px) {
+    /* One centred column, no tilt. :nth-child(n) matches every item with the weight of the
+       staggered and hover rules above, so it overrides both. */
+    .section-stack-item:nth-child(n) {
+        align-self: center;
+        transform: rotate(0);
+    }
 }
 
 .carousel-progress-bar {
@@ -274,15 +271,6 @@
 .sticker-title:hover {
     transform: rotate(-1deg) scale(1.05) translateY(-3px);
     box-shadow: 12px 12px 0px #1a1a1a, 0 20px 40px rgba(0,0,0,0.4);
-}
-
-/* Cut stack item width. */
-.section-stack .section-stack-item {
-    width: 85%;
-    max-width: 900px;
-    transition: transform 0.3s ease;
-    margin: 0;
-    position: relative;
 }
 
 /* Stack item labels, overlaid on the image. */
@@ -393,15 +381,6 @@
     padding-bottom: 40px;
 }
 
-@media (max-width: 900px) {
-    /* !important: must beat the staggered nth-child offsets. */
-    .section-stack-item {
-        width: 100%;
-        align-self: center !important;
-        transform: rotate(0) !important;
-    }
-}
-
 @media (max-width: 768px) {
     .render-grid {
         grid-template-columns: 1fr;
@@ -413,11 +392,9 @@
         padding: 10px 25px;
     }
 
-    /* !important: must beat the staggered nth-child offsets. */
-    .section-stack .section-stack-item {
+    .section-stack-item {
         width: 100%;
         max-width: 100%;
-        align-self: center !important;
     }
 
     .panel {

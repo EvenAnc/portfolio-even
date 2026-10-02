@@ -69,6 +69,31 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; -webkit-user
     transform: translate(-50%, 0);
 }
 
+/* Keyboard focus ring: :focus-visible only, so the outline never shows on a mouse click.
+   Declared here, before the components, so that a component can adjust its own ring. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 4px;
+    border-radius: 2px;
+}
+
+/* A page takes focus after a navigation only so that the keyboard scrolls it; it is not a
+   control, so it shows no focus ring. The two rules stay apart: a browser that does not know
+   :focus-visible drops any rule whose selector list contains it, and must still get the first
+   one. */
+.page:focus {
+    outline: none;
+}
+
+.page:focus-visible {
+    outline: none;
+    border-radius: 0;
+}
+
 /* Boiling line: three displacement filters in turn make a stroke look redrawn by hand. */
 @keyframes sketch-wobble {
     0%,33%   { filter: url(#sketch-1); }
