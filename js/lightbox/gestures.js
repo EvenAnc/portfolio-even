@@ -51,7 +51,7 @@ function bindDrag({ canvasWrap, view, updateTransform }) {
         dragStartY = event.clientY;
         dragOriginX = view.translateX;
         dragOriginY = view.translateY;
-        event.target.classList.add('dragging');
+        event.target.classList.add('is-dragging');
         event.target.setPointerCapture(event.pointerId);
     });
 
@@ -67,7 +67,7 @@ function bindDrag({ canvasWrap, view, updateTransform }) {
     function endDrag(event) {
         if (!isDragging) return;
         isDragging = false;
-        event.target.classList.remove('dragging');
+        event.target.classList.remove('is-dragging');
         if (event.target.hasPointerCapture(event.pointerId)) {
             event.target.releasePointerCapture(event.pointerId);
         }

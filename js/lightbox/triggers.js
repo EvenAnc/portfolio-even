@@ -9,10 +9,10 @@ import { DRAWINGS, DIPLOMA_SECTIONS, findGalleryByUrl } from './galleries.js';
 import { openGallery, openSingleImage, showPlaceholder, setFadeEnabled } from './lightbox.js';
 
 /** Section cuts of the diploma project, which open the viewer. */
-export const SECTION_TRIGGER_SELECTOR = '[data-coupe-gallery] .stack-item[data-coupe-index]';
+export const SECTION_TRIGGER_SELECTOR = '[data-section-gallery] .section-stack-item[data-section-index]';
 
-const DRAWING_ITEM_SELECTOR = '#page-drawings .drawing-item, #page-drawings .bd-slide';
-const DRAWING_TRIGGER_SELECTOR = '#page-drawings .drawing-item .frame-wrap, #page-drawings .bd-slide .drawing-sheet-wrap';
+const DRAWING_ITEM_SELECTOR = '#page-drawings .drawing-item, #page-drawings .carousel-slide';
+const DRAWING_TRIGGER_SELECTOR = '#page-drawings .drawing-item .frame-wrap, #page-drawings .carousel-slide .drawing-sheet-wrap';
 
 // On touch devices a tap would open the viewer before the red frame had
 // time to draw itself. The opening waits for the trace, which the
@@ -21,7 +21,7 @@ const DRAWING_TRIGGER_SELECTOR = '#page-drawings .drawing-item .frame-wrap, #pag
 const TOUCH_TRACE_DELAY_MS = 460;
 
 // Must match the view-transition rules of the stylesheet.
-const BOARD_TRANSITION_NAME = 'planche-ouverte';
+const BOARD_TRANSITION_NAME = 'open-sheet';
 
 // Plays the trace of the red frame, then runs the action. With a mouse, or
 // when the element has no frame to draw, nothing is delayed.
@@ -35,10 +35,10 @@ function traceFrameThen(element, action) {
     // A second tap during the animation must not open twice.
     if (frame.dataset.tracing) return;
     frame.dataset.tracing = '1';
-    frame.classList.add('trace-tactile');
+    frame.classList.add('is-tracing');
 
     setTimeout(() => {
-        frame.classList.remove('trace-tactile');
+        frame.classList.remove('is-tracing');
         delete frame.dataset.tracing;
         // The page may have changed while the frame was being drawn.
         if (element.closest('.page') && !element.closest('.page.is-active')) return;
@@ -104,8 +104,8 @@ function isOnActivePage(element) {
 }
 
 function isOnHiddenSlide(element) {
-    const slide = element.closest('.bd-slide');
-    return Boolean(slide) && !slide.classList.contains('active');
+    const slide = element.closest('.carousel-slide');
+    return Boolean(slide) && !slide.classList.contains('is-active');
 }
 
 // Drawings page: framed drawings and comic sheets, in document order, map
@@ -114,7 +114,7 @@ function isOnHiddenSlide(element) {
 function bindDrawings() {
     document.querySelectorAll(DRAWING_TRIGGER_SELECTOR).forEach(trigger => {
         trigger.addEventListener('click', () => {
-            const item = trigger.closest('.drawing-item, .bd-slide');
+            const item = trigger.closest('.drawing-item, .carousel-slide');
             if (!item || !isOnActivePage(trigger) || isOnHiddenSlide(trigger)) return;
 
             const index = Array.from(document.querySelectorAll(DRAWING_ITEM_SELECTOR)).indexOf(item);
@@ -127,11 +127,11 @@ function bindDrawings() {
 
 // Project pages: each sheet of a carousel opens the gallery it belongs to.
 function bindProjectSheets() {
-    document.querySelectorAll('.project-detail-page .bd-slide .drawing-sheet-wrap').forEach(sheet => {
+    document.querySelectorAll('.project-detail-page .carousel-slide .drawing-sheet-wrap').forEach(sheet => {
         sheet.addEventListener('click', () => {
             if (isOnHiddenSlide(sheet) || !isOnActivePage(sheet)) return;
 
-            const preview = sheet.querySelector('.pdf-inline-render');
+            const preview = sheet.querySelector('.js-pdf-source');
             if (!preview) return;
 
             const url = preview.dataset.pdfUrl;
@@ -146,7 +146,7 @@ function bindProjectSheets() {
 }
 
 function bindSingleImages() {
-    document.querySelectorAll('.single-lightbox-trigger').forEach(trigger => {
+    document.querySelectorAll('.lightbox-trigger').forEach(trigger => {
         trigger.addEventListener('click', () => {
             const src = trigger.getAttribute('src');
             const alt = trigger.getAttribute('alt');
@@ -160,7 +160,7 @@ function bindSingleImages() {
 function bindSections() {
     document.querySelectorAll(SECTION_TRIGGER_SELECTOR).forEach(item => {
         item.addEventListener('click', () => {
-            const index = parseInt(item.getAttribute('data-coupe-index'), 10);
+            const index = parseInt(item.getAttribute('data-section-index'), 10);
             traceFrameThen(item, () => liftBoard(item, () => openGallery(DIPLOMA_SECTIONS, index || 0)));
         });
     });

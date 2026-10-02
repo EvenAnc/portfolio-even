@@ -99,7 +99,7 @@ export function applyLanguage(lang) {
     translateDocument(lang);
 
     document.querySelectorAll('.lang-btn').forEach(button => {
-        button.classList.toggle('active', button.dataset.lang === lang);
+        button.classList.toggle('is-active', button.dataset.lang === lang);
     });
 }
 

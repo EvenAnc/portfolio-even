@@ -45,7 +45,7 @@ function paperSvg(width, height, background, margins, filterMarkup) {
  */
 export function initSafariPaperCache() {
     if (!CSS.supports('-webkit-hyphens', 'none')) return;
-    const sheet = document.querySelector('#notebook-section .notebook-bg-sheet');
+    const sheet = document.querySelector('#notebook-section .notebook-sheet');
     const filterEl = document.getElementById('paper-tear');
     if (!sheet || !filterEl) return;
 
@@ -63,7 +63,7 @@ export function initSafariPaperCache() {
         lastSignature = signature;
         const svg = paperSvg(width, height, background, margins, filterMarkup);
         sheet.style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
-        sheet.classList.add('papier-precalcule');
+        sheet.classList.add('is-prerendered');
     }
 
     // Repainted when the sheet changes size (rotation, a language switch
@@ -75,7 +75,7 @@ export function initSafariPaperCache() {
 // The three draws stay in this order: left, right, opacity.
 function createLine(index) {
     const line = document.createElement('div');
-    line.className = 'nb-line';
+    line.className = 'notebook-rule';
 
     const leftOffset = LINE_LEFT_PX.base + Math.random() * LINE_LEFT_PX.spread;
     const rightOffset = LINE_RIGHT_PX.base + Math.random() * LINE_RIGHT_PX.spread;
@@ -103,7 +103,7 @@ function renderLines(container) {
 
 /** Draws the ruled lines of the notebook and keeps them in step with the sheet. */
 export function initNotebookLines() {
-    const container = document.getElementById('notebook-lines');
+    const container = document.getElementById('notebook-rules');
     if (!container) return;
     const sheet = container.parentElement;
 

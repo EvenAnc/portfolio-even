@@ -17,7 +17,7 @@ let navigationTimer = null;
 
 function setMenuOpen(isOpen) {
     isMenuOpen = isOpen;
-    document.body.classList.toggle('menu-open', isOpen);
+    document.body.classList.toggle('is-menu-open', isOpen);
     if (menuOverlay) menuOverlay.setAttribute('aria-hidden', String(!isOpen));
     burger.setAttribute('aria-expanded', String(isOpen));
 }
@@ -62,7 +62,7 @@ function toggleMenu() {
 // Each item waits for the menu to close before the page changes.
 function onMenuItemClick(event) {
     event.preventDefault();
-    const page = event.currentTarget.dataset.page;
+    const page = event.currentTarget.dataset.target;
     closeMenu();
 
     clearTimeout(navigationTimer);

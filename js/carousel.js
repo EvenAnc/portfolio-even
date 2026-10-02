@@ -16,11 +16,11 @@ const OBSERVER_FALLBACK_MS = 4000;
 // visitor reaches it. Every path goes through syncAutoplay, so the carousel
 // cannot be left frozen by accident.
 function createCarousel(container, slides) {
-    const dots = container.querySelectorAll('.bd-dot');
+    const dots = container.querySelectorAll('.carousel-dot');
     // The project pages and the drawings page name these two elements
     // differently; both are accepted.
-    const progressBar = container.querySelector('.progress-bar, .bd-progress-bar');
-    const indicator = container.querySelector('.bd-carousel-pagination, .bd-page-indicator');
+    const progressBar = container.querySelector('.carousel-progress-bar, .carousel-timer-bar');
+    const indicator = container.querySelector('.carousel-counter');
 
     let currentIndex = 0;
     let autoplayTimeout = null;
@@ -74,7 +74,7 @@ function createCarousel(container, slides) {
 
         slides.forEach((slide, slideIndex) => {
             const isCurrent = slideIndex === currentIndex;
-            slide.classList.toggle('active', isCurrent);
+            slide.classList.toggle('is-active', isCurrent);
             // Hidden slides stay in the DOM: only the visible sheet may take
             // keyboard focus. Sheets that keyboard-activation.js left out of
             // the tab order carry no tabindex and stay out of it.
@@ -83,7 +83,7 @@ function createCarousel(container, slides) {
         });
 
         dots.forEach((dot, dotIndex) => {
-            dot.classList.toggle('active', dotIndex === currentIndex);
+            dot.classList.toggle('is-active', dotIndex === currentIndex);
         });
 
         if (indicator) {
@@ -97,7 +97,7 @@ function createCarousel(container, slides) {
 }
 
 function bindPlayPause(container, carousel) {
-    const playPauseBtn = container.querySelector('.bd-play-pause-btn');
+    const playPauseBtn = container.querySelector('.carousel-toggle');
     if (!playPauseBtn) return;
 
     const iconPause = playPauseBtn.querySelector('.icon-pause');
@@ -116,14 +116,14 @@ function bindPlayPause(container, carousel) {
 }
 
 function bindControls(container, carousel) {
-    const prevBtn = container.querySelector('.prev-btn');
-    const nextBtn = container.querySelector('.next-btn');
+    const prevBtn = container.querySelector('.carousel-arrow--prev');
+    const nextBtn = container.querySelector('.carousel-arrow--next');
 
     if (prevBtn) prevBtn.addEventListener('click', carousel.showPrevious);
     if (nextBtn) nextBtn.addEventListener('click', carousel.showNext);
     bindPlayPause(container, carousel);
 
-    container.querySelectorAll('.bd-dot').forEach((dot, dotIndex) => {
+    container.querySelectorAll('.carousel-dot').forEach((dot, dotIndex) => {
         dot.addEventListener('click', () => carousel.goToSlide(dotIndex));
     });
 }
@@ -158,7 +158,7 @@ function watchVisibility(container, carousel) {
 }
 
 function bindSwipe(container, carousel) {
-    const viewport = container.querySelector('.bd-carousel-viewport');
+    const viewport = container.querySelector('.carousel-viewport');
     if (!viewport) return;
 
     let touchStartX = 0;
@@ -186,7 +186,7 @@ function bindSwipe(container, carousel) {
 }
 
 function initCarousel(container) {
-    const slides = container.querySelectorAll('.bd-slide');
+    const slides = container.querySelectorAll('.carousel-slide');
     if (!slides.length) return;
 
     const carousel = createCarousel(container, slides);
@@ -197,5 +197,5 @@ function initCarousel(container) {
 
 /** Sets up every carousel of the document; each one keeps its own state. */
 export function initCarousels() {
-    document.querySelectorAll('.bd-carousel-section').forEach(initCarousel);
+    document.querySelectorAll('.carousel').forEach(initCarousel);
 }

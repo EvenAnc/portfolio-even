@@ -23,7 +23,7 @@
     pointer-events: none;
 }
 .menu-footer .copy-feedback { font-size: 1.2rem; }
-.ci-block .copy-feedback { font-size: 1.8rem; }
+.contact-block .copy-feedback { font-size: 1.8rem; }
 .coming-soon { text-align: center; padding: 100px 0; }
 .coming-soon .font-sketch { font-size: 2rem; }
 
@@ -60,8 +60,8 @@ textarea:focus-visible,
     .hero-logo,
     .menu-logo,
     .header-logo-text,
-    .shortcut-sub-text,
-    .click-hint-text,
+    .projects-shortcut-kicker,
+    .projects-shortcut-hint-text,
     .page-next-arrow,
     .sketch-rect-path {
         animation: none !important;
@@ -80,7 +80,7 @@ textarea:focus-visible,
         transition: none !important;
     }
 
-    .notebook-bg-sheet {
+    .notebook-sheet {
         transition: none !important;
     }
 
