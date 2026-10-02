@@ -1,23 +1,38 @@
+/* Layout: fixed header, page containers, footer, next-page link. */
+
+
 /* Header */
 
 .header-inner {
-    display: flex; align-items: center; justify-content: space-between;
-    height: 100%; padding: 0 42px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 42px;
 }
 
 .burger-btn {
-    width: 36px; height: 22px;
-    display: flex; flex-direction: column; justify-content: space-between;
-    pointer-events: auto; z-index: 110; position: relative;
+    width: 36px;
+    height: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: auto;
+    z-index: 110;
+    position: relative;
 }
 
 .burger-line {
-    display: block; width: 100%; height: 2px; background: var(--white);
+    display: block;
+    width: 100%;
+    height: 2px;
+    background: var(--white);
     transform-origin: center;
     transition: transform var(--dur-med) var(--ease-out), opacity var(--dur-med) var(--ease-out), background var(--dur-fast);
 }
 
 .burger-btn:hover .burger-line { background: var(--red); }
+
 .header-back-btn {
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: none;
@@ -29,27 +44,54 @@
     gap: 10px;
     pointer-events: auto;
 }
+
 .header-back-btn:hover { transform: translateX(-8px) scale(1.05); }
 .header-back-btn:active { transform: scale(0.95); }
 body.is-menu-open .burger-line:nth-child(1) { transform: translateY(10px) rotate(45deg); }
-body.is-menu-open .burger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+
+body.is-menu-open .burger-line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
 body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
 
 .header-logo {
-    position: absolute; left: 50%; transform: translateX(-50%);
-    opacity: 0; pointer-events: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
     transition: opacity 0.4s var(--ease-out);
 }
 
-.header-logo.is-visible { opacity: 1; pointer-events: auto; }
+.header-logo.is-visible {
+    opacity: 1;
+    pointer-events: auto;
+}
 
 .header-logo-text {
-    font-size: 2.3rem; line-height: 1; letter-spacing: 0.03em;
+    font-size: 2.3rem;
+    line-height: 1;
+    letter-spacing: 0.03em;
     animation: sketch-wobble 0.3s steps(1) infinite;
 }
 
-.header-right { display: flex; align-items: center; gap: 54px; pointer-events: auto; }
-.lang-switcher { display: flex; align-items: center; gap: 6px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; }
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 54px;
+    pointer-events: auto;
+}
+
+.lang-switcher {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
 
 /* Language buttons: the ::after below enlarges only the hit area, nothing drawn moves. It stops
    at the middle of the gap so neighbouring targets touch without overlapping. */
@@ -73,8 +115,8 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     inset: -14px -4px;
 }
 
-.social-link:first-child::before  { inset: -14px -4px -14px -11px; }
-.social-link:last-child::before   { inset: -14px -11px -14px -4px; }
+.social-link:first-child::before { inset: -14px -4px -14px -11px; }
+.social-link:last-child::before { inset: -14px -11px -14px -4px; }
 
 .burger-btn::after {
     content: '';
@@ -85,7 +127,12 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 .lang-btn.is-active { opacity: 1; }
 .lang-btn:hover { opacity: 0.75; }
 .lang-sep { opacity: 0.2; }
-.social-nav { display: flex; gap: 16px; align-items: center; }
+
+.social-nav {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
 
 .social-link {
     display: flex;
@@ -96,8 +143,23 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     position: relative;
 }
 
-.social-link::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-fast); }
-.social-link:hover { opacity: 1; color: var(--red); transform: translateY(-2px); }
+.social-link::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--red);
+    transition: width var(--dur-fast);
+}
+
+.social-link:hover {
+    opacity: 1;
+    color: var(--red);
+    transform: translateY(-2px);
+}
+
 .social-link:hover::after { width: 100%; }
 
 /* Keep content out of the notch and home-bar areas (safe-area insets are 0 elsewhere). */
@@ -137,9 +199,21 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     .header-inner { padding: 0 18px; }
 
     .header-right { gap: 14px; }
-    .social-nav { display: flex; gap: 8px; }
-    .social-icon { width: 15px; height: 15px; }
-    .lang-switcher { gap: 4px; font-size: 0.75rem; }
+
+    .social-nav {
+        display: flex;
+        gap: 8px;
+    }
+
+    .social-icon {
+        width: 15px;
+        height: 15px;
+    }
+
+    .lang-switcher {
+        gap: 4px;
+        font-size: 0.75rem;
+    }
 
     /* On phones the back button and the centred logo do not both fit: on a project page the logo
        fades out. */
@@ -162,108 +236,39 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     }
 }
 
-.header-left { display: flex; align-items: center; gap: 40px; }
-.sketch-arrow-back { width: 50px; height: 25px; }
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.sketch-arrow-back {
+    width: 50px;
+    height: 25px;
+}
+
 .header-back-btn .font-sketch { font-size: 2.2rem; }
-
-
-/* Menu */
-
-.menu-overlay {
-    position: fixed; inset: 0; z-index: 90;
-    background: var(--bg);
-    display: flex; flex-direction: column;
-    padding: 0 60px 50px;
-    opacity: 0; visibility: hidden; pointer-events: none;
-    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
-    overflow-y: auto;
-}
-
-body.is-menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
-.menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
-
-.menu-logo {
-    font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
-    animation: sketch-wobble 0.3s steps(1) infinite;
-}
-
-.menu-nav {
-    display: flex; flex-direction: column;
-    gap: 18px;
-    flex: 1;
-    justify-content: center;
-}
-
-.menu-nav-item {
-    display: flex; align-items: baseline; gap: 18px;
-    width: fit-content; padding: 10px 0;
-    position: relative;
-}
-
-.menu-nav-number { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
-
-.menu-nav-label {
-    font-family: var(--font-display);
-    font-size: clamp(2.8rem, 6vw, 4.8rem);
-    line-height: 1; letter-spacing: 0.02em;
-    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
-}
-
-.menu-nav-note {
-    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
-    color: var(--red); opacity: 0;
-    transform: translateX(-8px) rotate(-3deg);
-    transition: opacity 0.3s, transform 0.4s var(--ease-out);
-    white-space: nowrap;
-}
-
-.menu-nav-item:hover .menu-nav-label { transform: translateX(12px); color: var(--red); }
-.menu-nav-item:hover .menu-nav-note { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
-
-.menu-scribble {
-    position: absolute; top: 110px; right: 60px;
-    font-size: 2.8rem; color: var(--red); opacity: 0.35; transform: rotate(-8deg);
-}
-
-.menu-footer {
-    padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.06);
-    display: flex; align-items: center; gap: 40px;
-}
-
-.menu-email { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
-.menu-email:hover { opacity: 1; color: var(--red); }
-.menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
-.menu-footer-social a { transition: color var(--dur-fast); }
-.menu-footer-social a:hover { color: var(--red); }
-
-.menu-nav-item:active .menu-nav-label {
-    color: var(--red);
-    transform: translateX(16px);
-}
-
-@media (max-width: 768px) {
-    .menu-overlay { padding: 0 20px 30px; }
-
-    .menu-logo-wrap { padding-top: 85px; padding-bottom: 20px; }
-    .menu-scribble { right: 20px; top: 100px; font-size: 2rem; }
-    .menu-footer { gap: 20px; flex-direction: column; align-items: flex-start; }
-}
-
-.menu-overlay {
-    padding-top: max(0px, env(safe-area-inset-top));
-    padding-bottom: max(30px, env(safe-area-inset-bottom));
-}
 
 
 /* Pages */
 
-#page-wrapper { width: 100%; height: 100%; position: relative; }
+#page-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
 
 .page {
-    position: absolute; inset: 0; width: 100%; height: 100%;
-    overflow-y: auto; overflow-x: hidden;
-    opacity: 0; pointer-events: none;
-    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.1) transparent;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    opacity: 0;
+    pointer-events: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
 
 /* !important: an inactive page never takes pointer events, whatever weight its children use to
@@ -289,11 +294,44 @@ body.is-menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-event
 
 .page::-webkit-scrollbar { width: 4px; }
 .page::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
-.page-inner { max-width: 1200px; margin: 0 auto; padding: 120px 60px 100px; overflow: visible; }
-.page-heading { display: flex; align-items: baseline; gap: 16px; margin-bottom: 16px; }
-.page-num { font-family: var(--font-display); font-size: 1.1rem; color: var(--red); letter-spacing: 0.05em; }
-.page-title { font-family: var(--font-display); font-size: clamp(3rem, 7vw, 6rem); line-height: 0.9; letter-spacing: 0.02em; text-transform: uppercase; }
-.page-intro { font-size: 1.05rem; color: var(--muted); font-weight: 300; max-width: 550px; margin-bottom: 60px; line-height: 1.7; }
+
+.page-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 120px 60px 100px;
+    overflow: visible;
+}
+
+.page-heading {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.page-num {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--red);
+    letter-spacing: 0.05em;
+}
+
+.page-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 6rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.page-intro {
+    font-size: 1.05rem;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 550px;
+    margin-bottom: 60px;
+    line-height: 1.7;
+}
 
 .project-detail-page .page-inner {
     max-width: none;
@@ -309,16 +347,6 @@ body.is-menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-event
     max-width: 1200px;
 }
 
-/* Quote band animation: the gap opens by translating the neighbouring blocks, never by resizing
-   layout (a page height that changes mid-scroll breaks the maximum scroll Lenis caches). The quote
-   itself never moves, so the animation track can anchor on it. Curve: sin^2(pi*t), flat at both
-   ends. */
-/* The track name is scoped per page so the two pages that use it do not share it. */
-#page-project-diploma .page-inner,
-#page-drawings .page-inner {
-    timeline-scope: --quote-timeline;
-}
-
 @media (max-width: 991px) {
     .page {
         padding: 100px 30px 40px 30px;
@@ -329,7 +357,11 @@ body.is-menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-event
     .page-inner { padding: 95px 20px 80px; }
 
     .page-title { font-size: clamp(2.2rem, 8vw, 3.5rem); }
-    .page-intro { font-size: 0.95rem; margin-bottom: 36px; }
+
+    .page-intro {
+        font-size: 0.95rem;
+        margin-bottom: 36px;
+    }
 
     /* Project pages: on phones the panels run edge to edge, so their coloured background and torn
        lines (pseudo-elements sized to the panel) reach the screen edge. Their own padding keeps
@@ -362,13 +394,49 @@ body.is-menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-event
     box-sizing: border-box;
 }
 
-.footer-inner { max-width: 1200px; margin: 0 auto; padding: 50px 60px 40px; }
-.footer-top { display: flex; align-items: baseline; gap: 16px; margin-bottom: 30px; }
-.footer-logo { font-size: 1.6rem; color: var(--white); animation: sketch-wobble 0.3s steps(1) infinite; }
-.footer-year { font-size: 0.85rem; opacity: 0.5; }
-.footer-legal { font-size: 0.8rem; line-height: 1.7; opacity: 0.5; max-width: 800px; margin-bottom: 26px; }
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 60px 40px;
+}
+
+.footer-top {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 30px;
+}
+
+.footer-logo {
+    font-size: 1.6rem;
+    color: var(--white);
+    animation: sketch-wobble 0.3s steps(1) infinite;
+}
+
+.footer-year {
+    font-size: 0.85rem;
+    opacity: 0.5;
+}
+
+.footer-legal {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    opacity: 0.5;
+    max-width: 800px;
+    margin-bottom: 26px;
+}
+
 .footer-legal p { margin-bottom: 12px; }
-.footer-bottom { display: flex; gap: 14px; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.3; }
+
+.footer-bottom {
+    display: flex;
+    gap: 14px;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    opacity: 0.3;
+}
+
 .footer-sep { opacity: 0.3; }
 
 /* Project pages: the footer clears what is above it. */
@@ -379,16 +447,24 @@ body.is-menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-event
 @media (max-width: 768px) {
     .footer-inner { padding: 36px 20px 28px; }
 
-    .footer-bottom { flex-wrap: wrap; gap: 8px; }
+    .footer-bottom {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
 
     /* Keep the legal text readable on a phone held at arm's length. */
-    .footer-legal          { font-size: 0.875rem; line-height: 1.75; }
+    .footer-legal {
+        font-size: 0.875rem;
+        line-height: 1.75;
+    }
 
     .footer-bottom,
     .footer-bottom a,
-    .footer-sep            { font-size: 0.8125rem; }
+    .footer-sep {
+        font-size: 0.8125rem;
+    }
 
-    .footer-year           { font-size: 0.875rem; }
+    .footer-year { font-size: 0.875rem; }
 }
 
 .footer-inner {
@@ -443,30 +519,10 @@ body.is-menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-event
     margin-right: 60px;
 }
 
-/* Reserve below the quote: gives it air and supplies the scroll travel the animation needs to
-   settle, since the quote is the last block of the page. The 40px at the bottom keep the next-page
-   link against the footer. */
-#page-project-diploma .page-next,
-#page-drawings .page-next {
-    margin-top: 32vh;
-    margin-bottom: 40px;
-}
-
 @media (max-width: 768px) {
     /* Content outside the panels keeps its breathing room. */
     .project-detail-page .page-next {
         padding-left: 20px;
         padding-right: 20px;
-    }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    /* The footer is excluded: if it moved and the animation did not reach its end, part of it
-       would stay out of reach. */
-    #page-project-diploma .page-next,
-    #page-drawings .page-next {
-        animation: quote-gap-down linear both;
-        animation-timeline: --quote-timeline;
-        animation-range: cover 21% cover 79%;
     }
 }

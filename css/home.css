@@ -1,50 +1,150 @@
+/* Home: hero, showcase frame, projects shortcut, notebook. */
+
+
 /* Hero */
 
 .hero-screen {
-    width: 100%; min-height: 100vh; min-height: 100dvh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 80px 40px 60px; position: relative;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 40px 60px;
+    position: relative;
     /* Keeps the hero from capturing scroll and click events outside its interactive areas. */
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;
 }
 
-.hero-logo-wrap { text-align: center; z-index: 2; pointer-events: none; }
+.hero-logo-wrap {
+    text-align: center;
+    z-index: 2;
+    pointer-events: none;
+}
 
 .hero-logo {
-    font-size: clamp(5rem, 14vw, 12rem); line-height: 0.85;
-    color: var(--white); text-transform: uppercase;
+    font-size: clamp(5rem, 14vw, 12rem);
+    line-height: 0.85;
+    color: var(--white);
+    text-transform: uppercase;
     will-change: transform, filter;
     animation: sketch-wobble-hero 0.26s steps(1) infinite;
 }
 
 .hero-profession {
     font-family: var(--font-display);
-    font-size: clamp(1rem, 2.2vw, 1.6rem); font-weight: 300;
-    letter-spacing: 0.25em; text-transform: uppercase;
-    color: var(--red); margin-top: 14px;
+    font-size: clamp(1rem, 2.2vw, 1.6rem);
+    font-weight: 300;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-top: 14px;
     /* Initially invisible; GSAP animates the entrance. */
     opacity: 0;
 }
 
 .scroll-invite {
-    position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    z-index: 3; opacity: 1; pointer-events: none;
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 3;
+    opacity: 1;
+    pointer-events: none;
 }
 
 /* The line carries the dimming, so the label beside it stays at full contrast. It uses colour
    rather than opacity, which the pulse animation already drives. */
-.scroll-line { width: 1px; height: 50px; background: rgba(255, 255, 255, 0.45); animation: scroll-pulse 2s ease-in-out infinite; transform-origin: top; }
+.scroll-line {
+    width: 1px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.45);
+    animation: scroll-pulse 2s ease-in-out infinite;
+    transform-origin: top;
+}
 
-.scroll-label { font-size: 1.4rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--red); }
+.scroll-label {
+    font-size: 1.4rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--red);
+}
+
+/* Reset will-change after the entrance (GSAP does it too). */
+.page.is-active .home-showcase,
+.page.is-active .projects-shortcut {
+    will-change: auto;
+}
+
+/* Small body, spaced capitals, muted white: the line must not compete with the logo. It enters
+   after the profession line so the first second stays light. */
+.hero-seeking {
+    font-family: var(--font-body);
+    font-size: clamp(0.68rem, 1.5vw, 0.82rem);
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.62);
+    margin-top: 22px;
+    opacity: 0; /* Animated entrance, like the profession line. */
+}
+
+@media (max-width: 768px) {
+    .hero-seeking {
+        margin-top: 16px;
+        letter-spacing: 0.11em;
+        /* On phones the sentence wraps onto two lines: cap its width so it breaks cleanly instead
+           of at random. */
+        max-width: 30ch;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+@keyframes sketch-wobble-hero {
+    0%,
+    33% {
+        filter: url(#sketch-1) drop-shadow(0 0 0 transparent);
+    }
+
+    34%,
+    66% {
+        filter: url(#sketch-2) drop-shadow(0 0 0 transparent);
+    }
+
+    67%,
+    100% {
+        filter: url(#sketch-3) drop-shadow(0 0 0 transparent);
+    }
+}
+
+@keyframes scroll-pulse {
+    0% {
+        transform: scaleY(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scaleY(0);
+        opacity: 0;
+    }
+}
+
+
+/* Showcase */
 
 .home-showcase {
     padding: 0 60px;
     margin-bottom: 110px;
-    pointer-events: auto;  /* Pointer events are restored outside the hero. */
-    opacity: 0;             /* Animated by GSAP on load. */
+    pointer-events: auto; /* Pointer events are restored outside the hero. */
+    opacity: 0; /* Animated by GSAP on load. */
 }
 
 .showcase-frame {
@@ -61,6 +161,39 @@
     justify-content: center;
 }
 
+/* Avoid needless repaints on GSAP-animated elements. */
+.home-showcase,
+.projects-shortcut,
+.hero-logo-wrap,
+.home-contact-inner {
+    will-change: opacity, transform;
+}
+
+@media (max-width: 768px) {
+    .home-showcase {
+        padding: 0 16px;
+        margin-bottom: 36px;
+    }
+}
+
+.home-showcase .frame-wrap {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
+}
+
+.showcase-frame .font-sketch {
+    color: #111;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    transform: rotate(-3deg);
+    padding: 20px;
+    text-align: center;
+}
+
+
+/* Projects shortcut */
+
 .projects-shortcut {
     display: flex;
     flex-direction: column;
@@ -75,9 +208,9 @@
     margin-bottom: 20px;
     cursor: pointer;
     text-align: center;
-    user-select: none;        /* Prevents text selection on double-click. */
+    user-select: none; /* Prevents text selection on double-click. */
     -webkit-user-select: none;
-    pointer-events: auto;     /* Re-enables pointer events on this button (its parent has none). */
+    pointer-events: auto; /* Re-enables pointer events on this button (its parent has none). */
     transition: transform var(--dur-med) var(--ease-out);
 }
 
@@ -167,39 +300,13 @@
     transform: scale(1.08) rotate(7deg);
 }
 
-/* Avoid needless repaints on GSAP-animated elements. */
-.home-showcase,
-.projects-shortcut,
-.hero-logo-wrap,
-.home-contact-inner {
-    will-change: opacity, transform;
-}
-
-/* Reset will-change after the entrance (GSAP does it too). */
-.page.is-active .home-showcase,
-.page.is-active .projects-shortcut {
-    will-change: auto;
-}
-
-/* Small body, spaced capitals, muted white: the line must not compete with the logo. It enters
-   after the profession line so the first second stays light. */
-.hero-seeking {
-    font-family: var(--font-body);
-    font-size: clamp(0.68rem, 1.5vw, 0.82rem);
-    font-weight: 300;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.62);
-    margin-top: 22px;
-    opacity: 0;              /* Animated entrance, like the profession line. */
-}
-
 @media (max-width: 768px) {
-    .home-showcase { padding: 0 16px; margin-bottom: 36px; }
+    .projects-shortcut {
+        margin-top: -10px;
+        margin-bottom: 10px;
+    }
 
-    .projects-shortcut { margin-top: -10px; margin-bottom: 10px; }
-
-    .projects-shortcut-hint { 
+    .projects-shortcut-hint {
         display: flex;
         opacity: 0;
         transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
@@ -220,16 +327,6 @@
 
     .projects-shortcut-underline { width: 80%; }
     .projects-shortcut-title { font-size: clamp(3rem, 12vw, 7rem); }
-
-    .hero-seeking {
-        margin-top: 16px;
-        letter-spacing: 0.11em;
-        /* On phones the sentence wraps onto two lines: cap its width so it breaks cleanly instead
-           of at random. */
-        max-width: 30ch;
-        margin-left: auto;
-        margin-right: auto;
-    }
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -260,22 +357,6 @@
     transition: transform 0.1s ease;
 }
 
-@keyframes sketch-wobble-hero {
-    0%,33%   { filter: url(#sketch-1) drop-shadow(0 0 0 transparent); }
-    34%,66%  { filter: url(#sketch-2) drop-shadow(0 0 0 transparent); }
-    67%,100% { filter: url(#sketch-3) drop-shadow(0 0 0 transparent); }
-}
-
-@keyframes scroll-pulse { 0% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(0); opacity: 0; } }
-
-.home-showcase .frame-wrap { max-width: 1400px; width: 100%; margin: 0 auto; display: block; }
-.showcase-frame .font-sketch {
-    color: #111;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    transform: rotate(-3deg);
-    padding: 20px;
-    text-align: center;
-}
 .projects-shortcut-hint-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }
 
 
@@ -296,7 +377,7 @@
     clip-path: polygon(0% 2.5%, 10% 1.8%, 25% 2.8%, 40% 1.5%, 55% 3.2%, 70% 1.8%, 85% 2.8%, 100% 1.8%, 100% 97.2%, 85% 98.2%, 70% 97.2%, 55% 98.5%, 40% 97.2%, 25% 98.2%, 10% 97.2%, 0% 98.2%);
     z-index: 0;
     filter: url(#paper-tear);
-    will-change: transform;  /* GPU promotion reduces repaint on hover. */
+    will-change: transform; /* GPU promotion reduces repaint on hover. */
     transition: transform 0.8s cubic-bezier(0.25, 1, 0.36, 1), clip-path 0.8s cubic-bezier(0.25, 1, 0.36, 1);
     transform-origin: center;
     pointer-events: none;
@@ -336,7 +417,8 @@
 .notebook-sheet::before {
     content: '';
     position: absolute;
-    top: 0; bottom: 0;
+    top: 0;
+    bottom: 0;
     left: 80px;
     width: 2px;
     background: rgba(255, 54, 74, 0.3);
@@ -346,7 +428,8 @@
 .notebook-sheet::after {
     content: '';
     position: absolute;
-    top: 0; bottom: 0;
+    top: 0;
+    bottom: 0;
     left: 84px;
     width: 1px;
     background: rgba(255, 54, 74, 0.18);
@@ -521,175 +604,11 @@
 }
 
 @keyframes notebook-wobble {
-    0%   { transform: rotate(0deg); }
-    25%  { transform: rotate(-0.3deg) translateX(-1px); }
-    50%  { transform: rotate(0.2deg) translateX(1px); }
-    75%  { transform: rotate(-0.15deg); }
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(-0.3deg) translateX(-1px); }
+    50% { transform: rotate(0.2deg) translateX(1px); }
+    75% { transform: rotate(-0.15deg); }
     100% { transform: rotate(0deg); }
 }
 
 .signature-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }
-
-
-/* Contact */
-
-.home-contact { padding: 0; background: var(--bg); }
-
-.home-contact-inner {
-    max-width: 1200px; margin: 0 auto; padding: 100px 60px;
-}
-
-.contact-layout {
-    display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 80px; align-items: start;
-}
-
-.contact-form { display: flex; flex-direction: column; gap: 36px; }
-.form-field { position: relative; }
-
-.form-input {
-    display: block;
-    width: 100%; padding: 12px 0;
-    background: transparent; border: none;
-    border-bottom: 1px solid rgba(255,255,255,0.18);
-    color: var(--white); font-family: var(--font-body);
-    font-size: 1rem; outline: none;
-    transition: border-color var(--dur-fast);
-}
-
-.form-input--textarea {
-    height: 48px;
-    resize: none;
-    overflow: hidden;
-    padding-top: 0;
-    margin-top: 12px;
-    transition: height 0.4s var(--ease-out), border-color var(--dur-fast);
-}
-
-.form-input--textarea:focus,
-.form-input--textarea:not(:placeholder-shown) {
-    height: 120px;
-    overflow-y: auto;
-}
-
-.form-label {
-    position: absolute; left: 0; top: 12px;
-    font-family: var(--font-display); font-size: 1.1rem;
-    letter-spacing: 0.05em; color: rgba(255,255,255,0.3);
-    pointer-events: none; transform-origin: left top;
-    transition: transform 0.3s var(--ease-out), color 0.3s;
-}
-
-.form-input:focus ~ .form-label, .form-input:not(:placeholder-shown) ~ .form-label {
-    transform: translateY(-24px) scale(0.82); color: var(--red);
-}
-
-/* The animated red line is handled by the .form-underline span alone, to avoid doubling it. */
-.form-underline { position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-med) var(--ease-out); }
-
-.form-input:focus ~ .form-underline { width: 100%; }
-
-.form-submit {
-    padding: 14px 42px;
-    font-family: var(--font-display); font-size: 1.3rem;
-    letter-spacing: 0.07em; color: var(--white);
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    cursor: pointer;
-    transition: border-color var(--dur-fast), color var(--dur-fast);
-}
-
-.form-submit:hover { border-color: var(--red); color: var(--red); }
-
-/* Form validation states. */
-.is-invalid {
-    border-bottom-color: var(--red);
-}
-
-/* Same weight as the focus rule above and declared after it: the error state wins. */
-.form-input.is-invalid ~ .form-label {
-    color: var(--red);
-    transform: translateY(-24px) scale(0.82);
-}
-
-.form-feedback {
-    min-height: 22px;
-    font-size: 0.9rem;
-    letter-spacing: 0.03em;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.form-feedback--error {
-    color: var(--red);
-    opacity: 1;
-}
-
-.form-feedback--success {
-    color: #4ade80;
-    opacity: 1;
-}
-
-.contact-info { display: flex; flex-direction: column; gap: 36px; padding-top: 12px; }
-.contact-label { font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.25); margin-bottom: 10px; text-transform: uppercase; }
-.contact-link { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.03em; display: inline-block; transition: color var(--dur-fast); }
-.contact-link:hover { color: var(--red); }
-
-.contact-social {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    opacity: 0.6;
-    margin-bottom: 12px;
-    transition: opacity var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
-}
-
-.contact-social:hover {
-    opacity: 1;
-    color: var(--red);
-    transform: translateX(4px);
-}
-
-.contact-social-icon {
-    flex-shrink: 0;
-}
-
-.contact-text { font-size: 1rem; font-weight: 300; opacity: 0.5; }
-
-@media (max-width: 768px) {
-    .home-contact-inner { padding: 60px 20px 80px; }
-
-    .contact-layout { grid-template-columns: 1fr; gap: 40px; }
-}
-
-@media (hover: none), (pointer: coarse) {
-    .contact-block {
-        opacity: 0;
-        transform: translateX(16px);
-        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-    }
-
-    .contact-block.is-in-view {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    .contact-block:nth-child(2) { transition-delay: 0.1s; }
-    .contact-block:nth-child(3) { transition-delay: 0.2s; }
-
-    .form-field {
-        opacity: 0;
-        transform: translateY(16px);
-        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
-    }
-
-    .form-field.is-in-view {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .form-field:nth-child(2) { transition-delay: 0.08s; }
-    .form-field:nth-child(3) { transition-delay: 0.16s; }
-}

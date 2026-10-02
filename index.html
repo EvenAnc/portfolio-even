@@ -76,18 +76,22 @@
     <!-- Preload the site font: without it the text first shows in a fallback font, then jumps. -->
     <link rel="preload" href="fonts/SkribblughRegular-XGW02.woff2" as="font" type="font/woff2" crossorigin>
 
+    <!-- Order matters: base, then shared pieces (layout, menu, frame), then one file per
+         component, then the reduced-motion overrides last. -->
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/menu.css">
+    <link rel="stylesheet" href="css/frame.css">
     <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/gallery.css">
+    <link rel="stylesheet" href="css/contact.css">
+    <link rel="stylesheet" href="css/projects-hub.css">
+    <link rel="stylesheet" href="css/project-detail.css">
+    <link rel="stylesheet" href="css/carousel.css">
+    <link rel="stylesheet" href="css/drawings.css">
+    <link rel="stylesheet" href="css/quote-band.css">
     <link rel="stylesheet" href="css/diploma.css">
     <link rel="stylesheet" href="css/lightbox.css">
-    <link rel="stylesheet" href="css/projects.css">
-    <link rel="stylesheet" href="css/overrides.css">
-    <style>
-        @keyframes spin-slow { 100% { transform: rotate(360deg); } }
-        @keyframes pulse-opacity { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
-    </style>
+    <link rel="stylesheet" href="css/reduced-motion.css">
 
     <!-- Deferred: the libraries run in document order, then the application module. -->
     <script defer src="vendor/gsap-3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt"></script>

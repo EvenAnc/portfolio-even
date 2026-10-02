@@ -1,4 +1,4 @@
-/* Lightbox */
+/* Lightbox: full-screen viewer for drawings and plans (lightbox- prefix). */
 
 .lightbox {
     position: fixed;
@@ -60,7 +60,8 @@
     z-index: 10010;
 }
 
-.lightbox-tool, .lightbox-close {
+.lightbox-tool,
+.lightbox-close {
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.45);
@@ -77,7 +78,8 @@
     line-height: 1;
 }
 
-.lightbox-tool:hover, .lightbox-close:hover {
+.lightbox-tool:hover,
+.lightbox-close:hover {
     color: var(--white);
     transform: scale(1.15);
 }
@@ -191,7 +193,7 @@
 }
 
 .lightbox.is-zoomed .lightbox-stage {
-    overflow: hidden; 
+    overflow: hidden;
     touch-action: none;
 }
 
@@ -354,7 +356,10 @@
         min-height: 44px;
     }
 
-    .lightbox-tool svg { width: 22px; height: 22px; }
+    .lightbox-tool svg {
+        width: 22px;
+        height: 22px;
+    }
 
     /* The close button joins the bottom bar. */
     .lightbox-close {
@@ -378,7 +383,10 @@
         padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
     }
 
-    .lightbox-arrow svg { width: 18px; height: 18px; }
+    .lightbox-arrow svg {
+        width: 18px;
+        height: 18px;
+    }
 
     /* Dots raised so they clear the bar. */
     .lightbox-dots {
@@ -386,7 +394,10 @@
         gap: 12px;
     }
 
-    .lightbox-dot { width: 10px; height: 10px; }
+    .lightbox-dot {
+        width: 10px;
+        height: 10px;
+    }
 
     /* Phones: the container reserved 45px on each side for the arrows, so an enlarged board was
        barely bigger than the thumbnail. The arrows are only 60px tall and centred, so they cross
@@ -396,7 +407,8 @@
         padding: 70px 10px 120px;
     }
 
-    .lightbox-arrow--prev, .lightbox-arrow--next {
+    .lightbox-arrow--prev,
+    .lightbox-arrow--next {
         /* Slight shadow to stay legible over a light sheet. */
         filter: drop-shadow(0 0 6px rgba(0,0,0,0.85));
     }
