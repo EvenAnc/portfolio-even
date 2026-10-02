@@ -7,7 +7,7 @@
 
 /* will-change: promoted ahead of the entrance animation. */
 .home-contact-inner {
-    max-width: 1200px;
+    max-width: var(--content-max);
     margin: 0 auto;
     padding: 100px 60px;
     will-change: opacity, transform;
@@ -31,7 +31,7 @@
     color: var(--red);
     opacity: 0;
     transform: translateX(-10px);
-    transition: all 0.3s ease;
+    transition: all var(--dur-base) ease;
     pointer-events: none;
 }
 
@@ -98,7 +98,7 @@
     color: rgba(255,255,255,0.3);
     pointer-events: none;
     transform-origin: left top;
-    transition: transform 0.3s var(--ease-out), color 0.3s;
+    transition: transform var(--dur-base) var(--ease-out), color var(--dur-base);
 }
 
 .form-input:focus ~ .form-label,
@@ -134,7 +134,7 @@
     font-size: 0.9rem;
     letter-spacing: 0.03em;
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--dur-base) ease;
 }
 
 .form-feedback--error {
@@ -143,7 +143,7 @@
 }
 
 .form-feedback--success {
-    color: #4ade80;
+    color: var(--green);
     opacity: 1;
 }
 

@@ -8,7 +8,7 @@
     align-items: center;
     justify-content: center;
     padding: 90px 60px 60px;
-    background: #121212;
+    background: var(--viewer-bg);
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -34,7 +34,7 @@
     letter-spacing: 0.04em;
     opacity: 0.85;
     transition: opacity 0.4s ease;
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .lightbox-counter {
@@ -61,8 +61,8 @@
 
 .lightbox-tool,
 .lightbox-close {
-    color: rgba(255, 255, 255, 0.45);
-    transition: color 0.3s ease, transform 0.3s ease;
+    color: var(--muted);
+    transition: color var(--dur-base) ease, transform var(--dur-base) ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -121,7 +121,7 @@
     height: auto;
     object-fit: contain;
     cursor: zoom-in;
-    transition: transform 0.3s ease;
+    transition: transform var(--dur-base) ease;
 }
 
 /* Zoom slider: shown only while the image is zoomed. A hand-drawn track sits under a native
@@ -135,7 +135,7 @@
     margin-right: 5px;
     opacity: 0;
     transform: translateX(10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity var(--dur-base) ease, transform var(--dur-base) ease;
 }
 
 .lightbox.is-zoomed .lightbox-zoom {
@@ -152,7 +152,7 @@
     height: 20px;
     transform: translateY(-50%);
     pointer-events: none;
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .lightbox-zoom-range {
@@ -202,7 +202,7 @@
     display: block;
     border: none;
     outline: none;
-    background: #121212;
+    background: var(--viewer-bg);
 }
 
 .lightbox-loader {
@@ -214,7 +214,7 @@
     z-index: 10002;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--dur-base) ease;
 }
 
 .lightbox-loader.is-active { opacity: 1; }
@@ -244,7 +244,7 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.25);
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.25s ease;
+    transition: background var(--dur-base) ease, transform 0.25s ease;
 }
 
 .lightbox-dot.is-active {
@@ -449,13 +449,13 @@
        reduced motion the script opens the viewer without a transition. */
     ::view-transition-group(open-sheet) {
         animation-duration: 460ms;
-        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        animation-timing-function: var(--ease-out);
     }
 
     ::view-transition-old(open-sheet),
     ::view-transition-new(open-sheet) {
         animation-duration: 460ms;
-        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        animation-timing-function: var(--ease-out);
     }
 
     ::view-transition-old(root),

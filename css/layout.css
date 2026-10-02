@@ -12,7 +12,7 @@
     height: 72px;
     z-index: 100;
     pointer-events: none;
-    background: linear-gradient(180deg, rgba(26,26,26,0.85) 0%, transparent 100%);
+    background: linear-gradient(180deg, rgb(var(--bg-rgb) / 85%) 0%, transparent 100%);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     padding-top: env(safe-area-inset-top);
@@ -92,9 +92,9 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     display: none;
     align-items: center;
     gap: 10px;
-    color: #fff;
+    color: var(--white);
     pointer-events: auto;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: transform var(--dur-base) var(--ease-overshoot);
 }
 
 .header-back-btn:hover { transform: translateX(-8px) scale(1.05); }
@@ -124,7 +124,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     font-size: 2.3rem;
     line-height: 1;
     letter-spacing: 0.03em;
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .header-right {
@@ -285,7 +285,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 }
 
 .page-inner {
-    max-width: 1200px;
+    max-width: var(--content-max);
     margin: 0 auto;
     padding: 120px 60px 100px;
 }
@@ -333,7 +333,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 .project-detail-page .page-intro {
     padding-left: 60px;
     padding-right: 60px;
-    max-width: 1200px;
+    max-width: var(--content-max);
 }
 
 @media (max-width: 991px) {
@@ -362,7 +362,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 /* Footer */
 
 .site-footer {
-    background: #111111;
+    background: var(--bg-deep);
     color: rgba(255,255,255,0.4);
     border-top: 1px solid rgba(255,255,255,0.05);
     margin-bottom: -100px;
@@ -383,7 +383,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 
 /* The bottom padding grows with the home-bar inset. */
 .footer-inner {
-    max-width: 1200px;
+    max-width: var(--content-max);
     margin: 0 auto;
     padding: 50px 60px max(40px, calc(40px + env(safe-area-inset-bottom)));
 }
@@ -398,7 +398,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 .footer-logo {
     font-size: 1.6rem;
     color: var(--white);
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .footer-year {
@@ -466,7 +466,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     float: right;
     clear: both;
     padding: 10px 0;
-    transition: transform 0.3s var(--ease-out);
+    transition: transform var(--dur-base) var(--ease-out);
 }
 
 .page-next:hover { transform: translateX(10px); }
@@ -477,7 +477,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     text-transform: lowercase;
     letter-spacing: 0.03em;
     color: var(--white);
-    transition: color 0.3s;
+    transition: color var(--dur-base);
 }
 
 .page-next:hover .page-next-label { color: var(--red); }
@@ -485,7 +485,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 .page-next-arrow {
     width: 60px;
     height: 30px;
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .page-next-arrow path { stroke: var(--red); }

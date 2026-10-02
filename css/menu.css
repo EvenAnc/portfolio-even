@@ -31,7 +31,7 @@ body.is-menu-open .menu-overlay {
     font-size: clamp(3rem, 6vw, 5rem);
     line-height: 1;
     color: var(--white);
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .menu-nav {
@@ -72,7 +72,7 @@ body.is-menu-open .menu-overlay {
     color: var(--red);
     opacity: 0;
     transform: translateX(-8px) rotate(-3deg);
-    transition: opacity 0.3s, transform 0.4s var(--ease-out);
+    transition: opacity var(--dur-base), transform 0.4s var(--ease-out);
     white-space: nowrap;
 }
 

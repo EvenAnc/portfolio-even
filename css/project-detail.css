@@ -3,7 +3,7 @@
 
 /* Board */
 
-.project-detail-page { background: #111111; }
+.project-detail-page { background: var(--bg-deep); }
 
 .project-board {
     display: flex;
@@ -26,10 +26,10 @@
 
 /* Project title on a strip of tape. */
 .tape-title {
-    color: #fff;
+    color: var(--white);
     font-size: clamp(2.5rem, 5vw, 4.5rem);
     display: inline-block;
-    background: #2a2a2a;
+    background: var(--tape);
     padding: 8px 16px;
     transform: rotate(-1deg);
     box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
@@ -76,7 +76,7 @@
 
 .project-intro-sheet {
     position: relative;
-    background: #f5f0e8;
+    background: var(--intro-bg);
     border-radius: 6px;
     padding: 35px 40px 30px;
     box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
@@ -90,7 +90,7 @@
 .project-intro-text {
     font-family: var(--font-body);
     font-size: clamp(0.95rem, 1.8vw, 1.15rem);
-    color: #333;
+    color: var(--ink-soft);
     line-height: 1.8;
     margin-bottom: 12px;
 }
@@ -127,13 +127,13 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: #111111;
+    background: var(--bg-deep);
     z-index: -1;
-    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12 L 500 20 L 0 20 Z' fill='black'/%3E%3C/svg%3E"), linear-gradient(black, black);
+    -webkit-mask-image: var(--tear-mask), linear-gradient(black, black);
     -webkit-mask-position: top left, 0 20px;
     -webkit-mask-repeat: repeat-x, no-repeat;
     -webkit-mask-size: 500px 20px, 100% calc(100% - 20px);
-    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12 L 500 20 L 0 20 Z' fill='black'/%3E%3C/svg%3E"), linear-gradient(black, black);
+    mask-image: var(--tear-mask), linear-gradient(black, black);
     mask-position: top left, 0 20px;
     mask-repeat: repeat-x, no-repeat;
     mask-size: 500px 20px, 100% calc(100% - 20px);
@@ -147,7 +147,7 @@
     left: 0;
     width: 100%;
     height: 20px;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12' stroke='white' stroke-width='2.5' fill='none' stroke-linejoin='miter' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: var(--tear-line);
     background-size: 500px 20px;
     background-repeat: repeat-x;
     z-index: 1;
@@ -155,8 +155,8 @@
 }
 
 /* Alternate panel: anthracite instead of black, softer sheet shadow. */
-.panel--alt { color: #fff; }
-.panel--alt::before { background: #1a1a1a; }
+.panel--alt { color: var(--white); }
+.panel--alt::before { background: var(--bg); }
 .panel--alt .drawing-sheet-wrap { box-shadow: 8px 8px 24px rgba(0,0,0,0.15); }
 
 /* Panel title on a red sticker that overhangs the torn edge. */
@@ -177,19 +177,19 @@
     font-size: clamp(2.5rem, 5vw, 4.5rem);
     display: inline-block;
     background: var(--red);
-    color: white;
+    color: var(--white);
     padding: 15px 40px;
     transform: rotate(-3deg);
-    border: 4px solid #1a1a1a;
-    box-shadow: 8px 8px 0px #1a1a1a;
+    border: 4px solid var(--bg);
+    box-shadow: 8px 8px 0px var(--bg);
     animation: sticker-wobble 4s infinite ease-in-out;
     cursor: default;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--dur-base) ease, box-shadow var(--dur-base) ease;
 }
 
 .sticker-title:hover {
     transform: rotate(-1deg) scale(1.05) translateY(-3px);
-    box-shadow: 12px 12px 0px #1a1a1a, 0 20px 40px rgba(0,0,0,0.4);
+    box-shadow: 12px 12px 0px var(--bg), 0 20px 40px rgba(0,0,0,0.4);
 }
 
 /* Lede of a panel. 43rem is the targeted 62 characters in a unit independent of the font:
@@ -266,7 +266,7 @@
     position: relative;
     width: 85%;
     max-width: 900px;
-    transition: transform 0.3s ease;
+    transition: transform var(--dur-base) ease;
     cursor: pointer;
 }
 
@@ -286,8 +286,8 @@
 }
 
 .section-stack-item .drawing-sheet-wrap {
-    background: white;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: var(--white);
+    transition: transform var(--dur-base) ease, box-shadow var(--dur-base) ease;
 }
 
 .section-stack-item .drawing-sheet-wrap:hover {
@@ -302,7 +302,7 @@
     left: 12px;
     z-index: 5;
     background: rgba(0,0,0,0.8);
-    color: #fff;
+    color: var(--white);
     padding: 6px 16px;
     font-size: clamp(0.85rem, 1.6vw, 1.2rem);
     border-radius: 4px;
@@ -357,7 +357,7 @@
 
 .render-item .drawing-sheet-wrap {
     box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--dur-base) ease, box-shadow var(--dur-base) ease;
 }
 
 .render-item .drawing-sheet-wrap:hover {

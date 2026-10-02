@@ -32,17 +32,17 @@
 
 .carousel--landscape .carousel-row .frame-wrap {
     width: 100%;
-    max-width: 1200px;
+    max-width: var(--content-max);
     max-height: 65vh;
-    aspect-ratio: 1.414 / 1;
+    aspect-ratio: var(--a4) / 1;
 }
 
 /* Portrait A4 sheet. The width is capped so that sheet plus controls (143px: header, gaps,
    dots) fit a short window; the cap only bites below about 737px of height. */
 .carousel-viewport {
-    width: min(420px, max(120px, calc((100vh - 143px) / 1.414)));
-    width: min(420px, max(120px, calc((100dvh - 143px) / 1.414)));
-    aspect-ratio: 1 / 1.414;
+    width: min(420px, max(120px, calc((100vh - var(--carousel-chrome)) / var(--a4))));
+    width: min(420px, max(120px, calc((100dvh - var(--carousel-chrome)) / var(--a4))));
+    aspect-ratio: 1 / var(--a4);
     overflow: hidden;
     position: relative;
     border-radius: 4px;
@@ -59,7 +59,7 @@
     margin: 0 auto;
     box-shadow: 10px 10px 30px rgba(0,0,0,0.6);
     border-radius: 8px;
-    background: white;
+    background: var(--white);
     align-self: stretch;
 }
 
@@ -86,7 +86,7 @@
     inset: 0;
     opacity: 0;
     transform: scale(0.96) translateY(10px);
-    transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: opacity 0.6s var(--ease-soft), transform 0.6s var(--ease-soft);
     pointer-events: none;
     z-index: 1;
 }
@@ -104,7 +104,7 @@
     height: 100%;
 }
 
-.carousel-slide .drawing-sheet-wrap { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.carousel-slide .drawing-sheet-wrap { transition: transform var(--dur-base) ease, box-shadow var(--dur-base) ease; }
 .carousel-slide.is-active .drawing-sheet-wrap { cursor: zoom-in; }
 
 .carousel-slide .drawing-sheet-wrap:hover {
@@ -121,7 +121,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    transition: color var(--dur-base) ease, transform var(--dur-base) var(--ease-soft);
 }
 
 .carousel-arrow:hover {
@@ -130,7 +130,7 @@
 }
 
 /* On the anthracite panel the hovered arrow sits on a white square. */
-.panel--alt .carousel-arrow:hover { background: #fff; }
+.panel--alt .carousel-arrow:hover { background: var(--white); }
 
 /* Touch targets: a transparent pseudo-element enlarges the hit area only (44x44 minimum), the
    drawing stays the same. */
@@ -168,7 +168,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s ease, transform 0.2s ease;
+    transition: color var(--dur-base) ease, transform 0.2s ease;
 }
 
 .carousel-toggle:hover {
@@ -192,7 +192,7 @@
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.25);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all var(--dur-base) ease;
 }
 
 .carousel-dot.is-active {
@@ -231,7 +231,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    max-width: 1200px;
+    max-width: var(--content-max);
     width: 100%;
     margin: 30px auto 0;
     padding: 0 10px 60px;
@@ -283,8 +283,8 @@
 
     /* The sheet takes the width left once the arrows and their gaps are deducted. */
     .carousel-viewport {
-        width: min(320px, calc(100vw - 92px), max(120px, calc((100vh - 143px) / 1.414)));
-        width: min(320px, calc(100vw - 92px), max(120px, calc((100dvh - 143px) / 1.414)));
+        width: min(320px, calc(100vw - 92px), max(120px, calc((100vh - var(--carousel-chrome)) / var(--a4))));
+        width: min(320px, calc(100vw - 92px), max(120px, calc((100dvh - var(--carousel-chrome)) / var(--a4))));
     }
 
     .carousel-arrow {

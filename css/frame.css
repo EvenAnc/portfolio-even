@@ -89,7 +89,7 @@
     stroke-dasharray: 1800;
     stroke-dashoffset: 1800;
     transition: stroke-dashoffset 1.5s var(--ease-out);
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .frame-wrap:hover > .sketch-rect-svg {
@@ -141,7 +141,7 @@
     position: relative;
 }
 
-.drawing-sheet-wrap .media-frame-inner { background: white; }
+.drawing-sheet-wrap .media-frame-inner { background: var(--white); }
 
 /* Scans carry a white border: an 18% zoom crops it. */
 .drawing-sheet img { transform: scale(1.18); }
@@ -156,7 +156,7 @@
 .drawing-sheet .plan-img {
     transform: none;
     object-fit: contain;
-    background: #fff;
+    background: var(--white);
 }
 
 @media (max-width: 768px) {
@@ -190,21 +190,21 @@
 /* Placeholders */
 
 .media-frame-inner.media-placeholder--dark {
-    background: #000;
+    background: var(--black);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .media-placeholder--dark .font-sketch {
-    color: #fff;
+    color: var(--white);
     font-size: 2.2rem;
     letter-spacing: 2px;
 }
 
 .media-frame-inner.media-placeholder {
     aspect-ratio: 4/3;
-    background: #222;
+    background: var(--placeholder);
     display: flex;
     justify-content: center;
     align-items: center;
