@@ -3,19 +3,6 @@
 
 /* Gallery */
 
-.drawing-item:nth-child(2n) .sketch-rect-svg { transform: rotate(-1.5deg); }
-
-.drawing-item:nth-child(2n) .sketch-rect-path { transition: stroke-dashoffset 1.3s var(--ease-out); }
-
-/* Magnifier cursor on the active page. */
-.page.is-active .drawing-item .frame-wrap,
-.page.is-active .carousel-slide.is-active .drawing-sheet-wrap {
-    cursor: zoom-in;
-}
-
-.drawing-item.drawing-item--portrait .media-frame-inner { aspect-ratio: 1 / 1.414; }
-.drawing-item.drawing-item--landscape .media-frame-inner { aspect-ratio: 1.414 / 1; }
-
 .drawings-gallery {
     display: grid;
     grid-template-columns: 1fr 1.6fr 1fr;
@@ -34,6 +21,16 @@
     z-index: 1;
 }
 
+.drawing-item .frame-wrap { cursor: zoom-in; }
+
+/* A4 sheets. */
+.drawing-item--portrait .media-frame-inner { aspect-ratio: 1 / 1.414; }
+.drawing-item--landscape .media-frame-inner { aspect-ratio: 1.414 / 1; }
+
+/* Every other red rectangle tilts the other way and draws a little faster. */
+.drawing-item:nth-child(2n) .sketch-rect-svg { transform: rotate(-1.5deg); }
+.drawing-item:nth-child(2n) .sketch-rect-path { transition: stroke-dashoffset 1.3s var(--ease-out); }
+
 .drawing-meta { text-align: left; }
 
 .drawing-title {
@@ -49,30 +46,8 @@
     color: var(--red);
 }
 
-.drawing-item:hover .ref-photo {
-    opacity: 1;
-    transform: rotate(6deg) translateY(0);
-}
-
-.drawing-item:hover .ref-arrow {
-    opacity: 1;
-}
-
-.drawing-item:hover .ref-arrow-path {
-    stroke-dashoffset: 0;
-}
-
-.drawing-item:hover .map-pin-icon {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-}
-
-.drawing-item:hover .map-pin-text {
-    opacity: 1;
-    transform: rotate(-15deg) scale(1);
-}
-
 @media (hover: hover) {
+    /* The hovered drawing comes forward; the others blur and fade. */
     .drawings-gallery:hover .drawing-item {
         filter: blur(4px) grayscale(50%);
         opacity: 0.5;
@@ -88,8 +63,7 @@
 
 @media (max-width: 768px) {
     /* Phones: the gallery breaks out of the page margins (title and intro keep their alignment)
-       to gain width. The reference photo is enlarged and keeps its portrait proportions; the
-       title sits closer under the drawing. */
+       to gain width, and the title sits closer under the drawing. */
     .drawings-gallery {
         grid-template-columns: 1fr;
         gap: 28px;
@@ -97,13 +71,171 @@
         margin-right: -28px;
     }
 
-    .drawing-item {
-        gap: 10px;
+    .drawing-item { gap: 10px; }
+}
+
+
+/* Reference photo */
+
+/* Small polaroid pinned to the corner of a drawing, with an arrow pointing at it; both show
+   while the drawing is hovered. */
+.ref-photo-wrap {
+    position: absolute;
+    top: -15px;
+    right: -110px;
+    width: 120px;
+    z-index: 5;
+    pointer-events: none;
+}
+
+.ref-photo {
+    width: 100%;
+    opacity: 0;
+    transform: rotate(15deg) translateY(20px);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+}
+
+.drawing-item:hover .ref-photo {
+    opacity: 1;
+    transform: rotate(6deg) translateY(0);
+}
+
+/* The white frame takes its height from the photo's aspect-ratio and has padding. With
+   height: 100% on the photo, Chrome ignores the padding and Safari includes it; in a flex
+   column both engines give the photo exactly the space between the paddings. */
+.ref-photo .media-frame-inner {
+    padding: 10px 10px 36px 10px;
+    background: #fdfdfd;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ref-photo .media-frame-img {
+    aspect-ratio: 1 / 1;
+    height: auto;
+    flex: 1 1 0;
+    min-height: 0;
+}
+
+.ref-arrow {
+    position: absolute;
+    top: -50px;
+    left: -40px;
+    width: 90px;
+    height: 90px;
+    overflow: visible;
+    opacity: 0;
+    transition: opacity 0.3s ease 0.1s;
+    transform: rotate(5deg);
+    animation: sketch-wobble 0.3s steps(1) infinite;
+}
+
+.drawing-item:hover .ref-arrow { opacity: 1; }
+
+.ref-arrow-path {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 0.5s ease 0.2s;
+}
+
+.drawing-item:hover .ref-arrow-path { stroke-dashoffset: 0; }
+
+@media (min-width: 992px) and (max-width: 1328px) {
+    /* Between the desktop and narrow layouts the gallery's right edge is under 110px from the
+       screen edge, and the pinned photo would stick out. It is pulled back inside, keeping 8px
+       in hand: the photo is tilted, so its painted box is wider than its slot, and the page
+       scrollbar takes its share. */
+    .ref-photo-wrap { right: max(-110px, min(-38px, calc(562px - 50vw))); }
+}
+
+@media (max-width: 991px) {
+    /* The desktop offsets would push the photo outside the page, where overflow-x: hidden clips
+       it. It is pulled back, keeping the pinned, crooked look. */
+    .ref-photo-wrap {
+        right: -18px;
+        top: -8px;
+        width: 96px;
+    }
+
+    .ref-photo .media-frame-inner { padding: 7px 7px 24px; }
+
+    /* Real proportions of the source photo. */
+    .ref-photo .media-frame-img { aspect-ratio: 3 / 4; }
+}
+
+@media (max-width: 768px) {
+    .ref-photo-wrap {
+        width: 116px;
+        right: -10px;
+        top: -12px;
     }
 }
 
+@media (max-width: 480px) {
+    .ref-photo-wrap {
+        width: 104px;
+        right: -6px;
+    }
+}
+
+
+/* Map pin */
+
+/* Pin and place name dropped on the map drawing while it is hovered. */
+.map-pin-wrap {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 100px;
+    z-index: 15;
+    pointer-events: none;
+}
+
+.map-pin-icon {
+    width: 32px;
+    height: 48px;
+    position: absolute;
+    top: 26px;
+    left: 84px;
+    opacity: 0;
+    transform: translateY(-40px) scale(1.2);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.5));
+    animation: sketch-wobble 0.3s steps(1) infinite;
+}
+
+.drawing-item:hover .map-pin-icon {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+.map-pin-text {
+    font-size: 2.8rem;
+    color: var(--red);
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    transform: rotate(-15deg) scale(0.8);
+    opacity: 0;
+    transition: all 0.4s ease 0.2s;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    letter-spacing: 2px;
+}
+
+.drawing-item:hover .map-pin-text {
+    opacity: 1;
+    transform: rotate(-15deg) scale(1);
+}
+
+
+/* Touch */
+
 @media (hover: none), (pointer: coarse) {
-    /* Drawings gallery: no global blur on hover; each item animates on its own when it enters. */
+    /* No blur on the neighbours: each drawing rises on its own when it scrolls into view. */
     .drawings-gallery:hover .drawing-item {
         filter: none;
         opacity: 1;
@@ -121,9 +253,8 @@
         transform: translateY(0);
     }
 
-    /* Staggered delays for the drawings. */
+    /* Staggered entrance. */
     .drawing-item:nth-child(1) { transition-delay: 0s; }
-
     .drawing-item:nth-child(2) { transition-delay: 0.1s; }
     .drawing-item:nth-child(3) { transition-delay: 0.2s; }
 
@@ -132,7 +263,16 @@
         filter: none;
     }
 
+    /* The extras drop in once their drawing is in view. The resting and in-view rules weigh as
+       much as the hover rules above and come after them, so a hover left by a tap changes
+       nothing. */
+    .ref-photo,
+    .ref-arrow {
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
+    }
+
     .drawing-item:not(.is-in-view) .ref-photo { transform: translateY(-40px) scale(1.2); }
+    .ref-arrow { transform: translateY(-40px) scale(1.2); }
 
     .drawing-item.is-in-view .ref-photo {
         opacity: 1;
@@ -161,167 +301,11 @@
         transition-delay: 0.9s;
     }
 
-    /* Disable the hover rules on touch for extras that are not in view. */
-    .drawing-item:not(.is-in-view):hover .ref-photo { opacity: 0; }
-
-    .drawing-item:not(.is-in-view):hover .ref-arrow { opacity: 0; }
-    .drawing-item:not(.is-in-view):hover .map-pin-icon { opacity: 0; }
-    .drawing-item:not(.is-in-view):hover .map-pin-text { opacity: 0; }
-}
-
-
-/* Reference photo */
-
-.ref-photo-wrap {
-    position: absolute;
-    top: -15px;
-    right: -110px;
-    width: 120px;
-    z-index: 5;
-    pointer-events: none;
-}
-
-.ref-photo {
-    width: 100%;
-    opacity: 0;
-    transform: rotate(15deg) translateY(20px);
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
-}
-
-/* Reference photo: the polaroid frame takes its height from an aspect-ratio and has padding.
-   With height:100% on the photo, Chrome ignores the padding and Safari includes it, so the photo
-   overflowed the white frame. In a flex column both engines give it exactly the space between
-   the paddings. */
-.ref-photo .media-frame-inner {
-    padding: 10px 10px 36px 10px;
-    background: #fdfdfd;
-    border-radius: 2px;
-    display: flex;
-    flex-direction: column;
-}
-
-.ref-photo .media-frame-img {
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    width: 100%;
-    display: block;
-    height: auto;
-    flex: 1 1 0;
-    min-height: 0;
-}
-
-.ref-arrow {
-    position: absolute;
-    top: -50px;
-    left: -40px;
-    width: 90px;
-    height: 90px;
-    overflow: visible;
-    opacity: 0;
-    transition: opacity 0.3s ease 0.1s;
-    transform: rotate(5deg);
-    animation: sketch-wobble 0.3s steps(1) infinite;
-}
-
-.ref-arrow-path {
-    stroke-dasharray: 100;
-    stroke-dashoffset: 100;
-    transition: stroke-dashoffset 0.5s ease 0.2s;
-}
-
-@media (max-width: 991px) {
-    /* Fixed pixel offsets tuned for desktop pushed two blocks outside the frame below 992px,
-       where overflow-x: hidden clipped them without a scrollbar. Pull them back, keeping the
-       pinned, crooked look. */
-    .ref-photo-wrap {
-        right: -18px;
-        top: -8px;
-        width: 96px;
+    /* Before that, a hover left by a tap must not reveal them. */
+    .drawing-item:not(.is-in-view):hover .ref-photo,
+    .drawing-item:not(.is-in-view):hover .ref-arrow,
+    .drawing-item:not(.is-in-view):hover .map-pin-icon,
+    .drawing-item:not(.is-in-view):hover .map-pin-text {
+        opacity: 0;
     }
-
-    .ref-photo .media-frame-img {
-        aspect-ratio: 3 / 4; /* Real proportions of the source photo. */
-    }
-
-    .ref-photo .media-frame-inner {
-        padding: 7px 7px 24px;
-    }
-}
-
-@media (hover: none), (pointer: coarse) {
-    /* Extras on the drawings (touch, on scroll): they drop in when the item scrolls into view.
-       The resting and in-view rules weigh as much as the hover rules and come after them, so a
-       hover left by a tap changes nothing. */
-    .ref-photo,
-    .ref-arrow {
-        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
-    }
-
-    .ref-arrow { transform: translateY(-40px) scale(1.2); }
-}
-
-@media (min-width: 992px) and (max-width: 1328px) {
-    /* Between desktop and narrow layouts the gallery's right edge is under 110px from the screen
-       edge, so the pinned reference photo stuck out. Pull it back inside, keeping 8px in hand:
-       the photo is tilted, so its painted box is wider than its slot, and the page scrollbar
-       takes its share. */
-    .ref-photo-wrap {
-        right: max(-110px, min(-38px, calc(562px - 50vw)));
-    }
-}
-
-@media (max-width: 768px) {
-    .ref-photo-wrap {
-        width: 116px;
-        right: -10px;
-        top: -12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .ref-photo-wrap {
-        width: 104px;
-        right: -6px;
-    }
-}
-
-
-/* Map pin */
-
-.map-pin-wrap {
-    position: absolute;
-    top: 42%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 200px;
-    height: 100px;
-    z-index: 15;
-    pointer-events: none;
-}
-
-.map-pin-icon {
-    width: 32px;
-    height: 48px;
-    position: absolute;
-    top: 26px;
-    left: 84px;
-    opacity: 0;
-    transform: translateY(-40px) scale(1.2);
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    filter: drop-shadow(0 8px 10px rgba(0,0,0,0.5));
-    animation: sketch-wobble 0.3s steps(1) infinite;
-}
-
-.map-pin-text {
-    font-size: 2.8rem;
-    color: var(--red);
-    position: absolute;
-    top: -20px;
-    left: -20px;
-    transform: rotate(-15deg) scale(0.8);
-    opacity: 0;
-    transition: all 0.4s ease 0.2s;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
-    letter-spacing: 2px;
 }

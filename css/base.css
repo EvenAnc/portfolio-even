@@ -1,4 +1,8 @@
-/* Base: design tokens, font, reset, shared utilities, keyboard focus ring. */
+/* Base: design tokens, font, reset, shared utilities, keyboard focus ring.
+
+   Breakpoints, written out in each file since media queries cannot read custom properties:
+   480px (small phones), 768px (phones), 991px (tablets). Touch devices are targeted with
+   (hover: none), (pointer: coarse), the query the scripts use as well. */
 
 
 /* Tokens */
@@ -11,9 +15,11 @@
     --notebook-bg: #f2f0eb;
     --notebook-line: rgba(140,135,125,0.35);
     --notebook-text: #1a1a1a;
+
     --font-display: 'Bebas Neue', 'Impact', sans-serif;
     --font-body: 'Space Grotesk', sans-serif;
     --font-sketch: 'Skribblugh', 'Permanent Marker', cursive;
+
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     --dur-fast: 0.22s;
     --dur-med: 0.55s;
@@ -22,11 +28,11 @@
 
 /* Font */
 
+/* woff2 first: 11 KB lighter, and it is the logo font. Browsers without it fall back to woff. */
 @font-face {
     font-family: 'Skribblugh';
-    /* woff2 first: 11 KB lighter, and it is the logo font. Browsers without it fall back to
-       woff. */
-    src: url('../fonts/SkribblughRegular-XGW02.woff2') format('woff2'), url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
+    src: url('../fonts/SkribblughRegular-XGW02.woff2') format('woff2'),
+        url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -43,6 +49,7 @@
     padding: 0;
 }
 
+/* The document itself never scrolls: each .page is its own scroll container. */
 html,
 body {
     width: 100%;
@@ -64,6 +71,7 @@ button {
     font-family: inherit;
 }
 
+/* Images fill their frame, which sets the size and the ratio. */
 img {
     display: block;
     width: 100%;
@@ -74,7 +82,7 @@ img {
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* Remove the Android tap highlight. */
+    /* No Android tap highlight on controls, including the sheets that open the viewer. */
     a,
     button,
     .section-stack-item,
@@ -88,6 +96,13 @@ img {
 
 .font-sketch { font-family: var(--font-sketch); }
 
+/* Holder of the SVG filters and clip paths: takes no room. */
+.svg-filters {
+    position: absolute;
+    overflow: hidden;
+}
+
+/* Shown only without JavaScript, above everything else. */
 .noscript-notice {
     position: relative;
     z-index: 10000;
@@ -106,15 +121,10 @@ img {
 
 .noscript-notice a { color: #fff; }
 
-.svg-filters {
-    position: absolute;
-    overflow: hidden;
-}
-
 
 /* Skip link */
 
-/* Skip link: hidden until the first Tab, then lets keyboard users jump past the header. */
+/* Hidden above the viewport until it takes focus on the first Tab. */
 .skip-link {
     position: absolute;
     top: 0;
@@ -128,19 +138,16 @@ img {
     font-size: 0.8rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    text-decoration: none;
     transition: transform var(--dur-fast) var(--ease-out);
 }
 
-.skip-link:focus {
-    transform: translate(-50%, 0);
-}
+.skip-link:focus { transform: translate(-50%, 0); }
 
 
 /* Focus ring */
 
-/* Keyboard focus ring: :focus-visible only, so the outline never shows on a mouse click.
-   Declared here, before the components, so that a component can adjust its own ring. */
+/* :focus-visible only, so the outline never shows on a mouse click. Declared here, before the
+   components, so that a component can adjust its own ring. */
 a:focus-visible,
 button:focus-visible,
 input:focus-visible,
@@ -155,9 +162,7 @@ textarea:focus-visible,
    control, so it shows no focus ring. The two rules stay apart: a browser that does not know
    :focus-visible drops any rule whose selector list contains it, and must still get the first
    one. */
-.page:focus {
-    outline: none;
-}
+.page:focus { outline: none; }
 
 .page:focus-visible {
     outline: none;
@@ -169,18 +174,7 @@ textarea:focus-visible,
 
 /* Boiling line: three displacement filters in turn make a stroke look redrawn by hand. */
 @keyframes sketch-wobble {
-    0%,
-    33% {
-        filter: url(#sketch-1);
-    }
-
-    34%,
-    66% {
-        filter: url(#sketch-2);
-    }
-
-    67%,
-    100% {
-        filter: url(#sketch-3);
-    }
+    0%, 33% { filter: url(#sketch-1); }
+    34%, 66% { filter: url(#sketch-2); }
+    67%, 100% { filter: url(#sketch-3); }
 }

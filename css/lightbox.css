@@ -8,7 +8,6 @@
     align-items: center;
     justify-content: center;
     padding: 90px 60px 60px;
-    box-sizing: border-box;
     background: #121212;
     opacity: 0;
     visibility: hidden;
@@ -62,10 +61,7 @@
 
 .lightbox-tool,
 .lightbox-close {
-    background: none;
-    border: none;
     color: rgba(255, 255, 255, 0.45);
-    cursor: pointer;
     transition: color 0.3s ease, transform 0.3s ease;
     display: flex;
     align-items: center;
@@ -88,10 +84,7 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    background: none;
-    border: none;
     color: rgba(255, 255, 255, 0.35);
-    cursor: pointer;
     z-index: 10005;
     padding: 14px;
     transition: color 0.25s ease, transform 0.25s ease;
@@ -105,6 +98,7 @@
     transform: translateY(-50%) scale(1.2);
 }
 
+/* Stage: holds the image or the canvas on display. */
 .lightbox-stage {
     display: flex;
     align-items: center;
@@ -114,9 +108,7 @@
     max-width: 100%;
     max-height: 100%;
     z-index: 10001;
-    background: transparent;
     overflow: hidden;
-    box-sizing: border-box;
     padding: 110px 70px 50px 70px;
 }
 
@@ -128,12 +120,12 @@
     width: auto;
     height: auto;
     object-fit: contain;
-    border: none;
-    outline: none;
     cursor: zoom-in;
     transition: transform 0.3s ease;
 }
 
+/* Zoom slider: shown only while the image is zoomed. A hand-drawn track sits under a native
+   range input whose own track and thumb are transparent. */
 .lightbox-zoom {
     position: relative;
     width: 120px;
@@ -163,21 +155,18 @@
     animation: sketch-wobble 0.3s steps(1) infinite;
 }
 
-#lightbox-zoom-range {
+.lightbox-zoom-range {
     -webkit-appearance: none;
     appearance: none;
     width: 100%;
     background: transparent;
     cursor: pointer;
     z-index: 2;
-    margin: 0;
 }
 
-#lightbox-zoom-range:focus {
-    outline: none;
-}
+.lightbox-zoom-range:focus { outline: none; }
 
-#lightbox-zoom-range::-webkit-slider-thumb {
+.lightbox-zoom-range::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 20px;
@@ -185,22 +174,19 @@
     background: transparent;
 }
 
-#lightbox-zoom-range::-moz-range-thumb {
+.lightbox-zoom-range::-moz-range-thumb {
     width: 20px;
     height: 30px;
     background: transparent;
     border: none;
 }
 
-.lightbox.is-zoomed .lightbox-stage {
-    overflow: hidden;
-    touch-action: none;
-}
+/* Zoomed: the script handles panning and pinching itself. */
+.lightbox.is-zoomed .lightbox-stage { touch-action: none; }
 
 .lightbox.is-zoomed .lightbox-stage img,
 .lightbox.is-zoomed .lightbox-stage canvas {
     cursor: grab;
-    transform-origin: center center;
 }
 
 /* A dragged image follows the pointer without easing. */
@@ -231,9 +217,7 @@
     transition: opacity 0.3s ease;
 }
 
-.lightbox-loader.is-active {
-    opacity: 1;
-}
+.lightbox-loader.is-active { opacity: 1; }
 
 .lightbox-spinner {
     width: 32px;
@@ -268,10 +252,9 @@
     transform: scale(1.35);
 }
 
-.lightbox-dot:hover:not(.is-active) {
-    background: rgba(255, 255, 255, 0.5);
-}
+.lightbox-dot:hover:not(.is-active) { background: rgba(255, 255, 255, 0.5); }
 
+/* The controls fade out while the visitor is idle. */
 .lightbox.is-controls-hidden .lightbox-logo,
 .lightbox.is-controls-hidden .lightbox-counter,
 .lightbox.is-controls-hidden .lightbox-close,
@@ -285,10 +268,10 @@
     top: max(18px, calc(18px + env(safe-area-inset-top)));
 }
 
-/* The viewer normally fades in over 0.35s. During a view transition the fade hurts: the browser
-   snapshots the incoming image while opacity is still 0, and the sheet grows towards nothing.
-   This class shows the viewer at once and is removed right after, so closing keeps its fade.
-   Same weight as .lightbox[aria-hidden="false"], declared later so it wins. */
+/* The viewer normally fades in over 0.35s. During a view transition the browser snapshots the
+   incoming image while opacity is still 0, and the sheet would grow towards nothing. This class
+   shows the viewer at once and is removed right after, so closing keeps its fade. Same weight
+   as .lightbox[aria-hidden="false"] and declared after it. */
 .lightbox.is-instant {
     opacity: 1;
     visibility: visible;
@@ -297,17 +280,12 @@
 }
 
 @media (orientation: landscape) and (max-height: 500px) and (min-width: 769px) {
-    /* Phone held sideways: the viewer and its canvas each reserve room for the controls, and the
-       two stacked paddings left about a fifth of a 393px-high screen to the image. The canvas
-       padding alone clears the logo, the counter (top) and the dots (bottom). Narrower screens
-       use the bottom toolbar layout below. */
-    .lightbox {
-        padding: 0;
-    }
-
-    .lightbox-stage {
-        padding: 104px 70px 44px;
-    }
+    /* Phone held sideways: the viewer and its stage each reserve room for the controls, and the
+       two stacked paddings would leave about a fifth of a 393px-high screen to the image. The
+       stage padding alone clears the logo, the counter (top) and the dots (bottom). Narrower
+       screens use the bottom toolbar layout below. */
+    .lightbox { padding: 0; }
+    .lightbox-stage { padding: 104px 70px 44px; }
 }
 
 @media (max-width: 768px) {
@@ -322,8 +300,6 @@
     .lightbox-logo {
         font-size: 1.6rem;
         top: calc(12px + env(safe-area-inset-top, 0px));
-        left: 50%;
-        transform: translateX(-50%);
         white-space: nowrap;
     }
 
@@ -339,11 +315,10 @@
         bottom: calc(44px + env(safe-area-inset-bottom, 0px));
         right: 50%;
         transform: translateX(50%);
-        flex-direction: row;
         gap: 24px;
         background: rgba(18, 18, 18, 0.75);
-        backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
         border-radius: 30px;
         padding: 10px 22px;
         border: 1px solid rgba(255,255,255,0.08);
@@ -376,12 +351,10 @@
         margin-right: 0;
     }
 
-    /* Canvas: the whole screen, leaving room for the logo and the bottom bar. */
-    .lightbox-stage {
-        padding: 90px 45px 140px 45px;
-        padding-top: calc(90px + env(safe-area-inset-top, 0px));
-        padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px));
-    }
+    /* Stage: the whole screen, leaving room for the logo and the bottom bar. No side room for
+       the arrows: they are short and centred, so they float over the image, which gets the
+       width back. Swiping stays the main gesture. */
+    .lightbox-stage { padding: 70px 10px 120px; }
 
     .lightbox-arrow svg {
         width: 18px;
@@ -399,46 +372,24 @@
         height: 10px;
     }
 
-    /* Phones: the container reserved 45px on each side for the arrows, so an enlarged board was
-       barely bigger than the thumbnail. The arrows are only 60px tall and centred, so they cross
-       the image over a narrow band: they float over it and the width goes back to the image.
-       Swiping stays the main gesture. */
-    #lightbox-stage {
-        padding: 70px 10px 120px;
-    }
-
-    .lightbox-arrow--prev,
-    .lightbox-arrow--next {
-        /* Slight shadow to stay legible over a light sheet. */
-        filter: drop-shadow(0 0 6px rgba(0,0,0,0.85));
-    }
-
-    /* Touch: the arrows move next to the zoom and fullscreen buttons so all controls form one
-       bottom row: previous | fullscreen zoom close | next. Aligned on the toolbar height (bottom:
-       44px). */
-    /* Smaller arrows without background (swiping is available). */
+    /* The arrows join the toolbar: all controls form one bottom row, previous | fullscreen zoom
+       close | next. A slight shadow keeps them legible over a light sheet. */
     .lightbox-arrow {
         padding: 12px 8px;
         min-width: 44px;
-        background: none;
-        border-radius: 0;
         top: auto;
         bottom: calc(44px + env(safe-area-inset-bottom, 0px));
         height: 70px;
         min-height: 70px;
         transform: none;
+        filter: drop-shadow(0 0 6px rgba(0,0,0,0.85));
     }
 
-    .lightbox-arrow--prev {
-        left: 14px;
-    }
+    .lightbox-arrow--prev { left: 14px; }
+    .lightbox-arrow--next { right: 14px; }
 
-    .lightbox-arrow--next {
-        right: 14px;
-    }
-
-    /* On touch, :hover sticks after a tap and re-applied the desktop translateY(-50%), so the
-       tapped arrow jumped 35px up. Only the colour change is kept. */
+    /* On touch, :hover sticks after a tap: without this rule the desktop translateY(-50%) would
+       come back and the tapped arrow would jump 35px up. Only the colour change is kept. */
     .lightbox-arrow:hover,
     .lightbox-arrow:focus,
     .lightbox-arrow:active {
@@ -446,10 +397,19 @@
     }
 }
 
+@media (max-width: 341px) {
+    /* Very narrow phones: the toolbar (226px) is wider than the gap between the two arrows and
+       would slide under them. Its spacing tightens; the buttons keep their 44px touch size. */
+    .lightbox-tools {
+        gap: 4px;
+        padding: 10px 6px;
+    }
+}
+
 @media (orientation: landscape) and (max-height: 500px) and (max-width: 768px) {
-    /* Small phone held sideways: logo, counter, dots and bottom toolbar left under 45% of the
-       screen height to the image. Put the dots and the counter on the logo row and shrink the
-       toolbar. Close button and arrows stay on the bottom row. */
+    /* Small phone held sideways: logo, counter, dots and bottom toolbar would leave under 45% of
+       the screen height to the image. The dots and the counter move to the logo row and the
+       toolbar shrinks. Close button and arrows stay on the bottom row. */
     .lightbox-logo {
         top: 4px;
         font-size: 1.3rem;
@@ -469,30 +429,24 @@
         transform: none;
     }
 
+    .lightbox-tools {
+        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
+        padding: 4px 22px;
+    }
+
     .lightbox-arrow {
         bottom: calc(4px + env(safe-area-inset-bottom, 0px));
         height: 54px;
         min-height: 54px;
     }
 
-    #lightbox-stage {
-        padding: 40px 10px calc(62px + env(safe-area-inset-bottom, 0px));
-    }
-}
-
-@media (max-width: 341px) {
-    /* Very narrow phones: the toolbar (226px) is wider than the gap between the two arrows and
-       slid under them. Tighten its spacing; the buttons keep their 44px touch size. */
-    .lightbox-tools {
-        gap: 4px;
-        padding: 10px 6px;
-    }
+    .lightbox-stage { padding: 40px 10px calc(62px + env(safe-area-inset-bottom, 0px)); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
-    /* View-transition timing: the default duration buries the movement. The sheet leads (slower,
-       strongly decelerating curve, like lifting a sheet) and the rest fades out faster. Reduced
-       motion is handled by the script, which opens without a transition. */
+    /* Opening as a view transition: the default duration buries the movement. The sheet leads
+       (slower, strongly decelerating, like lifting a sheet) and the rest fades out faster. With
+       reduced motion the script opens the viewer without a transition. */
     ::view-transition-group(open-sheet) {
         animation-duration: 460ms;
         animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
@@ -510,15 +464,9 @@
     }
 }
 
-@media (orientation: landscape) and (max-height: 500px) and (max-width: 768px) {
-    .lightbox-tools {
-        bottom: calc(4px + env(safe-area-inset-bottom, 0px));
-        padding: 4px 22px;
-    }
-}
-
 @keyframes lightbox-spin {
     to { transform: rotate(360deg); }
 }
 
+/* Any element that opens the viewer on its own. */
 .lightbox-trigger { cursor: zoom-in; }

@@ -3,22 +3,25 @@
 
 /* Carousel */
 
-/* The carousel frame SVG sits exactly on the viewport, not on the wider frame-wrap. */
-.sketch-rect-svg--carousel {
-    top: -3%;
-    left: -3%;
-    width: 106%;
-    height: 106%;
-    opacity: 0;
-    transition: opacity 0.2s ease;
+.carousel {
+    padding-top: 60px;
+    position: relative;
+    text-align: center;
 }
 
-.frame-wrap:hover .sketch-rect-svg--carousel {
-    opacity: 1;
+/* Row: previous arrow, framed viewport, next arrow. */
+.carousel-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 24px;
 }
 
-.frame-wrap:hover .sketch-rect-svg--carousel .sketch-rect-path {
-    stroke-dashoffset: 0;
+/* In a project panel the row is capped so the arrows stay away from the screen edges. */
+.panel .carousel-row {
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
 .carousel-row .frame-wrap {
@@ -34,58 +37,41 @@
     aspect-ratio: 1.414 / 1;
 }
 
-@media (min-width: 992px) and (max-width: 1365px) {
-    /* Mid-size screens: the board gives up the width the two arrows need, so they stay inside
-       the viewport. */
-    .carousel--landscape .carousel-row .frame-wrap {
-        flex: 0 1 auto;
-        min-width: 0;
-    }
-}
-
-@media (max-width: 768px) {
-    .carousel--landscape .carousel-row .frame-wrap {
-        max-height: 50vh;
-    }
-}
-
-.carousel-slide .drawing-sheet-wrap,
-.carousel-slide .media-frame-inner {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-.carousel-slide .drawing-sheet-wrap {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.carousel-slide .drawing-sheet-wrap:hover {
-    transform: scale(1.02);
-    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
-}
-
-.carousel {
-    margin-top: 0;
-    padding-top: 60px;
-    position: relative;
-    text-align: center;
-}
-
-.carousel-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 24px;
-}
-
+/* Portrait A4 sheet. The width is capped so that sheet plus controls (143px: header, gaps,
+   dots) fit a short window; the cap only bites below about 737px of height. */
 .carousel-viewport {
-    width: 420px;
+    width: min(420px, max(120px, calc((100vh - 143px) / 1.414)));
+    width: min(420px, max(120px, calc((100dvh - 143px) / 1.414)));
     aspect-ratio: 1 / 1.414;
     overflow: hidden;
     position: relative;
     border-radius: 4px;
+}
+
+/* Landscape board: it fills the frame, which carries the ratio. No forced height: Safari does
+   not treat a height that comes from an aspect-ratio bounded by max-height as definite, and a
+   height of 100% would fall back to the image's natural height. As a stretched flex child the
+   viewport follows the frame in every engine. */
+.carousel--landscape .carousel-viewport {
+    width: 100%;
+    max-width: 100%;
+    aspect-ratio: auto;
+    margin: 0 auto;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.6);
+    border-radius: 8px;
+    background: white;
+    align-self: stretch;
+}
+
+.panel--alt .carousel-viewport { box-shadow: 8px 8px 24px rgba(0,0,0,0.18); }
+
+/* The red rectangle sits exactly on the viewport, not on the wider frame-wrap. */
+.sketch-rect-svg--carousel {
+    top: -3%;
+    left: -3%;
+    width: 106%;
+    height: 106%;
+    transition: opacity 0.2s ease;
 }
 
 .carousel-track {
@@ -94,6 +80,7 @@
     position: relative;
 }
 
+/* Slides are stacked; only the active one shows and takes pointer events. */
 .carousel-slide {
     position: absolute;
     inset: 0;
@@ -111,17 +98,29 @@
     z-index: 2;
 }
 
+.carousel-slide .drawing-sheet-wrap,
+.carousel-slide .media-frame-inner {
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-slide .drawing-sheet-wrap { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.carousel-slide.is-active .drawing-sheet-wrap { cursor: zoom-in; }
+
+.carousel-slide .drawing-sheet-wrap:hover {
+    transform: scale(1.02);
+    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
+}
+
 .carousel-arrow {
+    position: relative;
     z-index: 20;
-    background: transparent;
-    border: none;
     color: var(--white);
     width: 54px;
     height: 54px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
     transition: color 0.3s ease, transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
@@ -130,22 +129,29 @@
     transform: scale(1.15) rotate(-5deg);
 }
 
-/* Three-frame sketch animation for the arrows. */
-.sketch-frame-1 {
-    animation: frame-toggle 0.45s infinite;
-    animation-delay: 0s;
+/* On the anthracite panel the hovered arrow sits on a white square. */
+.panel--alt .carousel-arrow:hover { background: #fff; }
+
+/* Touch targets: a transparent pseudo-element enlarges the hit area only (44x44 minimum), the
+   drawing stays the same. */
+.carousel-arrow::after,
+.carousel-toggle::after {
+    content: '';
+    position: absolute;
+    inset: -10px;
 }
 
-.sketch-frame-2 {
-    animation: frame-toggle 0.45s infinite;
-    animation-delay: 0.15s;
-}
-
+/* The arrow is drawn three times; the strokes show in turn, like a three-frame flipbook. */
+.sketch-frame-1,
+.sketch-frame-2,
 .sketch-frame-3 {
     animation: frame-toggle 0.45s infinite;
-    animation-delay: 0.3s;
 }
 
+.sketch-frame-2 { animation-delay: 0.15s; }
+.sketch-frame-3 { animation-delay: 0.3s; }
+
+/* Controls of the comic carousel: play or pause, dots, timer, counter. */
 .carousel-controls {
     display: flex;
     align-items: center;
@@ -155,10 +161,8 @@
 }
 
 .carousel-toggle {
-    background: none;
-    border: none;
+    position: relative;
     color: var(--white);
-    cursor: pointer;
     width: 36px;
     height: 36px;
     display: flex;
@@ -172,6 +176,9 @@
     transform: scale(1.15);
 }
 
+/* The script swaps the pause and play icons through their inline display. */
+.icon-play { display: none; }
+
 .carousel-dots {
     display: flex;
     gap: 10px;
@@ -179,6 +186,7 @@
 }
 
 .carousel-dot {
+    position: relative;
     width: 10px;
     height: 10px;
     border-radius: 50%;
@@ -192,6 +200,7 @@
     transform: scale(1.3);
 }
 
+/* Time left before the next slide; the script drives the bar width. */
 .carousel-timer {
     width: 180px;
     height: 4px;
@@ -214,67 +223,18 @@
     text-align: right;
 }
 
-.panel--alt .carousel-arrow {
-    z-index: 20;
-    color: #fff;
-    background: transparent;
-    border: none;
-}
-
-.panel--alt .carousel-arrow:hover {
-    color: #1a1a1a;
-    background: #fff;
-}
-
-.panel .carousel-footer {
-    z-index: 20;
-    position: relative;
-    max-width: 1200px;
-    width: 100%;
-    margin: 30px auto 0;
-    padding: 0 10px 60px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-/* Safari: the window asked for height:100% from a parent whose height comes from an aspect-ratio
-   bounded by max-height. Chrome treats it as definite; Safari falls back to the image's natural
-   height and the sheet overflowed the frame. Without a forced height the flex child stretches to
-   the parent in both engines. */
-.carousel--landscape .carousel-viewport {
-    width: 100%;
-    max-width: 100%;
-    max-height: none;
-    aspect-ratio: auto;
-    margin: 0 auto;
-    border: none;
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.6);
-    border-radius: 8px;
-    background: white;
-    overflow: hidden;
-    height: auto;
-    align-self: stretch;
-}
-
-.panel--alt .carousel-viewport {
-    border: none; /* Removes the grey border on a light background. */
-    box-shadow: 8px 8px 24px rgba(0,0,0,0.18);
-}
-
-/* Container width keeps the arrows away from the extreme edges. */
-.panel .carousel-row {
-    align-items: center;
-    max-width: 1300px;
-    margin: 0 auto;
-}
-
+/* Footer of the project-page carousels: counter and progress bar. */
 .carousel-footer {
     z-index: 20;
     position: relative;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 30px auto 0;
+    padding: 0 10px 60px;
 }
 
 .carousel-footer .carousel-counter {
@@ -283,6 +243,8 @@
     color: var(--white);
     letter-spacing: 2px;
 }
+
+.panel--alt .carousel-counter { font-weight: bold; }
 
 .carousel-progress {
     flex: 1;
@@ -294,127 +256,7 @@
     overflow: hidden;
 }
 
-/* Light panels. */
-.panel--alt .carousel-counter {
-    color: #fff;
-    font-weight: bold;
-}
-
-.panel--alt .carousel-progress {
-    background: rgba(255,255,255,0.15);
-}
-
-.panel .carousel-arrow {
-    z-index: 20;
-    color: var(--white);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-}
-
-.panel .carousel-arrow:hover {
-    color: var(--red);
-}
-
-/* Touch targets: the transparent pseudo-element enlarges only the contact area, the drawing stays
-   identical (recommended minimum 44x44). */
-.carousel-arrow,
-.carousel-toggle,
-.carousel-dot {
-    position: relative;
-}
-
-.carousel-arrow::after,
-.carousel-toggle::after {
-    content: '';
-    position: absolute;
-    inset: -10px;
-}
-
-@media (max-width: 768px) {
-    .carousel-row {
-        align-items: center;
-        gap: 10px;
-    }
-
-    .carousel-arrow {
-        z-index: 20;
-        width: 44px;
-        height: 44px;
-    }
-
-    .carousel-timer { width: 80px; }
-
-    /* The carousel uses the available width: the board takes what remains once the arrows and their
-       gaps are deducted. */
-    .carousel-viewport {
-        width: min(320px, calc(100vw - 92px));
-    }
-
-    /* Project-page carousels: the arrows sit in the bottom row on the black background, where
-       they do not blend into the drawing. Anchored on .carousel-row because its height
-       follows the board; top: calc(100% + 48px) centres each arrow on the counter. The row is
-       inset 56px each side so the counter and progress bar pass clear. */
-    .panel .carousel-row {
-        position: relative;
-    }
-
-    .panel .carousel-arrow {
-        position: absolute;
-        top: calc(100% + 48px);
-        bottom: auto;
-        transform: translateY(-50%);
-        margin: 0;
-        z-index: 25;
-    }
-
-    .panel .carousel-arrow.carousel-arrow--prev {
-        left: 0;
-        right: auto;
-    }
-
-    .panel .carousel-arrow.carousel-arrow--next {
-        right: 0;
-        left: auto;
-    }
-
-    .panel .carousel-footer {
-        padding-left: 56px;
-        padding-right: 56px;
-        gap: 12px;
-    }
-
-    .panel .carousel-progress {
-        margin-left: 0;
-    }
-}
-
-@media (hover: none), (pointer: coarse) {
-    /* The dots are 22px apart centre to centre. Widening their hit area naively would make them
-       overlap and tap the neighbouring slide: spread them on touch first, then extend to half the
-       new gap so zones touch without overlapping. */
-    .carousel-dots { gap: 30px; }
-
-    .carousel-dot::after {
-        content: '';
-        position: absolute;
-        inset: -14px -13px; /* 2px guard between two zones */
-    }
-}
-
-@keyframes frame-toggle {
-    0%,
-    33.32% {
-        opacity: 1;
-    }
-
-    33.33%,
-    100% {
-        opacity: 0;
-    }
-}
-
-.icon-play { display: none; }
+.panel--alt .carousel-progress { background: rgba(255,255,255,0.15); }
 
 .carousel-progress-bar {
     position: absolute;
@@ -424,6 +266,76 @@
     width: 0%;
     background: var(--red);
     transition: width 0.1s linear;
+}
+
+@media (min-width: 992px) and (max-width: 1365px) {
+    /* Mid-size screens: the board gives up the width the two arrows need, so they stay inside
+       the viewport. */
+    .carousel--landscape .carousel-row .frame-wrap {
+        flex: 0 1 auto;
+        min-width: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-row { gap: 10px; }
+    .carousel--landscape .carousel-row .frame-wrap { max-height: 50vh; }
+
+    /* The sheet takes the width left once the arrows and their gaps are deducted. */
+    .carousel-viewport {
+        width: min(320px, calc(100vw - 92px), max(120px, calc((100vh - 143px) / 1.414)));
+        width: min(320px, calc(100vw - 92px), max(120px, calc((100dvh - 143px) / 1.414)));
+    }
+
+    .carousel-arrow {
+        width: 44px;
+        height: 44px;
+    }
+
+    .carousel-timer { width: 80px; }
+
+    /* Project-page carousels: the arrows move to the footer row, on the plain background, where
+       they do not blend into the drawing. Anchored on .carousel-row because its height follows
+       the board; top: calc(100% + 48px) centres each arrow on the counter. Same weight as the
+       hover rule and declared after it: no hover transform here. */
+    .panel .carousel-row { position: relative; }
+
+    .panel .carousel-arrow {
+        position: absolute;
+        top: calc(100% + 48px);
+        transform: translateY(-50%);
+        z-index: 25;
+    }
+
+    .panel .carousel-arrow--prev { left: 0; }
+    .panel .carousel-arrow--next { right: 0; }
+
+    /* Inset 56px each side so that counter and progress bar pass clear of the arrows. */
+    .carousel-footer {
+        padding-left: 56px;
+        padding-right: 56px;
+        gap: 12px;
+    }
+
+    .carousel-progress { margin-left: 0; }
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* The dots are 22px apart centre to centre. Widening their hit area as they stand would
+       make them overlap and tap the neighbouring slide: they are spread first, then each area
+       extends to half the new gap, less a 2px guard. */
+    .carousel-dots { gap: 30px; }
+
+    .carousel-dot::after {
+        content: '';
+        position: absolute;
+        inset: -14px -13px;
+    }
+}
+
+@keyframes frame-toggle {
+    0%, 33.32% { opacity: 1; }
+    33.33%, 100% { opacity: 0; }
 }
 
 
@@ -442,7 +354,6 @@
     color: var(--white);
     letter-spacing: 0.05em;
     transform: translateY(18px) rotate(-4deg);
-    margin-bottom: 0;
     display: inline-block;
     position: relative;
     z-index: 15;
@@ -463,6 +374,7 @@
     pointer-events: auto;
 }
 
+/* Explosion played frame by frame from one sprite while the title is hovered. */
 .comic-burst {
     position: absolute;
     bottom: -40px;
@@ -485,36 +397,32 @@
     animation: comic-burst 0.6s steps(4) forwards;
 }
 
-@media (max-width: 768px) {
-    .comic-burst {
-        width: 100px;
-        height: 100px;
-        margin-left: -190px;
-        bottom: -20px;
-    }
-
-    .comic-kicker {
-        font-size: 1.6rem;
-        margin-bottom: 20px;
-    }
-}
-
 @media (max-width: 991px) {
-    /* The element is rotated 45deg: its bounding box overflows by width x 0.207 on each side (about
-       25px for 120px), so the margin must exceed that or it sticks out on the left. */
+    /* The burst is rotated 45deg: its bounding box overflows by width x 0.207 on each side
+       (measured: 38px), so the left margin must exceed that or it sticks out of the page. */
     .comic-burst {
         left: 0;
-        margin-left: 44px; /* Measured overflow of the rotated box: 38px per side. */
+        margin-left: 44px;
         width: 120px;
         height: 120px;
     }
 }
 
+@media (max-width: 768px) {
+    .comic-kicker {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+    }
+
+    .comic-burst { bottom: -20px; }
+}
+
 @media (max-width: 480px) {
+    /* Proportional overflow: about 30px per side. */
     .comic-burst {
         width: 96px;
         height: 96px;
-        margin-left: 36px; /* Proportional overflow: about 30px per side. */
+        margin-left: 36px;
         bottom: -24px;
     }
 }
