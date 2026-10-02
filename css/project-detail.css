@@ -1,0 +1,499 @@
+/* Project detail: board, intro sheet, panels, section stack, render grid, trade-off block. */
+
+
+/* Board */
+
+.project-board-header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.tape-title {
+    color: #fff;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    display: inline-block;
+    background: #2a2a2a;
+    padding: 8px 16px;
+    transform: rotate(-1deg);
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 2;
+}
+
+.tape-title::after {
+    content: '#';
+    position: absolute;
+    top: -20px;
+    left: -25px;
+    color: var(--red);
+    font-size: clamp(3.5rem, 7vw, 5.2rem);
+    font-family: var(--font-sketch);
+    transform: rotate(-15deg);
+    line-height: 1;
+    z-index: 5;
+}
+
+.tape-title::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(2deg);
+    width: 60px;
+    height: 20px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    z-index: 3;
+}
+
+.project-detail-page {
+    background: #111111;
+}
+
+.project-board {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    width: 100%;
+}
+
+/* Spacing between tape title and first sticker */
+.project-board .project-board-header {
+    padding: 60px 0 20px;
+    margin-bottom: 0;
+}
+
+.tape-title-wrap {
+    position: relative;
+    display: inline-block;
+}
+
+
+/* Intro */
+
+/* Project description notebook */
+.project-intro {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    padding: 0 30px;
+}
+
+.project-intro-sheet {
+    position: relative;
+    background: #f5f0e8;
+    border-radius: 6px;
+    padding: 35px 40px 30px;
+    box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
+}
+
+.project-intro-content {
+    position: relative;
+    z-index: 1;
+}
+
+.project-intro-text {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+    color: #333;
+    line-height: 1.8;
+    margin-bottom: 12px;
+}
+
+.project-intro-note {
+    font-family: var(--font-body);
+    font-size: clamp(0.85rem, 1.4vw, 1rem);
+    color: var(--red);
+    display: block;
+    margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+    .project-intro-sheet {
+        padding: 25px 20px;
+    }
+}
+
+
+/* Panels */
+
+.panel--alt .drawing-sheet-wrap {
+    box-shadow: 8px 8px 24px rgba(0,0,0,0.15);
+}
+
+.panel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12' stroke='white' stroke-width='2.5' fill='none' stroke-linejoin='miter' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-size: 500px 20px;
+    background-repeat: repeat-x;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.project-board .panel + .panel {
+    margin-top: -20px;
+}
+
+.panel {
+    position: relative;
+    width: 100%;
+    padding: 120px 4vw 80px; /* Generous top padding for the sticker that overhangs. */
+    margin-top: 80px; /* Mandatory gap between the description and the section. */
+}
+
+.panel:first-of-type {
+    margin-top: 60px;
+}
+
+.panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #111111;
+    z-index: -1;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12 L 500 20 L 0 20 Z' fill='black'/%3E%3C/svg%3E"), linear-gradient(black, black);
+    -webkit-mask-position: top left, 0 20px;
+    -webkit-mask-repeat: repeat-x, no-repeat;
+    -webkit-mask-size: 500px 20px, 100% calc(100% - 20px);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 20' preserveAspectRatio='none'%3E%3Cpath d='M 0 12 L 15 11 L 30 12 L 50 13 L 65 14 L 85 14 L 100 12 L 115 9 L 130 6 L 145 3 L 125 7 L 160 8 L 180 8 L 195 10 L 210 12 L 230 13 L 255 14 L 275 14 L 285 12 L 295 10 L 310 10 L 330 11 L 350 11 L 375 11 L 390 10 L 405 10 L 415 13 L 425 16 L 410 15 L 435 15 L 460 14 L 480 13 L 500 12 L 500 20 L 0 20 Z' fill='black'/%3E%3C/svg%3E"), linear-gradient(black, black);
+    mask-position: top left, 0 20px;
+    mask-repeat: repeat-x, no-repeat;
+    mask-size: 500px 20px, 100% calc(100% - 20px);
+}
+
+.panel--alt {
+    color: #fff;
+}
+
+.panel--alt::before {
+    background: #1a1a1a;
+}
+
+/* Sticker Titles */
+.sticker-title-wrap {
+    position: absolute;
+    left: clamp(20px, 5vw, 60px);
+    top: -40px;
+    z-index: 10;
+}
+
+.sticker-title-wrap--right {
+    left: auto;
+    right: clamp(20px, 5vw, 60px);
+}
+
+/* Base sticker styling */
+.sticker-title {
+    font-family: var(--font-sketch);
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    padding: 15px 40px;
+    transform: rotate(-3deg);
+    border: 4px solid #1a1a1a;
+    box-shadow: 8px 8px 0px #1a1a1a;
+    animation: sticker-wobble 4s infinite ease-in-out;
+    cursor: default;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.sticker-title:hover {
+    transform: rotate(-1deg) scale(1.05) translateY(-3px);
+    box-shadow: 12px 12px 0px #1a1a1a, 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* Narrative skeleton of the diploma project (brief, site, constraint, trade-off), following the
+   existing charter: Bebas for labels, Space Grotesk for reading, red as the accent. */
+/* Panel lede */
+.panel-lede {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: clamp(0.98rem, 2vw, 1.08rem);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.72);
+    /* 43rem = the targeted 62 characters, in a unit independent of the font. .panel-tools, set
+       in Bebas, must share exactly this width to line up with it (in ch it got a narrower box
+       and a shifted left edge). */
+    max-width: 43rem;
+    margin: 4px auto 30px;
+    padding: 0 20px;
+}
+
+.panel--alt .panel-lede { color: rgba(255, 255, 255, 0.78); }
+
+/* Software used, under each series of boards: small spaced red capitals, centred in the text
+   column (same maximum width as .panel-lede) so the line does not float beside the text. */
+.panel-tools {
+    font-family: var(--font-display);
+    font-size: 0.82rem;
+    font-weight: 300;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red);
+    text-align: center; /* centred in the text column, not in the page */
+    max-width: 43rem; /* same width as .panel-lede */
+    margin: -14px auto 30px; /* pulled up against the lede it completes */
+    padding: 0 20px;
+}
+
+@media (max-width: 768px) {
+    .sticker-title {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        padding: 10px 25px;
+    }
+
+    .panel {
+        padding: 80px 20px 40px;
+    }
+
+    .panel-lede {
+        margin-bottom: 24px;
+        padding: 0 14px;
+    }
+
+    .panel-tools {
+        font-size: 0.74rem;
+        letter-spacing: 0.14em;
+        margin: -10px auto 24px;
+        padding: 0 14px;
+    }
+}
+
+@keyframes sticker-wobble {
+    0%,
+    100% {
+        transform: rotate(-3deg) scale(1);
+    }
+
+    50% { transform: rotate(-1deg) scale(1.03); }
+}
+
+
+/* Section stack */
+
+.section-stack .section-stack-item .drawing-sheet-wrap {
+    aspect-ratio: auto;
+    background: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none; /* Removes the white border on the cut views. */
+    position: relative;
+    overflow: hidden;
+}
+
+.section-stack .section-stack-item .drawing-sheet-wrap:hover {
+    transform: scale(1.02);
+    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
+}
+
+.section-stack .section-stack-item .drawing-sheet-wrap .drawing-sheet {
+    width: 100%;
+    height: auto;
+}
+
+.section-stack .section-stack-item .drawing-sheet-wrap canvas {
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .section-stack .section-stack-item .drawing-sheet-wrap {
+        aspect-ratio: auto;
+    }
+}
+
+/* Cut stack: staggered layout for the section views. */
+.section-stack {
+    margin-top: 30px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 60px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 40px auto 0;
+}
+
+.section-stack-item {
+    position: relative;
+    width: 85%;
+    max-width: 900px;
+    margin: 0;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.section-stack-item:nth-child(odd) {
+    align-self: flex-start;
+    transform: rotate(-1deg);
+}
+
+.section-stack-item:nth-child(even) {
+    align-self: flex-end;
+    transform: rotate(1deg);
+}
+
+.section-stack-item:hover {
+    transform: scale(1.02);
+    z-index: 5;
+}
+
+@media (max-width: 900px) {
+    /* One centred column, no tilt. :nth-child(n) matches every item with the weight of the
+       staggered and hover rules above, so it overrides both. */
+    .section-stack-item:nth-child(n) {
+        align-self: center;
+        transform: rotate(0);
+    }
+}
+
+/* Stack item labels, overlaid on the image. */
+.section-stack-label {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 5;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    padding: 6px 16px;
+    font-size: clamp(0.85rem, 1.6vw, 1.2rem);
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+    backdrop-filter: blur(4px);
+}
+
+.section-stack-label--right {
+    left: auto;
+    right: 12px;
+}
+
+@media (max-width: 768px) {
+    .section-stack-item {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+
+/* Render grid */
+
+.render-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1300px;
+    margin: 40px auto 0;
+    padding: 0 20px;
+}
+
+.render-item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.render-label {
+    font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+    color: var(--red);
+    letter-spacing: 0.03em;
+}
+
+.render-item .drawing-sheet-wrap {
+    overflow: hidden;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.render-item .drawing-sheet-wrap:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 15px 15px 40px rgba(0,0,0,0.7);
+}
+
+@media (max-width: 768px) {
+    .render-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+
+/* Trade-off */
+
+.tradeoff-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 34px 30px 34px 34px;
+    border-left: 3px solid var(--red);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.tradeoff-eyebrow {
+    display: block;
+    font-size: 1.6rem;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 14px;
+    transform: rotate(-1.5deg);
+    transform-origin: left center;
+}
+
+.tradeoff-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.35rem, 3.6vw, 2rem);
+    letter-spacing: 0.02em;
+    line-height: 1.15;
+    color: var(--white);
+    margin: 0 0 16px;
+    text-wrap: balance;
+}
+
+.tradeoff-text {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: clamp(0.98rem, 2vw, 1.06rem);
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.75);
+    margin: 0;
+    max-width: 62ch;
+}
+
+/* Second paragraph of the problems block: a clear gap marks the turn in the story. */
+.tradeoff-text + .tradeoff-text {
+    margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+    .tradeoff-inner { padding: 26px 20px 26px 22px; }
+}
+
+/* Trade-off block */
+.panel--tradeoff {
+    padding-top: 70px;
+    padding-bottom: 70px;
+}
+
+@media (max-width: 768px) {
+    .panel--tradeoff {
+        padding-top: 48px;
+        padding-bottom: 48px;
+    }
+}
+
+
+/* Coming soon */
+
+.coming-soon {
+    text-align: center;
+    padding: 100px 0;
+}
+
+.coming-soon .font-sketch { font-size: 2rem; }

@@ -16,15 +16,21 @@ The site is bilingual (French and English) and shows projects, drawings, a diplo
 index.html            the single page: every section lives in this file
 404.html              error page
 sw.js                 service worker
-css/                  stylesheets, loaded in this order from index.html
-  base.css            tokens, reset, typography, skip link
-  layout.css          header, menu, page containers
-  home.css            hero and home sections
-  gallery.css         frames and drawing galleries
+css/                  one stylesheet per component, loaded in this order from index.html
+  base.css            tokens, font, reset, utilities, focus ring
+  layout.css          header, page containers, footer, next-page link
+  menu.css            full-screen navigation
+  frame.css           shared media primitives: torn frame, red rectangle, sheet
+  home.css            hero, showcase, projects shortcut, notebook
+  contact.css         contact form and contact details
+  projects-hub.css    patchwork of polaroid cards
+  project-detail.css  project page: board, panels, section stack
+  carousel.css        sheet carousel and its comic heading
+  drawings.css        drawings gallery
+  quote-band.css      closing quote animated on scroll
   diploma.css         diploma page
   lightbox.css        viewer for drawings and plans
-  projects.css        project detail pages
-  overrides.css       utilities and late adjustments
+  reduced-motion.css  prefers-reduced-motion overrides, loaded last
 js/
   main.js             entry point, starts every feature in a fixed order
   router.js           page display and history from URL fragments
@@ -78,7 +84,7 @@ npm run lint:html   # html-validate on index.html and 404.html
 
 ## Architecture notes
 
-- Single-page application driven by URL fragments (`#projects`, `#contact`, ...). `router.js` reads the hash, shows the matching `.page` section and uses `pushState` or `replaceState` for history.
+- Single-page application driven by URL fragments (`#projets`, `#contact`, ...). `router.js` reads the hash, shows the matching `.page` section and uses `pushState` or `replaceState` for history.
 - Every page is its own scroll container (`overflow-y: auto` on `.page`), not the document.
 - Internationalisation by dictionary: `js/i18n/dictionary.js` holds the French and English texts, applied to elements carrying `data-i18n`. The language comes from `?lang=`, then the stored choice, then the browser language, and is kept in the URL (`hreflang` alternates are declared in the head).
 - Service worker caching, by kind of file: media (images, plans, fonts, PDF) stale-while-revalidate; vendored libraries cache first, since their path carries the version; site code (HTML, CSS, JS) network first, so modules are never served in mixed versions. Caches not listed in `sw.js` are deleted on activation; bump `VERSION` to force a full refresh.

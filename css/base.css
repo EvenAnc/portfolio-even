@@ -1,3 +1,6 @@
+/* Base: design tokens, font, reset, shared utilities, keyboard focus ring. */
+
+
 /* Tokens */
 
 :root {
@@ -8,34 +11,42 @@
     --notebook-bg: #f2f0eb;
     --notebook-line: rgba(140,135,125,0.35);
     --notebook-text: #1a1a1a;
-
     --font-display: 'Bebas Neue', 'Impact', sans-serif;
-    --font-body:    'Space Grotesk', sans-serif;
-    --font-sketch:  'Skribblugh', 'Permanent Marker', cursive;
-
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-sketch: 'Skribblugh', 'Permanent Marker', cursive;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     --dur-fast: 0.22s;
-    --dur-med:  0.55s;
+    --dur-med: 0.55s;
 }
+
+
+/* Font */
 
 @font-face {
     font-family: 'Skribblugh';
     /* woff2 first: 11 KB lighter, and it is the logo font. Browsers without it fall back to
        woff. */
-    src: url('../fonts/SkribblughRegular-XGW02.woff2') format('woff2'),
-         url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
+    src: url('../fonts/SkribblughRegular-XGW02.woff2') format('woff2'), url('../fonts/SkribblughRegular-XGW02.woff') format('woff');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
 
-/* Reset and base */
+/* Reset */
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-html, body {
-    width: 100%; height: 100%;
+html,
+body {
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     background: var(--bg);
     color: var(--white);
@@ -43,9 +54,65 @@ html, body {
     -webkit-font-smoothing: antialiased;
 }
 
-a, button { color: inherit; text-decoration: none; background: none; border: none; cursor: pointer; font-family: inherit; }
-img { display: block; width: 100%; height: 100%; object-fit: cover; -webkit-user-select: none; user-select: none; }
+a,
+button {
+    color: inherit;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* Remove the Android tap highlight. */
+    a,
+    button,
+    .section-stack-item,
+    .drawing-sheet-wrap {
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+
+/* Utilities */
+
 .font-sketch { font-family: var(--font-sketch); }
+
+.noscript-notice {
+    position: relative;
+    z-index: 10000;
+    max-width: 34rem;
+    margin: 18vh auto 0;
+    padding: 0 24px;
+    color: #fff;
+    font-family: sans-serif;
+    line-height: 1.6;
+}
+
+.noscript-notice-title {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.noscript-notice a { color: #fff; }
+
+.svg-filters {
+    position: absolute;
+    overflow: hidden;
+}
+
+
+/* Skip link */
 
 /* Skip link: hidden until the first Tab, then lets keyboard users jump past the header. */
 .skip-link {
@@ -68,6 +135,9 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; -webkit-user
 .skip-link:focus {
     transform: translate(-50%, 0);
 }
+
+
+/* Focus ring */
 
 /* Keyboard focus ring: :focus-visible only, so the outline never shows on a mouse click.
    Declared here, before the components, so that a component can adjust its own ring. */
@@ -94,16 +164,23 @@ textarea:focus-visible,
     border-radius: 0;
 }
 
+
+/* Sketch animation */
+
 /* Boiling line: three displacement filters in turn make a stroke look redrawn by hand. */
 @keyframes sketch-wobble {
-    0%,33%   { filter: url(#sketch-1); }
-    34%,66%  { filter: url(#sketch-2); }
-    67%,100% { filter: url(#sketch-3); }
-}
+    0%,
+    33% {
+        filter: url(#sketch-1);
+    }
 
-@media (hover: none), (pointer: coarse) {
-    /* Remove the Android tap highlight. */
-    a, button, .section-stack-item, .drawing-sheet-wrap {
-        -webkit-tap-highlight-color: transparent;
+    34%,
+    66% {
+        filter: url(#sketch-2);
+    }
+
+    67%,
+    100% {
+        filter: url(#sketch-3);
     }
 }

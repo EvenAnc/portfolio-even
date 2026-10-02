@@ -1,0 +1,236 @@
+/* Frame: shared media primitives (torn frame, hand-drawn red rectangle, sheet, placeholders). */
+
+
+/* Frame */
+
+.frame-wrap {
+    position: relative;
+}
+
+.torn-frame {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    clip-path: url(#torn-1);
+    /* -webkit- prefix for older browsers. */
+    -webkit-clip-path: url(#torn-1);
+}
+
+.torn-frame.torn-frame--alt {
+    clip-path: url(#torn-2);
+    -webkit-clip-path: url(#torn-2);
+}
+
+.media-frame-inner {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+}
+
+.media-frame-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.7s var(--ease-out);
+}
+
+.torn-frame:hover .media-frame-img,
+.frame-wrap:hover .torn-frame .media-frame-img {
+    transform: scale(1.04);
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* Frames: the image zooms slightly on touch. */
+    .frame-wrap .torn-frame .media-frame-img {
+        transition: transform 0.2s 0.1s ease;
+    }
+
+    .frame-wrap:active .torn-frame .media-frame-img {
+        transform: scale(1.04);
+        transition-delay: 0s;
+    }
+
+    /* No hover visuals on touch: they do nothing but can leave a stuck intermediate state on some
+       systems. */
+    .frame-wrap:hover .torn-frame .media-frame-img { transform: none; }
+
+    .torn-frame:hover .media-frame-img { transform: none; }
+
+    /* On iOS a long press opens an image copy menu and a selection frame, which is a nuisance on
+       galleries made for scrolling and swiping. */
+    .media-frame-img,
+    .plan-img,
+    .carousel-slide img,
+    .polaroid-img {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+}
+
+.frame-wrap.frame-wrap--tilt-a { transform: rotate(1.5deg); }
+.frame-wrap.frame-wrap--tilt-b { transform: rotate(-1deg); }
+.frame-wrap.frame-wrap--tilt-c { transform: rotate(2deg); }
+
+
+/* Sketch rectangle */
+
+.sketch-rect-svg {
+    position: absolute;
+    top: -2.5%;
+    left: -2.5%;
+    width: 105%;
+    height: 105%;
+    z-index: 10;
+    pointer-events: none;
+    transform: rotate(2deg);
+    opacity: 0;
+    transition: opacity 0.2s var(--ease-out);
+}
+
+.sketch-rect-path {
+    stroke-dasharray: 1800;
+    stroke-dashoffset: 1800;
+    transition: stroke-dashoffset 1.5s var(--ease-out);
+    animation: sketch-wobble 0.3s steps(1) infinite;
+}
+
+.frame-wrap:hover > .sketch-rect-svg {
+    opacity: 1;
+}
+
+.frame-wrap:hover > .sketch-rect-svg .sketch-rect-path {
+    stroke-dashoffset: 0;
+}
+
+@media (hover: none), (pointer: coarse) {
+    /* Touch devices (same query as TOUCH_MEDIA_QUERY in js/core/env.js). */
+    /* Frames: the red rectangle draws on touch (:active). */
+    .frame-wrap > .sketch-rect-svg {
+        transition: opacity 0.15s 0.1s var(--ease-out); /* A 0.1s delay avoids a flash while scrolling. */
+    }
+
+    .frame-wrap:active > .sketch-rect-svg {
+        opacity: 1;
+        transition-delay: 0s;
+    }
+
+    .frame-wrap:active > .sketch-rect-svg .sketch-rect-path {
+        stroke-dashoffset: 0;
+    }
+
+    /* Touch: :active lasts about 100 ms and the viewer opens right after, so the lightbox
+       trigger adds this class and waits 460 ms before opening. The stroke speeds up to 0.40s to
+       fit. Descendant selector: the frame SVG may not be a direct child. */
+    .frame-wrap.is-tracing .sketch-rect-svg {
+        opacity: 1;
+        transition-delay: 0s;
+    }
+
+    .frame-wrap.is-tracing .sketch-rect-svg .sketch-rect-path {
+        stroke-dashoffset: 0;
+        transition: stroke-dashoffset 0.40s var(--ease-out);
+    }
+}
+
+
+/* Sheet */
+
+.drawing-sheet-wrap .media-frame-inner {
+    background: white;
+    padding: 0;
+}
+
+.drawing-sheet img,
+.drawing-sheet object {
+    transform: scale(1.18); /* Zoom 18% to crop the white borders of the scans. */
+    transform-origin: center center;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Document style for the sheets. */
+.drawing-sheet-wrap {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+    border: none;
+    position: relative;
+}
+
+/* A focused sheet keeps its own corner radius instead of the focus ring default. */
+.drawing-sheet-wrap:focus-visible {
+    border-radius: 8px;
+}
+
+/* Plans as images: .drawing-sheet img applies an 18% zoom and cover cropping meant for freehand
+   drawings. On a dimensioned plan it would crop the dimensions, so it is neutralised. */
+.drawing-sheet img.plan-img,
+.section-stack-item img.plan-img {
+    transform: none;
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #fff;
+}
+
+@media (max-width: 768px) {
+    /* Touch feedback derives from the base crop instead of replacing it: sheets carry an 18%
+       zoom that crops the scan margins, and rewriting transform would drop the image to 104%
+       while a finger is down (1.18 x 1.04 = 1.23). :not(.plan-img) keeps dimensioned plans at
+       transform: none. */
+    .frame-wrap:hover .torn-frame .drawing-sheet img:not(.plan-img),
+    .torn-frame:hover .drawing-sheet img:not(.plan-img),
+    .drawing-sheet:hover img:not(.plan-img) {
+        transform: scale(1.18);
+    }
+
+    .frame-wrap:active .torn-frame .drawing-sheet img:not(.plan-img),
+    .drawing-sheet:active img:not(.plan-img) {
+        transform: scale(1.23);
+    }
+}
+
+@media (hover: hover) {
+    /* The same applies on large screens: .torn-frame:hover replaces the 1.18 crop by 1.04, so
+       the drawing would shrink. Same computation, scoped to (hover: hover) so it does not
+       override the touch rule above. */
+    .frame-wrap:hover .torn-frame .drawing-sheet img:not(.plan-img),
+    .torn-frame:hover .drawing-sheet img:not(.plan-img) {
+        transform: scale(1.23);
+    }
+}
+
+
+/* Placeholders */
+
+.media-frame-inner.media-placeholder--dark {
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.media-placeholder--dark .font-sketch {
+    color: #fff;
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+}
+
+.media-frame-inner.media-placeholder {
+    aspect-ratio: 4/3;
+    background: #222;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.media-placeholder .font-sketch {
+    color: var(--muted);
+    font-size: 1.5rem;
+}

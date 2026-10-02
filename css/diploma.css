@@ -1,17 +1,65 @@
-/* Diploma */
+/* Diploma: school card, certification card, diploma scan. */
 
-.diploma-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: 50px; align-items: start; }
+
+/* School */
+
+.school-photo .media-frame-inner { aspect-ratio: 4/3; }
 .school-name-wrap { margin-bottom: 28px; }
-.school-name { font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3.2rem); line-height: 1; }
-.school-city { font-size: 2.3rem; color: var(--red); margin-left: 8px; }
-.school-facts { list-style: none; margin-top: 30px; display: flex; flex-direction: column; gap: 22px; font-size: 0.95rem; line-height: 1.6; }
-.school-facts strong { display: block; font-family: var(--font-display); font-size: 1.15rem; text-transform: uppercase; margin-bottom: 3px; }
-.diploma-scan-years {
+
+.school-name {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1;
+}
+
+.school-city {
+    font-size: 2.3rem;
     color: var(--red);
-    font-weight: 600;
-    margin-left: 15px;
-    font-size: 1.8rem;
-    vertical-align: middle;
+    margin-left: 8px;
+}
+
+.school-facts {
+    list-style: none;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.school-facts strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+}
+
+.school-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+
+/* Certification card */
+
+@supports (min-height: 1cqw) {
+    /* Long selector: .diploma-card .media-frame-inner sets the A4 ratio with higher
+       specificity. */
+    .diploma-card .media-frame-inner.diploma-card-body {
+        aspect-ratio: auto;
+        min-height: 141.4cqw;
+    }
+}
+
+.diploma-layout {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 50px;
+    align-items: start;
 }
 
 .diploma-card .media-frame-inner {
@@ -142,6 +190,65 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
+@supports (min-height: 1cqw) {
+    /* The A4 ratio is a floor, not a lock: the card keeps its proportions when the content fits
+       and grows just enough otherwise, so nothing (RNCP code, registration line) is cropped in
+       any language. Under @supports so browsers without container units keep the fixed ratio. */
+    .diploma-card {
+        container-type: inline-size;
+    }
+}
+
+@media (max-width: 768px) {
+    .diploma-layout { grid-template-columns: 1fr; }
+
+    .diploma-card .media-frame-inner,
+    .diploma-card-body {
+        aspect-ratio: auto;
+        height: auto;
+    }
+
+    .diploma-cert-code,
+    .diploma-cert-authority {
+        font-size: 0.875rem;
+    }
+
+    /* Phones: the stamp is pulled inside the card and its width reserved from the title, which
+       wraps instead of running under it. The overlap with the card border is kept. */
+    .diploma-cert-stamp {
+        top: -10px;
+        right: -8px;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+        border-width: 2.5px;
+    }
+
+    .diploma-cert-title {
+        padding-right: 96px; /* Width of the tilted stamp plus a guard. */
+    }
+}
+
+@media (max-width: 480px) {
+    .diploma-card-body {
+        padding: 22px 18px;
+    }
+
+    .diploma-cert-body {
+        gap: 15px;
+    }
+}
+
+
+/* Scan */
+
+.diploma-scan-years {
+    color: var(--red);
+    font-weight: 600;
+    margin-left: 15px;
+    font-size: 1.8rem;
+    vertical-align: middle;
+}
+
 .diploma-scan {
     margin-top: 60px;
     position: relative;
@@ -178,50 +285,14 @@
     box-sizing: border-box;
 }
 
-@supports (min-height: 1cqw) {
-    /* The A4 ratio is a floor, not a lock: the card keeps its proportions when the content fits
-       and grows just enough otherwise, so nothing (RNCP code, registration line) is cropped in
-       any language. Under @supports so browsers without container units keep the fixed ratio. */
-    .diploma-card {
-        container-type: inline-size;
-    }
-}
-
 @media (max-width: 768px) {
-    .diploma-layout { grid-template-columns: 1fr; }
-
-    .diploma-card .media-frame-inner,
-    .diploma-card-body { aspect-ratio: auto; height: auto; }
-
-    .diploma-scan { margin-top: 40px; padding-top: 30px; }
-    .diploma-scan-title { font-size: 1.8rem; margin-bottom: 16px; }
-
-    .diploma-cert-code,
-    .diploma-cert-authority { font-size: 0.875rem; }
-
-    /* Phones: the stamp is pulled inside the card and its width reserved from the title, which
-       wraps instead of running under it. The overlap with the card border is kept. */
-    .diploma-cert-stamp {
-        top: -10px;
-        right: -8px;
-        font-size: 0.9rem;
-        padding: 6px 12px;
-        border-width: 2.5px;
+    .diploma-scan {
+        margin-top: 40px;
+        padding-top: 30px;
     }
 
-    .diploma-cert-title {
-        padding-right: 96px;   /* Width of the tilted stamp plus a guard. */
+    .diploma-scan-title {
+        font-size: 1.8rem;
+        margin-bottom: 16px;
     }
 }
-
-@media (max-width: 480px) {
-    .diploma-card-body {
-        padding: 22px 18px;
-    }
-
-    .diploma-cert-body {
-        gap: 15px;
-    }
-}
-
-.school-link { display: block; width: 100%; height: 100%; cursor: pointer; }

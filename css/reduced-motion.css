@@ -1,0 +1,42 @@
+/* Reduced motion: stops the decorative animations for visitors who ask for less motion. */
+
+@media (prefers-reduced-motion: reduce) {
+    /* Reduced motion: !important beats running animations and the hover and touch transforms of the
+       components. */
+    .hero-logo,
+    .menu-logo,
+    .header-logo-text,
+    .projects-shortcut-kicker,
+    .projects-shortcut-hint-text,
+    .page-next-arrow,
+    .sketch-rect-path {
+        animation: none !important;
+        filter: none !important;
+    }
+
+    .scroll-line {
+        animation: none !important;
+        opacity: 0.4;
+        transform: scaleY(0.7);
+    }
+
+    .torn-frame:hover .media-frame-img,
+    .frame-wrap:hover .torn-frame .media-frame-img {
+        transform: none !important;
+        transition: none !important;
+    }
+
+    .notebook-sheet {
+        transition: none !important;
+    }
+
+    .notebook-hover-zone:hover .notebook-text {
+        animation: none !important;
+    }
+
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+        animation: none !important;
+    }
+}

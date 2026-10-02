@@ -1,0 +1,159 @@
+/* Menu: full-screen navigation overlay (menu- prefix). */
+
+.menu-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    padding: 0 60px 50px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--dur-med) var(--ease-out), visibility var(--dur-med);
+    overflow-y: auto;
+}
+
+body.is-menu-open .menu-overlay {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.menu-logo-wrap {
+    padding-top: 100px;
+    padding-bottom: 40px;
+}
+
+.menu-logo {
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 1;
+    color: var(--white);
+    animation: sketch-wobble 0.3s steps(1) infinite;
+}
+
+.menu-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex: 1;
+    justify-content: center;
+}
+
+.menu-nav-item {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    width: fit-content;
+    padding: 10px 0;
+    position: relative;
+}
+
+.menu-nav-number {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--red);
+    line-height: 1;
+    min-width: 28px;
+}
+
+.menu-nav-label {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 4.8rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
+}
+
+.menu-nav-note {
+    font-size: clamp(1.4rem, 2.2vw, 1.8rem);
+    color: var(--red);
+    opacity: 0;
+    transform: translateX(-8px) rotate(-3deg);
+    transition: opacity 0.3s, transform 0.4s var(--ease-out);
+    white-space: nowrap;
+}
+
+.menu-nav-item:hover .menu-nav-label {
+    transform: translateX(12px);
+    color: var(--red);
+}
+
+.menu-nav-item:hover .menu-nav-note {
+    opacity: 0.85;
+    transform: translateX(6px) rotate(-2deg);
+}
+
+.menu-scribble {
+    position: absolute;
+    top: 110px;
+    right: 60px;
+    font-size: 2.8rem;
+    color: var(--red);
+    opacity: 0.35;
+    transform: rotate(-8deg);
+}
+
+.menu-footer {
+    padding-top: 30px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.menu-email {
+    font-size: 0.88rem;
+    letter-spacing: 0.06em;
+    opacity: 0.4;
+    transition: opacity var(--dur-fast), color var(--dur-fast);
+}
+
+.menu-email:hover {
+    opacity: 1;
+    color: var(--red);
+}
+
+.menu-footer-social {
+    display: flex;
+    gap: 12px;
+    font-size: 0.82rem;
+    opacity: 0.3;
+}
+
+.menu-footer-social a { transition: color var(--dur-fast); }
+.menu-footer-social a:hover { color: var(--red); }
+
+.menu-nav-item:active .menu-nav-label {
+    color: var(--red);
+    transform: translateX(16px);
+}
+
+@media (max-width: 768px) {
+    .menu-overlay { padding: 0 20px 30px; }
+
+    .menu-logo-wrap {
+        padding-top: 85px;
+        padding-bottom: 20px;
+    }
+
+    .menu-scribble {
+        right: 20px;
+        top: 100px;
+        font-size: 2rem;
+    }
+
+    .menu-footer {
+        gap: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.menu-overlay {
+    padding-top: max(0px, env(safe-area-inset-top));
+    padding-bottom: max(30px, env(safe-area-inset-bottom));
+}
+
+.menu-footer .copy-feedback { font-size: 1.2rem; }

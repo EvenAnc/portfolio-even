@@ -1,0 +1,211 @@
+/* Quote band: closing quote whose neighbours part as it scrolls through the viewport. */
+
+/* Quote band animation: the gap opens by translating the neighbouring blocks, never by resizing
+   layout (a page height that changes mid-scroll breaks the maximum scroll Lenis caches). The quote
+   itself never moves, so the animation track can anchor on it. Curve: sin^2(pi*t), flat at both
+   ends. */
+/* The track name is scoped per page so the two pages that use it do not share it. */
+#page-project-diploma .page-inner,
+#page-drawings .page-inner {
+    timeline-scope: --quote-timeline;
+}
+
+/* Reserve below the quote: gives it air and supplies the scroll travel the animation needs to
+   settle, since the quote is the last block of the page. The 40px at the bottom keep the next-page
+   link against the footer. */
+#page-project-diploma .page-next,
+#page-drawings .page-next {
+    margin-top: 32vh;
+    margin-bottom: 40px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* The footer is excluded: if it moved and the animation did not reach its end, part of it
+       would stay out of reach. */
+    #page-project-diploma .page-next,
+    #page-drawings .page-next {
+        animation: quote-gap-down linear both;
+        animation-timeline: --quote-timeline;
+        animation-range: cover 21% cover 79%;
+    }
+}
+
+@media (min-width: 769px) {
+    /* Short windows: the board is a fixed A4 sheet taller than the window, which pushed the dots
+       and progress bar off screen. Cap its width so board plus controls (143px: header, gaps,
+       dots) fit the window height; the cap only applies below about 737px of height. */
+    #page-drawings .carousel-viewport {
+        width: min(420px, max(120px, calc((100vh - 143px) / 1.414)));
+        width: min(420px, max(120px, calc((100dvh - 143px) / 1.414)));
+    }
+}
+
+@media (max-width: 768px) {
+    #page-drawings .carousel-viewport {
+        width: min(320px, calc(100vw - 92px), max(120px, calc((100vh - 143px) / 1.414)));
+        width: min(320px, calc(100vw - 92px), max(120px, calc((100dvh - 143px) / 1.414)));
+    }
+}
+
+/* The margins of the two blocks around the quote must be equal, otherwise the text cannot be
+   both centred and equidistant from them. No scroll reserve here: the link sits against the
+   footer. */
+/* Bottom of the panel above: a tight 40px. The animation amplitude is fixed, so the larger the
+   starting gap, the less visible the movement. */
+#page-project-diploma .panel--tradeoff,
+#page-drawings .carousel {
+    padding-bottom: 40px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    /* Scroll-linked opening of the gap: native, no script. Without support the rest state above
+       stays and the quote is simply displayed. */
+    /* Range: 25% to 75% of the crossing rather than 0 to 100. The peak stays exactly centred, and
+       the end becomes reachable: going to 100% would need the quote to leave through the top, which
+       the page does not allow since almost nothing is left below it. */
+    #page-project-diploma .panel--tradeoff,
+    #page-drawings .carousel {
+        animation: quote-gap-up linear both;
+        animation-timeline: --quote-timeline;
+        animation-range: cover 21% cover 79%;
+    }
+}
+
+/* No background behind the quote: a gradient this dark has only a dozen 8-bit values over 600px,
+   so banding shows whatever the curve, and dithering noise does not fix it. With no background
+   there is no artefact to render. */
+.quote-band {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Full width: otherwise the band stops at the content width (1200px). Same approach as the
+       footer: --scrollbar-width (measured at runtime) keeps the scrollbar of .page from causing overflow. */
+    width: calc(100vw - var(--scrollbar-width, 0px));
+    margin-left: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
+    margin-right: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
+    box-sizing: border-box;
+    /* Symmetric padding: padding the bottom to catch up the neighbours' gap gives two equal gaps
+       but shifts the text up by half the difference. Equal gaps and centred text are only
+       compatible when the neighbours' margins are equal, so they are equalised at the source
+       (see .page-next). */
+    padding-top: 14vh;
+    padding-bottom: 14vh;
+}
+
+.quote-band-body {
+    /* Fixed size and position: the reference of the view timeline. */
+    view-timeline-name: --quote-timeline;
+    view-timeline-axis: block;
+    margin: 0;
+    padding: 0 40px;
+    max-width: 80rem; /* Wide enough to fit on one line. */
+    text-align: center;
+}
+
+.quote-band-text {
+    margin: 0;
+    font-family: var(--font-body);
+    font-weight: 300;
+    /* Discreet body: a single line needs restraint. */
+    font-size: clamp(0.9rem, 1.2vw, 1.06rem);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    color: var(--white);
+    text-wrap: balance;
+    quotes: none;
+}
+
+.quote-band-text::before { content: '\00AB\00A0'; }
+.quote-band-text::after { content: '\00A0\00BB'; }
+
+.quote-band-author {
+    margin: 18px 0 0;
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(0.8rem, 1vw, 0.9rem);
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+    .quote-band {
+        padding-top: 12vh;
+        padding-bottom: 12vh;
+    }
+
+    .quote-band-body {
+        padding: 0 26px;
+        max-width: 30rem;
+    }
+
+    .quote-band-text {
+        font-size: 1rem;
+        line-height: 1.65;
+    }
+
+    .quote-band-author { margin-top: 15px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .quote-band-body {
+        animation: quote-fade linear both;
+        animation-timeline: --quote-timeline;
+        animation-range: cover 21% cover 79%;
+    }
+}
+
+@keyframes quote-gap-up {
+    0% { transform: translateY(-0vh); }
+    7.1% { transform: translateY(-0.99vh); }
+    14.3% { transform: translateY(-3.765vh); }
+    21.4% { transform: translateY(-7.775vh); }
+    28.6% { transform: translateY(-12.225vh); }
+    35.7% { transform: translateY(-16.235vh); }
+    42.9% { transform: translateY(-19.01vh); }
+    50% { transform: translateY(-20vh); }
+    57.1% { transform: translateY(-19.01vh); }
+    64.3% { transform: translateY(-16.235vh); }
+    71.4% { transform: translateY(-12.225vh); }
+    78.6% { transform: translateY(-7.775vh); }
+    85.7% { transform: translateY(-3.765vh); }
+    92.9% { transform: translateY(-0.99vh); }
+    100% { transform: translateY(-0vh); }
+}
+
+@keyframes quote-gap-down {
+    0% { transform: translateY(0vh); }
+    7.1% { transform: translateY(0.99vh); }
+    14.3% { transform: translateY(3.765vh); }
+    21.4% { transform: translateY(7.775vh); }
+    28.6% { transform: translateY(12.225vh); }
+    35.7% { transform: translateY(16.235vh); }
+    42.9% { transform: translateY(19.01vh); }
+    50% { transform: translateY(20vh); }
+    57.1% { transform: translateY(19.01vh); }
+    64.3% { transform: translateY(16.235vh); }
+    71.4% { transform: translateY(12.225vh); }
+    78.6% { transform: translateY(7.775vh); }
+    85.7% { transform: translateY(3.765vh); }
+    92.9% { transform: translateY(0.99vh); }
+    100% { transform: translateY(0vh); }
+}
+
+@keyframes quote-fade {
+    0% { opacity: 0.32; }
+    7.1% { opacity: 0.354; }
+    14.3% { opacity: 0.448; }
+    21.4% { opacity: 0.584; }
+    28.6% { opacity: 0.736; }
+    35.7% { opacity: 0.872; }
+    42.9% { opacity: 0.966; }
+    50% { opacity: 1; }
+    57.1% { opacity: 0.966; }
+    64.3% { opacity: 0.872; }
+    71.4% { opacity: 0.736; }
+    78.6% { opacity: 0.584; }
+    85.7% { opacity: 0.448; }
+    92.9% { opacity: 0.354; }
+    100% { opacity: 0.32; }
+}

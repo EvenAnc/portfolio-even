@@ -1,0 +1,279 @@
+/* Contact: form (form- prefix), contact details (contact- prefix), copy-to-clipboard feedback. */
+
+
+/* Contact */
+
+.home-contact {
+    padding: 0;
+    background: var(--bg);
+}
+
+.home-contact-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 60px;
+}
+
+.contact-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 80px;
+    align-items: start;
+}
+
+@media (max-width: 768px) {
+    .home-contact-inner { padding: 60px 20px 80px; }
+
+    .contact-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+.copy-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.copy-feedback {
+    color: var(--red);
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+
+/* Form */
+
+.contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+
+.form-field { position: relative; }
+
+.form-input {
+    display: block;
+    width: 100%;
+    padding: 12px 0;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    outline: none;
+    transition: border-color var(--dur-fast);
+}
+
+.form-input--textarea {
+    height: 48px;
+    resize: none;
+    overflow: hidden;
+    padding-top: 0;
+    margin-top: 12px;
+    transition: height 0.4s var(--ease-out), border-color var(--dur-fast);
+}
+
+.form-input--textarea:focus,
+.form-input--textarea:not(:placeholder-shown) {
+    height: 120px;
+    overflow-y: auto;
+}
+
+.form-label {
+    position: absolute;
+    left: 0;
+    top: 12px;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.3);
+    pointer-events: none;
+    transform-origin: left top;
+    transition: transform 0.3s var(--ease-out), color 0.3s;
+}
+
+.form-input:focus ~ .form-label,
+.form-input:not(:placeholder-shown) ~ .form-label {
+    transform: translateY(-24px) scale(0.82);
+    color: var(--red);
+}
+
+/* The animated red line is handled by the .form-underline span alone, to avoid doubling it. */
+.form-underline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--red);
+    transition: width var(--dur-med) var(--ease-out);
+}
+
+.form-input:focus ~ .form-underline { width: 100%; }
+
+.form-submit {
+    padding: 14px 42px;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+
+.form-submit:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+/* Form validation states. */
+.is-invalid {
+    border-bottom-color: var(--red);
+}
+
+/* Same weight as the focus rule above and declared after it: the error state wins. */
+.form-input.is-invalid ~ .form-label {
+    color: var(--red);
+    transform: translateY(-24px) scale(0.82);
+}
+
+.form-feedback {
+    min-height: 22px;
+    font-size: 0.9rem;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-feedback--error {
+    color: var(--red);
+    opacity: 1;
+}
+
+.form-feedback--success {
+    color: #4ade80;
+    opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+    .form-field {
+        opacity: 0;
+        transform: translateY(16px);
+        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+
+    .form-field.is-in-view {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .form-field:nth-child(2) { transition-delay: 0.08s; }
+    .form-field:nth-child(3) { transition-delay: 0.16s; }
+}
+
+.form-submit-wrap {
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.sketch-rect-svg--button {
+    top: -5%;
+    left: -3%;
+    width: 106%;
+    height: 110%;
+    transform: rotate(1deg);
+}
+
+.form-submit-wrap:hover > .sketch-rect-svg { opacity: 1; }
+.form-submit-wrap:hover > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
+
+@media (hover: none), (pointer: coarse) {
+    /* Send button: red rectangle on touch. */
+    .form-submit-wrap:active > .sketch-rect-svg { opacity: 1; }
+
+    .form-submit-wrap:active > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
+}
+
+.honeypot { display: none; }
+
+
+/* Contact details */
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    padding-top: 12px;
+}
+
+.contact-label {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    color: rgba(255,255,255,0.25);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.contact-link {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    letter-spacing: 0.03em;
+    display: inline-block;
+    transition: color var(--dur-fast);
+}
+
+.contact-link:hover { color: var(--red); }
+
+.contact-social {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+    margin-bottom: 12px;
+    transition: opacity var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
+}
+
+.contact-social:hover {
+    opacity: 1;
+    color: var(--red);
+    transform: translateX(4px);
+}
+
+.contact-social-icon {
+    flex-shrink: 0;
+}
+
+.contact-text {
+    font-size: 1rem;
+    font-weight: 300;
+    opacity: 0.5;
+}
+
+@media (hover: none), (pointer: coarse) {
+    .contact-block {
+        opacity: 0;
+        transform: translateX(16px);
+        transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+    }
+
+    .contact-block.is-in-view {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .contact-block:nth-child(2) { transition-delay: 0.1s; }
+    .contact-block:nth-child(3) { transition-delay: 0.2s; }
+}
+
+.contact-block .copy-feedback { font-size: 1.8rem; }
