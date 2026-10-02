@@ -92,27 +92,30 @@
     .quote-band-author { margin-top: 15px; }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    /* Scroll-driven, native, no script: a browser without scroll timelines keeps the resting
-       state above and simply shows the quote. Range: 21% to 79% of the crossing rather than 0 to
-       100, so the peak stays centred and the end stays reachable (almost nothing is left to
-       scroll below the quote). */
-    .quote-band-before {
-        animation: quote-gap-up linear both;
-        animation-timeline: --quote-timeline;
-        animation-range: cover 21% cover 79%;
-    }
+/* Scroll-driven, native, no script. Only where scroll timelines exist: elsewhere the animations
+   would run on the document timeline and leave their first keyframe applied (a dimmed quote),
+   so those browsers keep the resting state above and simply show the quote. */
+@supports (animation-timeline: view()) and (timeline-scope: --x) {
+    @media (prefers-reduced-motion: no-preference) {
+        /* Range: 21% to 79% of the crossing rather than 0 to 100, so the peak stays centred and
+           the end stays reachable (almost nothing is left to scroll below the quote). */
+        .quote-band-before {
+            animation: quote-gap-up linear both;
+            animation-timeline: --quote-timeline;
+            animation-range: cover 21% cover 79%;
+        }
 
-    .quote-band-body {
-        animation: quote-fade linear both;
-        animation-timeline: --quote-timeline;
-        animation-range: cover 21% cover 79%;
-    }
+        .quote-band-body {
+            animation: quote-fade linear both;
+            animation-timeline: --quote-timeline;
+            animation-range: cover 21% cover 79%;
+        }
 
-    .page--with-quote .page-next {
-        animation: quote-gap-down linear both;
-        animation-timeline: --quote-timeline;
-        animation-range: cover 21% cover 79%;
+        .page--with-quote .page-next {
+            animation: quote-gap-down linear both;
+            animation-timeline: --quote-timeline;
+            animation-range: cover 21% cover 79%;
+        }
     }
 }
 
