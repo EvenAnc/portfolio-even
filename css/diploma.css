@@ -55,7 +55,7 @@
 
 /* An A4 sheet. The body is also a .media-frame-inner, whose line-height of 0 it restores. */
 .diploma-card-body {
-    aspect-ratio: 1 / 1.414;
+    aspect-ratio: 1 / var(--a4);
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 36px 30px;
@@ -79,7 +79,7 @@
 }
 
 .diploma-cert-header {
-    border-bottom: 1px solid rgba(255, 54, 74, 0.2);
+    border-bottom: 1px solid rgb(var(--red-rgb) / 20%);
     padding-bottom: 18px;
     position: relative;
 }
@@ -187,7 +187,7 @@
     opacity: 0.95;
     z-index: 20;
     background: var(--bg);
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 
@@ -224,7 +224,7 @@
 /* A4 landscape. */
 .diploma-scan-frame {
     width: 100%;
-    aspect-ratio: 1.414 / 1;
+    aspect-ratio: var(--a4) / 1;
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid rgba(255, 255, 255, 0.08);
 }

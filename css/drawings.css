@@ -14,9 +14,9 @@
     display: flex;
     flex-direction: column;
     gap: 18px;
-    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
-        filter 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
-        opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition: transform 0.5s var(--ease-gallery),
+        filter 0.5s var(--ease-gallery),
+        opacity 0.5s var(--ease-gallery);
     position: relative;
     z-index: 1;
 }
@@ -24,8 +24,8 @@
 .drawing-item .frame-wrap { cursor: zoom-in; }
 
 /* A4 sheets. */
-.drawing-item--portrait .media-frame-inner { aspect-ratio: 1 / 1.414; }
-.drawing-item--landscape .media-frame-inner { aspect-ratio: 1.414 / 1; }
+.drawing-item--portrait .media-frame-inner { aspect-ratio: 1 / var(--a4); }
+.drawing-item--landscape .media-frame-inner { aspect-ratio: var(--a4) / 1; }
 
 /* Every other red rectangle tilts the other way and draws a little faster. */
 .drawing-item:nth-child(2n) .sketch-rect-svg { transform: rotate(-1.5deg); }
@@ -92,7 +92,7 @@
     width: 100%;
     opacity: 0;
     transform: rotate(15deg) translateY(20px);
-    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.5s var(--ease-overshoot);
     filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
 }
 
@@ -106,7 +106,7 @@
    column both engines give the photo exactly the space between the paddings. */
 .ref-photo .media-frame-inner {
     padding: 10px 10px 36px 10px;
-    background: #fdfdfd;
+    background: var(--photo-paper);
     border-radius: 2px;
     display: flex;
     flex-direction: column;
@@ -127,9 +127,9 @@
     height: 90px;
     overflow: visible;
     opacity: 0;
-    transition: opacity 0.3s ease 0.1s;
+    transition: opacity var(--dur-base) ease 0.1s;
     transform: rotate(5deg);
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .drawing-item:hover .ref-arrow { opacity: 1; }
@@ -203,9 +203,9 @@
     left: 84px;
     opacity: 0;
     transform: translateY(-40px) scale(1.2);
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: all 0.5s var(--ease-back);
     filter: drop-shadow(0 8px 10px rgba(0,0,0,0.5));
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .drawing-item:hover .map-pin-icon {
@@ -268,7 +268,7 @@
        nothing. */
     .ref-photo,
     .ref-arrow {
-        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
+        transition: all 0.6s var(--ease-back) 0.8s;
     }
 
     .drawing-item:not(.is-in-view) .ref-photo { transform: translateY(-40px) scale(1.2); }

@@ -77,7 +77,7 @@
 .scroll-line {
     width: 1px;
     height: 50px;
-    background: rgba(255, 255, 255, 0.45);
+    background: var(--muted);
     animation: scroll-pulse 2s ease-in-out infinite;
     transform-origin: top;
 }
@@ -143,7 +143,7 @@
     width: 100%;
     border-radius: 18px;
     overflow: hidden;
-    background: white;
+    background: var(--white);
     cursor: pointer;
     aspect-ratio: 16/9;
     display: flex;
@@ -152,7 +152,7 @@
 }
 
 .showcase-frame .font-sketch {
-    color: #111;
+    color: var(--ink);
     font-size: clamp(2.5rem, 6vw, 5rem);
     transform: rotate(-3deg);
     padding: 20px;
@@ -204,7 +204,7 @@
     z-index: 2;
     pointer-events: none;
     transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
-    animation: sketch-wobble 0.3s steps(1) infinite;
+    animation: sketch-wobble var(--sketch-timing);
 }
 
 .projects-shortcut-title {
@@ -261,7 +261,7 @@
     transform: scaleX(-1);
 }
 
-.projects-shortcut-hint-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }
+.projects-shortcut-hint-arrow path:first-child { animation: sketch-wobble var(--sketch-timing); }
 .projects-shortcut:hover { transform: scale(1.03); }
 
 .projects-shortcut:hover .projects-shortcut-kicker {
@@ -271,7 +271,7 @@
 
 .projects-shortcut:hover .projects-shortcut-title {
     transform: scaleY(1.06);
-    color: #ff4a5c;
+    color: var(--red-light);
 }
 
 .projects-shortcut:hover .projects-shortcut-underline-path { stroke-dashoffset: 0; }
@@ -289,7 +289,7 @@
     /* Hidden until the shortcut scrolls into view (touch rule below). */
     .projects-shortcut-hint {
         opacity: 0;
-        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
+        transition: all 0.6s var(--ease-back) 0.8s;
         transform: translateY(-40px) scale(1.2) rotate(5deg);
         left: auto;
         right: -10px;
@@ -355,7 +355,7 @@
     z-index: 0;
     filter: url(#paper-tear);
     will-change: transform;
-    transition: transform 0.8s cubic-bezier(0.25, 1, 0.36, 1), clip-path 0.8s cubic-bezier(0.25, 1, 0.36, 1);
+    transition: transform 0.8s var(--ease-sheet), clip-path 0.8s var(--ease-sheet);
     transform-origin: center;
     pointer-events: none;
 }
@@ -368,7 +368,7 @@
     bottom: 0;
     left: 80px;
     width: 2px;
-    background: rgba(255, 54, 74, 0.3);
+    background: rgb(var(--red-rgb) / 30%);
     z-index: 1;
 }
 
@@ -379,7 +379,7 @@
     bottom: 0;
     left: 84px;
     width: 1px;
-    background: rgba(255, 54, 74, 0.18);
+    background: rgb(var(--red-rgb) / 18%);
     z-index: 1;
 }
 
@@ -450,10 +450,10 @@
 .notebook-text {
     font-size: 1.1rem;
     line-height: 34px;
-    color: rgba(26,26,26,0.75);
+    color: rgb(var(--bg-rgb) / 75%);
     max-width: 640px;
     margin-bottom: 34px;
-    transition: transform 0.3s var(--ease-out);
+    transition: transform var(--dur-base) var(--ease-out);
     position: relative;
     top: -2px;
 }
@@ -478,7 +478,7 @@
     z-index: 3;
     opacity: 0;
     transform: translateY(10px) translateX(-10px);
-    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+    transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
     pointer-events: none;
     display: flex;
     align-items: flex-end;
@@ -497,7 +497,7 @@
     height: 60px;
 }
 
-.signature-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }
+.signature-arrow path:first-child { animation: sketch-wobble var(--sketch-timing); }
 
 .signature-name {
     font-size: 3rem;
@@ -513,7 +513,7 @@
        rules weigh as much as the hover rule and come after it, so a hover left by a tap changes
        nothing. */
     .notebook-signature {
-        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
+        transition: all 0.6s var(--ease-back) 0.8s;
     }
 
     .notebook-section:not(.is-in-view) .notebook-signature {
