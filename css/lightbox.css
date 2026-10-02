@@ -164,8 +164,6 @@
     z-index: 2;
 }
 
-.lightbox-zoom-range:focus { outline: none; }
-
 .lightbox-zoom-range::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;

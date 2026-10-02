@@ -185,7 +185,11 @@
     align-items: center;
 }
 
+/* Dots are buttons: native look and font size are reset. */
 .carousel-dot {
+    -webkit-appearance: none;
+    appearance: none;
+    font-size: inherit;
     position: relative;
     width: 10px;
     height: 10px;
@@ -351,6 +355,7 @@
 
 .comic-kicker {
     font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    font-weight: bold;
     color: var(--white);
     letter-spacing: 0.05em;
     transform: translateY(18px) rotate(-4deg);
