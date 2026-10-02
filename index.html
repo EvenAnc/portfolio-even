@@ -19,14 +19,14 @@
     <meta property="og:image:type" content="image/gif">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Even ANICET, architecte d'interieur — even-anc.com">
+    <meta property="og:image:alt" content="Even ANICET, architecte d'intérieur — even-anc.com">
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Even ANICET — Architecte d'intérieur">
     <meta name="twitter:description" content="Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.">
     <meta name="twitter:image" content="https://even-anc.com/og-card-v3.gif">
-    <meta name="twitter:image:alt" content="Even ANICET, architecte d'interieur — even-anc.com">
+    <meta name="twitter:image:alt" content="Even ANICET, architecte d'intérieur — even-anc.com">
 
     <link rel="canonical" href="https://even-anc.com/">
     <!-- Language versions: the language lives in ?lang=. -->
@@ -139,7 +139,7 @@
     </noscript>
 
     <!-- SVG filters -->
-    <svg class="svg-filters" width="0" height="0">
+    <svg class="svg-filters" width="0" height="0" aria-hidden="true">
         <defs>
             <filter id="sketch-1" x="-5%" y="-5%" width="110%" height="110%">
                 <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" seed="1" result="n"/>
@@ -163,17 +163,11 @@
             <clipPath id="torn-2" clipPathUnits="objectBoundingBox">
                 <path d="M0,0.02 C0.08,0.01 0.15,0.04 0.25,0.02 C0.38,-0.01 0.45,0.03 0.55,0.01 C0.68,-0.01 0.78,0.03 0.88,0.01 C0.94,-0.01 0.98,0.01 1,0.02 L1,0.98 C0.92,1 0.84,0.97 0.72,1 C0.62,1.02 0.53,0.97 0.42,1 C0.3,1.02 0.22,0.98 0.12,1 C0.06,1.01 0.02,0.99 0,0.98 Z"/>
             </clipPath>
-            <mask id="mask-torn-1" maskContentUnits="objectBoundingBox" filter="url(#paper-tear)">
-                <path d="M 0.03,0.05 C 0.15,0.02 0.3,0.05 0.5,0.02 C 0.7,0.04 0.85,0.01 0.97,0.04 C 0.99,0.2 0.95,0.4 0.97,0.6 C 0.95,0.8 0.99,0.9 0.96,0.95 C 0.85,0.98 0.7,0.95 0.5,0.97 C 0.3,0.95 0.15,0.98 0.03,0.95 C 0.01,0.8 0.05,0.5 0.03,0.3 C 0.05,0.15 0.01,0.08 0.03,0.05 Z" fill="white"/>
-            </mask>
-            <mask id="mask-torn-2" maskContentUnits="objectBoundingBox" filter="url(#paper-tear)">
-                <path d="M 0.04,0.03 C 0.2,0.05 0.35,0.01 0.5,0.04 C 0.65,0.01 0.8,0.05 0.96,0.03 C 0.95,0.25 0.98,0.45 0.96,0.65 C 0.98,0.8 0.95,0.92 0.96,0.97 C 0.8,0.95 0.65,0.98 0.5,0.95 C 0.35,0.98 0.2,0.95 0.04,0.97 C 0.05,0.75 0.02,0.55 0.04,0.35 C 0.02,0.2 0.05,0.08 0.04,0.03 Z" fill="white"/>
-            </mask>
         </defs>
     </svg>
 
     <!-- Header -->
-    <header class="site-header" id="site-header">
+    <header class="site-header">
         <div class="header-inner">
             <div class="header-left">
                 <button type="button" class="burger-btn" id="burger-btn" aria-label="Menu" aria-expanded="false" aria-controls="menu-overlay">
@@ -182,7 +176,7 @@
                     <span class="burger-line"></span>
                 </button>
                 <button type="button" class="header-back-btn" id="header-back-btn" aria-label="retour" data-i18n-aria="nav_back">
-                    <svg class="sketch-arrow-back" viewBox="0 0 100 50">
+                    <svg class="sketch-arrow-back" viewBox="0 0 100 50" aria-hidden="true">
                         <path d="M90 25 L20 25 M40 10 L15 25 L40 40" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <span class="font-sketch" data-i18n="nav_back">retour</span>
@@ -195,20 +189,20 @@
 
             <div class="header-right">
                 <div class="lang-switcher">
-                    <button type="button" class="lang-btn is-active" data-lang="fr" aria-label="Afficher le site en francais" lang="fr">FR</button>
-                    <span class="lang-sep">/</span>
+                    <button type="button" class="lang-btn is-active" data-lang="fr" aria-label="Afficher le site en français" lang="fr">FR</button>
+                    <span class="lang-sep" aria-hidden="true">/</span>
                     <button type="button" class="lang-btn" data-lang="en" aria-label="Display the site in English" lang="en">EN</button>
                 </div>
                 <nav class="social-nav" aria-label="Réseaux sociaux" data-i18n-aria="aria_nav_social">
                     <a href="https://www.instagram.com/even.anc/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Instagram">
-                        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
                             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                         </svg>
                     </a>
                     <a href="https://www.linkedin.com/in/even-anicet-544088275/" target="_blank" rel="noopener noreferrer" class="social-link" aria-label="LinkedIn">
-                        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
                             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                             <rect x="2" y="9" width="4" height="12"></rect>
                             <circle cx="4" cy="4" r="2"></circle>
@@ -232,27 +226,27 @@
                 <span class="menu-nav-label" data-i18n="menu_01">ACCUEIL</span>
                 <span class="menu-nav-note font-sketch" data-i18n="menu_deco_01">bienvenue</span>
             </a>
-            <a href="#" class="menu-nav-item" data-target="projects">
+            <a href="#projets" class="menu-nav-item" data-target="projects">
                 <span class="menu-nav-number">02</span>
                 <span class="menu-nav-label" data-i18n="menu_02">PROJETS</span>
                 <span class="menu-nav-note font-sketch" data-i18n="menu_deco_02">mes réalisations</span>
             </a>
-            <a href="#" class="menu-nav-item" data-target="drawings">
+            <a href="#dessins" class="menu-nav-item" data-target="drawings">
                 <span class="menu-nav-number">03</span>
                 <span class="menu-nav-label" data-i18n="menu_03">DESSINS</span>
                 <span class="menu-nav-note font-sketch" data-i18n="menu_deco_03">à main levée</span>
             </a>
-            <a href="#" class="menu-nav-item" data-target="diploma">
+            <a href="#diplome" class="menu-nav-item" data-target="diploma">
                 <span class="menu-nav-number">04</span>
                 <span class="menu-nav-label" data-i18n="menu_04">DIPLÔME</span>
                 <span class="menu-nav-note font-sketch" data-i18n="menu_deco_04">MJM Toulouse</span>
             </a>
-            <a href="#" class="menu-nav-item" data-target="hobbies">
+            <a href="#hobbies" class="menu-nav-item" data-target="hobbies">
                 <span class="menu-nav-number">05</span>
                 <span class="menu-nav-label" data-i18n="menu_05">HOBBIES</span>
                 <span class="menu-nav-note font-sketch" data-i18n="menu_deco_05">moto & perso</span>
             </a>
-            <a href="#" class="menu-nav-item" data-target="contact">
+            <a href="#contact" class="menu-nav-item" data-target="contact">
                 <span class="menu-nav-number">06</span>
                 <span class="menu-nav-label" data-i18n="menu_06">CONTACT</span>
                 <span class="menu-nav-note font-sketch" data-i18n="menu_deco_06">parlons-en</span>
@@ -261,12 +255,12 @@
 
         <div class="menu-footer">
             <div class="copy-row">
-                <a href="#" class="menu-email js-copy-email" data-email="even.anicet@gmail.com">even.anicet@gmail.com</a>
+                <a href="mailto:even.anicet@gmail.com" class="menu-email js-copy-email" data-email="even.anicet@gmail.com">even.anicet@gmail.com</a>
                 <span class="copy-feedback font-sketch" data-i18n="copied">copié !</span>
             </div>
             <div class="menu-footer-social">
                 <a href="https://www.instagram.com/even.anc/" target="_blank" rel="noopener noreferrer">Instagram</a>
-                <span>—</span>
+                <span aria-hidden="true">—</span>
                 <a href="https://www.linkedin.com/in/even-anicet-544088275/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             </div>
         </div>
@@ -275,7 +269,7 @@
     </div>
 
     <!-- Page container -->
-    <div class="page-wrapper" id="page-wrapper" role="main">
+    <main class="page-wrapper" id="page-wrapper">
 
         <!-- Page: home -->
         <section class="page" id="page-home" data-page="home">
@@ -309,7 +303,7 @@
             </div>
 
             <!-- Projects shortcut -->
-            <div class="projects-shortcut" data-target="projects">
+            <a href="#projets" class="projects-shortcut" data-target="projects">
                 <span class="projects-shortcut-kicker font-sketch" data-i18n="shortcut_sub">Aperçu</span>
                 <span class="projects-shortcut-title" data-i18n="shortcut_main">MES PROJETS</span>
                 
@@ -320,13 +314,13 @@
 
                 <!-- Pencil arrow annotation -->
                 <div class="projects-shortcut-hint">
-                    <svg class="projects-shortcut-hint-arrow" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="projects-shortcut-hint-arrow" viewBox="0 0 60 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                         <path d="M10 10 C 25 5, 45 15, 48 30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                         <path d="M38 25 L48 30 L48 18" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                     </svg>
                     <span class="projects-shortcut-hint-text font-sketch" data-i18n="click_hint">cliquez !</span>
                 </div>
-            </div>
+            </a>
 
             <!-- Notebook -->
             <div class="notebook-section" id="notebook-section">
@@ -339,7 +333,7 @@
                             <!-- Signature annotation with an arrow -->
                             <div class="notebook-signature">
                                 <span class="signature-name font-sketch">EVEN</span>
-                                <svg class="signature-arrow" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <svg class="signature-arrow" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                     <path d="M10 45 C 18 55, 32 50, 45 15" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                                     <path d="M30 22 L45 15 L42 30" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
                                 </svg>
@@ -365,7 +359,7 @@
                               action="https://formsubmit.co/ajax/even.anicet@gmail.com" 
                               method="POST" novalidate>
                             <input type="hidden" name="_subject" value="Nouveau message portfolio — Even ANICET">
-                            <input class="honeypot" type="text" name="_honey">
+                            <input class="honeypot" type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
                             <input type="hidden" name="_template" value="table">
                             <div class="form-field">
                                 <input type="text" id="contact-name" name="name" required placeholder=" " class="form-input" autocomplete="name">
@@ -397,14 +391,14 @@
                             <div class="contact-block">
                                 <h3 class="contact-label" data-i18n="contact_direct">CONTACT DIRECT</h3>
                                 <div class="copy-row">
-                                    <a href="#" class="contact-link js-copy-email" data-email="even.anicet@gmail.com">even.anicet@gmail.com</a>
+                                    <a href="mailto:even.anicet@gmail.com" class="contact-link js-copy-email" data-email="even.anicet@gmail.com">even.anicet@gmail.com</a>
                                     <span class="copy-feedback font-sketch" data-i18n="copied">copié !</span>
                                 </div>
                             </div>
                             <div class="contact-block">
                                 <h3 class="contact-label" data-i18n="contact_social">RÉSEAUX</h3>
                                 <a href="https://www.instagram.com/even.anc/" target="_blank" rel="noopener noreferrer" class="contact-social">
-                                    <svg class="contact-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                                    <svg class="contact-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
                                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                                         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
@@ -412,7 +406,7 @@
                                     <span>INSTAGRAM</span>
                                 </a>
                                 <a href="https://www.linkedin.com/in/even-anicet-544088275/" target="_blank" rel="noopener noreferrer" class="contact-social">
-                                    <svg class="contact-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+                                    <svg class="contact-social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
                                         <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                         <rect x="2" y="9" width="4" height="12"></rect>
                                         <circle cx="4" cy="4" r="2"></circle>
@@ -430,7 +424,7 @@
             </div>
 
             <!-- Legal footer -->
-            <footer class="site-footer" id="site-footer">
+            <footer class="site-footer">
                 <div class="footer-inner">
                     <div class="footer-top">
                         <span class="footer-logo font-sketch">EVEN ANICET</span>
@@ -442,9 +436,9 @@
                     </div>
                     <div class="footer-bottom">
                         <span data-i18n="legal_mentions">Mentions légales</span>
-                        <span class="footer-sep">|</span>
+                        <span class="footer-sep" aria-hidden="true">|</span>
                         <span data-i18n="legal_rights">Tous droits réservés</span>
-                        <span class="footer-sep">|</span>
+                        <span class="footer-sep" aria-hidden="true">|</span>
                         <span>even.anicet@gmail.com</span>
                     </div>
                 </div>
@@ -462,7 +456,7 @@
                 
                 <div class="projects-patchwork">
                     <!-- Projet 1 -->
-                    <div class="patchwork-item patchwork-item--large" data-target="project-diploma">
+                    <a href="#projet-diplome" class="patchwork-item patchwork-item--large" data-target="project-diploma">
                         <div class="polaroid-card">
                             <div class="polaroid-img-wrap">
                                 <img src="assets/opt/mirage.webp" alt="Projet Mirage" data-i18n-alt="alt_project_mirage" class="polaroid-img" width="1000" height="707">
@@ -476,10 +470,10 @@
                                 <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </div>
-                    </div>
+                    </a>
                     
                     <!-- Projet 2 -->
-                    <div class="patchwork-item patchwork-item--medium" data-target="project-2">
+                    <a href="#projet-paterr-suisse" class="patchwork-item patchwork-item--medium" data-target="project-2">
                         <div class="polaroid-card">
                             <div class="polaroid-img-wrap">
                                 <img src="assets/opt/paterr-icone.webp" alt="Projet Paterr Suisse" data-i18n-alt="alt_project_paterr" class="polaroid-img" width="1000" height="707">
@@ -493,13 +487,13 @@
                                 <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </div>
-                    </div>
+                    </a>
                     
                     <!-- Projet 3 -->
-                    <div class="patchwork-item patchwork-item--small" data-target="project-3">
+                    <a href="#projet-03" class="patchwork-item patchwork-item--small" data-target="project-3">
                         <div class="polaroid-card">
                             <div class="polaroid-img-wrap">
-                                <svg width="50" height="50" viewBox="0 0 100 100">
+                                <svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true">
                                     <path d="M 50 15 A 35 35 0 1 1 15 50" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-dasharray="80 30" />
                                 </svg><span class="font-sketch" data-i18n="proj_loading">en cours...</span>
                             </div>
@@ -512,11 +506,11 @@
                                 <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </div>
-                    </div>
+                    </a>
                 </div>
 
                 <!-- Next-page link -->
-                <a href="javascript:void(0)" class="page-next" data-target="drawings" aria-label="Aller à la page suivante" data-i18n-aria="aria_next_page">
+                <a href="#dessins" class="page-next" data-target="drawings" aria-label="Aller à la page suivante" data-i18n-aria="aria_next_page">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
@@ -553,7 +547,7 @@
                     <p class="font-sketch">Contenu du projet Paterr Suisse à venir...</p>
                 </div>
                 <!-- Next-page link -->
-                <a href="javascript:void(0)" class="page-next" data-target="project-3" aria-label="Aller au projet suivant" data-i18n-aria="aria_next_project">
+                <a href="#projet-03" class="page-next" data-target="project-3" aria-label="Aller au projet suivant" data-i18n-aria="aria_next_project">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
@@ -590,7 +584,7 @@
                     <p class="font-sketch">À suivre...</p>
                 </div>
                 <!-- Next-page link -->
-                <a href="javascript:void(0)" class="page-next" data-target="drawings" aria-label="Aller à la page Dessins" data-i18n-aria="aria_goto_drawings">
+                <a href="#dessins" class="page-next" data-target="drawings" aria-label="Aller à la page Dessins" data-i18n-aria="aria_goto_drawings">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
@@ -625,7 +619,7 @@
                     <!-- Tape title -->
                     <div class="project-board-header">
                         <div class="tape-title-wrap">
-                            <h3 class="font-sketch tape-title" data-i18n="proj_title">PROJET 01 : DIPLÔME</h3>
+                            <h2 class="font-sketch tape-title" data-i18n="proj_title">PROJET 01 : DIPLÔME</h2>
                         </div>
                     </div>
 
@@ -642,14 +636,14 @@
                     <!-- Panel 1: zoning and analysis (dark grey) -->
                     <div class="panel panel--alt">
                         <div class="sticker-title-wrap">
-                            <span class="sticker-title font-sketch" data-i18n="proj_panel_zooning">ZOONING ET ANALYSE</span>
+                            <h3 class="sticker-title font-sketch" data-i18n="proj_panel_zooning">ZOONING ET ANALYSE</h3>
                         </div>
                         <p class="panel-lede" data-i18n="lede_zooning">Une oliveraie en bord de route, à Lambesc, sur un axe très fréquenté par les motards. Le projet s'installe sur une portion de parcelle restée vide. La circulation reprend les codes d'une piste de moto, et c'est elle qui décide de l'implantation des bâtiments.</p>
                         <p class="panel-tools" data-i18n="tools_zooning">InDesign · Procreate</p>
                         <div class="carousel carousel--landscape">
                             <div class="carousel-row">
                                 <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
-                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
                                 </button>
                                 <div class="frame-wrap">
                                     <div class="carousel-viewport">
@@ -666,7 +660,7 @@
                                     </svg>
                                 </div>
                                 <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
-                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
                                 </button>
                             </div>
                             <div class="carousel-footer">
@@ -679,14 +673,14 @@
                     <!-- Panel 2: plans (black) -->
                     <div class="panel">
                         <div class="sticker-title-wrap sticker-title-wrap--right">
-                            <span class="sticker-title font-sketch" data-i18n="proj_panel_plans">PLANS</span>
+                            <h3 class="sticker-title font-sketch" data-i18n="proj_panel_plans">PLANS</h3>
                         </div>
                         <p class="panel-lede" data-i18n="lede_plans">Plans définitifs et détails, niveau par niveau, en suivant la pente du terrain. La matériauthèque répond à l'architecture vernaculaire du lieu. Chaque matériau est choisi pour tenir l'ensemble, du sol à la toiture.</p>
                         <p class="panel-tools" data-i18n="tools_plans">ArchiCAD · Photoshop</p>
                         <div class="carousel carousel--landscape">
                             <div class="carousel-row">
                                 <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
-                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
                                 </button>
                                 <div class="frame-wrap">
                                     <div class="carousel-viewport">
@@ -706,7 +700,7 @@
                                     </svg>
                                 </div>
                                 <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
-                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
                                 </button>
                             </div>
                             <div class="carousel-footer">
@@ -719,7 +713,7 @@
                     <!-- Panel 3: architectural sections (dark grey) -->
                     <div class="panel panel--alt">
                         <div class="sticker-title-wrap">
-                            <span class="sticker-title font-sketch" data-i18n="proj_panel_coupes">COUPES ARCHITECTURALES</span>
+                            <h3 class="sticker-title font-sketch" data-i18n="proj_panel_coupes">COUPES ARCHITECTURALES</h3>
                         </div>
                         <p class="panel-lede" data-i18n="lede_coupes">Ici tout se joue sur la verticalité du site. Les coupes sont texturées pour rendre lisible l'épaisseur du projet et la matière réelle des parois, ce qu'un plan ne peut pas montrer.</p>
                         <p class="panel-tools" data-i18n="tools_coupes">ArchiCAD · Photoshop</p>
@@ -763,7 +757,7 @@
                     <!-- Panel 4: 3D (black) -->
                     <div class="panel">
                         <div class="sticker-title-wrap sticker-title-wrap--right">
-                            <span class="sticker-title font-sketch" data-i18n="proj_panel_3d">3D</span>
+                            <h3 class="sticker-title font-sketch" data-i18n="proj_panel_3d">3D</h3>
                         </div>
                         <p class="panel-lede" data-i18n="lede_3d">La forme finale du projet. Ces vues intérieures et extérieures montrent ce que j'avais en tête depuis le premier croquis.</p>
                         <p class="panel-tools" data-i18n="tools_3d">Twinmotion</p>
@@ -800,7 +794,7 @@
                     <div class="panel panel--tradeoff quote-band-before">
                         <div class="tradeoff-inner">
                             <span class="tradeoff-eyebrow font-sketch" data-i18n="choice_eyebrow">Les problématiques</span>
-                            <h4 class="tradeoff-title" data-i18n="choice_title">Un site pas comme les autres</h4>
+                            <h3 class="tradeoff-title" data-i18n="choice_title">Un site pas comme les autres</h3>
                             <p class="tradeoff-text" data-i18n="choice_text">Le terrain n'a pas été choisi pour sa facilité. Il est perché dans les hauteurs de Lambesc, en pleine garrigue, au croisement de deux grands axes motards et à deux pas des routes de cols. Aucune station-service à des kilomètres, rien autour. Je suis tombé dessus pendant une balade et l'endroit s'est imposé.</p>
                             <p class="tradeoff-text" data-i18n="choice_text2">Restait à le rendre viable. Installer une station essence en zone inflammable, juste à côté d'une oliveraie, ça ne va pas de soi. Ce sont ces contraintes qui ont fini par donner au projet ses lignes directrices et qui l'ont rendu réalisable.</p>
                         </div>
@@ -816,7 +810,7 @@
                     </figure>
                 </section>
 
-                <a href="javascript:void(0)" class="page-next" data-target="project-2" aria-label="Aller au projet suivant" data-i18n-aria="aria_next_project">
+                <a href="#projet-paterr-suisse" class="page-next" data-target="project-2" aria-label="Aller au projet suivant" data-i18n-aria="aria_next_project">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
@@ -835,9 +829,9 @@
                         </div>
                         <div class="footer-bottom">
                             <span data-i18n="legal_mentions">Mentions légales</span>
-                            <span class="footer-sep">|</span>
+                            <span class="footer-sep" aria-hidden="true">|</span>
                             <span data-i18n="legal_rights">Tous droits réservés</span>
-                            <span class="footer-sep">|</span>
+                            <span class="footer-sep" aria-hidden="true">|</span>
                             <span>even.anicet@gmail.com</span>
                         </div>
                     </div>
@@ -869,7 +863,7 @@
                             <div class="map-pin-wrap">
                                 <div class="map-pin-text font-sketch">TOULOUSE</div>
                                 <svg class="map-pin-icon" viewBox="0 0 40 60" aria-hidden="true">
-                                    <path class="map-pin-path" d="M20 5 C5 5 5 30 20 55 C35 30 35 5 20 5 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M20 5 C5 5 5 30 20 55 C35 30 35 5 20 5 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
                                     <circle cx="20" cy="18" r="4" fill="none" stroke="var(--red)" stroke-width="3.5" />
                                 </svg>
                             </div>
@@ -928,13 +922,13 @@
                 <!-- Comic carousel -->
                 <div class="carousel quote-band-before">
                     <div class="comic-heading">
-                        <h3 class="comic-kicker font-sketch" data-i18n="bd_title">BANDE DESSINÉE</h3>
-                        <p class="comic-title">FALLOUT</p>
+                        <p class="comic-kicker font-sketch" data-i18n="bd_title">BANDE DESSINÉE</p>
+                        <h3 class="comic-title">FALLOUT</h3>
                         <div class="comic-burst"></div>
                     </div>
                     <div class="carousel-row">
                         <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Page précédente" data-i18n-aria="aria_prev_sheet">
-                            <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1" />
                                 <path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2" />
                                 <path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3" />
@@ -982,7 +976,7 @@
                         </div>
 
                         <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Page suivante" data-i18n-aria="aria_next_sheet">
-                            <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1" />
                                 <path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2" />
                                 <path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3" />
@@ -993,14 +987,14 @@
                     <!-- Carousel controls -->
                     <div class="carousel-controls">
                         <button type="button" class="carousel-toggle" aria-label="Lecture automatique" data-i18n-aria="aria_autoplay">
-                            <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/></svg>
-                            <svg class="icon-play" viewBox="0 0 24 24" width="24" height="24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+                            <svg class="icon-pause" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/></svg>
+                            <svg class="icon-play" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
                         </button>
                         <div class="carousel-dots">
-                            <span class="carousel-dot is-active" data-slide-to="0"></span>
-                            <span class="carousel-dot" data-slide-to="1"></span>
-                            <span class="carousel-dot" data-slide-to="2"></span>
-                            <span class="carousel-dot" data-slide-to="3"></span>
+                            <button type="button" class="carousel-dot is-active" data-slide-to="0"></button>
+                            <button type="button" class="carousel-dot" data-slide-to="1"></button>
+                            <button type="button" class="carousel-dot" data-slide-to="2"></button>
+                            <button type="button" class="carousel-dot" data-slide-to="3"></button>
                         </div>
                         <div class="carousel-timer">
                             <div class="carousel-timer-bar"></div>
@@ -1018,7 +1012,7 @@
                 </section>
 
                 <!-- Next-page link -->
-                <a href="javascript:void(0)" class="page-next" data-target="diploma" aria-label="Aller à la page Diplôme" data-i18n-aria="aria_goto_diploma">
+                <a href="#diplome" class="page-next" data-target="diploma" aria-label="Aller à la page Diplôme" data-i18n-aria="aria_goto_diploma">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
@@ -1037,9 +1031,9 @@
                         </div>
                         <div class="footer-bottom">
                             <span data-i18n="legal_mentions">Mentions légales</span>
-                            <span class="footer-sep">|</span>
+                            <span class="footer-sep" aria-hidden="true">|</span>
                             <span data-i18n="legal_rights">Tous droits réservés</span>
-                            <span class="footer-sep">|</span>
+                            <span class="footer-sep" aria-hidden="true">|</span>
                             <span>even.anicet@gmail.com</span>
                         </div>
                     </div>
@@ -1056,7 +1050,7 @@
                 </div>
 
                 <div class="diploma-layout">
-                    <div class="school-card">
+                    <div>
                         <div class="school-name-wrap">
                             <h3 class="school-name">MJM GRAPHIC DESIGN</h3>
                             <span class="school-city font-sketch">Toulouse</span>
@@ -1089,26 +1083,26 @@
                         </ul>
                     </div>
 
-                    <div class="frame-wrap diploma-cert-wrap">
+                    <div class="frame-wrap">
                         <div class="diploma-card">
                             <div class="media-frame-inner diploma-card-body">
                                 <div class="diploma-cert-header">
-                                    <h4 class="diploma-cert-title" data-i18n="diploma_cert_title">CERTIFICATION RNCP</h4>
+                                    <h3 class="diploma-cert-title" data-i18n="diploma_cert_title">CERTIFICATION RNCP</h3>
                                     <p class="diploma-cert-subtitle" data-i18n="diploma_cert_subtitle">Designer en architecture d'intérieur - Niveau 6</p>
                                 </div>
                                 <div class="diploma-cert-body">
                                     <div class="diploma-cert-section">
-                                        <h5 class="diploma-cert-label" data-i18n="diploma_cert_rncp">STATUT RÉGLEMENTAIRE</h5>
+                                        <h4 class="diploma-cert-label" data-i18n="diploma_cert_rncp">STATUT RÉGLEMENTAIRE</h4>
                                         <p class="diploma-cert-text" data-i18n="diploma_cert_rncp_val">Titre de niveau 6 (Bac+3 / Licence) inscrit au RNCP, certifiant l'aptitude à concevoir des espaces intérieurs, élaborer des dossiers techniques et superviser des chantiers.</p>
                                     </div>
                                     <div class="diploma-cert-section">
-                                        <h5 class="diploma-cert-label" data-i18n="diploma_cert_credits">CRÉDENTIALS ACADÉMIQUES</h5>
+                                        <h4 class="diploma-cert-label" data-i18n="diploma_cert_credits">CRÉDENTIALS ACADÉMIQUES</h4>
                                         <p class="diploma-cert-text" data-i18n="diploma_cert_credits_val">
                                             Équivalence de 180 crédits ECTS (Niveau 6 Européen EQF). Équivalence Suisse : Bachelor of Arts (BA) HES en architecture d'intérieur. Formation éligible au CPF.
                                         </p>
                                     </div>
                                     <div class="diploma-cert-section">
-                                        <h5 class="diploma-cert-label" data-i18n="diploma_cert_competences">COMPÉTENCES CLÉS ACCRÉDITÉES</h5>
+                                        <h4 class="diploma-cert-label" data-i18n="diploma_cert_competences">COMPÉTENCES CLÉS ACCRÉDITÉES</h4>
                                         <ul class="diploma-skills-list">
                                             <li data-i18n="diploma_cert_c1">Diagnostic technique, spatial et réglementaire de l'existant.</li>
                                             <li data-i18n="diploma_cert_c2">Création de concepts esthétiques, plans de coupe et modélisations 3D.</li>
@@ -1129,10 +1123,10 @@
 
                 <!-- Diploma scan (A4 landscape) -->
                 <div class="diploma-scan">
-                    <h4 class="diploma-scan-title font-sketch">
+                    <h3 class="diploma-scan-title font-sketch">
                         <span data-i18n="study_degree">Diplôme d'Architecte d'Intérieur</span>
                         <span class="diploma-scan-years">2022 – 2025</span>
-                    </h4>
+                    </h3>
                     <div class="frame-wrap diploma-scan-wrap">
                         <div class="diploma-scan-frame">
                             <div class="media-frame-inner diploma-scan-inner">
@@ -1145,7 +1139,7 @@
                     </div>
                 </div>
             
-                <a href="javascript:void(0)" class="page-next" data-target="hobbies" aria-label="Aller à la page Hobbies" data-i18n-aria="aria_goto_hobbies">
+                <a href="#hobbies" class="page-next" data-target="hobbies" aria-label="Aller à la page Hobbies" data-i18n-aria="aria_goto_hobbies">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
@@ -1165,9 +1159,9 @@
                     </div>
                     <div class="footer-bottom">
                         <span data-i18n="legal_mentions">Mentions légales</span>
-                        <span class="footer-sep">|</span>
+                        <span class="footer-sep" aria-hidden="true">|</span>
                         <span data-i18n="legal_rights">Tous droits réservés</span>
-                        <span class="footer-sep">|</span>
+                        <span class="footer-sep" aria-hidden="true">|</span>
                         <span>even.anicet@gmail.com</span>
                     </div>
                 </div>
@@ -1230,7 +1224,7 @@
                 </div>
 
                 <!-- Next-page link -->
-                <a href="javascript:void(0)" class="page-next" data-target="contact" aria-label="Aller à la page Contact" data-i18n-aria="aria_goto_contact">
+                <a href="#contact" class="page-next" data-target="contact" aria-label="Aller à la page Contact" data-i18n-aria="aria_goto_contact">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>
                     <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
                         <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
@@ -1249,9 +1243,9 @@
                         </div>
                         <div class="footer-bottom">
                             <span data-i18n="legal_mentions">Mentions légales</span>
-                            <span class="footer-sep">|</span>
+                            <span class="footer-sep" aria-hidden="true">|</span>
                             <span data-i18n="legal_rights">Tous droits réservés</span>
-                            <span class="footer-sep">|</span>
+                            <span class="footer-sep" aria-hidden="true">|</span>
                             <span>even.anicet@gmail.com</span>
                         </div>
                     </div>
@@ -1259,10 +1253,10 @@
             </div>
         </section>
 
-    </div>
+    </main>
 
     <!-- Lightbox -->
-    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-label="Visionneuse d'images" data-i18n-aria="aria_viewer">
+    <div id="lightbox" class="lightbox" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Visionneuse d'images" data-i18n-aria="aria_viewer">
 
         <!-- Logo -->
         <span class="lightbox-logo font-sketch">EVEN ANICET</span>
@@ -1273,7 +1267,7 @@
         <!-- Tools: fullscreen, zoom, close -->
         <div class="lightbox-tools">
             <div class="lightbox-zoom">
-                <svg class="lightbox-zoom-track" viewBox="0 0 100 20" preserveAspectRatio="none">
+                <svg class="lightbox-zoom-track" viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
                     <path d="M 5 10 Q 25 8, 50 11 T 95 10" stroke="rgba(255,255,255,0.4)" stroke-width="2" fill="none" stroke-linecap="round"/>
                     <path id="lightbox-zoom-fill" d="M 5 10 Q 25 8, 50 11 T 95 10" stroke="var(--red)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="100"/>
                     <path d="M 5 5 Q 4 10, 6 15" stroke="var(--red)" stroke-width="2" fill="none" stroke-linecap="round"/>
@@ -1282,17 +1276,17 @@
                 <input type="range" class="lightbox-zoom-range" id="lightbox-zoom-range" min="1" max="4" step="0.05" value="1" aria-label="Niveau de zoom" data-i18n-aria="aria_zoom_level">
             </div>
             <button type="button" class="lightbox-tool lightbox-fullscreen" aria-label="Plein écran" data-i18n-aria="aria_fullscreen">
-                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="currentColor"/></svg>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z" fill="currentColor"/></svg>
             </button>
             <button type="button" class="lightbox-tool lightbox-zoom-toggle" aria-label="Zoomer" data-i18n-aria="aria_zoom">
-                <svg viewBox="0 0 24 24" width="24" height="24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm2.5-4h-2v2H9v-2H7V9h2V7h1.5v2h2v1.5z" fill="currentColor"/></svg>
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14zm2.5-4h-2v2H9v-2H7V9h2V7h1.5v2h2v1.5z" fill="currentColor"/></svg>
             </button>
             <button type="button" class="lightbox-close" aria-label="Fermer" data-i18n-aria="aria_close">&times;</button>
         </div>
 
         <!-- Previous arrow -->
         <button type="button" class="lightbox-arrow lightbox-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
-            <svg viewBox="0 0 24 24" width="28" height="28"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor"/></svg>
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor"/></svg>
         </button>
 
         <!-- Image -->
@@ -1304,7 +1298,7 @@
 
         <!-- Next arrow -->
         <button type="button" class="lightbox-arrow lightbox-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
-            <svg viewBox="0 0 24 24" width="28" height="28"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor"/></svg>
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor"/></svg>
         </button>
 
         <!-- Dots -->

@@ -175,6 +175,7 @@
 .sticker-title {
     font-family: var(--font-sketch);
     font-size: clamp(2.5rem, 5vw, 4.5rem);
+    font-weight: normal;
     display: inline-block;
     background: var(--red);
     color: var(--white);
