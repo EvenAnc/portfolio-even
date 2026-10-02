@@ -201,11 +201,11 @@
     transform-origin: center center;
 }
 
+/* A dragged image follows the pointer without easing. */
 .lightbox.is-zoomed .lightbox-stage img.is-dragging,
-/* !important: a dragged image follows the finger without easing. */
 .lightbox.is-zoomed .lightbox-stage canvas.is-dragging {
     cursor: grabbing;
-    transition: none !important;
+    transition: none;
 }
 
 /* PDF embed fallback: removes the grey frame of the native viewer. */

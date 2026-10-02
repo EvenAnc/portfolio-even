@@ -475,12 +475,16 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* Touch: !important keeps the resting and in-view states ahead of the hover rules. */
-    .notebook-signature, .ref-photo, .ref-arrow {
-        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s !important;
+    /* Touch: the signature drops in when the section scrolls into view. The resting and in-view
+       rules weigh as much as the hover rule and come after it, so a hover left by a tap changes
+       nothing. */
+    .notebook-signature {
+        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
     }
 
-    .notebook-signature { transform: translateY(-40px) translateX(20px) scale(1.2) !important; }
+    .notebook-section:not(.is-in-view) .notebook-signature {
+        transform: translateY(-40px) translateX(20px) scale(1.2);
+    }
 
     .notebook-section.is-in-view .notebook-sheet {
         transform: scale(1.02) rotate(-1deg);
@@ -489,24 +493,30 @@
 
     .notebook-section.is-in-view .notebook-signature {
         opacity: 1;
-        transform: translateY(0) translateX(0) scale(1) !important;
+        transform: translateY(0) translateX(0) scale(1);
     }
 }
 
 @media (max-width: 991px) {
-    /* Anchored on the right, reserving the margin its scale(1.2) needs. !important beats the
-       hover transform and the desktop offsets. */
+    /* Anchored on the right, reserving the margin its scale(1.2) needs. The resting transform also
+       holds while the title is hovered. */
     .notebook-signature {
-        left: auto !important;
-        right: 22px !important;
-        transform: translateY(-40px) scale(1.2) !important;
+        left: auto;
+        right: 22px;
+    }
+
+    .notebook-section:not(.is-in-view) .notebook-signature {
+        transform: translateY(-40px) scale(1.2);
     }
 }
 
 @media (max-width: 480px) {
     .notebook-signature {
-        right: 16px !important;
-        transform: translateY(-36px) scale(1) !important;
+        right: 16px;
+    }
+
+    .notebook-section:not(.is-in-view) .notebook-signature {
+        transform: translateY(-36px) scale(1);
     }
 }
 
@@ -595,10 +605,10 @@
     border-bottom-color: var(--red);
 }
 
-/* !important: the error state stays ahead of the label's focus state. */
-.is-invalid ~ .form-label {
-    color: var(--red) !important;
-    transform: translateY(-24px) scale(0.82) !important;
+/* Same weight as the focus rule above and declared after it: the error state wins. */
+.form-input.is-invalid ~ .form-label {
+    color: var(--red);
+    transform: translateY(-24px) scale(0.82);
 }
 
 .form-feedback {
