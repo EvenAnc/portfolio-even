@@ -11,13 +11,13 @@
     position: relative;
     overflow: hidden;
     width: 100%;
-    -webkit-clip-path: url(#torn-1);
-    clip-path: url(#torn-1);
+    -webkit-clip-path: url("#torn-1");
+    clip-path: url("#torn-1");
 }
 
 .torn-frame--alt {
-    -webkit-clip-path: url(#torn-2);
-    clip-path: url(#torn-2);
+    -webkit-clip-path: url("#torn-2");
+    clip-path: url("#torn-2");
 }
 
 .media-frame-inner {
@@ -35,23 +35,6 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* Frames: the image zooms slightly on touch. */
-    .frame-wrap .torn-frame .media-frame-img {
-        transition: transform 0.2s 0.1s ease;
-    }
-
-    .frame-wrap:active .torn-frame .media-frame-img {
-        transform: scale(1.04);
-        transition-delay: 0s;
-    }
-
-    /* No hover visuals on touch: they do nothing but can leave a stuck intermediate state on some
-       systems. */
-    .frame-wrap:hover .torn-frame .media-frame-img,
-    .torn-frame:hover .media-frame-img {
-        transform: none;
-    }
-
     /* On iOS a long press opens an image copy menu and a selection frame, which is a nuisance on
        galleries made for scrolling and swiping. */
     .media-frame-img,
@@ -62,6 +45,22 @@
         -webkit-user-select: none;
         user-select: none;
     }
+
+    /* The image zooms slightly while a finger is down. No hover zoom on touch: it could stay
+       stuck half-way after a tap. The rules go from the lightest selector to the heaviest; at
+       equal weight the hover rule comes last and wins. */
+    .frame-wrap .torn-frame .media-frame-img {
+        transition: transform 0.2s 0.1s ease;
+    }
+
+    .torn-frame:hover .media-frame-img { transform: none; }
+
+    .frame-wrap:active .torn-frame .media-frame-img {
+        transform: scale(1.04);
+        transition-delay: 0s;
+    }
+
+    .frame-wrap:hover .torn-frame .media-frame-img { transform: none; }
 }
 
 /* Three hand-placed tilts for frames pinned askew. */
@@ -137,7 +136,7 @@
 .drawing-sheet-wrap {
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 10px 10px 30px rgb(0 0 0 / 50%);
     position: relative;
 }
 
@@ -164,24 +163,23 @@
        zoom that crops the scan margins, and rewriting transform would drop the image to 104%
        while a finger is down (1.18 x 1.04 = 1.23). :not(.plan-img) keeps dimensioned plans at
        transform: none. */
-    .frame-wrap:hover .torn-frame .drawing-sheet img:not(.plan-img),
+    .drawing-sheet:hover img:not(.plan-img) { transform: scale(1.18); }
+    .drawing-sheet:active img:not(.plan-img) { transform: scale(1.23); }
+
     .torn-frame:hover .drawing-sheet img:not(.plan-img),
-    .drawing-sheet:hover img:not(.plan-img) {
+    .frame-wrap:hover .torn-frame .drawing-sheet img:not(.plan-img) {
         transform: scale(1.18);
     }
 
-    .frame-wrap:active .torn-frame .drawing-sheet img:not(.plan-img),
-    .drawing-sheet:active img:not(.plan-img) {
-        transform: scale(1.23);
-    }
+    .frame-wrap:active .torn-frame .drawing-sheet img:not(.plan-img) { transform: scale(1.23); }
 }
 
 @media (hover: hover) {
     /* The same applies on large screens: .torn-frame:hover replaces the 1.18 crop by 1.04, so
        the drawing would shrink. Same computation, scoped to (hover: hover) so it does not
        override the touch rule above. */
-    .frame-wrap:hover .torn-frame .drawing-sheet img:not(.plan-img),
-    .torn-frame:hover .drawing-sheet img:not(.plan-img) {
+    .torn-frame:hover .drawing-sheet img:not(.plan-img),
+    .frame-wrap:hover .torn-frame .drawing-sheet img:not(.plan-img) {
         transform: scale(1.23);
     }
 }

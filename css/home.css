@@ -13,6 +13,7 @@
     justify-content: center;
     padding: 80px 40px 60px;
     position: relative;
+
     /* The hero is decorative: it lets scroll and click events through to the page. */
     pointer-events: none;
     -webkit-user-select: none;
@@ -55,7 +56,7 @@
     font-weight: 300;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.62);
+    color: rgb(255 255 255 / 62%);
     margin-top: 22px;
     opacity: 0;
 }
@@ -103,9 +104,9 @@
 
 /* The hero logo has its own variant of sketch-wobble. */
 @keyframes sketch-wobble-hero {
-    0%, 33% { filter: url(#sketch-1) drop-shadow(0 0 0 transparent); }
-    34%, 66% { filter: url(#sketch-2) drop-shadow(0 0 0 transparent); }
-    67%, 100% { filter: url(#sketch-3) drop-shadow(0 0 0 transparent); }
+    0%, 33% { filter: url("#sketch-1") drop-shadow(0 0 0 transparent); }
+    34%, 66% { filter: url("#sketch-2") drop-shadow(0 0 0 transparent); }
+    67%, 100% { filter: url("#sketch-3") drop-shadow(0 0 0 transparent); }
 }
 
 @keyframes scroll-pulse {
@@ -177,23 +178,15 @@
     position: relative;
     z-index: 10;
     width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: -25px;
-    margin-bottom: 20px;
+    margin: -25px auto 20px;
     cursor: pointer;
     text-align: center;
+
     /* No text selection on a double click. */
     -webkit-user-select: none;
     user-select: none;
     transition: transform var(--dur-med) var(--ease-out);
     will-change: opacity, transform;
-}
-
-/* Once the page is on display the entrance is over: the promotion is dropped. */
-.page.is-active .home-showcase,
-.page.is-active .projects-shortcut {
-    will-change: auto;
 }
 
 .projects-shortcut-kicker {
@@ -335,6 +328,12 @@
     transition: transform 0.1s ease;
 }
 
+/* Once the page is on display the entrance is over: the layer promotion is dropped. */
+.page.is-active .home-showcase,
+.page.is-active .projects-shortcut {
+    will-change: auto;
+}
+
 
 /* Notebook */
 
@@ -346,14 +345,11 @@
 /* will-change: the sheet stretches on hover; its own layer avoids repainting the text. */
 .notebook-sheet {
     position: absolute;
-    top: -85px;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    inset: -85px 0 0;
     background: var(--notebook-bg);
     clip-path: polygon(0% 2.5%, 10% 1.8%, 25% 2.8%, 40% 1.5%, 55% 3.2%, 70% 1.8%, 85% 2.8%, 100% 1.8%, 100% 97.2%, 85% 98.2%, 70% 97.2%, 55% 98.5%, 40% 97.2%, 25% 98.2%, 10% 97.2%, 0% 98.2%);
     z-index: 0;
-    filter: url(#paper-tear);
+    filter: url("#paper-tear");
     will-change: transform;
     transition: transform 0.8s var(--ease-sheet), clip-path 0.8s var(--ease-sheet);
     transform-origin: center;
