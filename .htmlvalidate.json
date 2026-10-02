@@ -1,9 +1,5 @@
 {
-  "extends": ["html-validate:recommended"],
-  "rules": {
-    "no-inline-style": "off",
-    "no-trailing-whitespace": "off",
-    "attribute-boolean-style": "off",
-    "attribute-empty-style": "off"
-  }
+  "extends": [
+    "html-validate:recommended"
+  ]
 }

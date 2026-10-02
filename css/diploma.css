@@ -56,8 +56,8 @@
 /* An A4 sheet. The body is also a .media-frame-inner, whose line-height of 0 it restores. */
 .diploma-card-body {
     aspect-ratio: 1 / var(--a4);
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgb(255 255 255 / 1.5%);
+    border: 1px solid rgb(255 255 255 / 8%);
     padding: 36px 30px;
     display: flex;
     flex-direction: column;
@@ -120,14 +120,14 @@
     font-family: var(--font-display);
     font-size: 0.9rem;
     letter-spacing: 0.08em;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgb(255 255 255 / 35%);
     text-transform: uppercase;
 }
 
 .diploma-cert-text {
     font-size: 0.92rem;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.65);
+    color: rgb(255 255 255 / 65%);
     font-weight: 300;
 }
 
@@ -141,7 +141,7 @@
 .diploma-skills-list li {
     font-size: 0.9rem;
     line-height: 1.45;
-    color: rgba(255, 255, 255, 0.65);
+    color: rgb(255 255 255 / 65%);
     padding-left: 14px;
     position: relative;
     font-weight: 300;
@@ -157,18 +157,18 @@
 }
 
 .diploma-cert-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    border-top: 1px solid rgb(255 255 255 / 6%);
     padding-top: 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.35);
+    color: rgb(255 255 255 / 35%);
 }
 
 .diploma-cert-code {
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgb(255 255 255 / 50%);
 }
 
 /* Rubber stamp across the corner of the card. */
@@ -225,8 +225,8 @@
 .diploma-scan-frame {
     width: 100%;
     aspect-ratio: var(--a4) / 1;
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgb(255 255 255 / 1.5%);
+    border: 1px solid rgb(255 255 255 / 8%);
 }
 
 .diploma-scan-inner {

@@ -1,9 +1,9 @@
 /* Reduced motion: stops the decorative animations for visitors who ask for less motion.
    Loaded last. */
 
+/* stylelint-disable declaration-no-important -- these rules must hold against any component rule, whatever its weight */
+
 @media (prefers-reduced-motion: reduce) {
-    /* !important throughout: these rules must hold against any component rule, whatever its
-       weight, and against the hover and touch transforms. */
     .hero-logo,
     .menu-logo,
     .header-logo-text,

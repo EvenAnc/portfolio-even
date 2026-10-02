@@ -57,13 +57,13 @@
     max-width: 100%;
     aspect-ratio: auto;
     margin: 0 auto;
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.6);
+    box-shadow: 10px 10px 30px rgb(0 0 0 / 60%);
     border-radius: 8px;
     background: var(--white);
     align-self: stretch;
 }
 
-.panel--alt .carousel-viewport { box-shadow: 8px 8px 24px rgba(0,0,0,0.18); }
+.panel--alt .carousel-viewport { box-shadow: 8px 8px 24px rgb(0 0 0 / 18%); }
 
 /* The red rectangle sits exactly on the viewport, not on the wider frame-wrap. */
 .sketch-rect-svg--carousel {
@@ -109,7 +109,7 @@
 
 .carousel-slide .drawing-sheet-wrap:hover {
     transform: scale(1.02);
-    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
+    box-shadow: 15px 15px 40px rgb(0 0 0 / 50%);
 }
 
 .carousel-arrow {
@@ -194,7 +194,7 @@
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgb(255 255 255 / 25%);
     cursor: pointer;
     transition: all var(--dur-base) ease;
 }
@@ -208,7 +208,7 @@
 .carousel-timer {
     width: 180px;
     height: 4px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255 255 255 / 10%);
     border-radius: 2px;
     overflow: hidden;
     position: relative;
@@ -253,14 +253,14 @@
 .carousel-progress {
     flex: 1;
     height: 6px;
-    background: rgba(255,255,255,0.1);
+    background: rgb(255 255 255 / 10%);
     margin-left: 30px;
     border-radius: 3px;
     position: relative;
     overflow: hidden;
 }
 
-.panel--alt .carousel-progress { background: rgba(255,255,255,0.15); }
+.panel--alt .carousel-progress { background: rgb(255 255 255 / 15%); }
 
 .carousel-progress-bar {
     position: absolute;

@@ -82,6 +82,16 @@ npm run lint:html   # html-validate on index.html and 404.html
 
 `vendor/` is excluded from linting. The ESLint config targets ECMAScript 2021, so syntax too recent for Safari 15 is reported.
 
+html-validate runs its recommended preset with no rule turned off. Stylelint runs `stylelint-config-standard` with no rule turned off either; `.stylelintrc.json` only adds or tunes five rules:
+
+| Rule | Setting | Why |
+|---|---|---|
+| `selector-class-pattern` | kebab-case with an optional `--modifier` | the standard pattern has no syntax for modifiers |
+| `selector-max-id` | `0` | ids are hooks for scripts and anchors, never for styling |
+| `declaration-no-important` | on | the two exceptions (inactive pages, reduced motion) carry a disable comment with their reason |
+| `media-feature-range-notation` | `prefix` | the range notation, `(width <= 768px)`, needs Safari 16.4 |
+| `property-no-vendor-prefix` | allows `-webkit-` on `backdrop-filter`, `mask-*`, `user-select`, `appearance`, `clip-path` | WebKit still needs these prefixes, or needed them in Safari 15 |
+
 ## Architecture notes
 
 - Single-page application driven by URL fragments (`#projets`, `#contact`, ...). `router.js` reads the hash, shows the matching `.page` section and uses `pushState` or `replaceState` for history.
@@ -96,6 +106,7 @@ npm run lint:html   # html-validate on index.html and 404.html
 
 - Indentation is four spaces, UTF-8, LF line endings, with a final newline (see `.editorconfig`).
 - JavaScript style and bug rules are in `eslint.config.js`; functions are capped at 60 lines.
+- CSS: one file per component, each opening with a one-line statement of what it covers. Class names are English kebab-case with the component as prefix (`carousel-arrow`), `--modifier` for variants (`carousel-arrow--next`), `is-` and `has-` for states set by script (`is-active`, `has-back-button`), and `js-` for hooks that carry no style. Repeated values are custom properties declared in `css/base.css`. No `@layer`, no nesting and no `:has()`, which Safari 15.0 lacks.
 - Files in `vendor/` are never converted or reformatted (`.gitattributes` marks them as binary for line endings), because the scripts are checked against integrity hashes.
 
 ## Deployment

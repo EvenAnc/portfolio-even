@@ -32,7 +32,7 @@
     background: var(--tape);
     padding: 8px 16px;
     transform: rotate(-1deg);
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+    box-shadow: 2px 2px 0 rgb(0 0 0 / 20%);
     position: relative;
     z-index: 2;
 }
@@ -46,9 +46,9 @@
     transform: translateX(-50%) rotate(2deg);
     width: 60px;
     height: 20px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    background: rgb(255 255 255 / 10%);
+    border: 1px solid rgb(255 255 255 / 20%);
+    box-shadow: 1px 1px 3px rgb(0 0 0 / 50%);
     z-index: 3;
 }
 
@@ -79,7 +79,7 @@
     background: var(--intro-bg);
     border-radius: 6px;
     padding: 35px 40px 30px;
-    box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
+    box-shadow: 5px 5px 20px rgb(0 0 0 / 30%);
 }
 
 .project-intro-content {
@@ -157,7 +157,7 @@
 /* Alternate panel: anthracite instead of black, softer sheet shadow. */
 .panel--alt { color: var(--white); }
 .panel--alt::before { background: var(--bg); }
-.panel--alt .drawing-sheet-wrap { box-shadow: 8px 8px 24px rgba(0,0,0,0.15); }
+.panel--alt .drawing-sheet-wrap { box-shadow: 8px 8px 24px rgb(0 0 0 / 15%); }
 
 /* Panel title on a red sticker that overhangs the torn edge. */
 .sticker-title-wrap {
@@ -182,7 +182,7 @@
     padding: 15px 40px;
     transform: rotate(-3deg);
     border: 4px solid var(--bg);
-    box-shadow: 8px 8px 0px var(--bg);
+    box-shadow: 8px 8px 0 var(--bg);
     animation: sticker-wobble 4s infinite ease-in-out;
     cursor: default;
     transition: transform var(--dur-base) ease, box-shadow var(--dur-base) ease;
@@ -190,7 +190,7 @@
 
 .sticker-title:hover {
     transform: rotate(-1deg) scale(1.05) translateY(-3px);
-    box-shadow: 12px 12px 0px var(--bg), 0 20px 40px rgba(0,0,0,0.4);
+    box-shadow: 12px 12px 0 var(--bg), 0 20px 40px rgb(0 0 0 / 40%);
 }
 
 /* Lede of a panel. 43rem is the targeted 62 characters in a unit independent of the font:
@@ -200,13 +200,13 @@
     font-weight: 300;
     font-size: clamp(0.98rem, 2vw, 1.08rem);
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.72);
+    color: rgb(255 255 255 / 72%);
     max-width: 43rem;
     margin: 4px auto 30px;
     padding: 0 20px;
 }
 
-.panel--alt .panel-lede { color: rgba(255, 255, 255, 0.78); }
+.panel--alt .panel-lede { color: rgb(255 255 255 / 78%); }
 
 /* Software used: small spaced red capitals, centred in the text column and pulled up against
    the lede they complete. */
@@ -293,7 +293,7 @@
 
 .section-stack-item .drawing-sheet-wrap:hover {
     transform: scale(1.02);
-    box-shadow: 15px 15px 40px rgba(0,0,0,0.5);
+    box-shadow: 15px 15px 40px rgb(0 0 0 / 50%);
 }
 
 /* Name of the section, overlaid on a corner of the sheet. */
@@ -302,7 +302,7 @@
     top: 12px;
     left: 12px;
     z-index: 5;
-    background: rgba(0,0,0,0.8);
+    background: rgb(0 0 0 / 80%);
     color: var(--white);
     padding: 6px 16px;
     font-size: clamp(0.85rem, 1.6vw, 1.2rem);
@@ -356,14 +356,15 @@
     letter-spacing: 0.03em;
 }
 
+/* stylelint-disable-next-line no-descending-specificity -- another component: never the same element as the section-stack sheets */
 .render-item .drawing-sheet-wrap {
-    box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 10px 10px 30px rgb(0 0 0 / 50%);
     transition: transform var(--dur-base) ease, box-shadow var(--dur-base) ease;
 }
 
 .render-item .drawing-sheet-wrap:hover {
     transform: translateY(-5px) scale(1.02);
-    box-shadow: 15px 15px 40px rgba(0,0,0,0.7);
+    box-shadow: 15px 15px 40px rgb(0 0 0 / 70%);
 }
 
 @media (max-width: 768px) {
@@ -388,7 +389,7 @@
     margin: 0 auto;
     padding: 34px 30px 34px 34px;
     border-left: 3px solid var(--red);
-    background: rgba(255, 255, 255, 0.035);
+    background: rgb(255 255 255 / 3.5%);
 }
 
 .tradeoff-eyebrow {
@@ -417,7 +418,7 @@
     font-weight: 300;
     font-size: clamp(0.98rem, 2vw, 1.06rem);
     line-height: 1.75;
-    color: rgba(255, 255, 255, 0.75);
+    color: rgb(255 255 255 / 75%);
     max-width: 62ch;
 }
 
