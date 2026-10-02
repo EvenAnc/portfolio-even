@@ -1,9 +1,15 @@
 /* Diploma: school card, certification card, diploma scan. */
 
+.diploma-layout {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 50px;
+    align-items: start;
+}
+
 
 /* School */
 
-.school-photo .media-frame-inner { aspect-ratio: 4/3; }
 .school-name-wrap { margin-bottom: 28px; }
 
 .school-name {
@@ -17,6 +23,14 @@
     color: var(--red);
     margin-left: 8px;
 }
+
+.school-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.school-photo .media-frame-inner { aspect-ratio: 4/3; }
 
 .school-facts {
     list-style: none;
@@ -36,71 +50,38 @@
     margin-bottom: 3px;
 }
 
-.school-link {
-    display: block;
-    width: 100%;
-    height: 100%;
-    cursor: pointer;
-}
-
 
 /* Certification card */
 
-@supports (min-height: 1cqw) {
-    /* Long selector: .diploma-card .media-frame-inner sets the A4 ratio with higher
-       specificity. */
-    .diploma-card .media-frame-inner.diploma-card-body {
-        aspect-ratio: auto;
-        min-height: 141.4cqw;
-    }
-}
-
-.diploma-layout {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 50px;
-    align-items: start;
-}
-
-.diploma-card .media-frame-inner {
+/* An A4 sheet. The body is also a .media-frame-inner, whose line-height of 0 it restores. */
+.diploma-card-body {
     aspect-ratio: 1 / 1.414;
     background: rgba(255, 255, 255, 0.015);
     border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.diploma-card-body {
-    aspect-ratio: 1 / 1.414;
     padding: 36px 30px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     text-align: left;
-    box-sizing: border-box;
-    line-height: 1.4; /* Override line-height: 0 from .media-frame-inner */
+    line-height: 1.4;
+}
+
+@supports (min-height: 1cqw) {
+    /* With container units the A4 ratio becomes a floor instead of a lock: the card keeps its
+       proportions when the content fits and grows just enough otherwise, so nothing is cropped
+       in any language. Browsers without container units keep the fixed ratio. */
+    .diploma-card { container-type: inline-size; }
+
+    .diploma-card-body {
+        aspect-ratio: auto;
+        min-height: 141.4cqw;
+    }
 }
 
 .diploma-cert-header {
     border-bottom: 1px solid rgba(255, 54, 74, 0.2);
     padding-bottom: 18px;
     position: relative;
-}
-
-.diploma-cert-stamp {
-    position: absolute;
-    top: -15px;
-    right: -25px;
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: 0.15em;
-    color: var(--red);
-    border: 3.5px solid var(--red);
-    padding: 8px 20px;
-    border-radius: 6px;
-    transform: rotate(-12deg);
-    opacity: 0.95;
-    z-index: 20;
-    background: var(--bg);
-    animation: sketch-wobble 0.3s steps(1) infinite;
 }
 
 .diploma-cert-title {
@@ -190,23 +171,75 @@
     color: rgba(255, 255, 255, 0.5);
 }
 
-@supports (min-height: 1cqw) {
-    /* The A4 ratio is a floor, not a lock: the card keeps its proportions when the content fits
-       and grows just enough otherwise, so nothing (RNCP code, registration line) is cropped in
-       any language. Under @supports so browsers without container units keep the fixed ratio. */
-    .diploma-card {
-        container-type: inline-size;
-    }
+/* Rubber stamp across the corner of the card. */
+.diploma-cert-stamp {
+    position: absolute;
+    top: -15px;
+    right: -25px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    color: var(--red);
+    border: 3.5px solid var(--red);
+    padding: 8px 20px;
+    border-radius: 6px;
+    transform: rotate(-12deg);
+    opacity: 0.95;
+    z-index: 20;
+    background: var(--bg);
+    animation: sketch-wobble 0.3s steps(1) infinite;
+}
+
+
+/* Scan */
+
+.diploma-scan {
+    margin-top: 60px;
+    position: relative;
+    padding-top: 40px;
+    text-align: center;
+}
+
+.diploma-scan-title {
+    font-size: 2.2rem;
+    color: var(--white);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+}
+
+.diploma-scan-years {
+    color: var(--red);
+    font-weight: 600;
+    margin-left: 15px;
+    font-size: 1.8rem;
+    vertical-align: middle;
+}
+
+.diploma-scan-wrap {
+    max-width: 850px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* A4 landscape. */
+.diploma-scan-frame {
+    width: 100%;
+    aspect-ratio: 1.414 / 1;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.diploma-scan-inner {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 @media (max-width: 768px) {
     .diploma-layout { grid-template-columns: 1fr; }
-
-    .diploma-card .media-frame-inner,
-    .diploma-card-body {
-        aspect-ratio: auto;
-        height: auto;
-    }
+    .diploma-card-body { aspect-ratio: auto; }
 
     .diploma-cert-code,
     .diploma-cert-authority {
@@ -223,69 +256,9 @@
         border-width: 2.5px;
     }
 
-    .diploma-cert-title {
-        padding-right: 96px; /* Width of the tilted stamp plus a guard. */
-    }
-}
+    /* Width of the tilted stamp plus a guard. */
+    .diploma-cert-title { padding-right: 96px; }
 
-@media (max-width: 480px) {
-    .diploma-card-body {
-        padding: 22px 18px;
-    }
-
-    .diploma-cert-body {
-        gap: 15px;
-    }
-}
-
-
-/* Scan */
-
-.diploma-scan-years {
-    color: var(--red);
-    font-weight: 600;
-    margin-left: 15px;
-    font-size: 1.8rem;
-    vertical-align: middle;
-}
-
-.diploma-scan {
-    margin-top: 60px;
-    position: relative;
-    padding-top: 40px;
-    text-align: center;
-}
-
-.diploma-scan-title {
-    font-size: 2.2rem;
-    color: var(--white);
-    margin-bottom: 24px;
-    text-transform: uppercase;
-}
-
-.diploma-scan-wrap {
-    max-width: 850px;
-    margin: 0 auto;
-    width: 100%;
-}
-
-.diploma-scan-frame {
-    width: 100%;
-    aspect-ratio: 1.414 / 1; /* A4 landscape */
-    background: rgba(255, 255, 255, 0.015);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.diploma-scan-inner {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
     .diploma-scan {
         margin-top: 40px;
         padding-top: 30px;
@@ -295,4 +268,9 @@
         font-size: 1.8rem;
         margin-bottom: 16px;
     }
+}
+
+@media (max-width: 480px) {
+    .diploma-card-body { padding: 22px 18px; }
+    .diploma-cert-body { gap: 15px; }
 }

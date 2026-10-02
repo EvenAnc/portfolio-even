@@ -3,12 +3,51 @@
 
 /* Header */
 
+/* Keep content out of the notch and home-bar areas (safe-area insets are 0 elsewhere). */
+.site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 72px;
+    z-index: 100;
+    pointer-events: none;
+    background: linear-gradient(180deg, rgba(26,26,26,0.85) 0%, transparent 100%);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    padding-top: env(safe-area-inset-top);
+}
+
+/* The blur takes whatever lies behind the header. The 0.30 black veil keeps the white logo
+   readable over light content; the mask fades blur and veil out together so no hard edge shows. */
+.site-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -40px;
+    z-index: -1;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.30);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
+}
+
 .header-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 100%;
     padding: 0 42px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 40px;
 }
 
 .burger-btn {
@@ -22,6 +61,13 @@
     position: relative;
 }
 
+/* Transparent pseudo-element: enlarges the hit area only, nothing drawn moves. */
+.burger-btn::after {
+    content: '';
+    position: absolute;
+    inset: -11px -6px;
+}
+
 .burger-line {
     display: block;
     width: 100%;
@@ -32,21 +78,6 @@
 }
 
 .burger-btn:hover .burger-line { background: var(--red); }
-
-.header-back-btn {
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #fff;
-    align-items: center;
-    gap: 10px;
-    pointer-events: auto;
-}
-
-.header-back-btn:hover { transform: translateX(-8px) scale(1.05); }
-.header-back-btn:active { transform: scale(0.95); }
 body.is-menu-open .burger-line:nth-child(1) { transform: translateY(10px) rotate(45deg); }
 
 body.is-menu-open .burger-line:nth-child(2) {
@@ -55,6 +86,25 @@ body.is-menu-open .burger-line:nth-child(2) {
 }
 
 body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
+
+/* Shown by script on project pages. */
+.header-back-btn {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    color: #fff;
+    pointer-events: auto;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.header-back-btn:hover { transform: translateX(-8px) scale(1.05); }
+.header-back-btn:active { transform: scale(0.95); }
+.header-back-btn .font-sketch { font-size: 2.2rem; }
+
+.sketch-arrow-back {
+    width: 50px;
+    height: 25px;
+}
 
 .header-logo {
     position: absolute;
@@ -93,35 +143,17 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     letter-spacing: 0.08em;
 }
 
-/* Language buttons: the ::after below enlarges only the hit area, nothing drawn moves. It stops
-   at the middle of the gap so neighbouring targets touch without overlapping. */
 .lang-btn {
     opacity: 0.35;
     transition: opacity var(--dur-fast);
     position: relative;
 }
 
+/* Hit area: stops at the middle of the gap so neighbouring targets touch without overlapping. */
 .lang-btn::after {
     content: '';
     position: absolute;
     inset: -14px -6px;
-}
-
-/* Social icons: the hit area extends far outwards (no neighbour) and only to the gap middle
-   inwards. */
-.social-link::before {
-    content: '';
-    position: absolute;
-    inset: -14px -4px;
-}
-
-.social-link:first-child::before { inset: -14px -4px -14px -11px; }
-.social-link:last-child::before { inset: -14px -11px -14px -4px; }
-
-.burger-btn::after {
-    content: '';
-    position: absolute;
-    inset: -11px -6px;
 }
 
 .lang-btn.is-active { opacity: 1; }
@@ -143,6 +175,16 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     position: relative;
 }
 
+/* Hit area: extends far outwards (no neighbour) and only to the middle of the gap inwards. */
+.social-link::before {
+    content: '';
+    position: absolute;
+    inset: -14px -4px;
+}
+
+.social-link:first-child::before { inset: -14px -4px -14px -11px; }
+.social-link:last-child::before { inset: -14px -11px -14px -4px; }
+
 .social-link::after {
     content: '';
     position: absolute;
@@ -162,48 +204,10 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 
 .social-link:hover::after { width: 100%; }
 
-/* Keep content out of the notch and home-bar areas (safe-area insets are 0 elsewhere). */
-.site-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 72px;
-    z-index: 100;
-    pointer-events: none;
-    background: linear-gradient(180deg, rgba(26,26,26,0.85) 0%, transparent 100%);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    padding-top: env(safe-area-inset-top);
-}
-
-/* The blur takes whatever lies behind the header. The 0.30 black veil keeps the white logo
-   readable over light content; the mask fades blur and veil out together so no hard edge shows. */
-.site-header::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: -40px;
-    z-index: -1;
-    pointer-events: none;
-    background: rgba(0, 0, 0, 0.30);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    -webkit-mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
-    mask-image: linear-gradient(180deg, #000 0%, #000 58%, rgba(0,0,0,0.55) 78%, transparent 100%);
-}
-
 @media (max-width: 768px) {
     .header-inner { padding: 0 18px; }
-
     .header-right { gap: 14px; }
-
-    .social-nav {
-        display: flex;
-        gap: 8px;
-    }
+    .social-nav { gap: 8px; }
 
     .social-icon {
         width: 15px;
@@ -231,28 +235,13 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
         white-space: nowrap;
     }
 
-    .header-logo-text {
-        font-size: 1.3rem;
-    }
+    .header-logo-text { font-size: 1.3rem; }
 }
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-}
-
-.sketch-arrow-back {
-    width: 50px;
-    height: 25px;
-}
-
-.header-back-btn .font-sketch { font-size: 2.2rem; }
 
 
 /* Pages */
 
-#page-wrapper {
+.page-wrapper {
     width: 100%;
     height: 100%;
     position: relative;
@@ -270,6 +259,9 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
+
+.page::-webkit-scrollbar { width: 4px; }
+.page::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
 
 /* !important: an inactive page never takes pointer events, whatever weight its children use to
    turn them back on. */
@@ -292,14 +284,10 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     content-visibility: visible;
 }
 
-.page::-webkit-scrollbar { width: 4px; }
-.page::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
-
 .page-inner {
     max-width: 1200px;
     margin: 0 auto;
     padding: 120px 60px 100px;
-    overflow: visible;
 }
 
 .page-heading {
@@ -333,11 +321,12 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     line-height: 1.7;
 }
 
+/* Project pages: panels span the full width, so the page gives up its side padding and the
+   heading gets it back. */
 .project-detail-page .page-inner {
     max-width: none;
     margin: 0;
     padding: 120px 0 0;
-    overflow: visible;
 }
 
 .project-detail-page .page-heading,
@@ -348,14 +337,11 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 }
 
 @media (max-width: 991px) {
-    .page {
-        padding: 100px 30px 40px 30px;
-    }
+    .page { padding: 100px 30px 40px 30px; }
 }
 
 @media (max-width: 768px) {
     .page-inner { padding: 95px 20px 80px; }
-
     .page-title { font-size: clamp(2.2rem, 8vw, 3.5rem); }
 
     .page-intro {
@@ -384,20 +370,22 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     padding-right: 60px;
     position: relative;
     clear: both;
-    /* 100vw includes the scrollbar of .page; --scrollbar-width (set by js/page-scroll.js) subtracts it so
-       the footer does not overflow. */
+    /* Full-bleed inside a padded page. 100vw includes the scrollbar of .page; --scrollbar-width
+       (set by script) subtracts it so the footer does not overflow. */
     width: calc(100vw - var(--scrollbar-width, 0px));
     left: 50%;
     right: 50%;
     margin-left: calc(-50vw + var(--scrollbar-width, 0px) / 2);
     margin-right: calc(-50vw + var(--scrollbar-width, 0px) / 2);
-    box-sizing: border-box;
 }
 
+.site-footer--spaced { margin-top: 80px; }
+
+/* The bottom padding grows with the home-bar inset. */
 .footer-inner {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 50px 60px 40px;
+    padding: 50px 60px max(40px, calc(40px + env(safe-area-inset-bottom)));
 }
 
 .footer-top {
@@ -439,18 +427,14 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 
 .footer-sep { opacity: 0.3; }
 
-/* Project pages: the footer clears what is above it. */
-.project-detail-page .site-footer {
-    clear: both;
-}
-
 @media (max-width: 768px) {
-    .footer-inner { padding: 36px 20px 28px; }
-
-    .footer-bottom {
-        flex-wrap: wrap;
-        gap: 8px;
+    .footer-inner {
+        padding-top: 36px;
+        padding-left: 20px;
+        padding-right: 20px;
     }
+
+    .footer-year { font-size: 0.875rem; }
 
     /* Keep the legal text readable on a phone held at arm's length. */
     .footer-legal {
@@ -458,20 +442,17 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
         line-height: 1.75;
     }
 
+    .footer-bottom {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
     .footer-bottom,
     .footer-bottom a,
     .footer-sep {
         font-size: 0.8125rem;
     }
-
-    .footer-year { font-size: 0.875rem; }
 }
-
-.footer-inner {
-    padding-bottom: max(40px, calc(40px + env(safe-area-inset-bottom)));
-}
-
-.site-footer.site-footer--spaced { margin-top: 80px; }
 
 
 /* Next-page link */
@@ -488,9 +469,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     transition: transform 0.3s var(--ease-out);
 }
 
-.page-next:hover {
-    transform: translateX(10px);
-}
+.page-next:hover { transform: translateX(10px); }
 
 .page-next-label {
     font-family: var(--font-sketch);
@@ -501,9 +480,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     transition: color 0.3s;
 }
 
-.page-next:hover .page-next-label {
-    color: var(--red);
-}
+.page-next:hover .page-next-label { color: var(--red); }
 
 .page-next-arrow {
     width: 60px;
@@ -511,13 +488,8 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
     animation: sketch-wobble 0.3s steps(1) infinite;
 }
 
-.page-next-arrow path {
-    stroke: var(--red);
-}
-
-.project-detail-page .page-next {
-    margin-right: 60px;
-}
+.page-next-arrow path { stroke: var(--red); }
+.project-detail-page .page-next { margin-right: 60px; }
 
 @media (max-width: 768px) {
     /* Content outside the panels keeps its breathing room. */

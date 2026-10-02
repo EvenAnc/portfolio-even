@@ -3,15 +3,14 @@
 
 /* Contact */
 
-.home-contact {
-    padding: 0;
-    background: var(--bg);
-}
+.home-contact { background: var(--bg); }
 
+/* will-change: promoted ahead of the entrance animation. */
 .home-contact-inner {
     max-width: 1200px;
     margin: 0 auto;
     padding: 100px 60px;
+    will-change: opacity, transform;
 }
 
 .contact-layout {
@@ -21,15 +20,7 @@
     align-items: start;
 }
 
-@media (max-width: 768px) {
-    .home-contact-inner { padding: 60px 20px 80px; }
-
-    .contact-layout {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
-}
-
+/* An e-mail address and the "copied" note the script shows beside it; also used in the menu. */
 .copy-row {
     display: flex;
     align-items: center;
@@ -44,6 +35,15 @@
     pointer-events: none;
 }
 
+@media (max-width: 768px) {
+    .home-contact-inner { padding: 60px 20px 80px; }
+
+    .contact-layout {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
 
 /* Form */
 
@@ -53,6 +53,8 @@
     gap: 36px;
 }
 
+/* Spam trap: a field no visitor sees. */
+.honeypot { display: none; }
 .form-field { position: relative; }
 
 .form-input {
@@ -69,6 +71,7 @@
     transition: border-color var(--dur-fast);
 }
 
+/* The message field opens when it takes focus or holds text. */
 .form-input--textarea {
     height: 48px;
     resize: none;
@@ -84,6 +87,7 @@
     overflow-y: auto;
 }
 
+/* Floating label: it rests in the field and rises above it on focus or once the field is filled. */
 .form-label {
     position: absolute;
     left: 0;
@@ -103,7 +107,7 @@
     color: var(--red);
 }
 
-/* The animated red line is handled by the .form-underline span alone, to avoid doubling it. */
+/* Red line that runs under the focused field. */
 .form-underline {
     position: absolute;
     bottom: 0;
@@ -116,27 +120,8 @@
 
 .form-input:focus ~ .form-underline { width: 100%; }
 
-.form-submit {
-    padding: 14px 42px;
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    letter-spacing: 0.07em;
-    color: var(--white);
-    background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    cursor: pointer;
-    transition: border-color var(--dur-fast), color var(--dur-fast);
-}
-
-.form-submit:hover {
-    border-color: var(--red);
-    color: var(--red);
-}
-
-/* Form validation states. */
-.is-invalid {
-    border-bottom-color: var(--red);
-}
+/* Invalid field, set by script on submit. */
+.form-input.is-invalid { border-bottom-color: var(--red); }
 
 /* Same weight as the focus rule above and declared after it: the error state wins. */
 .form-input.is-invalid ~ .form-label {
@@ -162,7 +147,37 @@
     opacity: 1;
 }
 
+/* The wrapper is also a .frame-wrap: the red rectangle draws around the button on hover. */
+.form-submit-wrap {
+    display: inline-block;
+    align-self: flex-start;
+}
+
+.form-submit {
+    padding: 14px 42px;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    letter-spacing: 0.07em;
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: border-color var(--dur-fast), color var(--dur-fast);
+}
+
+.form-submit:hover {
+    border-color: var(--red);
+    color: var(--red);
+}
+
+.sketch-rect-svg--button {
+    top: -5%;
+    left: -3%;
+    width: 106%;
+    height: 110%;
+    transform: rotate(1deg);
+}
+
 @media (hover: none), (pointer: coarse) {
+    /* Touch: the fields rise one after the other when they scroll into view. */
     .form-field {
         opacity: 0;
         transform: translateY(16px);
@@ -178,31 +193,6 @@
     .form-field:nth-child(3) { transition-delay: 0.16s; }
 }
 
-.form-submit-wrap {
-    display: inline-block;
-    align-self: flex-start;
-}
-
-.sketch-rect-svg--button {
-    top: -5%;
-    left: -3%;
-    width: 106%;
-    height: 110%;
-    transform: rotate(1deg);
-}
-
-.form-submit-wrap:hover > .sketch-rect-svg { opacity: 1; }
-.form-submit-wrap:hover > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
-
-@media (hover: none), (pointer: coarse) {
-    /* Send button: red rectangle on touch. */
-    .form-submit-wrap:active > .sketch-rect-svg { opacity: 1; }
-
-    .form-submit-wrap:active > .sketch-rect-svg .sketch-rect-path { stroke-dashoffset: 0; }
-}
-
-.honeypot { display: none; }
-
 
 /* Contact details */
 
@@ -212,6 +202,8 @@
     gap: 36px;
     padding-top: 12px;
 }
+
+.contact-block .copy-feedback { font-size: 1.8rem; }
 
 .contact-label {
     font-family: var(--font-display);
@@ -250,9 +242,7 @@
     transform: translateX(4px);
 }
 
-.contact-social-icon {
-    flex-shrink: 0;
-}
+.contact-social-icon { flex-shrink: 0; }
 
 .contact-text {
     font-size: 1rem;
@@ -261,6 +251,7 @@
 }
 
 @media (hover: none), (pointer: coarse) {
+    /* Touch: the blocks slide in one after the other when they scroll into view. */
     .contact-block {
         opacity: 0;
         transform: translateX(16px);
@@ -275,5 +266,3 @@
     .contact-block:nth-child(2) { transition-delay: 0.1s; }
     .contact-block:nth-child(3) { transition-delay: 0.2s; }
 }
-
-.contact-block .copy-feedback { font-size: 1.8rem; }

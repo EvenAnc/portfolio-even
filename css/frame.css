@@ -11,14 +11,13 @@
     position: relative;
     overflow: hidden;
     width: 100%;
-    clip-path: url(#torn-1);
-    /* -webkit- prefix for older browsers. */
     -webkit-clip-path: url(#torn-1);
+    clip-path: url(#torn-1);
 }
 
-.torn-frame.torn-frame--alt {
-    clip-path: url(#torn-2);
+.torn-frame--alt {
     -webkit-clip-path: url(#torn-2);
+    clip-path: url(#torn-2);
 }
 
 .media-frame-inner {
@@ -28,13 +27,7 @@
     line-height: 0;
 }
 
-.media-frame-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.7s var(--ease-out);
-}
+.media-frame-img { transition: transform 0.7s var(--ease-out); }
 
 .torn-frame:hover .media-frame-img,
 .frame-wrap:hover .torn-frame .media-frame-img {
@@ -54,9 +47,10 @@
 
     /* No hover visuals on touch: they do nothing but can leave a stuck intermediate state on some
        systems. */
-    .frame-wrap:hover .torn-frame .media-frame-img { transform: none; }
-
-    .torn-frame:hover .media-frame-img { transform: none; }
+    .frame-wrap:hover .torn-frame .media-frame-img,
+    .torn-frame:hover .media-frame-img {
+        transform: none;
+    }
 
     /* On iOS a long press opens an image copy menu and a selection frame, which is a nuisance on
        galleries made for scrolling and swiping. */
@@ -70,9 +64,10 @@
     }
 }
 
-.frame-wrap.frame-wrap--tilt-a { transform: rotate(1.5deg); }
-.frame-wrap.frame-wrap--tilt-b { transform: rotate(-1deg); }
-.frame-wrap.frame-wrap--tilt-c { transform: rotate(2deg); }
+/* Three hand-placed tilts for frames pinned askew. */
+.frame-wrap--tilt-a { transform: rotate(1.5deg); }
+.frame-wrap--tilt-b { transform: rotate(-1deg); }
+.frame-wrap--tilt-c { transform: rotate(2deg); }
 
 
 /* Sketch rectangle */
@@ -106,10 +101,10 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    /* Touch devices (same query as TOUCH_MEDIA_QUERY in js/core/env.js). */
-    /* Frames: the red rectangle draws on touch (:active). */
+    /* Touch: the red rectangle draws while a finger is down. The 0.1s delay avoids a flash while
+       scrolling. */
     .frame-wrap > .sketch-rect-svg {
-        transition: opacity 0.15s 0.1s var(--ease-out); /* A 0.1s delay avoids a flash while scrolling. */
+        transition: opacity 0.15s 0.1s var(--ease-out);
     }
 
     .frame-wrap:active > .sketch-rect-svg {
@@ -121,9 +116,9 @@
         stroke-dashoffset: 0;
     }
 
-    /* Touch: :active lasts about 100 ms and the viewer opens right after, so the lightbox
-       trigger adds this class and waits 460 ms before opening. The stroke speeds up to 0.40s to
-       fit. Descendant selector: the frame SVG may not be a direct child. */
+    /* :active lasts about 100 ms and the viewer opens right after, so the script adds this class
+       and waits 460 ms before opening. The stroke speeds up to 0.40s to fit. Descendant selector:
+       the frame SVG may not be a direct child. */
     .frame-wrap.is-tracing .sketch-rect-svg {
         opacity: 1;
         transition-delay: 0s;
@@ -138,44 +133,29 @@
 
 /* Sheet */
 
-.drawing-sheet-wrap .media-frame-inner {
-    background: white;
-    padding: 0;
-}
-
-.drawing-sheet img,
-.drawing-sheet object {
-    transform: scale(1.18); /* Zoom 18% to crop the white borders of the scans. */
-    transform-origin: center center;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-/* Document style for the sheets. */
+/* A sheet of paper: rounded corners, drop shadow, white ground. */
 .drawing-sheet-wrap {
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-    border: none;
     position: relative;
 }
+
+.drawing-sheet-wrap .media-frame-inner { background: white; }
+
+/* Scans carry a white border: an 18% zoom crops it. */
+.drawing-sheet img { transform: scale(1.18); }
 
 /* A focused sheet keeps its own corner radius instead of the focus ring default. */
 .drawing-sheet-wrap:focus-visible {
     border-radius: 8px;
 }
 
-/* Plans as images: .drawing-sheet img applies an 18% zoom and cover cropping meant for freehand
-   drawings. On a dimensioned plan it would crop the dimensions, so it is neutralised. */
-.drawing-sheet img.plan-img,
-.section-stack-item img.plan-img {
+/* Plans: the zoom and cover cropping above suit freehand drawings; on a dimensioned plan they
+   would crop the dimensions, so both are neutralised. */
+.drawing-sheet .plan-img {
     transform: none;
     object-fit: contain;
-    width: 100%;
-    height: 100%;
-    display: block;
     background: #fff;
 }
 

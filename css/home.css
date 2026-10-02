@@ -13,16 +13,17 @@
     justify-content: center;
     padding: 80px 40px 60px;
     position: relative;
-    /* Keeps the hero from capturing scroll and click events outside its interactive areas. */
+    /* The hero is decorative: it lets scroll and click events through to the page. */
     pointer-events: none;
-    user-select: none;
     -webkit-user-select: none;
+    user-select: none;
 }
 
+/* will-change: promoted ahead of the entrance animation. */
 .hero-logo-wrap {
     text-align: center;
     z-index: 2;
-    pointer-events: none;
+    will-change: opacity, transform;
 }
 
 .hero-logo {
@@ -34,6 +35,7 @@
     animation: sketch-wobble-hero 0.26s steps(1) infinite;
 }
 
+/* Starts invisible: the script animates the entrance. */
 .hero-profession {
     font-family: var(--font-display);
     font-size: clamp(1rem, 2.2vw, 1.6rem);
@@ -42,7 +44,19 @@
     text-transform: uppercase;
     color: var(--red);
     margin-top: 14px;
-    /* Initially invisible; GSAP animates the entrance. */
+    opacity: 0;
+}
+
+/* Small body, spaced capitals, muted white: the line must not compete with the logo. It enters
+   after the profession line so the first second stays light. */
+.hero-seeking {
+    font-family: var(--font-body);
+    font-size: clamp(0.68rem, 1.5vw, 0.82rem);
+    font-weight: 300;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.62);
+    margin-top: 22px;
     opacity: 0;
 }
 
@@ -56,8 +70,6 @@
     align-items: center;
     gap: 8px;
     z-index: 3;
-    opacity: 1;
-    pointer-events: none;
 }
 
 /* The line carries the dimming, so the label beside it stays at full contrast. It uses colour
@@ -77,52 +89,23 @@
     color: var(--red);
 }
 
-/* Reset will-change after the entrance (GSAP does it too). */
-.page.is-active .home-showcase,
-.page.is-active .projects-shortcut {
-    will-change: auto;
-}
-
-/* Small body, spaced capitals, muted white: the line must not compete with the logo. It enters
-   after the profession line so the first second stays light. */
-.hero-seeking {
-    font-family: var(--font-body);
-    font-size: clamp(0.68rem, 1.5vw, 0.82rem);
-    font-weight: 300;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.62);
-    margin-top: 22px;
-    opacity: 0; /* Animated entrance, like the profession line. */
-}
-
 @media (max-width: 768px) {
+    /* On phones the sentence wraps onto two lines: cap its width so it breaks cleanly instead of
+       at random. */
     .hero-seeking {
         margin-top: 16px;
         letter-spacing: 0.11em;
-        /* On phones the sentence wraps onto two lines: cap its width so it breaks cleanly instead
-           of at random. */
         max-width: 30ch;
         margin-left: auto;
         margin-right: auto;
     }
 }
 
+/* The hero logo has its own variant of sketch-wobble. */
 @keyframes sketch-wobble-hero {
-    0%,
-    33% {
-        filter: url(#sketch-1) drop-shadow(0 0 0 transparent);
-    }
-
-    34%,
-    66% {
-        filter: url(#sketch-2) drop-shadow(0 0 0 transparent);
-    }
-
-    67%,
-    100% {
-        filter: url(#sketch-3) drop-shadow(0 0 0 transparent);
-    }
+    0%, 33% { filter: url(#sketch-1) drop-shadow(0 0 0 transparent); }
+    34%, 66% { filter: url(#sketch-2) drop-shadow(0 0 0 transparent); }
+    67%, 100% { filter: url(#sketch-3) drop-shadow(0 0 0 transparent); }
 }
 
 @keyframes scroll-pulse {
@@ -140,17 +123,24 @@
 
 /* Showcase */
 
+/* Starts invisible: the script animates the entrance. */
 .home-showcase {
     padding: 0 60px;
     margin-bottom: 110px;
-    pointer-events: auto; /* Pointer events are restored outside the hero. */
-    opacity: 0; /* Animated by GSAP on load. */
+    opacity: 0;
+    will-change: opacity, transform;
+}
+
+.home-showcase .frame-wrap {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    display: block;
 }
 
 .showcase-frame {
     position: relative;
     width: 100%;
-    max-height: none;
     border-radius: 18px;
     overflow: hidden;
     background: white;
@@ -161,12 +151,12 @@
     justify-content: center;
 }
 
-/* Avoid needless repaints on GSAP-animated elements. */
-.home-showcase,
-.projects-shortcut,
-.hero-logo-wrap,
-.home-contact-inner {
-    will-change: opacity, transform;
+.showcase-frame .font-sketch {
+    color: #111;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    transform: rotate(-3deg);
+    padding: 20px;
+    text-align: center;
 }
 
 @media (max-width: 768px) {
@@ -174,21 +164,6 @@
         padding: 0 16px;
         margin-bottom: 36px;
     }
-}
-
-.home-showcase .frame-wrap {
-    max-width: 1400px;
-    width: 100%;
-    margin: 0 auto;
-    display: block;
-}
-
-.showcase-frame .font-sketch {
-    color: #111;
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    transform: rotate(-3deg);
-    padding: 20px;
-    text-align: center;
 }
 
 
@@ -208,10 +183,17 @@
     margin-bottom: 20px;
     cursor: pointer;
     text-align: center;
-    user-select: none; /* Prevents text selection on double-click. */
+    /* No text selection on a double click. */
     -webkit-user-select: none;
-    pointer-events: auto; /* Re-enables pointer events on this button (its parent has none). */
+    user-select: none;
     transition: transform var(--dur-med) var(--ease-out);
+    will-change: opacity, transform;
+}
+
+/* Once the page is on display the entrance is over: the promotion is dropped. */
+.page.is-active .home-showcase,
+.page.is-active .projects-shortcut {
+    will-change: auto;
 }
 
 .projects-shortcut-kicker {
@@ -237,20 +219,6 @@
     transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
 }
 
-.projects-shortcut:hover {
-    transform: scale(1.03);
-}
-
-.projects-shortcut:hover .projects-shortcut-kicker {
-    transform: translateY(10px) rotate(-6deg) scale(1.08);
-    color: var(--red);
-}
-
-.projects-shortcut:hover .projects-shortcut-title {
-    transform: scaleY(1.06);
-    color: #ff4a5c;
-}
-
 .projects-shortcut-underline {
     width: min(400px, 50vw);
     height: 16px;
@@ -263,10 +231,6 @@
     stroke-dasharray: 400;
     stroke-dashoffset: 400;
     transition: stroke-dashoffset 0.5s var(--ease-out);
-}
-
-.projects-shortcut:hover .projects-shortcut-underline-path {
-    stroke-dashoffset: 0;
 }
 
 .projects-shortcut-hint {
@@ -283,22 +247,35 @@
 }
 
 .projects-shortcut-hint-text {
-    font-size: 3.0rem;
+    font-size: 3rem;
     color: var(--red);
     white-space: nowrap;
     animation: sketch-wobble 0.28s steps(1) infinite;
     transform: translateY(-8px) rotate(4deg);
 }
 
+/* scaleX(-1) flips the curved stroke so that it points left. */
 .projects-shortcut-hint-arrow {
     width: 72px;
     height: 48px;
-    transform: scaleX(-1); /* Flips the curved stroke horizontally so it points left. */
+    transform: scaleX(-1);
 }
 
-.projects-shortcut:hover .projects-shortcut-hint {
-    transform: scale(1.08) rotate(7deg);
+.projects-shortcut-hint-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }
+.projects-shortcut:hover { transform: scale(1.03); }
+
+.projects-shortcut:hover .projects-shortcut-kicker {
+    transform: translateY(10px) rotate(-6deg) scale(1.08);
+    color: var(--red);
 }
+
+.projects-shortcut:hover .projects-shortcut-title {
+    transform: scaleY(1.06);
+    color: #ff4a5c;
+}
+
+.projects-shortcut:hover .projects-shortcut-underline-path { stroke-dashoffset: 0; }
+.projects-shortcut:hover .projects-shortcut-hint { transform: scale(1.08) rotate(7deg); }
 
 @media (max-width: 768px) {
     .projects-shortcut {
@@ -306,8 +283,11 @@
         margin-bottom: 10px;
     }
 
+    .projects-shortcut-title { font-size: clamp(3rem, 12vw, 7rem); }
+    .projects-shortcut-underline { width: 80%; }
+
+    /* Hidden until the shortcut scrolls into view (touch rule below). */
     .projects-shortcut-hint {
-        display: flex;
         opacity: 0;
         transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
         transform: translateY(-40px) scale(1.2) rotate(5deg);
@@ -316,20 +296,17 @@
         top: -15px;
     }
 
-    .projects-shortcut-hint-text {
-        font-size: 2.2rem;
-    }
+    .projects-shortcut-hint-text { font-size: 2.2rem; }
 
     .projects-shortcut-hint-arrow {
         width: 45px;
         height: 30px;
     }
-
-    .projects-shortcut-underline { width: 80%; }
-    .projects-shortcut-title { font-size: clamp(3rem, 12vw, 7rem); }
 }
 
 @media (hover: none), (pointer: coarse) {
+    /* Touch: the shortcut rises when it scrolls into view, and the hover effects are cancelled
+       (a hover left by a tap would stay). */
     .projects-shortcut {
         opacity: 0;
         transform: translateY(20px) scale(0.97);
@@ -352,12 +329,11 @@
     }
 }
 
+/* After the touch rules, so that a press still shrinks the shortcut there. */
 .projects-shortcut:active {
     transform: scale(0.97);
     transition: transform 0.1s ease;
 }
-
-.projects-shortcut-hint-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }
 
 
 /* Notebook */
@@ -367,6 +343,7 @@
     color: var(--notebook-text);
 }
 
+/* will-change: the sheet stretches on hover; its own layer avoids repainting the text. */
 .notebook-sheet {
     position: absolute;
     top: -85px;
@@ -377,43 +354,13 @@
     clip-path: polygon(0% 2.5%, 10% 1.8%, 25% 2.8%, 40% 1.5%, 55% 3.2%, 70% 1.8%, 85% 2.8%, 100% 1.8%, 100% 97.2%, 85% 98.2%, 70% 97.2%, 55% 98.5%, 40% 97.2%, 25% 98.2%, 10% 97.2%, 0% 98.2%);
     z-index: 0;
     filter: url(#paper-tear);
-    will-change: transform; /* GPU promotion reduces repaint on hover. */
+    will-change: transform;
     transition: transform 0.8s cubic-bezier(0.25, 1, 0.36, 1), clip-path 0.8s cubic-bezier(0.25, 1, 0.36, 1);
     transform-origin: center;
     pointer-events: none;
 }
 
-/* Hovering the notebook section unrolls the paper (scaleX/Y) and the torn edges morph. */
-.notebook-section:hover .notebook-sheet {
-    transform: scale(1.015, 1.07);
-    clip-path: polygon(0% 3.5%, 10% 2.2%, 25% 3.8%, 40% 2%, 55% 4.2%, 70% 2.2%, 85% 3.8%, 100% 2.2%, 100% 96.2%, 85% 97.5%, 70% 96.2%, 55% 97.8%, 40% 96.2%, 25% 97.5%, 10% 96.2%, 0% 97.5%);
-}
-
-.notebook-inner {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 110px 80px 130px;
-    position: relative;
-    z-index: 1;
-}
-
-/* Empty container, filled by the script with random line lengths. */
-.notebook-rules {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
-}
-
-/* Each line is generated by the script. */
-.notebook-rule {
-    position: absolute;
-    height: 4px;
-    background: var(--notebook-line);
-    border-radius: 2px;
-}
-
-/* The red margin lives on the background sheet so it follows its stretch. */
+/* The red margin lives on the sheet so that it follows its stretch. */
 .notebook-sheet::before {
     content: '';
     position: absolute;
@@ -436,10 +383,54 @@
     z-index: 1;
 }
 
+/* Hovering the section unrolls the paper and the torn edges morph. */
+.notebook-section:hover .notebook-sheet {
+    transform: scale(1.015, 1.07);
+    clip-path: polygon(0% 3.5%, 10% 2.2%, 25% 3.8%, 40% 2%, 55% 4.2%, 70% 2.2%, 85% 3.8%, 100% 2.2%, 100% 96.2%, 85% 97.5%, 70% 96.2%, 55% 97.8%, 40% 96.2%, 25% 97.5%, 10% 96.2%, 0% 97.5%);
+}
+
+/* Safari recomputes the torn-paper filter on every frame, so the script draws the sheet once
+   into an image and sets this class. The red margin lines are part of the image. */
+.notebook-sheet.is-prerendered {
+    filter: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+.notebook-sheet.is-prerendered::before,
+.notebook-sheet.is-prerendered::after {
+    display: none;
+}
+
+.notebook-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 110px 80px 130px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Empty container: the script fills it with ruled lines of random length. */
+.notebook-rules {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.notebook-rule {
+    position: absolute;
+    height: 4px;
+    background: var(--notebook-line);
+    border-radius: 2px;
+}
+
 .notebook-content {
     position: relative;
     z-index: 2;
     padding-left: 30px;
+    cursor: default;
 }
 
 .notebook-title-wrap {
@@ -451,28 +442,24 @@
 .notebook-title {
     font-size: clamp(3.2rem, 6vw, 5rem);
     line-height: 1;
-    margin-bottom: 0;
     color: var(--notebook-text);
 }
 
+/* The text sits on the ruled lines: 34px line height and paragraph gap match their spacing,
+   and -2px lands the baseline on the line. */
 .notebook-text {
     font-size: 1.1rem;
-    line-height: 34px; /* Matches the notebook line spacing (34px). */
+    line-height: 34px;
     color: rgba(26,26,26,0.75);
     max-width: 640px;
-    margin-bottom: 34px; /* Keeps paragraphs on the line grid. */
+    margin-bottom: 34px;
     transition: transform 0.3s var(--ease-out);
     position: relative;
-    top: -2px; /* Offset between the ruled line and the writing. */
+    top: -2px;
 }
 
-.notebook-hover-zone:hover .notebook-text {
-    animation: notebook-wobble 0.4s ease-out;
-}
-
-.notebook-title-wrap:hover .notebook-title {
-    animation: notebook-wobble 0.5s ease-out;
-}
+.notebook-hover-zone:hover .notebook-text { animation: notebook-wobble 0.4s ease-out; }
+.notebook-title-wrap:hover .notebook-title { animation: notebook-wobble 0.5s ease-out; }
 
 .notebook-annotation {
     display: inline-block;
@@ -483,7 +470,7 @@
     opacity: 0.85;
 }
 
-/* Signature with a curved arrow, hidden by default. */
+/* Signature with a curved arrow, shown only while the title is hovered. */
 .notebook-signature {
     position: absolute;
     bottom: 25%;
@@ -497,7 +484,6 @@
     align-items: flex-end;
 }
 
-/* Shown only while the title is hovered. */
 .notebook-title-wrap:hover .notebook-signature {
     opacity: 1;
     transform: translateY(0) translateX(0);
@@ -511,50 +497,15 @@
     height: 60px;
 }
 
+.signature-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }
+
 .signature-name {
-    font-size: 3.0rem;
+    font-size: 3rem;
     color: var(--red);
     transform: rotate(-6deg);
     white-space: nowrap;
     margin-left: 65px;
     margin-bottom: 25px;
-}
-
-/* Contact and the other sections outside the hero must stay interactive. */
-.page.is-active .notebook-section,
-.page.is-active .home-contact,
-.page.is-active .page-next {
-    pointer-events: auto;
-}
-
-.page.is-active .notebook-content,
-.page.is-active .notebook-hover-zone {
-    pointer-events: auto;
-    cursor: default;
-}
-
-/* Safari only: the torn-paper filter is drawn once into an image (see js/notebook.js). These
-   rules apply once that image is in place, so never on Chrome. The red margin lines are part of
-   the image, so the original pseudo-elements are removed. */
-.notebook-sheet.is-prerendered {
-    filter: none;
-    background-color: transparent;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-}
-
-.notebook-sheet.is-prerendered::before,
-.notebook-sheet.is-prerendered::after {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    .notebook-sheet { top: -45px; }
-
-    .notebook-inner { padding: 80px 20px 100px; }
-    .notebook-sheet::before { left: 20px; }
-    .notebook-sheet::after { left: 24px; }
-    .notebook-content { padding-left: 12px; }
 }
 
 @media (hover: none), (pointer: coarse) {
@@ -593,10 +544,16 @@
     }
 }
 
+@media (max-width: 768px) {
+    .notebook-sheet { top: -45px; }
+    .notebook-sheet::before { left: 20px; }
+    .notebook-sheet::after { left: 24px; }
+    .notebook-inner { padding: 80px 20px 100px; }
+    .notebook-content { padding-left: 12px; }
+}
+
 @media (max-width: 480px) {
-    .notebook-signature {
-        right: 16px;
-    }
+    .notebook-signature { right: 16px; }
 
     .notebook-section:not(.is-in-view) .notebook-signature {
         transform: translateY(-36px) scale(1);
@@ -610,5 +567,3 @@
     75% { transform: rotate(-0.15deg); }
     100% { transform: rotate(0deg); }
 }
-
-.signature-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }

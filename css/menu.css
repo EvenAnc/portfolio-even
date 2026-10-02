@@ -7,7 +7,8 @@
     background: var(--bg);
     display: flex;
     flex-direction: column;
-    padding: 0 60px 50px;
+    /* Top and bottom follow the notch and home-bar insets. */
+    padding: max(0px, env(safe-area-inset-top)) 60px max(30px, env(safe-area-inset-bottom));
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -85,6 +86,11 @@ body.is-menu-open .menu-overlay {
     transform: translateX(6px) rotate(-2deg);
 }
 
+.menu-nav-item:active .menu-nav-label {
+    color: var(--red);
+    transform: translateX(16px);
+}
+
 .menu-scribble {
     position: absolute;
     top: 110px;
@@ -124,14 +130,13 @@ body.is-menu-open .menu-overlay {
 
 .menu-footer-social a { transition: color var(--dur-fast); }
 .menu-footer-social a:hover { color: var(--red); }
-
-.menu-nav-item:active .menu-nav-label {
-    color: var(--red);
-    transform: translateX(16px);
-}
+.menu-footer .copy-feedback { font-size: 1.2rem; }
 
 @media (max-width: 768px) {
-    .menu-overlay { padding: 0 20px 30px; }
+    .menu-overlay {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
 
     .menu-logo-wrap {
         padding-top: 85px;
@@ -150,10 +155,3 @@ body.is-menu-open .menu-overlay {
         align-items: flex-start;
     }
 }
-
-.menu-overlay {
-    padding-top: max(0px, env(safe-area-inset-top));
-    padding-bottom: max(30px, env(safe-area-inset-bottom));
-}
-
-.menu-footer .copy-feedback { font-size: 1.2rem; }

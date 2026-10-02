@@ -1,8 +1,9 @@
-/* Reduced motion: stops the decorative animations for visitors who ask for less motion. */
+/* Reduced motion: stops the decorative animations for visitors who ask for less motion.
+   Loaded last. */
 
 @media (prefers-reduced-motion: reduce) {
-    /* Reduced motion: !important beats running animations and the hover and touch transforms of the
-       components. */
+    /* !important throughout: these rules must hold against any component rule, whatever its
+       weight, and against the hover and touch transforms. */
     .hero-logo,
     .menu-logo,
     .header-logo-text,
@@ -14,6 +15,7 @@
         filter: none !important;
     }
 
+    /* The scroll line stops half-way, dimmed. */
     .scroll-line {
         animation: none !important;
         opacity: 0.4;
@@ -26,13 +28,8 @@
         transition: none !important;
     }
 
-    .notebook-sheet {
-        transition: none !important;
-    }
-
-    .notebook-hover-zone:hover .notebook-text {
-        animation: none !important;
-    }
+    .notebook-sheet { transition: none !important; }
+    .notebook-hover-zone:hover .notebook-text { animation: none !important; }
 
     ::view-transition-group(*),
     ::view-transition-old(*),
