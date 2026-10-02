@@ -23,5 +23,5 @@ export function updateBackButton(pageId) {
     backBtn.style.display = isProjectPage ? 'flex' : 'none';
     // On phones the back button and the centred logo overlap: the
     // stylesheet hides the logo when this class is set.
-    document.body.classList.toggle('a-bouton-retour', isProjectPage);
+    document.body.classList.toggle('has-back-button', isProjectPage);
 }

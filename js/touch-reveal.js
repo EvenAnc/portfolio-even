@@ -9,10 +9,10 @@ import { TOUCH_MEDIA_QUERY } from './core/env.js';
 // Must match the elements animated by the stylesheet.
 const REVEAL_SELECTOR = [
     '.drawing-item',
-    '.ci-block',
-    '.fg',
+    '.contact-block',
+    '.form-field',
     '.notebook-section',
-    '.home-projects-shortcut',
+    '.projects-shortcut',
 ].join(', ');
 
 // The element must be well inside the screen, not merely touching its
@@ -38,7 +38,7 @@ const pageObservers = new Map();
 function scheduleReveal(element) {
     if (revealTimers.has(element)) return;
     revealTimers.set(element, setTimeout(() => {
-        element.classList.add('is-inview');
+        element.classList.add('is-in-view');
         revealTimers.delete(element);
     }, REVEAL_DELAY_MS));
 }
@@ -50,7 +50,7 @@ function cancelReveal(element) {
         clearTimeout(revealTimers.get(element));
         revealTimers.delete(element);
     }
-    element.classList.remove('is-inview');
+    element.classList.remove('is-in-view');
 }
 
 function observerForPage(page) {

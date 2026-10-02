@@ -69,9 +69,16 @@ img { display: block; width: 100%; height: 100%; object-fit: cover; -webkit-user
     transform: translate(-50%, 0);
 }
 
+/* Boiling line: three displacement filters in turn make a stroke look redrawn by hand. */
+@keyframes sketch-wobble {
+    0%,33%   { filter: url(#sketch-1); }
+    34%,66%  { filter: url(#sketch-2); }
+    67%,100% { filter: url(#sketch-3); }
+}
+
 @media (hover: none), (pointer: coarse) {
     /* Remove the Android tap highlight. */
-    a, button, .stack-item, .drawing-sheet-wrap {
+    a, button, .section-stack-item, .drawing-sheet-wrap {
         -webkit-tap-highlight-color: transparent;
     }
 }

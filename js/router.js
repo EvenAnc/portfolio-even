@@ -287,20 +287,16 @@ export function resetActivePages() {
 
 /** Wires the "next page" arrows, the home shortcut and the project cards. */
 export function initPageLinks() {
-    document.querySelectorAll('.page-next, .showcase-projects-btn').forEach(link => {
+    document.querySelectorAll('.page-next, .projects-shortcut, .patchwork-item[data-target]').forEach(link => {
         link.addEventListener('click', event => {
             event.preventDefault();
-            const nextPage = link.dataset.next;
-            if (nextPage === 'contact') {
+            const targetPage = link.dataset.target;
+            if (targetPage === 'contact') {
                 goToContact(CONTACT_LINK_DELAY_MS);
-            } else if (nextPage) {
-                showPage(nextPage);
+            } else if (targetPage) {
+                showPage(targetPage);
             }
         });
-    });
-
-    document.querySelectorAll('[data-page-link]').forEach(card => {
-        card.addEventListener('click', () => showPage(card.dataset.pageLink));
     });
 }
 

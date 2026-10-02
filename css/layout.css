@@ -11,13 +11,13 @@
     pointer-events: auto; z-index: 110; position: relative;
 }
 
-.b-line {
+.burger-line {
     display: block; width: 100%; height: 2px; background: var(--white);
     transform-origin: center;
     transition: transform var(--dur-med) var(--ease-out), opacity var(--dur-med) var(--ease-out), background var(--dur-fast);
 }
 
-.burger-btn:hover .b-line { background: var(--red); }
+.burger-btn:hover .burger-line { background: var(--red); }
 .header-back-btn {
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: none;
@@ -31,9 +31,9 @@
 }
 .header-back-btn:hover { transform: translateX(-8px) scale(1.05); }
 .header-back-btn:active { transform: scale(0.95); }
-body.menu-open .b-line:nth-child(1) { transform: translateY(10px) rotate(45deg); }
-body.menu-open .b-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
-body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
+body.is-menu-open .burger-line:nth-child(1) { transform: translateY(10px) rotate(45deg); }
+body.is-menu-open .burger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
 
 .header-logo {
     position: absolute; left: 50%; transform: translateX(-50%);
@@ -45,7 +45,7 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 
 .header-logo-text {
     font-size: 2.3rem; line-height: 1; letter-spacing: 0.03em;
-    animation: logoWobbleMini 0.3s steps(1) infinite;
+    animation: sketch-wobble 0.3s steps(1) infinite;
 }
 
 .header-right { display: flex; align-items: center; gap: 54px; pointer-events: auto; }
@@ -67,14 +67,14 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 
 /* Social icons: the hit area extends far outwards (no neighbour) and only to the gap middle
    inwards. */
-.social-lnk::before {
+.social-link::before {
     content: '';
     position: absolute;
     inset: -14px -4px;
 }
 
-.social-lnk:first-child::before  { inset: -14px -4px -14px -11px; }
-.social-lnk:last-child::before   { inset: -14px -11px -14px -4px; }
+.social-link:first-child::before  { inset: -14px -4px -14px -11px; }
+.social-link:last-child::before   { inset: -14px -11px -14px -4px; }
 
 .burger-btn::after {
     content: '';
@@ -82,12 +82,12 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     inset: -11px -6px;
 }
 
-.lang-btn.active { opacity: 1; }
+.lang-btn.is-active { opacity: 1; }
 .lang-btn:hover { opacity: 0.75; }
 .lang-sep { opacity: 0.2; }
 .social-nav { display: flex; gap: 16px; align-items: center; }
 
-.social-lnk {
+.social-link {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -96,9 +96,9 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     position: relative;
 }
 
-.social-lnk::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-fast); }
-.social-lnk:hover { opacity: 1; color: var(--red); transform: translateY(-2px); }
-.social-lnk:hover::after { width: 100%; }
+.social-link::after { content: ''; position: absolute; bottom: -6px; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-fast); }
+.social-link:hover { opacity: 1; color: var(--red); transform: translateY(-2px); }
+.social-link:hover::after { width: 100%; }
 
 /* Keep content out of the notch and home-bar areas (safe-area insets are 0 elsewhere). */
 .site-header {
@@ -143,7 +143,7 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
 
     /* On phones the back button and the centred logo do not both fit: on a project page the logo
        fades out. */
-    body.a-bouton-retour .header-logo {
+    body.has-back-button .header-logo {
         opacity: 0;
         pointer-events: none;
     }
@@ -160,12 +160,6 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     .header-logo-text {
         font-size: 1.3rem;
     }
-}
-
-@keyframes logoWobbleMini {
-    0%,33%   { filter: url(#sketch-1); }
-    34%,66%  { filter: url(#sketch-2); }
-    67%,100% { filter: url(#sketch-3); }
 }
 
 .header-left { display: flex; align-items: center; gap: 40px; }
@@ -185,12 +179,12 @@ body.menu-open .b-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg
     overflow-y: auto;
 }
 
-body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
+body.is-menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: auto; }
 .menu-logo-wrap { padding-top: 100px; padding-bottom: 40px; }
 
 .menu-logo {
     font-size: clamp(3rem, 6vw, 5rem); line-height: 1; color: var(--white);
-    animation: logoWobbleMini 0.3s steps(1) infinite;
+    animation: sketch-wobble 0.3s steps(1) infinite;
 }
 
 .menu-nav {
@@ -206,16 +200,16 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     position: relative;
 }
 
-.mn-num { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
+.menu-nav-number { font-family: var(--font-display); font-size: 1rem; color: var(--red); line-height: 1; min-width: 28px; }
 
-.mn-label {
+.menu-nav-label {
     font-family: var(--font-display);
     font-size: clamp(2.8rem, 6vw, 4.8rem);
     line-height: 1; letter-spacing: 0.02em;
     transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
 }
 
-.mn-deco {
+.menu-nav-note {
     font-size: clamp(1.4rem, 2.2vw, 1.8rem);
     color: var(--red); opacity: 0;
     transform: translateX(-8px) rotate(-3deg);
@@ -223,8 +217,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     white-space: nowrap;
 }
 
-.menu-nav-item:hover .mn-label { transform: translateX(12px); color: var(--red); }
-.menu-nav-item:hover .mn-deco { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
+.menu-nav-item:hover .menu-nav-label { transform: translateX(12px); color: var(--red); }
+.menu-nav-item:hover .menu-nav-note { opacity: 0.85; transform: translateX(6px) rotate(-2deg); }
 
 .menu-scribble {
     position: absolute; top: 110px; right: 60px;
@@ -236,13 +230,13 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     display: flex; align-items: center; gap: 40px;
 }
 
-.menu-mail { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
-.menu-mail:hover { opacity: 1; color: var(--red); }
+.menu-email { font-size: 0.88rem; letter-spacing: 0.06em; opacity: 0.4; transition: opacity var(--dur-fast), color var(--dur-fast); }
+.menu-email:hover { opacity: 1; color: var(--red); }
 .menu-footer-social { display: flex; gap: 12px; font-size: 0.82rem; opacity: 0.3; }
 .menu-footer-social a { transition: color var(--dur-fast); }
 .menu-footer-social a:hover { color: var(--red); }
 
-.menu-nav-item:active .mn-label {
+.menu-nav-item:active .menu-nav-label {
     color: var(--red);
     transform: translateX(16px);
 }
@@ -321,7 +315,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 /* The track name is scoped per page so the two pages that use it do not share it. */
 #page-project-diploma .page-inner,
 #page-drawings .page-inner {
-    timeline-scope: --citation;
+    timeline-scope: --quote-timeline;
 }
 
 @media (max-width: 991px) {
@@ -357,19 +351,19 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
     padding-right: 60px;
     position: relative;
     clear: both;
-    /* 100vw includes the scrollbar of .page; --sbw (set by js/page-scroll.js) subtracts it so
+    /* 100vw includes the scrollbar of .page; --scrollbar-width (set by js/page-scroll.js) subtracts it so
        the footer does not overflow. */
-    width: calc(100vw - var(--sbw, 0px));
+    width: calc(100vw - var(--scrollbar-width, 0px));
     left: 50%;
     right: 50%;
-    margin-left: calc(-50vw + var(--sbw, 0px) / 2);
-    margin-right: calc(-50vw + var(--sbw, 0px) / 2);
+    margin-left: calc(-50vw + var(--scrollbar-width, 0px) / 2);
+    margin-right: calc(-50vw + var(--scrollbar-width, 0px) / 2);
     box-sizing: border-box;
 }
 
 .footer-inner { max-width: 1200px; margin: 0 auto; padding: 50px 60px 40px; }
 .footer-top { display: flex; align-items: baseline; gap: 16px; margin-bottom: 30px; }
-.footer-logo { font-size: 1.6rem; color: var(--white); animation: logoWobbleMini 0.3s steps(1) infinite; }
+.footer-logo { font-size: 1.6rem; color: var(--white); animation: sketch-wobble 0.3s steps(1) infinite; }
 .footer-year { font-size: 0.85rem; opacity: 0.5; }
 .footer-legal { font-size: 0.8rem; line-height: 1.7; opacity: 0.5; max-width: 800px; margin-bottom: 26px; }
 .footer-legal p { margin-bottom: 12px; }
@@ -437,7 +431,7 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
 .page-next-arrow {
     width: 60px;
     height: 30px;
-    animation: rectWobble 0.3s steps(1) infinite;
+    animation: sketch-wobble 0.3s steps(1) infinite;
 }
 
 .page-next-arrow path {
@@ -470,8 +464,8 @@ body.menu-open .menu-overlay { opacity: 1; visibility: visible; pointer-events: 
        would stay out of reach. */
     #page-project-diploma .page-next,
     #page-drawings .page-next {
-        animation: qb-ecarter-bas linear both;
-        animation-timeline: --citation;
+        animation: quote-gap-down linear both;
+        animation-timeline: --quote-timeline;
         animation-range: cover 21% cover 79%;
     }
 }

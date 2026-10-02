@@ -16,7 +16,7 @@
     font-size: clamp(5rem, 14vw, 12rem); line-height: 0.85;
     color: var(--white); text-transform: uppercase;
     will-change: transform, filter;
-    animation: logoWobble 0.26s steps(1) infinite;
+    animation: sketch-wobble-hero 0.26s steps(1) infinite;
 }
 
 .hero-profession {
@@ -36,7 +36,7 @@
 
 /* The line carries the dimming, so the label beside it stays at full contrast. It uses colour
    rather than opacity, which the pulse animation already drives. */
-.scroll-line { width: 1px; height: 50px; background: rgba(255, 255, 255, 0.45); animation: scrollPulse 2s ease-in-out infinite; transform-origin: top; }
+.scroll-line { width: 1px; height: 50px; background: rgba(255, 255, 255, 0.45); animation: scroll-pulse 2s ease-in-out infinite; transform-origin: top; }
 
 .scroll-label { font-size: 1.4rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--red); }
 
@@ -61,7 +61,7 @@
     justify-content: center;
 }
 
-.home-projects-shortcut {
+.projects-shortcut {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -81,7 +81,7 @@
     transition: transform var(--dur-med) var(--ease-out);
 }
 
-.shortcut-sub-text {
+.projects-shortcut-kicker {
     font-family: var(--font-sketch);
     font-size: clamp(1.8rem, 3.5vw, 2.8rem);
     color: var(--white);
@@ -89,10 +89,10 @@
     z-index: 2;
     pointer-events: none;
     transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
-    animation: logoWobbleMini 0.3s steps(1) infinite;
+    animation: sketch-wobble 0.3s steps(1) infinite;
 }
 
-.shortcut-main-text {
+.projects-shortcut-title {
     font-family: var(--font-display);
     font-size: clamp(3.8rem, 12vw, 9.8rem);
     font-weight: bold;
@@ -104,21 +104,21 @@
     transition: transform var(--dur-med) var(--ease-out), color var(--dur-fast);
 }
 
-.home-projects-shortcut:hover {
+.projects-shortcut:hover {
     transform: scale(1.03);
 }
 
-.home-projects-shortcut:hover .shortcut-sub-text {
+.projects-shortcut:hover .projects-shortcut-kicker {
     transform: translateY(10px) rotate(-6deg) scale(1.08);
     color: var(--red);
 }
 
-.home-projects-shortcut:hover .shortcut-main-text {
+.projects-shortcut:hover .projects-shortcut-title {
     transform: scaleY(1.06);
     color: #ff4a5c;
 }
 
-.shortcut-underline-svg {
+.projects-shortcut-underline {
     width: min(400px, 50vw);
     height: 16px;
     margin-top: 10px;
@@ -126,17 +126,17 @@
     z-index: 3;
 }
 
-.shortcut-underline-path {
+.projects-shortcut-underline-path {
     stroke-dasharray: 400;
     stroke-dashoffset: 400;
     transition: stroke-dashoffset 0.5s var(--ease-out);
 }
 
-.home-projects-shortcut:hover .shortcut-underline-path {
+.projects-shortcut:hover .projects-shortcut-underline-path {
     stroke-dashoffset: 0;
 }
 
-.shortcut-click-hint {
+.projects-shortcut-hint {
     position: absolute;
     left: calc(50% + min(290px, 25vw));
     top: 15px;
@@ -149,27 +149,27 @@
     transform: rotate(5deg);
 }
 
-.click-hint-text {
+.projects-shortcut-hint-text {
     font-size: 3.0rem;
     color: var(--red);
     white-space: nowrap;
-    animation: logoWobbleMini 0.28s steps(1) infinite;
+    animation: sketch-wobble 0.28s steps(1) infinite;
     transform: translateY(-8px) rotate(4deg);
 }
 
-.click-hint-arrow {
+.projects-shortcut-hint-arrow {
     width: 72px;
     height: 48px;
     transform: scaleX(-1); /* Flips the curved stroke horizontally so it points left. */
 }
 
-.home-projects-shortcut:hover .shortcut-click-hint {
+.projects-shortcut:hover .projects-shortcut-hint {
     transform: scale(1.08) rotate(7deg);
 }
 
 /* Avoid needless repaints on GSAP-animated elements. */
 .home-showcase,
-.home-projects-shortcut,
+.projects-shortcut,
 .hero-logo-wrap,
 .home-contact-inner {
     will-change: opacity, transform;
@@ -177,7 +177,7 @@
 
 /* Reset will-change after the entrance (GSAP does it too). */
 .page.is-active .home-showcase,
-.page.is-active .home-projects-shortcut {
+.page.is-active .projects-shortcut {
     will-change: auto;
 }
 
@@ -197,9 +197,9 @@
 @media (max-width: 768px) {
     .home-showcase { padding: 0 16px; margin-bottom: 36px; }
 
-    .home-projects-shortcut { margin-top: -10px; margin-bottom: 10px; }
+    .projects-shortcut { margin-top: -10px; margin-bottom: 10px; }
 
-    .shortcut-click-hint { 
+    .projects-shortcut-hint { 
         display: flex;
         opacity: 0;
         transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s;
@@ -209,17 +209,17 @@
         top: -15px;
     }
 
-    .click-hint-text {
+    .projects-shortcut-hint-text {
         font-size: 2.2rem;
     }
 
-    .click-hint-arrow {
+    .projects-shortcut-hint-arrow {
         width: 45px;
         height: 30px;
     }
 
-    .shortcut-underline-svg { width: 80%; }
-    .shortcut-main-text { font-size: clamp(3rem, 12vw, 7rem); }
+    .projects-shortcut-underline { width: 80%; }
+    .projects-shortcut-title { font-size: clamp(3rem, 12vw, 7rem); }
 
     .hero-seeking {
         margin-top: 16px;
@@ -233,40 +233,40 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    .home-projects-shortcut {
+    .projects-shortcut {
         opacity: 0;
         transform: translateY(20px) scale(0.97);
         transition: opacity 0.7s var(--ease-out), transform 0.7s var(--ease-out);
     }
 
-    .home-projects-shortcut.is-inview {
+    .projects-shortcut.is-in-view {
         opacity: 1;
         transform: translateY(0) scale(1);
     }
 
-    .home-projects-shortcut:hover { transform: none; }
-    .home-projects-shortcut:hover .shortcut-sub-text { transform: translateY(18px) rotate(-4deg); }
-    .home-projects-shortcut:hover .shortcut-main-text { transform: none; }
-    .home-projects-shortcut:hover .shortcut-underline-path { stroke-dashoffset: 400; }
+    .projects-shortcut:hover { transform: none; }
+    .projects-shortcut:hover .projects-shortcut-kicker { transform: translateY(18px) rotate(-4deg); }
+    .projects-shortcut:hover .projects-shortcut-title { transform: none; }
+    .projects-shortcut:hover .projects-shortcut-underline-path { stroke-dashoffset: 400; }
 
-    .home-projects-shortcut.is-inview .shortcut-click-hint {
+    .projects-shortcut.is-in-view .projects-shortcut-hint {
         opacity: 1;
         transform: translateY(0) scale(1) rotate(5deg);
     }
 }
 
-.home-projects-shortcut:active {
+.projects-shortcut:active {
     transform: scale(0.97);
     transition: transform 0.1s ease;
 }
 
-@keyframes logoWobble {
+@keyframes sketch-wobble-hero {
     0%,33%   { filter: url(#sketch-1) drop-shadow(0 0 0 transparent); }
     34%,66%  { filter: url(#sketch-2) drop-shadow(0 0 0 transparent); }
     67%,100% { filter: url(#sketch-3) drop-shadow(0 0 0 transparent); }
 }
 
-@keyframes scrollPulse { 0% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(0); opacity: 0; } }
+@keyframes scroll-pulse { 0% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(0); opacity: 0; } }
 
 .home-showcase .frame-wrap { max-width: 1400px; width: 100%; margin: 0 auto; display: block; }
 .showcase-frame .font-sketch {
@@ -276,7 +276,7 @@
     padding: 20px;
     text-align: center;
 }
-.click-hint-arrow path:first-child { animation: rectWobble 0.3s steps(1) infinite; }
+.projects-shortcut-hint-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }
 
 
 /* Notebook */
@@ -286,7 +286,7 @@
     color: var(--notebook-text);
 }
 
-.notebook-bg-sheet {
+.notebook-sheet {
     position: absolute;
     top: -85px;
     bottom: 0;
@@ -303,7 +303,7 @@
 }
 
 /* Hovering the notebook section unrolls the paper (scaleX/Y) and the torn edges morph. */
-.notebook-section:hover .notebook-bg-sheet {
+.notebook-section:hover .notebook-sheet {
     transform: scale(1.015, 1.07);
     clip-path: polygon(0% 3.5%, 10% 2.2%, 25% 3.8%, 40% 2%, 55% 4.2%, 70% 2.2%, 85% 3.8%, 100% 2.2%, 100% 96.2%, 85% 97.5%, 70% 96.2%, 55% 97.8%, 40% 96.2%, 25% 97.5%, 10% 96.2%, 0% 97.5%);
 }
@@ -317,7 +317,7 @@
 }
 
 /* Empty container, filled by the script with random line lengths. */
-.notebook-lines {
+.notebook-rules {
     position: absolute;
     inset: 0;
     z-index: 0;
@@ -325,7 +325,7 @@
 }
 
 /* Each line is generated by the script. */
-.nb-line {
+.notebook-rule {
     position: absolute;
     height: 4px;
     background: var(--notebook-line);
@@ -333,7 +333,7 @@
 }
 
 /* The red margin lives on the background sheet so it follows its stretch. */
-.notebook-bg-sheet::before {
+.notebook-sheet::before {
     content: '';
     position: absolute;
     top: 0; bottom: 0;
@@ -343,7 +343,7 @@
     z-index: 1;
 }
 
-.notebook-bg-sheet::after {
+.notebook-sheet::after {
     content: '';
     position: absolute;
     top: 0; bottom: 0;
@@ -384,11 +384,11 @@
 }
 
 .notebook-hover-zone:hover .notebook-text {
-    animation: notebookWobble 0.4s ease-out;
+    animation: notebook-wobble 0.4s ease-out;
 }
 
 .notebook-title-wrap:hover .notebook-title {
-    animation: notebookWobble 0.5s ease-out;
+    animation: notebook-wobble 0.5s ease-out;
 }
 
 .notebook-annotation {
@@ -453,24 +453,24 @@
 /* Safari only: the torn-paper filter is drawn once into an image (see js/notebook.js). These
    rules apply once that image is in place, so never on Chrome. The red margin lines are part of
    the image, so the original pseudo-elements are removed. */
-.notebook-bg-sheet.papier-precalcule {
+.notebook-sheet.is-prerendered {
     filter: none;
     background-color: transparent;
     background-repeat: no-repeat;
     background-size: 100% 100%;
 }
 
-.notebook-bg-sheet.papier-precalcule::before,
-.notebook-bg-sheet.papier-precalcule::after {
+.notebook-sheet.is-prerendered::before,
+.notebook-sheet.is-prerendered::after {
     display: none;
 }
 
 @media (max-width: 768px) {
-    .notebook-bg-sheet { top: -45px; }
+    .notebook-sheet { top: -45px; }
 
     .notebook-inner { padding: 80px 20px 100px; }
-    .notebook-bg-sheet::before { left: 20px; }
-    .notebook-bg-sheet::after { left: 24px; }
+    .notebook-sheet::before { left: 20px; }
+    .notebook-sheet::after { left: 24px; }
     .notebook-content { padding-left: 12px; }
 }
 
@@ -482,12 +482,12 @@
 
     .notebook-signature { transform: translateY(-40px) translateX(20px) scale(1.2) !important; }
 
-    .notebook-section.is-inview .notebook-bg-sheet {
+    .notebook-section.is-in-view .notebook-sheet {
         transform: scale(1.02) rotate(-1deg);
         transition-delay: 0.3s;
     }
 
-    .notebook-section.is-inview .notebook-signature {
+    .notebook-section.is-in-view .notebook-signature {
         opacity: 1;
         transform: translateY(0) translateX(0) scale(1) !important;
     }
@@ -510,7 +510,7 @@
     }
 }
 
-@keyframes notebookWobble {
+@keyframes notebook-wobble {
     0%   { transform: rotate(0deg); }
     25%  { transform: rotate(-0.3deg) translateX(-1px); }
     50%  { transform: rotate(0.2deg) translateX(1px); }
@@ -518,7 +518,7 @@
     100% { transform: rotate(0deg); }
 }
 
-.signature-arrow path:first-child { animation: rectWobble 0.3s steps(1) infinite; }
+.signature-arrow path:first-child { animation: sketch-wobble 0.3s steps(1) infinite; }
 
 
 /* Contact */
@@ -534,9 +534,9 @@
 }
 
 .contact-form { display: flex; flex-direction: column; gap: 36px; }
-.fg { position: relative; }
+.form-field { position: relative; }
 
-.fi {
+.form-input {
     display: block;
     width: 100%; padding: 12px 0;
     background: transparent; border: none;
@@ -546,7 +546,7 @@
     transition: border-color var(--dur-fast);
 }
 
-.fi-ta {
+.form-input--textarea {
     height: 48px;
     resize: none;
     overflow: hidden;
@@ -555,13 +555,13 @@
     transition: height 0.4s var(--ease-out), border-color var(--dur-fast);
 }
 
-.fi-ta:focus,
-.fi-ta:not(:placeholder-shown) {
+.form-input--textarea:focus,
+.form-input--textarea:not(:placeholder-shown) {
     height: 120px;
     overflow-y: auto;
 }
 
-.fl {
+.form-label {
     position: absolute; left: 0; top: 12px;
     font-family: var(--font-display); font-size: 1.1rem;
     letter-spacing: 0.05em; color: rgba(255,255,255,0.3);
@@ -569,16 +569,16 @@
     transition: transform 0.3s var(--ease-out), color 0.3s;
 }
 
-.fi:focus ~ .fl, .fi:not(:placeholder-shown) ~ .fl {
+.form-input:focus ~ .form-label, .form-input:not(:placeholder-shown) ~ .form-label {
     transform: translateY(-24px) scale(0.82); color: var(--red);
 }
 
-/* The animated red line is handled by the .fb span alone, to avoid doubling it. */
-.fb { position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-med) var(--ease-out); }
+/* The animated red line is handled by the .form-underline span alone, to avoid doubling it. */
+.form-underline { position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: var(--red); transition: width var(--dur-med) var(--ease-out); }
 
-.fi:focus ~ .fb { width: 100%; }
+.form-input:focus ~ .form-underline { width: 100%; }
 
-.submit-btn {
+.form-submit {
     padding: 14px 42px;
     font-family: var(--font-display); font-size: 1.3rem;
     letter-spacing: 0.07em; color: var(--white);
@@ -588,15 +588,15 @@
     transition: border-color var(--dur-fast), color var(--dur-fast);
 }
 
-.submit-btn:hover { border-color: var(--red); color: var(--red); }
+.form-submit:hover { border-color: var(--red); color: var(--red); }
 
 /* Form validation states. */
-.fi-error {
+.is-invalid {
     border-bottom-color: var(--red);
 }
 
 /* !important: the error state stays ahead of the label's focus state. */
-.fi-error ~ .fl {
+.is-invalid ~ .form-label {
     color: var(--red) !important;
     transform: translateY(-24px) scale(0.82) !important;
 }
@@ -620,11 +620,11 @@
 }
 
 .contact-info { display: flex; flex-direction: column; gap: 36px; padding-top: 12px; }
-.ci-label { font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.25); margin-bottom: 10px; text-transform: uppercase; }
-.ci-link { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.03em; display: inline-block; transition: color var(--dur-fast); }
-.ci-link:hover { color: var(--red); }
+.contact-label { font-family: var(--font-display); font-size: 0.9rem; letter-spacing: 0.12em; color: rgba(255,255,255,0.25); margin-bottom: 10px; text-transform: uppercase; }
+.contact-link { font-family: var(--font-display); font-size: 1.4rem; letter-spacing: 0.03em; display: inline-block; transition: color var(--dur-fast); }
+.contact-link:hover { color: var(--red); }
 
-.ci-soc {
+.contact-social {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -636,17 +636,17 @@
     transition: opacity var(--dur-fast), color var(--dur-fast), transform var(--dur-fast);
 }
 
-.ci-soc:hover {
+.contact-social:hover {
     opacity: 1;
     color: var(--red);
     transform: translateX(4px);
 }
 
-.ci-soc-icon {
+.contact-social-icon {
     flex-shrink: 0;
 }
 
-.ci-text { font-size: 1rem; font-weight: 300; opacity: 0.5; }
+.contact-text { font-size: 1rem; font-weight: 300; opacity: 0.5; }
 
 @media (max-width: 768px) {
     .home-contact-inner { padding: 60px 20px 80px; }
@@ -655,31 +655,31 @@
 }
 
 @media (hover: none), (pointer: coarse) {
-    .ci-block {
+    .contact-block {
         opacity: 0;
         transform: translateX(16px);
         transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
     }
 
-    .ci-block.is-inview {
+    .contact-block.is-in-view {
         opacity: 1;
         transform: translateX(0);
     }
 
-    .ci-block:nth-child(2) { transition-delay: 0.1s; }
-    .ci-block:nth-child(3) { transition-delay: 0.2s; }
+    .contact-block:nth-child(2) { transition-delay: 0.1s; }
+    .contact-block:nth-child(3) { transition-delay: 0.2s; }
 
-    .fg {
+    .form-field {
         opacity: 0;
         transform: translateY(16px);
         transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
     }
 
-    .fg.is-inview {
+    .form-field.is-in-view {
         opacity: 1;
         transform: translateY(0);
     }
 
-    .fg:nth-child(2) { transition-delay: 0.08s; }
-    .fg:nth-child(3) { transition-delay: 0.16s; }
+    .form-field:nth-child(2) { transition-delay: 0.08s; }
+    .form-field:nth-child(3) { transition-delay: 0.16s; }
 }

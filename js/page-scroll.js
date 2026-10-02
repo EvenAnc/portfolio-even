@@ -63,7 +63,7 @@ export function createPageScroll(scrollContainer) {
 }
 
 /**
- * Publishes the real scrollbar width as --sbw. Full-width blocks sized in
+ * Publishes the real scrollbar width as --scrollbar-width. Full-width blocks sized in
  * vw include the scrollbar of the page and would overflow by its width,
  * which varies: a few pixels on desktop, zero for overlay scrollbars.
  */
@@ -71,11 +71,11 @@ export function updateScrollbarWidth() {
     const page = document.querySelector('.page.is-active') || document.querySelector('.page');
     if (!page) return;
     const scrollbarWidth = Math.max(0, Math.round(page.offsetWidth - page.clientWidth));
-    document.documentElement.style.setProperty('--sbw', `${scrollbarWidth}px`);
+    document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
 }
 
 /**
- * Keeps --sbw up to date. A ResizeObserver as well as the resize event: the
+ * Keeps --scrollbar-width up to date. A ResizeObserver as well as the resize event: the
  * scrollbar can come and go without the window changing size (content
  * growing, images loading, device rotation).
  */

@@ -84,7 +84,7 @@ function bindCopyEmail(link) {
 
 /** Makes a click on the e-mail address copy it, with a short confirmation. */
 export function initCopyEmail() {
-    document.querySelectorAll('.copy-email').forEach(bindCopyEmail);
+    document.querySelectorAll('.js-copy-email').forEach(bindCopyEmail);
 }
 
 /** Animates the contact block in when it scrolls into view. */
@@ -99,8 +99,8 @@ export function initContactReveal() {
 
     const heading = homeContact.querySelector('.page-heading');
     const intro = homeContact.querySelector('.page-intro');
-    const formElements = [...homeContact.querySelectorAll('.fg'), homeContact.querySelector('.btn-wrap')];
-    const infoBlocks = homeContact.querySelectorAll('.ci-block');
+    const formElements = [...homeContact.querySelectorAll('.form-field'), homeContact.querySelector('.form-submit-wrap')];
+    const infoBlocks = homeContact.querySelectorAll('.contact-block');
 
     const timeline = gsap.timeline({
         scrollTrigger: {
@@ -148,7 +148,7 @@ function validateFields({ nameEl, emailEl, messageEl }) {
         !EMAIL_PATTERN.test(emailEl.value.trim()) && emailEl,
         !messageEl.value.trim() && messageEl,
     ].filter(Boolean);
-    invalidFields.forEach(field => field.classList.add('fi-error'));
+    invalidFields.forEach(field => field.classList.add('is-invalid'));
     return invalidFields.length === 0;
 }
 
@@ -248,9 +248,9 @@ export function initContactForm() {
     const feedbackEl = document.getElementById('form-feedback');
     const submitBtn = document.getElementById('contact-submit');
     const fields = {
-        nameEl: document.getElementById('fn'),
-        emailEl: document.getElementById('fe'),
-        messageEl: document.getElementById('fm'),
+        nameEl: document.getElementById('contact-name'),
+        emailEl: document.getElementById('contact-email'),
+        messageEl: document.getElementById('contact-message'),
     };
     if (!form || !feedbackEl || !submitBtn || !Object.values(fields).every(Boolean)) return;
 
@@ -265,7 +265,7 @@ export function initContactForm() {
         event.preventDefault();
         if (isSubmitting) return;
 
-        Object.values(fields).forEach(field => field.classList.remove('fi-error'));
+        Object.values(fields).forEach(field => field.classList.remove('is-invalid'));
         feedback.clear();
 
         if (!validateFields(fields)) {

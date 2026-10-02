@@ -76,7 +76,7 @@ function clearCanvasWrap() {
 }
 
 function setLoading(isLoading) {
-    if (loader) loader.classList.toggle('active', isLoading);
+    if (loader) loader.classList.toggle('is-active', isLoading);
 }
 
 // A zoomed image may travel only as far as it overflows the frame on
@@ -103,7 +103,7 @@ function updateTransform() {
 
 function setZoomed(isZoomed) {
     view.isZoomed = isZoomed;
-    lightbox.classList.toggle('zoomed', isZoomed);
+    lightbox.classList.toggle('is-zoomed', isZoomed);
 }
 
 function resetPan() {
@@ -136,7 +136,7 @@ function renderDots() {
     dotsWrap.innerHTML = '';
     gallery.forEach((item, index) => {
         const dot = document.createElement('span');
-        dot.className = index === current ? 'lb-dot active' : 'lb-dot';
+        dot.className = index === current ? 'lightbox-dot is-active' : 'lightbox-dot';
         dot.addEventListener('click', event => {
             event.stopPropagation();
             showItem(index);
@@ -147,13 +147,13 @@ function renderDots() {
 
 function updateDots() {
     if (!dotsWrap) return;
-    dotsWrap.querySelectorAll('.lb-dot').forEach((dot, index) => {
-        dot.classList.toggle('active', index === current);
+    dotsWrap.querySelectorAll('.lightbox-dot').forEach((dot, index) => {
+        dot.classList.toggle('is-active', index === current);
     });
 }
 
 function showControls() {
-    lightbox.classList.remove('controls-hidden');
+    lightbox.classList.remove('is-controls-hidden');
     clearTimeout(hideTimer);
     // A pointer brings the controls back by moving; a finger has no such
     // movement, so on touch devices the controls stay.
@@ -162,7 +162,7 @@ function showControls() {
         // Hiding would take the close button away from someone panning
         // a zoomed image or driving the viewer from the keyboard.
         if (view.isZoomed || keyboardDriven) return;
-        lightbox.classList.add('controls-hidden');
+        lightbox.classList.add('is-controls-hidden');
     }, CONTROLS_HIDE_DELAY_MS);
 }
 
@@ -359,7 +359,7 @@ export function closeLightbox() {
 }
 
 function bindZoomControls() {
-    const zoomBtn = lightbox.querySelector('.lb-zoom-btn');
+    const zoomBtn = lightbox.querySelector('.lightbox-zoom-toggle');
     if (zoomBtn) {
         zoomBtn.addEventListener('click', event => {
             event.stopPropagation();
@@ -395,7 +395,7 @@ function bindZoomControls() {
 }
 
 function bindFullscreenButton() {
-    const fullBtn = lightbox.querySelector('.lb-fullscreen-btn');
+    const fullBtn = lightbox.querySelector('.lightbox-fullscreen');
     if (!fullBtn) return;
 
     // Some browsers (iPhone Safari) have no element fullscreen at all: a
@@ -430,7 +430,7 @@ function onKeydown(event) {
 // A click outside the item closes; a click on the item zooms in.
 function onBackdropClick(event) {
     if (performance.now() - openedAt < OPEN_CLICK_GUARD_MS) return;
-    if (event.target === lightbox || event.target.classList.contains('lb-canvas-wrap')) {
+    if (event.target === lightbox || event.target.classList.contains('lightbox-stage')) {
         closeLightbox();
     } else if (isItem(event.target)) {
         // On touch devices the natural gesture is the pinch, and a plain
@@ -453,25 +453,25 @@ export function showPlaceholder(element) {
  * @param {boolean} isEnabled
  */
 export function setFadeEnabled(isEnabled) {
-    if (lightbox) lightbox.classList.toggle('sans-fondu', !isEnabled);
+    if (lightbox) lightbox.classList.toggle('is-instant', !isEnabled);
 }
 
 /** Finds the viewer in the document and wires its controls, keys and gestures. */
 export function initLightbox() {
-    const root = document.getElementById('drawing-lightbox');
-    const wrap = document.getElementById('lb-canvas-wrap');
+    const root = document.getElementById('lightbox');
+    const wrap = document.getElementById('lightbox-stage');
     if (!root || !wrap) return;
 
     lightbox = root;
     canvasWrap = wrap;
-    counterEl = lightbox.querySelector('.lb-counter');
-    closeBtn = lightbox.querySelector('.lb-close');
-    prevBtn = lightbox.querySelector('.lb-prev');
-    nextBtn = lightbox.querySelector('.lb-next');
-    loader = document.getElementById('lb-loader');
-    dotsWrap = lightbox.querySelector('.lb-dots');
-    zoomRange = lightbox.querySelector('#lb-zoom-range');
-    sliderRedPath = lightbox.querySelector('#lb-slider-red-path');
+    counterEl = lightbox.querySelector('.lightbox-counter');
+    closeBtn = lightbox.querySelector('.lightbox-close');
+    prevBtn = lightbox.querySelector('.lightbox-arrow--prev');
+    nextBtn = lightbox.querySelector('.lightbox-arrow--next');
+    loader = document.getElementById('lightbox-loader');
+    dotsWrap = lightbox.querySelector('.lightbox-dots');
+    zoomRange = lightbox.querySelector('#lightbox-zoom-range');
+    sliderRedPath = lightbox.querySelector('#lightbox-zoom-fill');
 
     // The open/closed state lives in this attribute; it starts closed.
     lightbox.setAttribute('aria-hidden', 'true');

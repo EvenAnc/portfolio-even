@@ -38,11 +38,11 @@ function stopListeningForInteractions() {
 }
 
 function previewsByPriority() {
-    const previews = Array.from(document.querySelectorAll('.pdf-inline-render'));
+    const previews = Array.from(document.querySelectorAll('.js-pdf-source'));
     const isPriority = preview => {
-        if (preview.closest('.stack-item')) return true;
-        const slide = preview.closest('.bd-slide');
-        return Boolean(slide) && slide.classList.contains('active');
+        if (preview.closest('.section-stack-item')) return true;
+        const slide = preview.closest('.carousel-slide');
+        return Boolean(slide) && slide.classList.contains('is-active');
     };
     return [...previews.filter(isPriority), ...previews.filter(preview => !isPriority(preview))];
 }
