@@ -72,19 +72,32 @@ export function initSafariPaperCache() {
     paint();
 }
 
+// Shape of each line, by index. A line draws its random values once: a
+// redraw (resize, late fonts) reuses them, so the lines already on display
+// keep their look and only new lines take new values.
+const lineShapes = [];
+
 // The three draws stay in this order: left, right, opacity.
+function lineShape(index) {
+    if (!lineShapes[index]) {
+        lineShapes[index] = {
+            left: LINE_LEFT_PX.base + Math.random() * LINE_LEFT_PX.spread,
+            right: LINE_RIGHT_PX.base + Math.random() * LINE_RIGHT_PX.spread,
+            opacity: LINE_OPACITY.base + Math.random() * LINE_OPACITY.spread,
+        };
+    }
+    return lineShapes[index];
+}
+
 function createLine(index) {
     const line = document.createElement('div');
     line.className = 'notebook-rule';
 
-    const leftOffset = LINE_LEFT_PX.base + Math.random() * LINE_LEFT_PX.spread;
-    const rightOffset = LINE_RIGHT_PX.base + Math.random() * LINE_RIGHT_PX.spread;
-    const opacity = LINE_OPACITY.base + Math.random() * LINE_OPACITY.spread;
-
-    line.style.left = `${leftOffset}px`;
-    line.style.right = `${rightOffset}px`;
+    const shape = lineShape(index);
+    line.style.left = `${shape.left}px`;
+    line.style.right = `${shape.right}px`;
     line.style.top = `${FIRST_LINE_TOP_PX + index * LINE_SPACING_PX}px`;
-    line.style.opacity = opacity;
+    line.style.opacity = shape.opacity;
     return line;
 }
 
