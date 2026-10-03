@@ -58,6 +58,10 @@ let contactTimers = [];
 // Fade of the page that is leaving, while it runs.
 let fadeOut = null;
 
+// Address the display was last synchronised with by a history event. Reset
+// whenever this module writes an entry itself.
+let syncedUrl = null;
+
 /**
  * Reads the current fragment.
  * @returns {string|null} a page id, 'contact', or null for an unknown address
@@ -122,7 +126,7 @@ function revealContact(outerDelay = 0) {
     contactTimers.push(setTimeout(() => {
         // The visitor may have gone back while the menu was closing.
         if (pageFromHash() !== 'contact') return;
-        if (state.page !== 'home') showPage('home', true, false);
+        if (state.page !== 'home') showPage('home', { updateHistory: false });
         const scrollDelay = wasOnHome ? CONTACT_SCROLL_DELAY_MS : CONTACT_SCROLL_DELAY_AFTER_TRANSITION_MS;
         contactTimers.push(setTimeout(scrollToContact, scrollDelay));
     }, outerDelay));
@@ -151,6 +155,7 @@ export function goToContact(outerDelay) {
     if (location.hash !== '#contact') {
         history.pushState({ page: 'contact' }, '', `${baseUrl()}#contact`);
         hasHistoryEntry = true;
+        syncedUrl = null;
     }
 }
 
@@ -167,6 +172,7 @@ function recordHistoryEntry(pageId) {
     const method = hasHistoryEntry ? 'pushState' : 'replaceState';
     history[method]({ page: pageId }, '', urlForPage(pageId));
     hasHistoryEntry = true;
+    syncedUrl = null;
 }
 
 function swapActivePage(outEl, inEl, pageId) {
@@ -253,10 +259,11 @@ function fadeToPage(outEl, inEl, pageId) {
 /**
  * Displays a page.
  * @param {string} pageId
- * @param {boolean} [animate] false swaps the pages at once
- * @param {boolean} [updateHistory] false when following the history rather than adding to it
+ * @param {object} [options]
+ * @param {boolean} [options.animate] false swaps the pages at once
+ * @param {boolean} [options.updateHistory] false when following the history rather than adding to it
  */
-export function showPage(pageId, animate = true, updateHistory = true) {
+export function showPage(pageId, { animate = true, updateHistory = true } = {}) {
     if (pageId === state.page && animate) return;
     cancelContactReveal();
 
@@ -326,7 +333,7 @@ export function showInitialPage() {
     // For #contact the history is left alone: showPage would write the home
     // address and drop the fragment, so a reload would no longer come back
     // to the contact block.
-    showPage(initialPage, false, requestedPage !== 'contact');
+    showPage(initialPage, { animate: false, updateHistory: requestedPage !== 'contact' });
     if (requestedPage === 'contact') {
         history.replaceState({ page: 'contact' }, '', '#contact');
     }
@@ -344,37 +351,33 @@ export function showInitialPage() {
     }
 }
 
-function onPopState() {
-    const targetPage = pageFromHash();
-    emit(EVENTS.HISTORY_NAVIGATION, { from: state.page, to: targetPage });
+// Brings the display in line with the address, without adding an entry.
+function showAddress(targetPage) {
+    // An unknown fragment shows home and leaves the address bar.
+    const pageId = targetPage || 'home';
     if (targetPage === 'contact') {
         revealContact();
-        return;
-    }
-    if ((targetPage || 'home') === 'home' && state.page === 'home') {
+    } else if (pageId === 'home' && state.page === 'home') {
         scrollHomeToTop();
-        return;
+    } else {
+        showPage(pageId, { updateHistory: false });
     }
-    showPage(targetPage || 'home', true, false);
+    if (targetPage === null) history.replaceState({ page: 'home' }, '', baseUrl());
 }
 
-function onHashChange() {
+// Back, Forward and a fragment typed by hand all end here. A fragment
+// change fires popstate and then hashchange for the same address: the
+// second event finds the address already synchronised and does nothing.
+function syncWithAddress() {
+    if (location.href === syncedUrl) return;
     const targetPage = pageFromHash();
     emit(EVENTS.HISTORY_NAVIGATION, { from: state.page, to: targetPage });
-    if (targetPage === null) {
-        showPage('home', true, false);
-        history.replaceState({ page: 'home' }, '', baseUrl());
-        return;
-    }
-    if (targetPage === 'home' && state.page === 'home') {
-        scrollHomeToTop();
-    } else if (targetPage !== 'contact' && targetPage !== state.page) {
-        showPage(targetPage, true, false);
-    }
+    showAddress(targetPage);
+    syncedUrl = location.href;
 }
 
 /** Follows the browser history: Back and Forward, and fragments typed by hand. */
 export function initHistory() {
-    window.addEventListener('popstate', onPopState);
-    window.addEventListener('hashchange', onHashChange);
+    window.addEventListener('popstate', syncWithAddress);
+    window.addEventListener('hashchange', syncWithAddress);
 }

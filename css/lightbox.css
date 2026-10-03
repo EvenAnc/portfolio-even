@@ -195,15 +195,6 @@
     transition: none;
 }
 
-/* PDF embed fallback: removes the grey frame of the native viewer. */
-.lightbox-stage embed,
-.lightbox-stage object {
-    display: block;
-    border: none;
-    outline: none;
-    background: var(--viewer-bg);
-}
-
 .lightbox-loader {
     position: absolute;
     inset: 0;

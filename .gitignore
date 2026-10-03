@@ -1,98 +1,57 @@
-# ─────────────────────────────────────────────────────────────
-# Portfolio Even ANICET — fichiers exclus de la publication
-#
-# Le depot sert AUSSI d'hebergement (GitHub Pages) : tout fichier
-# suivi ici est publiquement telechargeable. On ne publie donc que
-# ce dont le site a reellement besoin.
-#
-# Les fichiers listes ci-dessous restent sur le disque local, ils
-# sont seulement retires du suivi Git.
-# ─────────────────────────────────────────────────────────────
+# The repository is also the host (GitHub Pages): every tracked file is
+# publicly downloadable, so only what the site serves is tracked.
 
-# ── Anciennes versions et sauvegardes manuelles ──────────────
-index_backup_*.html
-index_clean.html
-index_backup*.html
-old_index.html
-old_style.css
-new_projects.html
-patchwork_clean.html
-temp_clean_test.html
-css/style_v2_backup_*.css
-js/app_backup_*.js
-*_backup_PERFECT.*
+# Hidden folders, except the ones the site or the host needs
+.*/
+!.github/
+!.well-known/
 
-# ── Notes internes et consignes de travail ───────────────────
-# (ne doivent pas etre publiques sur un portfolio)
-PROJECT_MEMORY.md
-.agents/
-.claude/
+# At the root: only the files of the site and of its tooling
+/*.html
+!/index.html
+!/404.html
+/*.css
+/*.js
+!/sw.js
+!/eslint.config.js
+/*.json
+!/package.json
+!/package-lock.json
+!/.*.json
+/*.md
+!/README.md
+/favicon_*.svg
+!/favicon_1.svg
 
-# ── Scripts et sorties d'outillage ───────────────────────────
-*.ps1
-*.exe
-*.cs
-fix.py
-inject.js
-recovered.json
-recovery_script.ps1
-ps_scripts.json
-matches*.json
-3d_immersion.json
-3d_recovery.txt
-view_file_history.txt
-
-# ── Fragments et fichiers temporaires ────────────────────────
+# Backups, scratch files and scripts
+*backup*
+*_base64.*
 *.txt
-!robots.txt
-!.well-known/security.txt
-temp_html*.txt
-html_chunk*.txt
-html_recovery.txt
-best_html.txt
-chunks.txt
-extracted_v1.txt
-script.txt
+!/robots.txt
+!/.well-known/security.txt
+*.ps1
+*.py
+*.cs
+*.exe
+*.zip
 
-# ── Donnees dupliquees localement ────────────────────────────
-js/dessins_base64.js
-
-# ── Sources de polices non servies ───────────────────────────
-fonts/temp_skribblugh/
-fonts/style.css
-fonts/*.zip
-fonts/example.html
-
-# ── Favicons alternatifs non utilises ────────────────────────
-favicon_2.svg
-favicon_3.svg
-
-# ── Systeme ──────────────────────────────────────────────────
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# ── Originaux haute definition ───────────────────────────────
-# Le depot sert d'hebergement : tout fichier suivi est
-# publiquement telechargeable. Ces sources ne sont jamais
-# affichees par le site — seules les versions /opt/ le sont.
-# Elles restent sur le disque d'Even, simplement plus publiees.
-# 80,9 Mo retires de la publication.
-#
-# Attention : les PDF de PDF/ NE sont PAS ici. Ils servent
-# encore, ce sont eux que la visionneuse ouvre pour le zoom
-# pleine resolution.
-dessin/*.png
-dessin/*.pdf
-photo/DIPLOME ARCHI/
+# Source material: only the optimised copies and the PDF sheets are served
+dessin/*
+!dessin/opt/
+photo/*
+!photo/opt/
+fonts/*
+!fonts/*.woff
+!fonts/*.woff2
 
 # Tooling
 node_modules/
 npm-debug.log*
 .eslintcache
 
-# Editors
-.vscode/
-.idea/
+# System and editors
+.DS_Store
+Thumbs.db
+desktop.ini
 *.swp
 *~
