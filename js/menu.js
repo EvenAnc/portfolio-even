@@ -4,9 +4,13 @@
  */
 
 import { state, on, EVENTS } from './core/state.js';
+import { prefersReducedMotion } from './core/env.js';
+import { tweenFromTo } from './core/gsap-fallback.js';
 import { showPage, goToContact } from './router.js';
 
-// Time the menu takes to close; the page changes once it is out of the way.
+// Wait between a click on a menu item and the page change. Deliberately
+// shorter than the closing transition of the overlay (--dur-med, 0.55s):
+// the page starts fading while the menu is still clearing the screen.
 const MENU_CLOSE_MS = 420;
 
 let isMenuOpen = false;
@@ -23,14 +27,14 @@ function setMenuOpen(isOpen) {
 }
 
 function playOpeningAnimation() {
-    gsap.fromTo(document.querySelectorAll('.menu-nav-item'),
+    tweenFromTo(document.querySelectorAll('.menu-nav-item'),
         { y: 40, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.55, stagger: 0.065, ease: 'power3.out', delay: 0.12 },
     );
 
     const menuLogo = document.querySelector('.menu-logo');
     if (menuLogo) {
-        gsap.fromTo(menuLogo,
+        tweenFromTo(menuLogo,
             { opacity: 0, x: -20 },
             { opacity: 1, x: 0, duration: 0.6, ease: 'power3.out', delay: 0.05 },
         );
@@ -38,7 +42,7 @@ function playOpeningAnimation() {
 
     const scribble = document.querySelector('.menu-scribble');
     if (scribble) {
-        gsap.fromTo(scribble,
+        tweenFromTo(scribble,
             { opacity: 0, rotate: -15 },
             { opacity: 0.35, rotate: -8, duration: 0.5, delay: 0.5 },
         );
@@ -65,11 +69,13 @@ function onMenuItemClick(event) {
     const page = event.currentTarget.dataset.target;
     closeMenu();
 
+    // Under reduced motion the menu closes at once: nothing to wait for.
+    const delay = prefersReducedMotion() ? 0 : MENU_CLOSE_MS;
     clearTimeout(navigationTimer);
     if (page === 'contact') {
-        goToContact(MENU_CLOSE_MS);
+        goToContact(delay);
     } else {
-        navigationTimer = setTimeout(() => showPage(page), MENU_CLOSE_MS);
+        navigationTimer = setTimeout(() => showPage(page), delay);
     }
 }
 

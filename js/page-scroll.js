@@ -4,7 +4,7 @@
  */
 
 import { state } from './core/state.js';
-import { gsapMissing, hasScrollTrigger } from './core/env.js';
+import { gsapMissing, hasScrollTrigger, prefersReducedMotion } from './core/env.js';
 
 const SCROLL_DURATION_S = 1.0;
 const TOUCH_MULTIPLIER = 1.5;
@@ -34,8 +34,9 @@ export function destroyPageScroll() {
  */
 export function createPageScroll(scrollContainer) {
     // Lenis takes over the wheel but only moves when the GSAP ticker drives
-    // it: without GSAP the page keeps its native scrolling.
-    if (typeof Lenis === 'undefined' || gsapMissing) return;
+    // it: without GSAP the page keeps its native scrolling. So does a
+    // visitor who asked for reduced motion.
+    if (typeof Lenis === 'undefined' || gsapMissing || prefersReducedMotion()) return;
 
     // One instance and one ticker callback at a time.
     destroyPageScroll();

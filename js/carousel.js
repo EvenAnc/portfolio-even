@@ -3,7 +3,7 @@
  */
 
 import { on, EVENTS } from './core/state.js';
-import { SWIPE_MIN_DISTANCE_PX } from './core/env.js';
+import { SWIPE_MIN_DISTANCE_PX, prefersReducedMotion, onReducedMotionChange } from './core/env.js';
 
 const SLIDE_DURATION_MS = 5000;
 // Share of the carousel that must be on screen for autoplay to run.
@@ -28,7 +28,8 @@ function createCarousel(container, slides) {
     let progressStart = 0;
 
     const carousel = {
-        isPlaying: true,
+        // Under reduced motion the slides only change when the visitor asks.
+        isPlaying: !prefersReducedMotion(),
         isPageOpen: false,
         isOnScreen: false,
         goToSlide,
@@ -100,18 +101,25 @@ function bindPlayPause(container, carousel) {
     const playPauseBtn = container.querySelector('.carousel-toggle');
     if (!playPauseBtn) return;
 
-    const iconPause = playPauseBtn.querySelector('.icon-pause');
-    const iconPlay = playPauseBtn.querySelector('.icon-play');
-
     // The button is a toggle named after autoplay: pressed while it runs.
-    playPauseBtn.setAttribute('aria-pressed', 'true');
-
-    playPauseBtn.addEventListener('click', () => {
-        carousel.isPlaying = !carousel.isPlaying;
+    // The stylesheet swaps the pause and play icons on is-paused.
+    function showPlayState() {
         playPauseBtn.setAttribute('aria-pressed', String(carousel.isPlaying));
-        if (iconPause) iconPause.style.display = carousel.isPlaying ? 'block' : 'none';
-        if (iconPlay) iconPlay.style.display = carousel.isPlaying ? 'none' : 'block';
+        playPauseBtn.classList.toggle('is-paused', !carousel.isPlaying);
+    }
+
+    function setPlaying(isPlaying) {
+        carousel.isPlaying = isPlaying;
+        showPlayState();
         carousel.syncAutoplay();
+    }
+
+    showPlayState();
+    playPauseBtn.addEventListener('click', () => setPlaying(!carousel.isPlaying));
+    // Asking for less motion during the visit pauses autoplay; the button
+    // still starts it again.
+    onReducedMotionChange(isReduced => {
+        if (isReduced) setPlaying(false);
     });
 }
 
@@ -193,6 +201,13 @@ function initCarousel(container) {
     bindControls(container, carousel);
     watchVisibility(container, carousel);
     bindSwipe(container, carousel);
+    // A carousel without a play button follows the preference on its own.
+    if (!container.querySelector('.carousel-toggle')) {
+        onReducedMotionChange(isReduced => {
+            carousel.isPlaying = !isReduced;
+            carousel.syncAutoplay();
+        });
+    }
 }
 
 /** Sets up every carousel of the document; each one keeps its own state. */
