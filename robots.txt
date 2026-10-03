@@ -1,10 +1,10 @@
 # https://even-anc.com/
 User-agent: *
-Allow: /
 
-# Working files and full-resolution originals: no need to index.
+# Working files and full-resolution originals: no need to index. The optimised copies the pages
+# display stay open.
 Disallow: /dessin/*.pdf$
 Disallow: /photo/
-Disallow: /fonts/
+Allow: /photo/opt/
 
 Sitemap: https://even-anc.com/sitemap.xml
