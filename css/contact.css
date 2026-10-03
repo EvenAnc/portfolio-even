@@ -176,6 +176,8 @@
     transform: rotate(1deg);
 }
 
+.sketch-rect-svg--button .sketch-rect-path { stroke-width: 2.5; }
+
 @media (hover: none), (pointer: coarse) {
     /* Touch: the fields rise one after the other when they scroll into view. */
     .form-field {

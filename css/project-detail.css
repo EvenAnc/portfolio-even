@@ -296,7 +296,8 @@
     box-shadow: 15px 15px 40px rgb(0 0 0 / 50%);
 }
 
-/* Name of the section, overlaid on a corner of the sheet. */
+/* Name of the section, overlaid on a corner of the sheet. backdrop-filter is unprefixed only:
+   Safari before 18 ignores it and shows the label without blur. */
 .section-stack-label {
     position: absolute;
     top: 12px;

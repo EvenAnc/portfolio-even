@@ -115,6 +115,7 @@
     letter-spacing: 2px;
 }
 
+/* backdrop-filter is unprefixed only: Safari before 18 ignores it and shows the tape without blur. */
 .polaroid-tape {
     position: absolute;
     top: -15px;
