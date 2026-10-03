@@ -155,7 +155,10 @@ function validateFields({ nameEl, emailEl, messageEl }) {
         !EMAIL_PATTERN.test(emailEl.value.trim()) && emailEl,
         !messageEl.value.trim() && messageEl,
     ].filter(Boolean);
-    invalidFields.forEach(field => field.classList.add('is-invalid'));
+    invalidFields.forEach(field => {
+        field.classList.add('is-invalid');
+        field.setAttribute('aria-invalid', 'true');
+    });
     return invalidFields.length === 0;
 }
 
@@ -272,7 +275,10 @@ export function initContactForm() {
         event.preventDefault();
         if (isSubmitting) return;
 
-        Object.values(fields).forEach(field => field.classList.remove('is-invalid'));
+        Object.values(fields).forEach(field => {
+            field.classList.remove('is-invalid');
+            field.removeAttribute('aria-invalid');
+        });
         feedback.clear();
 
         if (!validateFields(fields)) {

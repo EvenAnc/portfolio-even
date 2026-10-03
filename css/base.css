@@ -1,7 +1,9 @@
 /* Base: design tokens, font, reset, shared utilities, keyboard focus ring.
 
    Breakpoints, written out in each file since media queries cannot read custom properties:
-   480px (small phones), 768px (phones), 991px (tablets). Touch devices are targeted with
+   480px (small phones), 768px (phones), 991px (tablets). A few components add their own:
+   303px and 341px (narrowest phones: footer, viewer), 900px (project board), 1328px and
+   1365px (drawings and carousels on mid-size screens). Touch devices are targeted with
    (hover: none), (pointer: coarse), the query the scripts use as well. */
 
 

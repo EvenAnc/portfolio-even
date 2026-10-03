@@ -71,8 +71,8 @@ function observerForPage(page) {
 function observeInPage(page) {
     const observer = observerForPage(page);
     page.querySelectorAll(REVEAL_SELECTOR).forEach(element => {
-        if (element.dataset.mobileObserved) return;
-        element.dataset.mobileObserved = '1';
+        if (element.dataset.revealObserved) return;
+        element.dataset.revealObserved = '1';
         observer.observe(element);
     });
 }

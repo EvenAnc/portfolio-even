@@ -24,8 +24,8 @@ function distanceBetween(touchA, touchB) {
 
 // Scales around a point given from the centre of the frame, so that the
 // content under the pointer or between the fingers stays in place.
-function zoomAround({ canvasWrap, zoomRange, view }, clientX, clientY, newScale) {
-    const rect = canvasWrap.getBoundingClientRect();
+function zoomAround({ stage, zoomRange, view }, clientX, clientY, newScale) {
+    const rect = stage.getBoundingClientRect();
     const pointX = clientX - rect.left - rect.width / 2;
     const pointY = clientY - rect.top - rect.height / 2;
     const ratio = newScale / view.scale;
@@ -37,14 +37,14 @@ function zoomAround({ canvasWrap, zoomRange, view }, clientX, clientY, newScale)
 }
 
 // Drag to pan a zoomed item.
-function bindDrag({ canvasWrap, view, updateTransform }) {
+function bindDrag({ stage, view, updateTransform }) {
     let isDragging = false;
     let dragStartX = 0;
     let dragStartY = 0;
     let dragOriginX = 0;
     let dragOriginY = 0;
 
-    canvasWrap.addEventListener('pointerdown', event => {
+    stage.addEventListener('pointerdown', event => {
         if (!view.isZoomed || !isItem(event.target)) return;
         isDragging = true;
         dragStartX = event.clientX;
@@ -55,7 +55,7 @@ function bindDrag({ canvasWrap, view, updateTransform }) {
         event.target.setPointerCapture(event.pointerId);
     });
 
-    canvasWrap.addEventListener('pointermove', event => {
+    stage.addEventListener('pointermove', event => {
         if (!isDragging) return;
         view.translateX = dragOriginX + (event.clientX - dragStartX);
         view.translateY = dragOriginY + (event.clientY - dragStartY);
@@ -73,15 +73,15 @@ function bindDrag({ canvasWrap, view, updateTransform }) {
         }
     }
 
-    canvasWrap.addEventListener('pointerup', endDrag);
-    canvasWrap.addEventListener('pointercancel', endDrag);
-    canvasWrap.addEventListener('lostpointercapture', endDrag);
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+    stage.addEventListener('lostpointercapture', endDrag);
 }
 
 function bindWheelZoom(api) {
-    const { canvasWrap, view, isOpen, setZoomed, resetPan, updateTransform } = api;
+    const { stage, view, isOpen, setZoomed, resetPan, updateTransform } = api;
 
-    canvasWrap.addEventListener('wheel', event => {
+    stage.addEventListener('wheel', event => {
         if (!isOpen()) return;
         if (!view.isZoomed && event.deltaY > 0) return;
         event.preventDefault();
@@ -177,7 +177,7 @@ function bindPinchAndSwipe(api) {
  * Wires the pointer, wheel and touch gestures of the viewer.
  * @param {object} api
  * @param {HTMLElement} api.lightbox
- * @param {HTMLElement} api.canvasWrap
+ * @param {HTMLElement} api.stage
  * @param {HTMLInputElement|null} api.zoomRange
  * @param {{scale: number, translateX: number, translateY: number, isZoomed: boolean, maxZoom: number}} api.view
  * @param {() => boolean} api.isOpen

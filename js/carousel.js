@@ -17,9 +17,9 @@ const OBSERVER_FALLBACK_MS = 4000;
 // cannot be left frozen by accident.
 function createCarousel(container, slides) {
     const dots = container.querySelectorAll('.carousel-dot');
-    // The project pages and the drawings page name these two elements
-    // differently; both are accepted.
-    const progressBar = container.querySelector('.carousel-progress-bar, .carousel-timer-bar');
+    // The bar is styled differently on the project pages and on the drawings
+    // page; the hook is the same.
+    const progressBar = container.querySelector('.js-carousel-progress');
     const indicator = container.querySelector('.carousel-counter');
 
     let currentIndex = 0;
