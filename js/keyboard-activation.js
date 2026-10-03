@@ -3,6 +3,7 @@
  * from the keyboard.
  */
 
+import { on, EVENTS } from './core/state.js';
 import { t } from './i18n/i18n.js';
 import { SECTION_TRIGGER_SELECTOR } from './lightbox/triggers.js';
 
@@ -27,10 +28,17 @@ function makeKeyboardActivatable(element) {
     });
 }
 
-/** Makes every click-only element operable from the keyboard and names the carousel dots. */
-export function initKeyboardActivation() {
-    document.querySelectorAll(ACTIVATABLE_SELECTOR).forEach(makeKeyboardActivatable);
+// The name carries a number, so it is composed here rather than read from
+// the dictionary as a whole.
+function nameCarouselDots() {
     document.querySelectorAll('.carousel-dot').forEach(dot => {
         dot.setAttribute('aria-label', `${t('carousel_page')} ${Number(dot.dataset.slideTo) + 1}`);
     });
+}
+
+/** Makes every click-only element operable from the keyboard and names the carousel dots. */
+export function initKeyboardActivation() {
+    document.querySelectorAll(ACTIVATABLE_SELECTOR).forEach(makeKeyboardActivatable);
+    nameCarouselDots();
+    on(EVENTS.LANGUAGE_CHANGE, nameCarouselDots);
 }

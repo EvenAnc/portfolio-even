@@ -19,6 +19,8 @@ export const EVENTS = {
     PAGE_SHOWN: 'page-shown',
     /** Back, Forward or a fragment typed by hand. Detail: `{ from: string, to: string|null }`. */
     HISTORY_NAVIGATION: 'history-navigation',
+    /** The interface language has just been applied. Detail: `{ lang: 'fr'|'en' }`. */
+    LANGUAGE_CHANGE: 'language-change',
 };
 
 const handlers = new Map();

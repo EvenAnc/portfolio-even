@@ -126,7 +126,7 @@
 <body>
 
     <!-- Skip link: first element reached by Tab, jumps past the header and menu to the content. -->
-    <a class="skip-link" href="#page-wrapper">Aller au contenu</a>
+    <a class="skip-link" href="#page-wrapper" data-i18n="skip_link">Aller au contenu</a>
 
     <!-- Every page is revealed by script: without it, leave at least a
          name and a way to get in touch. -->
@@ -266,7 +266,7 @@
             </div>
         </div>
 
-        <span class="menu-scribble font-sketch">sommaire ↓</span>
+        <span class="menu-scribble font-sketch" data-i18n="menu_scribble">sommaire ↓</span>
     </div>
 
     <!-- Page container -->
@@ -496,7 +496,7 @@
                             <div class="polaroid-img-wrap">
                                 <svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true">
                                     <path d="M 50 15 A 35 35 0 1 1 15 50" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-dasharray="80 30"/>
-                                </svg><span class="font-sketch" data-i18n="proj_loading">en cours...</span>
+                                </svg><span class="font-sketch" data-i18n="proj_03_status">en cours...</span>
                             </div>
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
@@ -545,7 +545,7 @@
                     <h2 class="page-title">PATERR SUISSE</h2>
                 </div>
                 <div class="coming-soon">
-                    <p class="font-sketch">Contenu du projet Paterr Suisse à venir...</p>
+                    <p class="font-sketch" data-i18n="proj_02_placeholder">Contenu du projet Paterr Suisse à venir...</p>
                 </div>
                 <!-- Next-page link -->
                 <a href="#projet-03" class="page-next" data-target="project-3" aria-label="Aller au projet suivant" data-i18n-aria="aria_next_project">
@@ -579,10 +579,10 @@
             <div class="page-inner">
                 <div class="page-heading">
                     <span class="page-num">02.3</span>
-                    <h2 class="page-title">PROJET 3</h2>
+                    <h2 class="page-title" data-i18n="proj_03_heading">PROJET 3</h2>
                 </div>
                 <div class="coming-soon">
-                    <p class="font-sketch">À suivre...</p>
+                    <p class="font-sketch" data-i18n="proj_03_placeholder">À suivre...</p>
                 </div>
                 <!-- Next-page link -->
                 <a href="#dessins" class="page-next" data-target="drawings" aria-label="Aller à la page Dessins" data-i18n-aria="aria_goto_drawings">
@@ -620,7 +620,7 @@
                     <!-- Tape title -->
                     <div class="project-board-header">
                         <div class="tape-title-wrap">
-                            <h2 class="font-sketch tape-title" data-i18n="proj_title">PROJET 01 : DIPLÔME</h2>
+                            <h2 class="font-sketch tape-title" data-i18n="proj_01_title">PROJET 01 : DIPLÔME</h2>
                         </div>
                     </div>
 
@@ -637,10 +637,10 @@
                     <!-- Panel 1: zoning and analysis (dark grey) -->
                     <div class="panel panel--alt">
                         <div class="sticker-title-wrap">
-                            <h3 class="sticker-title font-sketch" data-i18n="proj_panel_zooning">ZOONING ET ANALYSE</h3>
+                            <h3 class="sticker-title font-sketch" data-i18n="proj_panel_zoning">ZOONING ET ANALYSE</h3>
                         </div>
-                        <p class="panel-lede" data-i18n="lede_zooning">Une oliveraie en bord de route, à Lambesc, sur un axe très fréquenté par les motards. Le projet s'installe sur une portion de parcelle restée vide. La circulation reprend les codes d'une piste de moto, et c'est elle qui décide de l'implantation des bâtiments.</p>
-                        <p class="panel-tools" data-i18n="tools_zooning">InDesign · Procreate</p>
+                        <p class="panel-lede" data-i18n="lede_zoning">Une oliveraie en bord de route, à Lambesc, sur un axe très fréquenté par les motards. Le projet s'installe sur une portion de parcelle restée vide. La circulation reprend les codes d'une piste de moto, et c'est elle qui décide de l'implantation des bâtiments.</p>
+                        <p class="panel-tools" data-i18n="tools_zoning">InDesign · Procreate</p>
                         <div class="carousel carousel--landscape">
                             <div class="carousel-row">
                                 <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
@@ -649,8 +649,8 @@
                                 <div class="frame-wrap">
                                     <div class="carousel-viewport">
                                         <div class="carousel-track">
-                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-masse.webp" srcset="PDF/opt/plan-masse-1280.webp 1x, PDF/opt/plan-masse.webp 2x" data-pdf-url="PDF/plan-masse.pdf" alt="Plan masse" data-i18n-alt="alt_plan_masse" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
-                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/trame.webp" srcset="PDF/opt/trame-1280.webp 1x, PDF/opt/trame.webp 2x" data-pdf-url="PDF/trame.pdf" alt="Trame structurelle" data-i18n-alt="alt_trame" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-masse.webp" srcset="PDF/opt/plan-masse-1280.webp 1x, PDF/opt/plan-masse.webp 2x" data-pdf-url="PDF/plan-masse.pdf" alt="Plan masse" data-i18n-alt="alt_site_plan" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/trame.webp" srcset="PDF/opt/trame-1280.webp 1x, PDF/opt/trame.webp 2x" data-pdf-url="PDF/trame.pdf" alt="Trame structurelle" data-i18n-alt="alt_structural_grid" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
                                             <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/zooning-batiment.webp" srcset="PDF/opt/zooning-batiment-1280.webp 1x, PDF/opt/zooning-batiment.webp 2x" data-pdf-url="PDF/zooning-batiment.pdf" alt="Zoning du bâtiment" data-i18n-alt="alt_zoning_building" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
                                             <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/zooning-circulation.webp" srcset="PDF/opt/zooning-circulation-1280.webp 1x, PDF/opt/zooning-circulation.webp 2x" data-pdf-url="PDF/zooning-circulation.pdf" alt="Zoning des circulations" data-i18n-alt="alt_zoning_circulation" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
                                         </div>
@@ -686,13 +686,13 @@
                                 <div class="frame-wrap">
                                     <div class="carousel-viewport">
                                         <div class="carousel-track">
-                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-rmoins1.webp" srcset="PDF/opt/plan-rmoins1-1280.webp 1x, PDF/opt/plan-rmoins1.webp 2x" data-pdf-url="PDF/plan-rmoins1.pdf" alt="Plan du niveau R-1" data-i18n-alt="alt_plan_rm1" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
-                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-rdc.webp" srcset="PDF/opt/plan-rdc-1280.webp 1x, PDF/opt/plan-rdc.webp 2x" data-pdf-url="PDF/plan-rdc.pdf" alt="Plan du rez-de-chaussée" data-i18n-alt="alt_plan_rdc" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
-                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-r1.webp" srcset="PDF/opt/plan-r1-1280.webp 1x, PDF/opt/plan-r1.webp 2x" data-pdf-url="PDF/plan-r1.pdf" alt="Plan du niveau R+1" data-i18n-alt="alt_plan_r1" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-rmoins1.webp" srcset="PDF/opt/plan-rmoins1-1280.webp 1x, PDF/opt/plan-rmoins1.webp 2x" data-pdf-url="PDF/plan-rmoins1.pdf" alt="Plan du niveau R-1" data-i18n-alt="alt_plan_lower_level" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-rdc.webp" srcset="PDF/opt/plan-rdc-1280.webp 1x, PDF/opt/plan-rdc.webp 2x" data-pdf-url="PDF/plan-rdc.pdf" alt="Plan du rez-de-chaussée" data-i18n-alt="alt_plan_ground_floor" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
+                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-r1.webp" srcset="PDF/opt/plan-r1-1280.webp 1x, PDF/opt/plan-r1.webp 2x" data-pdf-url="PDF/plan-r1.pdf" alt="Plan du niveau R+1" data-i18n-alt="alt_plan_upper_level" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
                                             <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-station.webp" srcset="PDF/opt/plan-station-1280.webp 1x, PDF/opt/plan-station.webp 2x" data-pdf-url="PDF/plan-station.pdf" alt="Zoom sur la station" data-i18n-alt="alt_zoom_station" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
-                                            <div class="carousel-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-resto.webp" srcset="PDF/opt/plan-resto-1280.webp 1x, PDF/opt/plan-resto.webp 2x" data-pdf-url="PDF/plan-resto.pdf" alt="Zoom sur le restaurant" data-i18n-alt="alt_zoom_resto" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
+                                            <div class="carousel-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-resto.webp" srcset="PDF/opt/plan-resto-1280.webp 1x, PDF/opt/plan-resto.webp 2x" data-pdf-url="PDF/plan-resto.pdf" alt="Zoom sur le restaurant" data-i18n-alt="alt_zoom_restaurant" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
                                             <div class="carousel-slide" data-slide="5"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-garage.webp" srcset="PDF/opt/plan-garage-1280.webp 1x, PDF/opt/plan-garage.webp 2x" data-pdf-url="PDF/plan-garage.pdf" alt="Zoom sur le garage" data-i18n-alt="alt_zoom_garage" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
-                                            <div class="carousel-slide" data-slide="6"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-expo.webp" srcset="PDF/opt/plan-expo-1280.webp 1x, PDF/opt/plan-expo.webp 2x" data-pdf-url="PDF/plan-expo.pdf" alt="Zoom sur l'espace d'exposition" data-i18n-alt="alt_zoom_expo" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
+                                            <div class="carousel-slide" data-slide="6"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="js-pdf-source plan-img" src="PDF/opt/plan-expo.webp" srcset="PDF/opt/plan-expo-1280.webp 1x, PDF/opt/plan-expo.webp 2x" data-pdf-url="PDF/plan-expo.pdf" alt="Zoom sur l'espace d'exposition" data-i18n-alt="alt_zoom_exhibition" loading="lazy" decoding="async" width="2400" height="1630"></div></div></div>
                                         </div>
                                     </div>
                                     <!-- Hand-drawn red scribble -->
@@ -714,41 +714,41 @@
                     <!-- Panel 3: architectural sections (dark grey) -->
                     <div class="panel panel--alt">
                         <div class="sticker-title-wrap">
-                            <h3 class="sticker-title font-sketch" data-i18n="proj_panel_coupes">COUPES ARCHITECTURALES</h3>
+                            <h3 class="sticker-title font-sketch" data-i18n="proj_panel_sections">COUPES ARCHITECTURALES</h3>
                         </div>
-                        <p class="panel-lede" data-i18n="lede_coupes">Ici tout se joue sur la verticalité du site. Les coupes sont texturées pour rendre lisible l'épaisseur du projet et la matière réelle des parois, ce qu'un plan ne peut pas montrer.</p>
-                        <p class="panel-tools" data-i18n="tools_coupes">ArchiCAD · Photoshop</p>
+                        <p class="panel-lede" data-i18n="lede_sections">Ici tout se joue sur la verticalité du site. Les coupes sont texturées pour rendre lisible l'épaisseur du projet et la matière réelle des parois, ce qu'un plan ne peut pas montrer.</p>
+                        <p class="panel-tools" data-i18n="tools_sections">ArchiCAD · Photoshop</p>
 
                         <div class="section-stack" data-section-gallery>
                             <div class="section-stack-item" data-section-index="0">
                                 <div class="drawing-sheet-wrap">
-                                    <span class="section-stack-label font-sketch">Coupe Nord Lointaine</span>
+                                    <span class="section-stack-label font-sketch" data-i18n="section_label_north_distant">Coupe Nord Lointaine</span>
                                     <div class="media-frame-inner drawing-sheet">
-                                        <img class="js-pdf-source plan-img" src="PDF/opt/coupe-nord-loingtaine.webp" srcset="PDF/opt/coupe-nord-loingtaine-1280.webp 1x, PDF/opt/coupe-nord-loingtaine.webp 2x" data-pdf-url="PDF/coupe-nord-loingtaine.pdf" alt="Coupe nord, vue lointaine" data-i18n-alt="alt_coupe_lointaine" loading="lazy" decoding="async" width="2400" height="1358">
+                                        <img class="js-pdf-source plan-img" src="PDF/opt/coupe-nord-loingtaine.webp" srcset="PDF/opt/coupe-nord-loingtaine-1280.webp 1x, PDF/opt/coupe-nord-loingtaine.webp 2x" data-pdf-url="PDF/coupe-nord-loingtaine.pdf" alt="Coupe nord, vue lointaine" data-i18n-alt="alt_section_north_distant" loading="lazy" decoding="async" width="2400" height="1358">
                                     </div>
                                 </div>
                             </div>
                             <div class="section-stack-item" data-section-index="1">
                                 <div class="drawing-sheet-wrap">
-                                    <span class="section-stack-label section-stack-label--right font-sketch">Coupe Nord Texturée</span>
+                                    <span class="section-stack-label section-stack-label--right font-sketch" data-i18n="section_label_north">Coupe Nord Texturée</span>
                                     <div class="media-frame-inner drawing-sheet">
-                                        <img class="js-pdf-source plan-img" src="PDF/opt/coupe-nord-texture.webp" srcset="PDF/opt/coupe-nord-texture-1280.webp 1x, PDF/opt/coupe-nord-texture.webp 2x" data-pdf-url="PDF/coupe-nord-texture.pdf" alt="Coupe nord texturée" data-i18n-alt="alt_coupe_nord" loading="lazy" decoding="async" width="2400" height="1358">
+                                        <img class="js-pdf-source plan-img" src="PDF/opt/coupe-nord-texture.webp" srcset="PDF/opt/coupe-nord-texture-1280.webp 1x, PDF/opt/coupe-nord-texture.webp 2x" data-pdf-url="PDF/coupe-nord-texture.pdf" alt="Coupe nord texturée" data-i18n-alt="alt_section_north" loading="lazy" decoding="async" width="2400" height="1358">
                                     </div>
                                 </div>
                             </div>
                             <div class="section-stack-item" data-section-index="2">
                                 <div class="drawing-sheet-wrap">
-                                    <span class="section-stack-label font-sketch">Coupe Ouest Texturée</span>
+                                    <span class="section-stack-label font-sketch" data-i18n="section_label_west">Coupe Ouest Texturée</span>
                                     <div class="media-frame-inner drawing-sheet">
-                                        <img class="js-pdf-source plan-img" src="PDF/opt/coupe-ouest-texture.webp" srcset="PDF/opt/coupe-ouest-texture-1280.webp 1x, PDF/opt/coupe-ouest-texture.webp 2x" data-pdf-url="PDF/coupe-ouest-texture.pdf" alt="Coupe ouest texturée" data-i18n-alt="alt_coupe_ouest" loading="lazy" decoding="async" width="2400" height="1358">
+                                        <img class="js-pdf-source plan-img" src="PDF/opt/coupe-ouest-texture.webp" srcset="PDF/opt/coupe-ouest-texture-1280.webp 1x, PDF/opt/coupe-ouest-texture.webp 2x" data-pdf-url="PDF/coupe-ouest-texture.pdf" alt="Coupe ouest texturée" data-i18n-alt="alt_section_west" loading="lazy" decoding="async" width="2400" height="1358">
                                     </div>
                                 </div>
                             </div>
                             <div class="section-stack-item" data-section-index="3">
                                 <div class="drawing-sheet-wrap">
-                                    <span class="section-stack-label section-stack-label--right font-sketch">Coupe Sud Texturée</span>
+                                    <span class="section-stack-label section-stack-label--right font-sketch" data-i18n="section_label_south">Coupe Sud Texturée</span>
                                     <div class="media-frame-inner drawing-sheet">
-                                        <img class="js-pdf-source plan-img" src="PDF/opt/coupe-sud-texture.webp" srcset="PDF/opt/coupe-sud-texture-1280.webp 1x, PDF/opt/coupe-sud-texture.webp 2x" data-pdf-url="PDF/coupe-sud-texture.pdf" alt="Coupe sud texturée" data-i18n-alt="alt_coupe_sud" loading="lazy" decoding="async" width="2400" height="1358">
+                                        <img class="js-pdf-source plan-img" src="PDF/opt/coupe-sud-texture.webp" srcset="PDF/opt/coupe-sud-texture-1280.webp 1x, PDF/opt/coupe-sud-texture.webp 2x" data-pdf-url="PDF/coupe-sud-texture.pdf" alt="Coupe sud texturée" data-i18n-alt="alt_section_south" loading="lazy" decoding="async" width="2400" height="1358">
                                     </div>
                                 </div>
                             </div>
@@ -765,10 +765,10 @@
 
                         <div class="render-grid">
                             <div class="render-item">
-                                <span class="render-label font-sketch">Intérieur</span>
+                                <span class="render-label font-sketch" data-i18n="render_label_interior">Intérieur</span>
                                 <div class="drawing-sheet-wrap">
                                     <div class="media-frame-inner media-placeholder">
-                                        <div class="font-sketch">[ 3D Intérieur ]</div>
+                                        <div class="font-sketch" data-i18n="render_placeholder_interior">[ 3D Intérieur ]</div>
                                     </div>
                                 </div>
                             </div>
@@ -781,10 +781,10 @@
                                 </div>
                             </div>
                             <div class="render-item">
-                                <span class="render-label font-sketch">Vue de loin</span>
+                                <span class="render-label font-sketch" data-i18n="render_label_distant">Vue de loin</span>
                                 <div class="drawing-sheet-wrap">
                                     <div class="media-frame-inner media-placeholder">
-                                        <div class="font-sketch">[ Vue Lointaine ]</div>
+                                        <div class="font-sketch" data-i18n="render_placeholder_distant">[ Vue Lointaine ]</div>
                                     </div>
                                 </div>
                             </div>
@@ -796,8 +796,8 @@
                         <div class="tradeoff-inner">
                             <span class="tradeoff-eyebrow font-sketch" data-i18n="choice_eyebrow">Les problématiques</span>
                             <h3 class="tradeoff-title" data-i18n="choice_title">Un site pas comme les autres</h3>
-                            <p class="tradeoff-text" data-i18n="choice_text">Le terrain n'a pas été choisi pour sa facilité. Il est perché dans les hauteurs de Lambesc, en pleine garrigue, au croisement de deux grands axes motards et à deux pas des routes de cols. Aucune station-service à des kilomètres, rien autour. Je suis tombé dessus pendant une balade et l'endroit s'est imposé.</p>
-                            <p class="tradeoff-text" data-i18n="choice_text2">Restait à le rendre viable. Installer une station essence en zone inflammable, juste à côté d'une oliveraie, ça ne va pas de soi. Ce sont ces contraintes qui ont fini par donner au projet ses lignes directrices et qui l'ont rendu réalisable.</p>
+                            <p class="tradeoff-text" data-i18n="choice_text_1">Le terrain n'a pas été choisi pour sa facilité. Il est perché dans les hauteurs de Lambesc, en pleine garrigue, au croisement de deux grands axes motards et à deux pas des routes de cols. Aucune station-service à des kilomètres, rien autour. Je suis tombé dessus pendant une balade et l'endroit s'est imposé.</p>
+                            <p class="tradeoff-text" data-i18n="choice_text_2">Restait à le rendre viable. Installer une station essence en zone inflammable, juste à côté d'une oliveraie, ça ne va pas de soi. Ce sont ces contraintes qui ont fini par donner au projet ses lignes directrices et qui l'ont rendu réalisable.</p>
                         </div>
                     </div>
 
@@ -806,8 +806,8 @@
                 <!-- Closing quote -->
                 <section class="quote-band">
                     <figure class="quote-band-body">
-                        <blockquote class="quote-band-text" data-i18n="quote_text">Quand les détails réussissent, ils ne distraient pas et n'amusent pas. Ils conduisent à la compréhension de l'ensemble dont ils font partie.</blockquote>
-                        <figcaption class="quote-band-author" data-i18n="quote_author">Peter Zumthor</figcaption>
+                        <blockquote class="quote-band-text" data-i18n="quote_1_text">Quand les détails réussissent, ils ne distraient pas et n'amusent pas. Ils conduisent à la compréhension de l'ensemble dont ils font partie.</blockquote>
+                        <figcaption class="quote-band-author" data-i18n="quote_1_author">Peter Zumthor</figcaption>
                     </figure>
                 </section>
 
@@ -855,7 +855,7 @@
                         <div class="frame-wrap">
                             <div class="drawing-sheet-wrap torn-frame">
                                 <div class="media-frame-inner drawing-sheet">
-                                    <img src="dessin/opt/cartographie.webp" class="media-frame-img" alt="Dessin Cartographie" data-i18n-alt="alt_draw_carto" loading="lazy" width="848" height="1200">
+                                    <img src="dessin/opt/cartographie.webp" class="media-frame-img" alt="Dessin Cartographie" data-i18n-alt="alt_drawing_map" loading="lazy" width="848" height="1200">
                                 </div>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -870,8 +870,8 @@
                             </div>
                         </div>
                         <div class="drawing-meta">
-                            <h3 class="drawing-title" data-i18n="drawing_title_carto">CARTOGRAPHIE</h3>
-                            <span class="drawing-detail font-sketch" data-i18n="drawing_desc_carto">Dessin technique &amp; Relief — A4</span>
+                            <h3 class="drawing-title" data-i18n="drawing_title_map">CARTOGRAPHIE</h3>
+                            <span class="drawing-detail font-sketch" data-i18n="drawing_desc_map">Dessin technique &amp; Relief — A4</span>
                         </div>
                     </div>
 
@@ -879,7 +879,7 @@
                         <div class="frame-wrap">
                             <div class="drawing-sheet-wrap torn-frame">
                                 <div class="media-frame-inner drawing-sheet">
-                                    <img src="dessin/opt/a-la-maniere-de.webp" class="media-frame-img" alt="Dessin À la manière de" data-i18n-alt="alt_draw_style" loading="lazy" width="1200" height="848">
+                                    <img src="dessin/opt/a-la-maniere-de.webp" class="media-frame-img" alt="Dessin À la manière de" data-i18n-alt="alt_drawing_style" loading="lazy" width="1200" height="848">
                                 </div>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -896,7 +896,7 @@
                         <div class="frame-wrap">
                             <div class="drawing-sheet-wrap torn-frame torn-frame--alt">
                                 <div class="media-frame-inner drawing-sheet">
-                                    <img src="dessin/opt/noir-et-blanc.webp" class="media-frame-img" alt="Dessin Noir et blanc" data-i18n-alt="alt_draw_nb" loading="lazy" width="849" height="1200">
+                                    <img src="dessin/opt/noir-et-blanc.webp" class="media-frame-img" alt="Dessin Noir et blanc" data-i18n-alt="alt_drawing_ink" loading="lazy" width="849" height="1200">
                                 </div>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -908,14 +908,14 @@
                                 </svg>
                                 <div class="ref-photo torn-frame">
                                     <div class="media-frame-inner">
-                                        <img src="dessin/opt/photo-reference.webp" srcset="dessin/opt/photo-reference-240.webp 1x, dessin/opt/photo-reference.webp 2x" class="media-frame-img" alt="Photo de référence" data-i18n-alt="alt_photo_ref" loading="lazy" decoding="async" width="600" height="800">
+                                        <img src="dessin/opt/photo-reference.webp" srcset="dessin/opt/photo-reference-240.webp 1x, dessin/opt/photo-reference.webp 2x" class="media-frame-img" alt="Photo de référence" data-i18n-alt="alt_reference_photo" loading="lazy" decoding="async" width="600" height="800">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="drawing-meta">
-                            <h3 class="drawing-title" data-i18n="drawing_title_nb">NOIR ET BLANC</h3>
-                            <span class="drawing-detail font-sketch" data-i18n="drawing_desc_nb">Encre de Chine &amp; Graphisme — A4</span>
+                            <h3 class="drawing-title" data-i18n="drawing_title_ink">NOIR ET BLANC</h3>
+                            <span class="drawing-detail font-sketch" data-i18n="drawing_desc_ink">Encre de Chine &amp; Graphisme — A4</span>
                         </div>
                     </div>
                 </div>
@@ -923,7 +923,7 @@
                 <!-- Comic carousel -->
                 <div class="carousel quote-band-before">
                     <div class="comic-heading">
-                        <p class="comic-kicker font-sketch" data-i18n="bd_title">BANDE DESSINÉE</p>
+                        <p class="comic-kicker font-sketch" data-i18n="comic_title">BANDE DESSINÉE</p>
                         <h3 class="comic-title">FALLOUT</h3>
                         <div class="comic-burst"></div>
                     </div>
@@ -942,28 +942,28 @@
                                     <div class="carousel-slide is-active" data-slide="0">
                                         <div class="drawing-sheet-wrap torn-frame">
                                             <div class="media-frame-inner drawing-sheet">
-                                                <img src="dessin/opt/bd-page-1.webp" class="media-frame-img" alt="BD page 1" data-i18n-alt="alt_bd_1" loading="lazy" width="849" height="1200">
+                                                <img src="dessin/opt/bd-page-1.webp" class="media-frame-img" alt="BD page 1" data-i18n-alt="alt_comic_1" loading="lazy" width="849" height="1200">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="carousel-slide" data-slide="1">
                                         <div class="drawing-sheet-wrap torn-frame torn-frame--alt">
                                             <div class="media-frame-inner drawing-sheet">
-                                                <img src="dessin/opt/bd-page-2.webp" class="media-frame-img" alt="BD page 2" data-i18n-alt="alt_bd_2" loading="lazy" width="849" height="1200">
+                                                <img src="dessin/opt/bd-page-2.webp" class="media-frame-img" alt="BD page 2" data-i18n-alt="alt_comic_2" loading="lazy" width="849" height="1200">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="carousel-slide" data-slide="2">
                                         <div class="drawing-sheet-wrap torn-frame">
                                             <div class="media-frame-inner drawing-sheet">
-                                                <img src="dessin/opt/bd-page-3.webp" class="media-frame-img" alt="BD page 3" data-i18n-alt="alt_bd_3" loading="lazy" width="849" height="1200">
+                                                <img src="dessin/opt/bd-page-3.webp" class="media-frame-img" alt="BD page 3" data-i18n-alt="alt_comic_3" loading="lazy" width="849" height="1200">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="carousel-slide" data-slide="3">
                                         <div class="drawing-sheet-wrap torn-frame torn-frame--alt">
                                             <div class="media-frame-inner drawing-sheet">
-                                                <img src="dessin/opt/bd-page-4.webp" class="media-frame-img" alt="BD page 4" data-i18n-alt="alt_bd_4" loading="lazy" width="849" height="1200">
+                                                <img src="dessin/opt/bd-page-4.webp" class="media-frame-img" alt="BD page 4" data-i18n-alt="alt_comic_4" loading="lazy" width="849" height="1200">
                                             </div>
                                         </div>
                                     </div>
@@ -1007,8 +1007,8 @@
                 <!-- Closing quote -->
                 <section class="quote-band">
                     <figure class="quote-band-body">
-                        <blockquote class="quote-band-text" data-i18n="quote2_text">Je préfère dessiner que parler. Dessiner est plus rapide et laisse moins de place au mensonge.</blockquote>
-                        <figcaption class="quote-band-author" data-i18n="quote2_author">Le Corbusier</figcaption>
+                        <blockquote class="quote-band-text" data-i18n="quote_2_text">Je préfère dessiner que parler. Dessiner est plus rapide et laisse moins de place au mensonge.</blockquote>
+                        <figcaption class="quote-band-author" data-i18n="quote_2_author">Le Corbusier</figcaption>
                     </figure>
                 </section>
 
@@ -1057,10 +1057,10 @@
                             <span class="school-city font-sketch">Toulouse</span>
                         </div>
                         <div class="frame-wrap">
-                            <a class="school-link" href="https://www.mjm-design.com/formation/bachelor-architecture-dinterieur" target="_blank" rel="noopener noreferrer" title="Visiter le site de la formation MJM Graphic Design">
+                            <a class="school-link" href="https://www.mjm-design.com/formation/bachelor-architecture-dinterieur" target="_blank" rel="noopener noreferrer" title="Visiter le site de la formation MJM Graphic Design" data-i18n-title="title_school_link">
                                 <div class="school-photo torn-frame">
                                     <div class="media-frame-inner">
-                                        <img src="assets/ecole-art-mjm-toulouse-rncp-alternance.webp" alt="Façade de MJM Toulouse" data-i18n-alt="alt_mjm" class="media-frame-img" width="1000" height="667">
+                                        <img src="assets/ecole-art-mjm-toulouse-rncp-alternance.webp" alt="Façade de MJM Toulouse" data-i18n-alt="alt_school_front" class="media-frame-img" width="1000" height="667">
                                     </div>
                                 </div>
                             </a>
@@ -1093,27 +1093,27 @@
                                 </div>
                                 <div class="diploma-cert-body">
                                     <div class="diploma-cert-section">
-                                        <h4 class="diploma-cert-label" data-i18n="diploma_cert_rncp">STATUT RÉGLEMENTAIRE</h4>
-                                        <p class="diploma-cert-text" data-i18n="diploma_cert_rncp_val">Titre de niveau 6 (Bac+3 / Licence) inscrit au RNCP, certifiant l'aptitude à concevoir des espaces intérieurs, élaborer des dossiers techniques et superviser des chantiers.</p>
+                                        <h4 class="diploma-cert-label" data-i18n="diploma_cert_status">STATUT RÉGLEMENTAIRE</h4>
+                                        <p class="diploma-cert-text" data-i18n="diploma_cert_status_text">Titre de niveau 6 (Bac+3 / Licence) inscrit au RNCP, certifiant l'aptitude à concevoir des espaces intérieurs, élaborer des dossiers techniques et superviser des chantiers.</p>
                                     </div>
                                     <div class="diploma-cert-section">
                                         <h4 class="diploma-cert-label" data-i18n="diploma_cert_credits">CRÉDENTIALS ACADÉMIQUES</h4>
-                                        <p class="diploma-cert-text" data-i18n="diploma_cert_credits_val">
+                                        <p class="diploma-cert-text" data-i18n="diploma_cert_credits_text">
                                             Équivalence de 180 crédits ECTS (Niveau 6 Européen EQF). Équivalence Suisse : Bachelor of Arts (BA) HES en architecture d'intérieur. Formation éligible au CPF.
                                         </p>
                                     </div>
                                     <div class="diploma-cert-section">
-                                        <h4 class="diploma-cert-label" data-i18n="diploma_cert_competences">COMPÉTENCES CLÉS ACCRÉDITÉES</h4>
+                                        <h4 class="diploma-cert-label" data-i18n="diploma_cert_skills">COMPÉTENCES CLÉS ACCRÉDITÉES</h4>
                                         <ul class="diploma-skills-list">
-                                            <li data-i18n="diploma_cert_c1">Diagnostic technique, spatial et réglementaire de l'existant.</li>
-                                            <li data-i18n="diploma_cert_c2">Création de concepts esthétiques, plans de coupe et modélisations 3D.</li>
-                                            <li data-i18n="diploma_cert_c3">Prescription technique des matériaux, devis et cahiers des charges.</li>
-                                            <li data-i18n="diploma_cert_c4">Planification des interventions et coordination de la maîtrise d'œuvre.</li>
+                                            <li data-i18n="diploma_cert_skill_1">Diagnostic technique, spatial et réglementaire de l'existant.</li>
+                                            <li data-i18n="diploma_cert_skill_2">Création de concepts esthétiques, plans de coupe et modélisations 3D.</li>
+                                            <li data-i18n="diploma_cert_skill_3">Prescription technique des matériaux, devis et cahiers des charges.</li>
+                                            <li data-i18n="diploma_cert_skill_4">Planification des interventions et coordination de la maîtrise d'œuvre.</li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div class="diploma-cert-footer">
-                                    <span class="diploma-cert-code">Code RNCP : 34993</span>
+                                    <span class="diploma-cert-code" data-i18n="diploma_cert_code">Code RNCP : 34993</span>
                                     <span class="diploma-cert-authority" data-i18n="diploma_cert_footer">Enregistré par France Compétences</span>
                                 </div>
                             </div>
@@ -1185,7 +1185,7 @@
                         <div class="frame-wrap frame-wrap--tilt-a">
                             <div class="drawing-sheet-wrap torn-frame">
                                 <div class="media-frame-inner drawing-sheet media-placeholder--dark">
-                                    <span class="font-sketch">à venir...</span>
+                                    <span class="font-sketch" data-i18n="hobbies_placeholder">à venir...</span>
                                 </div>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -1199,7 +1199,7 @@
                         <div class="frame-wrap frame-wrap--tilt-b">
                             <div class="drawing-sheet-wrap torn-frame torn-frame--alt">
                                 <div class="media-frame-inner drawing-sheet media-placeholder--dark">
-                                    <span class="font-sketch">à venir...</span>
+                                    <span class="font-sketch" data-i18n="hobbies_placeholder">à venir...</span>
                                 </div>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
@@ -1213,7 +1213,7 @@
                         <div class="frame-wrap frame-wrap--tilt-c">
                             <div class="drawing-sheet-wrap torn-frame">
                                 <div class="media-frame-inner drawing-sheet media-placeholder--dark">
-                                    <span class="font-sketch">à venir...</span>
+                                    <span class="font-sketch" data-i18n="hobbies_placeholder">à venir...</span>
                                 </div>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
