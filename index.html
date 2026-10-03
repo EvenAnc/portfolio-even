@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- Content Security Policy: own files, plus the three services the page talks to (fonts,
+         audience measurement, form delivery). No inline script or style is allowed. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://formsubmit.co https://cloudflareinsights.com; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action https://formsubmit.co">
     <title>Even ANICET — Architecte d'intérieur</title>
     <meta name="description" content="Portfolio d'Even ANICET, architecte d'intérieur diplômé de MJM Graphic Design Toulouse.">
 
