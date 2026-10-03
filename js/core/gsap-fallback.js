@@ -98,7 +98,7 @@ function applyVars(targets, vars = {}) {
         try {
             vars.onComplete();
         } catch (error) {
-            console.error(error);
+            console.error('[portfolio] animation callback failed:', error);
         }
     }
     return { kill() {}, pause() {}, play() {}, progress: () => 1 };

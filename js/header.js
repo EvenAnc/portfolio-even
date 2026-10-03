@@ -17,11 +17,7 @@ export function updateHeaderLogo(pageId) {
  * @param {string} pageId
  */
 export function updateBackButton(pageId) {
-    const backBtn = document.getElementById('header-back-btn');
-    if (!backBtn) return;
-    const isProjectPage = pageId.startsWith('project-');
-    backBtn.style.display = isProjectPage ? 'flex' : 'none';
-    // On phones the back button and the centred logo overlap: the
-    // stylesheet hides the logo when this class is set.
-    document.body.classList.toggle('has-back-button', isProjectPage);
+    // The stylesheet shows the button on this class and, on phones, hides
+    // the centred logo it would overlap.
+    document.body.classList.toggle('has-back-button', pageId.startsWith('project-'));
 }

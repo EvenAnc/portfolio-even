@@ -23,7 +23,7 @@ const VENDOR_CACHE = `portfolio-vendor-${VERSION}`;
 const CODE_CACHE = `portfolio-code-${VERSION}`;
 const CURRENT_CACHES = [MEDIA_CACHE, VENDOR_CACHE, CODE_CACHE];
 
-const MEDIA_EXTENSIONS = /\.(webp|avif|png|jpe?g|gif|svg|woff2?|pdf|ico|mp4|webm)$/i;
+const MEDIA_EXTENSIONS = /\.(webp|png|gif|svg|woff2?|pdf)$/i;
 const VENDOR_PATH = /\/vendor\//;
 
 // Only complete same-origin answers are stored: a partial (206) or error

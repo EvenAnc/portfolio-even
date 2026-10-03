@@ -91,7 +91,7 @@ body.is-menu-open .burger-line:nth-child(2) {
 
 body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
 
-/* Shown by script on project pages. */
+/* Project pages only: the script sets has-back-button on the body. */
 .header-back-btn {
     display: none;
     align-items: center;
@@ -104,6 +104,7 @@ body.is-menu-open .burger-line:nth-child(3) { transform: translateY(-10px) rotat
 .header-back-btn:hover { transform: translateX(-8px) scale(1.05); }
 .header-back-btn:active { transform: scale(0.95); }
 .header-back-btn .font-sketch { font-size: 2.2rem; }
+body.has-back-button .header-back-btn { display: flex; }
 
 .sketch-arrow-back {
     width: 50px;

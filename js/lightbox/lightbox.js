@@ -21,7 +21,7 @@ const PDF_MAX_ZOOM = 10;
 const BUTTON_ZOOM = 2;
 
 let lightbox = null;
-let canvasWrap = null;
+let stage = null;
 let counterEl = null;
 let closeBtn = null;
 let prevBtn = null;
@@ -29,7 +29,7 @@ let nextBtn = null;
 let loader = null;
 let dotsWrap = null;
 let zoomRange = null;
-let sliderRedPath = null;
+let zoomFill = null;
 
 // Zoom and pan of the item on display, shared with the gesture handlers.
 const view = {
@@ -70,9 +70,9 @@ function cancelActiveRender() {
 
 // Zeroing a canvas frees its backing store at once; mobile Safari
 // otherwise keeps it until a garbage collection that may come late.
-function clearCanvasWrap() {
-    canvasWrap.querySelectorAll('canvas').forEach(canvas => { canvas.width = canvas.height = 0; });
-    canvasWrap.innerHTML = '';
+function clearStage() {
+    stage.querySelectorAll('canvas').forEach(canvas => { canvas.width = canvas.height = 0; });
+    stage.innerHTML = '';
 }
 
 function setLoading(isLoading) {
@@ -82,22 +82,22 @@ function setLoading(isLoading) {
 // A zoomed image may travel only as far as it overflows the frame on
 // each side, so it can never be dragged out of view.
 function clampTranslation(item) {
-    const maxX = Math.max(0, (item.offsetWidth * view.scale - canvasWrap.clientWidth) / 2);
-    const maxY = Math.max(0, (item.offsetHeight * view.scale - canvasWrap.clientHeight) / 2);
+    const maxX = Math.max(0, (item.offsetWidth * view.scale - stage.clientWidth) / 2);
+    const maxY = Math.max(0, (item.offsetHeight * view.scale - stage.clientHeight) / 2);
     view.translateX = Math.min(maxX, Math.max(-maxX, view.translateX));
     view.translateY = Math.min(maxY, Math.max(-maxY, view.translateY));
 }
 
 function updateTransform() {
-    const item = canvasWrap.querySelector('img, canvas');
+    const item = stage.querySelector('img, canvas');
     if (item) {
         clampTranslation(item);
         item.style.transform = `translate(${view.translateX}px, ${view.translateY}px) scale(${view.scale})`;
     }
 
-    if (sliderRedPath && zoomRange) {
+    if (zoomFill && zoomRange) {
         const percent = (view.scale - zoomRange.min) / (zoomRange.max - zoomRange.min);
-        sliderRedPath.style.strokeDashoffset = 100 - (percent * 100);
+        zoomFill.style.strokeDashoffset = 100 - (percent * 100);
     }
 }
 
@@ -172,8 +172,8 @@ function onPointerActivity() {
 }
 
 function placeItem(element) {
-    canvasWrap.innerHTML = '';
-    canvasWrap.appendChild(element);
+    stage.innerHTML = '';
+    stage.appendChild(element);
 }
 
 function showPdf(url, altText, isStale) {
@@ -238,7 +238,7 @@ function showItem(index) {
 
     // A reopening during the closing fade must not be emptied by it.
     clearTimeout(clearTimer);
-    clearCanvasWrap();
+    clearStage();
     setLoading(true);
 
     const id = ++renderId;
@@ -246,7 +246,8 @@ function showItem(index) {
     cancelActiveRender();
 
     const entry = isSingle ? singleItem : gallery[index];
-    const altText = (entry.altKey && t(entry.altKey)) || entry.title || '';
+    // A gallery item names a dictionary key; a single image brings its own text.
+    const altText = (entry.altKey ? t(entry.altKey) : entry.title) || '';
     const isPdf = entry.url.toLowerCase().endsWith('.pdf');
 
     view.maxZoom = isPdf ? PDF_MAX_ZOOM : IMAGE_MAX_ZOOM;
@@ -312,7 +313,7 @@ function openViewer() {
 
 /**
  * Opens the viewer on one entry of a gallery.
- * @param {Array<{url: string, title: string, altKey?: string}>} items
+ * @param {Array<{url: string, altKey: string}>} items
  * @param {number} index
  */
 export function openGallery(items, index) {
@@ -352,7 +353,7 @@ export function closeLightbox() {
     cancelActiveRender();
     setLoading(false);
     // Emptied only once the closing fade has played.
-    clearTimer = setTimeout(clearCanvasWrap, CLOSING_FADE_MS);
+    clearTimer = setTimeout(clearStage, CLOSING_FADE_MS);
     if (state.scroll) state.scroll.start();
     document.body.style.overflow = '';
     giveFocusBack();
@@ -406,7 +407,7 @@ function bindFullscreenButton() {
         event.stopPropagation();
         if (!lightbox.requestFullscreen) return;
         if (!document.fullscreenElement) {
-            lightbox.requestFullscreen().catch(error => console.error(error));
+            lightbox.requestFullscreen().catch(error => console.error('[portfolio] full screen refused:', error));
         } else {
             document.exitFullscreen().catch(() => {});
         }
@@ -445,7 +446,7 @@ function onBackdropClick(event) {
  * @param {HTMLElement} element
  */
 export function showPlaceholder(element) {
-    if (canvasWrap) canvasWrap.appendChild(element);
+    if (stage) stage.appendChild(element);
 }
 
 /**
@@ -463,7 +464,7 @@ export function initLightbox() {
     if (!root || !wrap) return;
 
     lightbox = root;
-    canvasWrap = wrap;
+    stage = wrap;
     counterEl = lightbox.querySelector('.lightbox-counter');
     closeBtn = lightbox.querySelector('.lightbox-close');
     prevBtn = lightbox.querySelector('.lightbox-arrow--prev');
@@ -471,7 +472,7 @@ export function initLightbox() {
     loader = document.getElementById('lightbox-loader');
     dotsWrap = lightbox.querySelector('.lightbox-dots');
     zoomRange = lightbox.querySelector('#lightbox-zoom-range');
-    sliderRedPath = lightbox.querySelector('#lightbox-zoom-fill');
+    zoomFill = lightbox.querySelector('#lightbox-zoom-fill');
 
     // The open/closed state lives in this attribute; it starts closed.
     lightbox.setAttribute('aria-hidden', 'true');
@@ -504,7 +505,7 @@ export function initLightbox() {
 
     initGestures({
         lightbox,
-        canvasWrap,
+        stage,
         zoomRange,
         view,
         isOpen: isLightboxOpen,
