@@ -97,7 +97,7 @@ html-validate runs its recommended preset with no rule turned off. Stylelint run
 | `media-feature-range-notation` | `prefix` | the range notation, `(width <= 768px)`, needs Safari 16.4 |
 | `property-no-vendor-prefix` | allows `-webkit-` on `backdrop-filter`, `mask-*`, `user-select`, `appearance`, `clip-path` | WebKit still needs these prefixes, or needed them in Safari 15 |
 
-One more disable comment, in `css/project-detail.css`, silences `no-descending-specificity` for two selectors of different components that never match the same element.
+Two more disable comments: in `css/project-detail.css`, `no-descending-specificity` for two selectors of different components that never match the same element; in `css/layout.css`, the colour notation rules for the two gradients of the header, which Chromium paints one level off when their colours use the modern syntax.
 
 ## Architecture notes
 
