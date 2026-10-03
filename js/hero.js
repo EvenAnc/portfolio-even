@@ -4,7 +4,7 @@
  */
 
 import { state } from './core/state.js';
-import { tweenTo, tweenFromTo } from './core/gsap-fallback.js';
+import { tweenTo, tweenFromTo, finishCssTransitions } from './core/gsap-fallback.js';
 
 // Resting opacity of the scroll hint under the hero. The hint is shown at
 // full strength so that its label keeps enough contrast; the thin line is
@@ -43,8 +43,10 @@ let isNativeScrollBound = false;
 /** Plays the entrance of the hero, one frame later so that the page is laid out. */
 export function playHeroIntro() {
     requestAnimationFrame(() => {
-        INTRO_STEPS.forEach(([selector, from, to]) => {
-            const element = document.querySelector(selector);
+        const steps = INTRO_STEPS.map(([selector, from, to]) => [document.querySelector(selector), from, to]);
+        // Each tween must start from the resting style of its element.
+        finishCssTransitions(steps.map(([element]) => element));
+        steps.forEach(([element, from, to]) => {
             if (element) tweenFromTo(element, from, to);
         });
     });

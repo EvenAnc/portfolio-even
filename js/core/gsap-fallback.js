@@ -44,6 +44,23 @@ export function tweenFromTo(targets, from, to) {
     else gsap.fromTo(targets, from, to);
 }
 
+/**
+ * Ends the CSS transitions running on some elements. A stylesheet applied
+ * after the first style pass starts the transitions of elements the earlier
+ * sheets had already styled (WebKit, while the sheets arrive); a tween
+ * created meanwhile would read a value caught in flight and keep it.
+ * @param {Array<Element|null>} elements
+ */
+export function finishCssTransitions(elements) {
+    if (typeof CSSTransition === 'undefined') return;
+    elements.forEach(element => {
+        if (!element || !element.getAnimations) return;
+        element.getAnimations()
+            .filter(animation => animation instanceof CSSTransition)
+            .forEach(animation => animation.finish());
+    });
+}
+
 const toPx = value => (typeof value === 'number' ? `${value}px` : value);
 
 const TRANSFORMS = {
