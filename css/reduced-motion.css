@@ -1,9 +1,17 @@
-/* Reduced motion: stops the decorative animations for visitors who ask for less motion.
-   Loaded last. */
+/* Reduced motion: for visitors who ask for less motion, stops the continuous animations and
+   makes every change of state immediate. Loaded last. The script does its share: native
+   scrolling, no page fade, no entrance animation, no autoplay. */
 
 /* stylelint-disable declaration-no-important -- these rules must hold against any component rule, whatever its weight */
 
 @media (prefers-reduced-motion: reduce) {
+    /* No slide, zoom or fade between two states. */
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
+    }
+
     .hero-logo,
     .menu-logo,
     .header-logo-text,
@@ -13,6 +21,38 @@
     .sketch-rect-path {
         animation: none !important;
         filter: none !important;
+    }
+
+    /* Same boiling lines, on elements that keep their own filter or have none. */
+    .footer-logo,
+    .lightbox-logo,
+    .lightbox-zoom-track,
+    .diploma-cert-stamp,
+    .ref-arrow,
+    .map-pin-icon,
+    .projects-shortcut-hint-arrow path:first-child,
+    .signature-arrow path:first-child {
+        animation: none !important;
+    }
+
+    /* Swaying sticker, turning wheel and pulsing label of the project cards. */
+    .sticker-title,
+    .patchwork-item--small .polaroid-img-wrap > svg,
+    .patchwork-item--small .polaroid-img-wrap > svg path,
+    .patchwork-item--small .polaroid-img-wrap .font-sketch {
+        animation: none !important;
+    }
+
+    /* Flipbook arrows: the first of the three drawings stays. */
+    .sketch-frame-1,
+    .sketch-frame-2,
+    .sketch-frame-3 {
+        animation: none !important;
+    }
+
+    .sketch-frame-2,
+    .sketch-frame-3 {
+        opacity: 0;
     }
 
     /* The scroll line stops half-way, dimmed. */
@@ -25,11 +65,17 @@
     .torn-frame:hover .media-frame-img,
     .frame-wrap:hover .torn-frame .media-frame-img {
         transform: none !important;
-        transition: none !important;
     }
 
-    .notebook-sheet { transition: none !important; }
-    .notebook-hover-zone:hover .notebook-text { animation: none !important; }
+    .notebook-hover-zone:hover .notebook-text,
+    .notebook-title-wrap:hover .notebook-title {
+        animation: none !important;
+    }
+
+    /* The comic burst shows its last frame at once. */
+    .comic-title:hover ~ .comic-burst { animation-duration: 0.01ms !important; }
+
+    /* The loading spinner of the viewer keeps turning: it reports progress. */
 
     ::view-transition-group(*),
     ::view-transition-old(*),

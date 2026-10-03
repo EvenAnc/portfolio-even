@@ -1,14 +1,48 @@
 /**
- * Animation fallback: a minimal stand-in for GSAP, installed only when the
- * library failed to load. It applies the end state of every animation at
+ * Animation helpers: tweens that jump to their end state under reduced
+ * motion, and a minimal stand-in for GSAP, installed only when the library
+ * failed to load. The stand-in applies the end state of every animation at
  * once, so the site stays fully usable, just without transitions.
  */
 
-import { gsapMissing } from './env.js';
+import { gsapMissing, prefersReducedMotion } from './env.js';
 
 // Tween settings, as opposed to the properties being animated.
 const TWEEN_KEYS = ['duration', 'ease', 'delay', 'onComplete', 'onStart',
     'onUpdate', 'stagger', 'overwrite', 'repeat', 'yoyo', 'paused'];
+
+// Settings that spread a tween over time; without them it is a plain set.
+const TIMING_KEYS = ['duration', 'ease', 'delay', 'stagger', 'onComplete'];
+
+// gsap.set would honour a delay and skip nothing else, so the timing is
+// removed and the completion callback is run by hand.
+function jumpToEnd(targets, vars) {
+    const endState = { ...vars };
+    TIMING_KEYS.forEach(key => delete endState[key]);
+    gsap.set(targets, endState);
+    if (typeof vars.onComplete === 'function') vars.onComplete();
+}
+
+/**
+ * gsap.to, or its end state at once under reduced motion.
+ * @param {Element|NodeList|Array} targets
+ * @param {object} vars
+ */
+export function tweenTo(targets, vars) {
+    if (prefersReducedMotion()) jumpToEnd(targets, vars);
+    else gsap.to(targets, vars);
+}
+
+/**
+ * gsap.fromTo, or its end state at once under reduced motion.
+ * @param {Element|NodeList|Array} targets
+ * @param {object} from
+ * @param {object} to
+ */
+export function tweenFromTo(targets, from, to) {
+    if (prefersReducedMotion()) jumpToEnd(targets, to);
+    else gsap.fromTo(targets, from, to);
+}
 
 const toPx = value => (typeof value === 'number' ? `${value}px` : value);
 

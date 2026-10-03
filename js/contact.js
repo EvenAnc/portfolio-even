@@ -4,7 +4,8 @@
  */
 
 import { state } from './core/state.js';
-import { hasScrollTrigger } from './core/env.js';
+import { hasScrollTrigger, prefersReducedMotion } from './core/env.js';
+import { tweenFromTo } from './core/gsap-fallback.js';
 import { t } from './i18n/i18n.js';
 
 // Past this delay the request is treated as lost: the visitor gets an
@@ -87,9 +88,12 @@ export function initCopyEmail() {
     document.querySelectorAll('.js-copy-email').forEach(bindCopyEmail);
 }
 
-/** Animates the contact block in when it scrolls into view. */
+/**
+ * Animates the contact block in when it scrolls into view. Under reduced
+ * motion the block is left as the stylesheet shows it: fully visible.
+ */
 export function initContactReveal() {
-    if (!hasScrollTrigger) return;
+    if (!hasScrollTrigger || prefersReducedMotion()) return;
 
     gsap.registerPlugin(ScrollTrigger);
 
@@ -200,7 +204,7 @@ function createFeedback(feedback) {
         feedback.setAttribute('data-i18n', key);
         feedback.textContent = t(key);
         feedback.classList.add(`form-feedback--${kind}`);
-        gsap.fromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: kind === 'success' ? 0.4 : 0.35 });
+        tweenFromTo(feedback, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: kind === 'success' ? 0.4 : 0.35 });
     }
 
     // A new attempt clears the message at once, which also cancels this

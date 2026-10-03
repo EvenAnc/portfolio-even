@@ -22,11 +22,24 @@ export function isTouch() {
     return window.matchMedia(TOUCH_MEDIA_QUERY).matches;
 }
 
+const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)';
+
 /**
  * @returns {boolean} true when the visitor asked for reduced motion
  */
 export function prefersReducedMotion() {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return window.matchMedia(REDUCED_MOTION_QUERY).matches;
+}
+
+/**
+ * Follows the motion preference when it is switched during the visit.
+ * @param {(isReduced: boolean) => void} handler
+ */
+export function onReducedMotionChange(handler) {
+    const query = window.matchMedia(REDUCED_MOTION_QUERY);
+    // Safari 13 and older only have the deprecated addListener; they keep
+    // the preference read at each use.
+    if (query.addEventListener) query.addEventListener('change', () => handler(query.matches));
 }
 
 // GSAP is missing when its file failed to load; see gsap-fallback.js.

@@ -6,6 +6,7 @@
  * and the touch reveal starts after a page is active.
  */
 
+import { onReducedMotionChange } from './core/env.js';
 import { installGsapFallback } from './core/gsap-fallback.js';
 import { resolveInitialLanguage, applyLanguage, initLanguageSwitcher } from './i18n/i18n.js';
 import { initLightbox } from './lightbox/lightbox.js';
@@ -14,7 +15,7 @@ import { initFavicon } from './favicon.js';
 import { startBackgroundPreload } from './preload.js';
 import { watchScrollbarWidth } from './page-scroll.js';
 import { playHeroIntro } from './hero.js';
-import { resetActivePages, initPageLinks, showInitialPage, initHistory } from './router.js';
+import { resetActivePages, initPageLinks, showInitialPage, initHistory, refreshPageScroll } from './router.js';
 import { initMenu } from './menu.js';
 import { initSafariPaperCache, initNotebookLines } from './notebook.js';
 import { initCarousels } from './carousel.js';
@@ -64,6 +65,7 @@ function init() {
 
     showInitialPage();
     initHistory();
+    onReducedMotionChange(refreshPageScroll);
 
     registerServiceWorker();
     setTimeout(startBackgroundPreload, PRELOAD_DELAY_MS);

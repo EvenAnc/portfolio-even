@@ -8,7 +8,7 @@
  */
 
 import { state, emit, EVENTS } from './core/state.js';
-import { hasScrollTrigger } from './core/env.js';
+import { hasScrollTrigger, prefersReducedMotion } from './core/env.js';
 import { updatePageMeta } from './i18n/i18n.js';
 import { destroyPageScroll, createPageScroll, updateScrollbarWidth } from './page-scroll.js';
 import { updateHeaderLogo, updateBackButton } from './header.js';
@@ -86,6 +86,11 @@ function urlForPage(pageId) {
     return slug ? `${baseUrl()}#${slug}` : baseUrl();
 }
 
+// For the pages that scroll natively: no glide under reduced motion.
+function nativeScrollBehavior() {
+    return prefersReducedMotion() ? 'auto' : 'smooth';
+}
+
 // Contact is not a page: it is the last block of the home page.
 function scrollToContact() {
     const contactEl = document.getElementById('home-contact');
@@ -99,7 +104,7 @@ function scrollToContact() {
         });
     } else {
         const homeEl = document.getElementById('page-home');
-        if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - CONTACT_SCROLL_MARGIN_PX, behavior: 'smooth' });
+        if (homeEl) homeEl.scrollTo({ top: contactEl.offsetTop - CONTACT_SCROLL_MARGIN_PX, behavior: nativeScrollBehavior() });
     }
 }
 
@@ -131,7 +136,7 @@ function scrollHomeToTop() {
         state.scroll.scrollTo(0);
     } else {
         const homeEl = document.getElementById('page-home');
-        if (homeEl) homeEl.scrollTo({ top: 0, behavior: 'smooth' });
+        if (homeEl) homeEl.scrollTo({ top: 0, behavior: nativeScrollBehavior() });
     }
 }
 
@@ -178,7 +183,18 @@ function swapActivePage(outEl, inEl, pageId) {
 // The hero follows the scroll position of the home page only.
 function startPageScroll(pageEl, pageId) {
     createPageScroll(pageEl);
-    if (pageId === 'home' && state.scroll) bindHeroScroll(state.scroll);
+    if (pageId === 'home') bindHeroScroll(pageEl, state.scroll);
+}
+
+/**
+ * Rebuilds the scroll of the page on display, after the motion preference
+ * changed: smooth scrolling is only there for visitors who accept motion.
+ */
+export function refreshPageScroll() {
+    const pageEl = document.querySelector('.page.is-active');
+    if (!pageEl) return;
+    destroyPageScroll();
+    startPageScroll(pageEl, state.page);
 }
 
 // Inactive pages are in content-visibility: hidden, which skips their
@@ -263,14 +279,17 @@ export function showPage(pageId, animate = true, updateHistory = true) {
     // The scroll instance belongs to the page that is leaving.
     destroyPageScroll();
 
-    if (animate && outEl) {
+    const isNavigation = animate && Boolean(outEl);
+    if (isNavigation && !prefersReducedMotion()) {
         fadeToPage(outEl, inEl, pageId);
         return;
     }
 
+    // First display, or a navigation under reduced motion: no fade.
     if (wasFading && outEl) outEl.style.opacity = '';
     swapActivePage(outEl, inEl, pageId);
     settlePage(inEl, pageId);
+    if (isNavigation) focusPage(inEl);
     emit(EVENTS.PAGE_SHOWN, { page: pageId });
 }
 

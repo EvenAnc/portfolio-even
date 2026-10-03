@@ -3,6 +3,9 @@
  * header on scroll.
  */
 
+import { state } from './core/state.js';
+import { tweenTo, tweenFromTo } from './core/gsap-fallback.js';
+
 // Resting opacity of the scroll hint under the hero. The hint is shown at
 // full strength so that its label keeps enough contrast; the thin line is
 // dimmed on its own in the stylesheet. Must match .scroll-invite there.
@@ -33,12 +36,16 @@ const INTRO_STEPS = [
         { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: 0.7 }],
 ];
 
+// True once the hero logo has handed over to the header.
+let logoInHeader = false;
+let isNativeScrollBound = false;
+
 /** Plays the entrance of the hero, one frame later so that the page is laid out. */
 export function playHeroIntro() {
     requestAnimationFrame(() => {
         INTRO_STEPS.forEach(([selector, from, to]) => {
             const element = document.querySelector(selector);
-            if (element) gsap.fromTo(element, from, to);
+            if (element) tweenFromTo(element, from, to);
         });
     });
 }
@@ -49,6 +56,7 @@ export function playHeroIntro() {
  */
 export function resetHero(pageId) {
     if (pageId !== 'home') return;
+    logoInHeader = false;
     const heroLogoWrap = document.getElementById('hero-logo-wrap');
     const scrollInvite = document.getElementById('scroll-invite');
     if (heroLogoWrap) gsap.set(heroLogoWrap, { y: 0, opacity: 1 });
@@ -58,34 +66,44 @@ export function resetHero(pageId) {
 /**
  * Past a threshold the hero logo leaves and the header logo takes over;
  * scrolling back up reverses it.
- * @param {object} lenis scroll instance of the home page
+ * @param {HTMLElement} homePage the home page box
+ * @param {object|null} lenis its scroll instance, or null when it scrolls natively
  */
-export function bindHeroScroll(lenis) {
+export function bindHeroScroll(homePage, lenis) {
     const heroLogoWrap = document.getElementById('hero-logo-wrap');
     const headerLogo = document.getElementById('header-logo');
     const scrollInvite = document.getElementById('scroll-invite');
     if (!heroLogoWrap || !headerLogo || !scrollInvite) return;
 
-    let logoInHeader = false;
-
-    lenis.on('scroll', ({ scroll }) => {
+    function onScroll(scroll) {
         if (scroll > LOGO_HANDOVER_SCROLL_PX && !logoInHeader) {
             logoInHeader = true;
 
-            gsap.to(heroLogoWrap, {
+            tweenTo(heroLogoWrap, {
                 y: -50,
                 opacity: 0,
                 duration: 0.5,
                 ease: 'power3.in',
                 onComplete: () => headerLogo.classList.add('is-visible'),
             });
-            gsap.to(scrollInvite, { opacity: 0, duration: 0.3 });
+            tweenTo(scrollInvite, { opacity: 0, duration: 0.3 });
         } else if (scroll <= LOGO_HANDOVER_SCROLL_PX && logoInHeader) {
             logoInHeader = false;
 
             headerLogo.classList.remove('is-visible');
-            gsap.to(heroLogoWrap, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.1 });
-            gsap.to(scrollInvite, { opacity: SCROLL_INVITE_OPACITY, duration: 0.4 });
+            tweenTo(heroLogoWrap, { y: 0, opacity: 1, duration: 0.5, ease: 'power3.out', delay: 0.1 });
+            tweenTo(scrollInvite, { opacity: SCROLL_INVITE_OPACITY, duration: 0.4 });
         }
-    });
+    }
+
+    if (lenis) {
+        lenis.on('scroll', ({ scroll }) => onScroll(scroll));
+    } else if (!isNativeScrollBound) {
+        // The page element outlives every scroll instance: bound once, and
+        // silent whenever an instance is reporting the scroll itself.
+        isNativeScrollBound = true;
+        homePage.addEventListener('scroll', () => {
+            if (!state.scroll && state.page === 'home') onScroll(homePage.scrollTop);
+        }, { passive: true });
+    }
 }

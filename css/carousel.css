@@ -176,8 +176,10 @@
     transform: scale(1.15);
 }
 
-/* The script swaps the pause and play icons through their inline display. */
+/* Autoplay switched off: the play icon replaces the pause icon. */
 .icon-play { display: none; }
+.carousel-toggle.is-paused .icon-pause { display: none; }
+.carousel-toggle.is-paused .icon-play { display: block; }
 
 .carousel-dots {
     display: flex;
