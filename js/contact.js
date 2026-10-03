@@ -5,7 +5,7 @@
 
 import { state } from './core/state.js';
 import { hasScrollTrigger, prefersReducedMotion } from './core/env.js';
-import { tweenFromTo } from './core/gsap-fallback.js';
+import { tweenFromTo, finishCssTransitions } from './core/gsap-fallback.js';
 import { t } from './i18n/i18n.js';
 
 // Past this delay the request is treated as lost: the visitor gets an
@@ -105,6 +105,9 @@ export function initContactReveal() {
     const intro = homeContact.querySelector('.page-intro');
     const formElements = [...homeContact.querySelectorAll('.form-field'), homeContact.querySelector('.form-submit-wrap')];
     const infoBlocks = homeContact.querySelectorAll('.contact-block');
+
+    // The tweens below must start from the resting style of their elements.
+    finishCssTransitions([heading, intro, ...formElements, ...infoBlocks]);
 
     const timeline = gsap.timeline({
         scrollTrigger: {
