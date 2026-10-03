@@ -3,16 +3,20 @@
  * keeps the page title and description in step.
  */
 
-import { state } from '../core/state.js';
+import { state, emit, EVENTS } from '../core/state.js';
 import { readStored, writeStored } from '../core/env.js';
 import { TRANSLATIONS, PAGE_META } from './dictionary.js';
 
 const LANGUAGES = ['fr', 'en'];
 const DEFAULT_LANGUAGE = 'fr';
 
-// Text that lives in attributes (accessible names, image descriptions) is
-// translated like text content, through a sibling data attribute.
-const TRANSLATED_ATTRIBUTES = [['data-i18n-aria', 'aria-label'], ['data-i18n-alt', 'alt']];
+// Text that lives in attributes (accessible names, image descriptions,
+// tooltips) is translated like text content, through a sibling data attribute.
+const TRANSLATED_ATTRIBUTES = [
+    ['data-i18n-aria', 'aria-label'],
+    ['data-i18n-alt', 'alt'],
+    ['data-i18n-title', 'title'],
+];
 
 function dictionaryFor(lang) {
     return TRANSLATIONS[lang] || TRANSLATIONS[DEFAULT_LANGUAGE];
@@ -101,6 +105,7 @@ export function applyLanguage(lang) {
     document.querySelectorAll('.lang-btn').forEach(button => {
         button.classList.toggle('is-active', button.dataset.lang === lang);
     });
+    emit(EVENTS.LANGUAGE_CHANGE, { lang });
 }
 
 /** Wires the language buttons. */
