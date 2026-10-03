@@ -36,17 +36,6 @@ export function on(eventName, handler) {
 }
 
 /**
- * Removes a subscription made with `on`.
- * @param {string} eventName one of EVENTS
- * @param {(detail: object) => void} handler
- */
-export function off(eventName, handler) {
-    const list = handlers.get(eventName) || [];
-    const index = list.indexOf(handler);
-    if (index !== -1) list.splice(index, 1);
-}
-
-/**
  * Calls every handler of an event, in subscription order.
  * @param {string} eventName one of EVENTS
  * @param {object} [detail]

@@ -38,7 +38,7 @@ wherever they appear in the repository, in particular:
   dessin/    drawings
   photo/     photographs
   assets/    images and illustrations
-  og-card-v3.gif, og-card-v3.png, apple-touch-icon.png, favicon_1.svg
+  og-card-v3.gif, apple-touch-icon.png, favicon_1.svg
   the texts in index.html and js/i18n/dictionary.js
 
 These files may not be copied, reproduced, modified or distributed without

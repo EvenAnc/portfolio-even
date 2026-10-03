@@ -359,7 +359,6 @@
 
 /* stylelint-disable-next-line no-descending-specificity -- another component: never the same element as the section-stack sheets */
 .render-item .drawing-sheet-wrap {
-    box-shadow: 10px 10px 30px rgb(0 0 0 / 50%);
     transition: transform var(--dur-base) ease, box-shadow var(--dur-base) ease;
 }
 

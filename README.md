@@ -49,8 +49,11 @@ fonts/                the display font (woff, woff2)
 defaultsite/          stale-redirect catch-up page (noindex), kept for visitors who cached an old 301
 .well-known/          security.txt
 CNAME, .nojekyll      GitHub Pages configuration
-robots.txt, sitemap.xml, og-card-v3.*, apple-touch-icon.png, favicon_1.svg
+robots.txt, sitemap.xml, og-card-v3.gif, apple-touch-icon.png, favicon_1.svg
+package.json, package-lock.json            the linters, with pinned versions
 eslint.config.js, .stylelintrc.json, .htmlvalidate.json, .editorconfig
+.github/workflows/lint.yml                 runs the linters on every push and pull request
+.gitattributes, .gitignore, LICENSE
 ```
 
 ## Running locally
@@ -71,7 +74,7 @@ Then open the address it prints (http://localhost:8000 for the first one). The p
 
 ## Linting
 
-The linters are the only dependencies and are development-only. Install them once with `npm install` (a recent Node.js, 18.18 or later, is needed by ESLint 9), then:
+The linters are the only dependencies and are development-only. Install them once with `npm ci`, which takes the exact versions of `package-lock.json` (a recent Node.js, 18.18 or later, is needed by ESLint 9), then:
 
 ```
 npm run lint        # the three checks below
@@ -79,6 +82,8 @@ npm run lint:js     # ESLint
 npm run lint:css    # Stylelint on css/**/*.css
 npm run lint:html   # html-validate on index.html and 404.html
 ```
+
+The same command runs on every push and pull request (`.github/workflows/lint.yml`).
 
 `vendor/` is excluded from linting. The ESLint config targets ECMAScript 2021, so syntax too recent for Safari 15 is reported.
 
@@ -92,6 +97,8 @@ html-validate runs its recommended preset with no rule turned off. Stylelint run
 | `media-feature-range-notation` | `prefix` | the range notation, `(width <= 768px)`, needs Safari 16.4 |
 | `property-no-vendor-prefix` | allows `-webkit-` on `backdrop-filter`, `mask-*`, `user-select`, `appearance`, `clip-path` | WebKit still needs these prefixes, or needed them in Safari 15 |
 
+One more disable comment, in `css/project-detail.css`, silences `no-descending-specificity` for two selectors of different components that never match the same element.
+
 ## Architecture notes
 
 - Single-page application driven by URL fragments (`#projets`, `#contact`, ...). `router.js` reads the hash, shows the matching `.page` section and uses `pushState` or `replaceState` for history.
@@ -104,6 +111,7 @@ html-validate runs its recommended preset with no rule turned off. Stylelint run
 
 ## Conventions
 
+- Commit messages follow Conventional Commits, in English, with a subject of 72 characters at most. The earlier part of the history predates that convention.
 - Indentation is four spaces, UTF-8, LF line endings, with a final newline (see `.editorconfig`).
 - JavaScript style and bug rules are in `eslint.config.js`; functions are capped at 60 lines.
 - CSS: one file per component, each opening with a one-line statement of what it covers. Class names are English kebab-case with the component as prefix (`carousel-arrow`), `--modifier` for variants (`carousel-arrow--next`), `is-` and `has-` for states set by script (`is-active`, `has-back-button`), and `js-` for hooks that carry no style. Repeated values are custom properties declared in `css/base.css`. No `@layer`, no nesting and no `:has()`, which Safari 15.0 lacks.
