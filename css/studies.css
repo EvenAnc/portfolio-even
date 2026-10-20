@@ -1,0 +1,183 @@
+/* Study overview: one compact panel per school project, newest first. Builds on the project
+   panels (project-detail.css), the sheet primitives (frame.css) and the landscape carousel
+   (carousel.css); loaded after them, so equal-weight rules here take precedence. */
+
+
+/* Title */
+
+/* The page title is twice as long as the diploma one. On a phone it wraps on two lines and
+   keeps clear of the edges, so the red mark that hangs off its left side stays on screen. */
+@media (max-width: 768px) {
+    .tape-title--long {
+        max-width: calc(100vw - 80px);
+        font-size: clamp(1.9rem, 8vw, 2.5rem);
+    }
+}
+
+
+/* Panels */
+
+/* Ten panels follow one another: less height than on the diploma page, and a smaller sticker,
+   whose long titles must still fit a phone. */
+.panel--study {
+    padding-top: 100px;
+    padding-bottom: 64px;
+}
+
+.panel--study .sticker-title {
+    font-size: clamp(1.9rem, 3.6vw, 3.2rem);
+    padding: 12px 30px;
+}
+
+@media (max-width: 768px) {
+    /* The bottom padding keeps the next sticker, which overhangs by 40px, off the last image. */
+    .panel--study {
+        padding-top: 84px;
+        padding-bottom: 56px;
+    }
+
+    /* Both offsets give the sticker a width to wrap in instead of running off screen. */
+    .panel--study .sticker-title-wrap { right: 20px; }
+
+    .panel--study .sticker-title-wrap--right {
+        left: 20px;
+        text-align: right;
+    }
+
+    .panel--study .sticker-title {
+        font-size: clamp(1.5rem, 6.4vw, 2.2rem);
+        padding: 8px 18px;
+    }
+}
+
+
+/* Entry: text column and carousel */
+
+.study-entry {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+@media (min-width: 992px) {
+    .study-entry {
+        grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+        align-items: center;
+        gap: 48px;
+    }
+
+    /* The text sits under the sticker: on the right when the sticker is. The columns swap with
+       it, so the carousel always keeps the wide one. */
+    .study-entry--reverse { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
+    .study-entry--reverse .study-text { order: 2; }
+}
+
+.study-text { padding: 0 20px; }
+
+.study-date {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 14px;
+    margin-bottom: 14px;
+}
+
+.study-date-month {
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    line-height: 1;
+    color: var(--red);
+    transform: rotate(-1.5deg);
+    transform-origin: left center;
+}
+
+.study-date-year {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 60%);
+}
+
+/* Lede and tools keep their typography but leave the centred column for the text column. */
+.study-text .panel-lede {
+    max-width: none;
+    margin: 0 0 16px;
+    padding: 0;
+}
+
+.study-text .panel-tools {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+@media (max-width: 768px) {
+    .study-text { padding: 0 6px; }
+}
+
+
+/* Carousel */
+
+/* No room reserved above the row, arrows closer to the sheet, and a 16:10 frame: A4 boards
+   letterbox on their own white, 16:9 renders lose only a sliver on each side. The frame may
+   shrink at every width so that the arrows always fit beside it in the column. */
+.carousel--study { padding-top: 0; }
+.carousel--study .carousel-row { gap: 14px; }
+
+.carousel--landscape.carousel--study .carousel-row .frame-wrap {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-height: none;
+    aspect-ratio: 16 / 10;
+}
+
+/* Renders fill the frame; boards and plans stay whole (.plan-img, frame.css). */
+.drawing-sheet .study-img--cover { object-fit: cover; }
+
+/* Boards laid out on a dark ground keep it around them. */
+.drawing-sheet .study-img--dark { background: var(--bg); }
+
+
+/* Graduation project: a cover that leads to its own page */
+
+/* As wide as the frame of the carousels below it, which give up room for their arrows. */
+.study-cover {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    justify-self: center;
+    cursor: pointer;
+}
+
+.study-cover .drawing-sheet-wrap { transition: transform var(--dur-base) ease, box-shadow var(--dur-base) ease; }
+.study-cover .media-frame-inner { aspect-ratio: 1000 / 707; }
+
+.study-cover:hover .drawing-sheet-wrap {
+    transform: scale(1.02);
+    box-shadow: 15px 15px 40px rgb(0 0 0 / 50%);
+}
+
+.study-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 22px;
+    padding: 6px 0;
+    transition: transform var(--dur-base) var(--ease-out);
+}
+
+.study-link:hover { transform: translateX(8px); }
+
+.study-link-label {
+    font-size: 2.2rem;
+    line-height: 1;
+    text-transform: lowercase;
+    color: var(--white);
+    transition: color var(--dur-base);
+}
+
+.study-link:hover .study-link-label { color: var(--red); }
+.study-link .page-next-arrow { width: 50px; }

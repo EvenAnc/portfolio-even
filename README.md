@@ -29,6 +29,7 @@ css/                  one stylesheet per component, loaded in this order from in
   drawings.css        drawings gallery
   quote-band.css      closing quote animated on scroll
   diploma.css         diploma page
+  studies.css         study overview: one compact panel per school project
   lightbox.css        viewer for drawings and plans
   reduced-motion.css  prefers-reduced-motion overrides, loaded last
 js/
@@ -44,7 +45,7 @@ vendor/               GSAP, Lenis, PDF.js, with their licences
 PDF/                  plan and section PDFs; opt/ holds their WebP previews
 dessin/opt/           optimised drawings (WebP, 1x and 2x)
 photo/opt/            optimised photograph
-assets/               images and illustrations
+assets/               images and illustrations; opt/etudes/ holds the study overview views (WebP, 1x and 2x)
 fonts/                the display font (woff, woff2)
 defaultsite/          stale-redirect catch-up page (noindex), kept for visitors who cached an old 301
 .well-known/          security.txt

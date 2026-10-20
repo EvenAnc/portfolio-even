@@ -1,6 +1,6 @@
 /**
- * Lightbox triggers: wires the drawings, plan sheets, section cuts and lone
- * images of the pages to the viewer.
+ * Lightbox triggers: wires the drawings, plan sheets, section cuts, study
+ * overview sheets and lone images of the pages to the viewer.
  */
 
 import { isTouch, prefersReducedMotion } from '../core/env.js';
@@ -145,6 +145,25 @@ function bindProjectSheets() {
     });
 }
 
+// Study overview: each carousel is a gallery of its own, read from its
+// slides. data-full names the large file; the alt key follows the language
+// in use when the viewer opens.
+function bindStudySheets() {
+    document.querySelectorAll('[data-study-gallery]').forEach(carousel => {
+        const images = Array.from(carousel.querySelectorAll('.carousel-slide img[data-full]'));
+        const gallery = images.map(img => ({ url: img.dataset.full, altKey: img.dataset.i18nAlt }));
+
+        images.forEach((img, index) => {
+            const sheet = img.closest('.drawing-sheet-wrap');
+            if (!sheet) return;
+            sheet.addEventListener('click', () => {
+                if (isOnHiddenSlide(sheet) || !isOnActivePage(sheet)) return;
+                traceFrameThen(sheet, () => openGallery(gallery, index));
+            });
+        });
+    });
+}
+
 function bindSingleImages() {
     document.querySelectorAll('.lightbox-trigger').forEach(trigger => {
         trigger.addEventListener('click', () => {
@@ -171,5 +190,6 @@ export function initLightboxTriggers() {
     bindSections();
     bindDrawings();
     bindProjectSheets();
+    bindStudySheets();
     bindSingleImages();
 }

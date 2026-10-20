@@ -311,9 +311,9 @@ export function resetActivePages() {
     });
 }
 
-/** Wires the "next page" arrows, the home shortcut and the project cards. */
+/** Wires the "next page" arrows, the home shortcut, the project cards and the study overview links. */
 export function initPageLinks() {
-    document.querySelectorAll('.page-next, .projects-shortcut, .patchwork-item[data-target]').forEach(link => {
+    document.querySelectorAll('.page-next, .projects-shortcut, .patchwork-item[data-target], .study-link[data-target], .study-cover[data-target]').forEach(link => {
         link.addEventListener('click', event => {
             event.preventDefault();
             const targetPage = link.dataset.target;

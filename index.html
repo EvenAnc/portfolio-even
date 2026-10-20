@@ -94,6 +94,7 @@
     <link rel="stylesheet" href="css/drawings.css">
     <link rel="stylesheet" href="css/quote-band.css">
     <link rel="stylesheet" href="css/diploma.css">
+    <link rel="stylesheet" href="css/studies.css">
     <link rel="stylesheet" href="css/lightbox.css">
     <link rel="stylesheet" href="css/reduced-motion.css">
 
@@ -495,16 +496,14 @@
 
                     <!-- Project 3 -->
                     <a href="#projet-03" class="patchwork-item patchwork-item--small" data-target="project-3">
-                        <div class="polaroid-card">
-                            <div class="polaroid-img-wrap">
-                                <svg width="50" height="50" viewBox="0 0 100 100" aria-hidden="true">
-                                    <path d="M 50 15 A 35 35 0 1 1 15 50" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round" stroke-dasharray="80 30"/>
-                                </svg><span class="font-sketch" data-i18n="proj_03_status">en cours...</span>
+                        <div class="polaroid-card polaroid-card--label-flow">
+                            <div class="polaroid-img-wrap polaroid-img-wrap--photo">
+                                <img src="assets/opt/synthese-etudes.webp" alt="Mosaïque de quatre projets d'études" data-i18n-alt="alt_project_studies" class="polaroid-img" width="760" height="537">
                             </div>
                             <div class="polaroid-tape"></div>
                             <div class="polaroid-label">
                                 <span class="polaroid-label-mark font-sketch">#</span>
-                                <span class="polaroid-label-text font-sketch" data-i18n="proj_03_title">PROJET 03 : À SUIVRE...</span>
+                                <span class="polaroid-label-text font-sketch" data-i18n="proj_03_title">PROJET 03 : SYNTHÈSE D'ÉTUDES</span>
                             </div>
                             <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
                                 <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
@@ -577,16 +576,439 @@
             </div>
         </section>
 
-        <!-- Project detail: project 3 (placeholder) -->
+        <!-- Project detail: study overview, one panel per school project, newest first -->
         <section class="page project-detail-page" id="page-project-3">
             <div class="page-inner">
-                <div class="page-heading">
-                    <span class="page-num">02.3</span>
-                    <h2 class="page-title" data-i18n="proj_03_heading">PROJET 3</h2>
+            <div class="project-board">
+
+                <!-- Tape title -->
+                <div class="project-board-header">
+                    <div class="tape-title-wrap">
+                        <h2 class="font-sketch tape-title tape-title--long" data-i18n="proj_03_title">PROJET 03 : SYNTHÈSE D'ÉTUDES</h2>
+                    </div>
                 </div>
-                <div class="coming-soon">
-                    <p class="font-sketch" data-i18n="proj_03_placeholder">À suivre...</p>
+
+                <!-- Introduction -->
+                <div class="project-intro">
+                    <div class="project-intro-sheet">
+                        <div class="project-intro-content">
+                            <p class="project-intro-text" data-i18n="study_intro">Mes projets de cours à MJM Graphic Design Toulouse, du plus récent au plus ancien. Le plus ancien date de décembre 2022 : un kiosque en brique, dessiné au crayon puis rendu sur Twinmotion. Le plus récent est mon projet de diplôme, en 2025. Pour chacun, quelques images tirées de mes dossiers de rendu.</p>
+                            <span class="project-intro-note" data-i18n="study_intro_note">MJM Graphic Design Toulouse, de 2022 à 2025</span>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Study 0: graduation project, detailed on its own page (dark grey) -->
+                <div class="panel panel--study panel--alt">
+                    <div class="sticker-title-wrap">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_diploma_title">MIRAGE</h3>
+                    </div>
+                    <div class="study-entry">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_diploma_date">Juillet 2025</span> <span class="study-date-year" data-i18n="study_year_3">3e année</span></p>
+                            <p class="panel-lede" data-i18n="study_diploma_text">Mon projet de diplôme, un complexe moto à Lambesc avec une station essence, un garage, un espace d'exposition et un bar-restaurant. Il a sa propre page.</p>
+                            <p class="panel-tools" data-i18n="study_diploma_tools">ArchiCAD, Twinmotion, InDesign</p>
+                            <a href="#projet-diplome" class="study-link" data-target="project-diploma">
+                                <span class="study-link-label font-sketch" data-i18n="study_diploma_link">voir le projet</span>
+                                <svg class="page-next-arrow" viewBox="0 0 60 30" fill="none" aria-hidden="true">
+                                    <path d="M2 15 C10 14, 30 13, 45 15" stroke="var(--white)" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M40 8 L48 15 L40 22" stroke="var(--white)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="study-cover frame-wrap" data-target="project-diploma">
+                            <div class="drawing-sheet-wrap"><div class="media-frame-inner"><img class="study-cover-img" src="assets/opt/mirage.webp" alt="Projet Mirage, complexe moto à Lambesc" data-i18n-alt="alt_study_diploma" loading="lazy" decoding="async" width="1000" height="707"></div></div>
+                            <svg class="sketch-rect-svg" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study 1: Balenciaga x &Phémère (black) -->
+                <div class="panel panel--study">
+                    <div class="sticker-title-wrap sticker-title-wrap--right">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_balenciaga_title">BALENCIAGA X &amp;PHÉMÈRE</h3>
+                    </div>
+                    <div class="study-entry study-entry--reverse">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_balenciaga_date">Décembre 2024</span> <span class="study-date-year" data-i18n="study_year_3">3e année</span></p>
+                            <p class="panel-lede" data-i18n="study_balenciaga_text">Un défilé Balenciaga dans un champ de blé de La Sagra, près de Tolède, monté par notre agence &amp;Phémère. Dans le scénario, les containers qui devaient loger les invités se perdent pendant le transport et finissent éparpillés dans le champ. On les aménage là où ils sont tombés, avec un espace nuit et un espace photo.</p>
+                            <p class="panel-tools" data-i18n="study_balenciaga_tools">SketchUp, Twinmotion, Canva</p>
+                        </div>
+                        <div class="carousel carousel--landscape carousel--study" data-study-gallery>
+                            <div class="carousel-row">
+                                <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="carousel-viewport">
+                                        <div class="carousel-track">
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/balenciaga-1.webp" srcset="assets/opt/etudes/balenciaga-1.webp 960w, assets/opt/etudes/balenciaga-1@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/balenciaga-1@2x.webp" alt="Vue aérienne des containers éparpillés dans le champ de blé" data-i18n-alt="alt_study_balenciaga_1" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/balenciaga-2.webp" srcset="assets/opt/etudes/balenciaga-2.webp 960w, assets/opt/etudes/balenciaga-2@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/balenciaga-2@2x.webp" alt="Entrée d'un container aménagé" data-i18n-alt="alt_study_balenciaga_2" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/balenciaga-3.webp" srcset="assets/opt/etudes/balenciaga-3.webp 960w, assets/opt/etudes/balenciaga-3@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/balenciaga-3@2x.webp" alt="Espace nuit dans un container" data-i18n-alt="alt_study_balenciaga_3" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/balenciaga-4.webp" srcset="assets/opt/etudes/balenciaga-4.webp 960w, assets/opt/etudes/balenciaga-4@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/balenciaga-4@2x.webp" alt="Espace photo dans un container" data-i18n-alt="alt_study_balenciaga_4" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--dark" src="assets/opt/etudes/balenciaga-5.webp" srcset="assets/opt/etudes/balenciaga-5.webp 960w, assets/opt/etudes/balenciaga-5@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/balenciaga-5@2x.webp" alt="Plan d'un container aménagé, vu de dessus" data-i18n-alt="alt_study_balenciaga_5" loading="lazy" decoding="async" width="960" height="720"></div></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Hand-drawn red scribble -->
+                                    <svg class="sketch-rect-svg sketch-rect-svg--carousel" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                                    </svg>
+                                </div>
+                                <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                </button>
+                            </div>
+                            <div class="carousel-footer">
+                                <div class="carousel-counter font-sketch">1 / 5</div>
+                                <div class="carousel-progress"><div class="carousel-progress-bar js-carousel-progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study 2: anechoic room (dark grey) -->
+                <div class="panel panel--study panel--alt">
+                    <div class="sticker-title-wrap">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_chambre_title">CHAMBRE ANÉCHOÏQUE</h3>
+                    </div>
+                    <div class="study-entry">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_chambre_date">Décembre 2024</span> <span class="study-date-year" data-i18n="study_year_3">3e année</span></p>
+                            <p class="panel-lede" data-i18n="study_chambre_text">Une chambre d'hôtel dans le salar d'Uyuni, en Bolivie, à 3 700 m d'altitude. Anéchoïque, elle absorbe les sons au lieu de les renvoyer. La mousse acoustique vient de déchets agricoles ou de caoutchouc recyclés, et les menuiseries sur mesure sont en quebracho colorado, un bois dur du Chaco bolivien. Les arches et les enduits à la chaux viennent du style méditerranéen.</p>
+                            <p class="panel-tools" data-i18n="study_chambre_tools">AutoCAD, SketchUp, Twinmotion, Procreate</p>
+                        </div>
+                        <div class="carousel carousel--landscape carousel--study" data-study-gallery>
+                            <div class="carousel-row">
+                                <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="carousel-viewport">
+                                        <div class="carousel-track">
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/chambre-1.webp" srcset="assets/opt/etudes/chambre-1.webp 960w, assets/opt/etudes/chambre-1@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/chambre-1@2x.webp" alt="Le lit face aux trois arches vitrées ouvertes sur le salar" data-i18n-alt="alt_study_chambre_1" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/chambre-2.webp" srcset="assets/opt/etudes/chambre-2.webp 960w, assets/opt/etudes/chambre-2@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/chambre-2@2x.webp" alt="La chambre, entre lames de bois et mousse acoustique" data-i18n-alt="alt_study_chambre_2" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/chambre-3.webp" srcset="assets/opt/etudes/chambre-3.webp 960w, assets/opt/etudes/chambre-3@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/chambre-3@2x.webp" alt="Plan, coupe et vue de face en couleur, au 1/50" data-i18n-alt="alt_study_chambre_3" loading="lazy" decoding="async" width="960" height="588"></div></div></div>
+                                            <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/chambre-4.webp" srcset="assets/opt/etudes/chambre-4.webp 960w, assets/opt/etudes/chambre-4@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/chambre-4@2x.webp" alt="Le coin d'eau, avec son lavabo sur mesure" data-i18n-alt="alt_study_chambre_4" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/chambre-5.webp" srcset="assets/opt/etudes/chambre-5.webp 960w, assets/opt/etudes/chambre-5@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/chambre-5@2x.webp" alt="Le paysage du salar autour de l'hôtel" data-i18n-alt="alt_study_chambre_5" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Hand-drawn red scribble -->
+                                    <svg class="sketch-rect-svg sketch-rect-svg--carousel" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                                    </svg>
+                                </div>
+                                <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                </button>
+                            </div>
+                            <div class="carousel-footer">
+                                <div class="carousel-counter font-sketch">1 / 5</div>
+                                <div class="carousel-progress"><div class="carousel-progress-bar js-carousel-progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study 3: hotel lobby (black) -->
+                <div class="panel panel--study">
+                    <div class="sticker-title-wrap sticker-title-wrap--right">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_hall_title">HALL D'HÔTEL</h3>
+                    </div>
+                    <div class="study-entry study-entry--reverse">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_hall_date">Novembre 2024</span> <span class="study-date-year" data-i18n="study_year_3">3e année</span></p>
+                            <p class="panel-lede" data-i18n="study_hall_text">Deux vues du hall d'accueil d'un hôtel. La banque d'accueil en métal suit une courbe, et des centaines de lames suspendues dessinent une vague au plafond.</p>
+                        </div>
+                        <div class="carousel carousel--landscape carousel--study" data-study-gallery>
+                            <div class="carousel-row">
+                                <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="carousel-viewport">
+                                        <div class="carousel-track">
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/hall-1.webp" srcset="assets/opt/etudes/hall-1.webp 960w, assets/opt/etudes/hall-1@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/hall-1@2x.webp" alt="La banque d'accueil courbe sous le plafond en vague" data-i18n-alt="alt_study_hall_1" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/hall-2.webp" srcset="assets/opt/etudes/hall-2.webp 960w, assets/opt/etudes/hall-2@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/hall-2@2x.webp" alt="Le plafond de lames suspendues devant les baies vitrées" data-i18n-alt="alt_study_hall_2" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Hand-drawn red scribble -->
+                                    <svg class="sketch-rect-svg sketch-rect-svg--carousel" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                                    </svg>
+                                </div>
+                                <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                </button>
+                            </div>
+                            <div class="carousel-footer">
+                                <div class="carousel-counter font-sketch">1 / 2</div>
+                                <div class="carousel-progress"><div class="carousel-progress-bar js-carousel-progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study 4: Cloud, 48 m³ of happiness (dark grey) -->
+                <div class="panel panel--study panel--alt">
+                    <div class="sticker-title-wrap">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_nuage_title">NUAGE, 48 M³ DE BONHEUR</h3>
+                    </div>
+                    <div class="study-entry">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_nuage_date">Octobre 2024</span> <span class="study-date-year" data-i18n="study_year_3">3e année</span></p>
+                            <p class="panel-lede" data-i18n="study_nuage_text">Pour moi, le bonheur, c'est fixer le feu pendant une heure, le cerveau vidé de toute idée. Cette sensation, je ne l'ai que dans la maison de mes grands-parents. Le nuage la transporte sur la berge du quai de Tounis, à Toulouse, au ras de la Garonne : un lieu pour méditer autour d'un feu, entouré de hautes lames verticales.</p>
+                            <p class="panel-tools" data-i18n="study_nuage_tools">SketchUp, Photoshop, maquettes</p>
+                        </div>
+                        <div class="carousel carousel--landscape carousel--study" data-study-gallery>
+                            <div class="carousel-row">
+                                <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="carousel-viewport">
+                                        <div class="carousel-track">
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/nuage-1.webp" data-full="assets/opt/etudes/nuage-1.webp" alt="Le nuage au bord de la Garonne, avec le feu au centre" data-i18n-alt="alt_study_nuage_1" loading="lazy" decoding="async" width="915" height="532"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/nuage-2.webp" data-full="assets/opt/etudes/nuage-2.webp" alt="Rendus 3D du nuage sur la berge" data-i18n-alt="alt_study_nuage_2" loading="lazy" decoding="async" width="801" height="473"></div></div></div>
+                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/nuage-3.webp" data-full="assets/opt/etudes/nuage-3.webp" alt="Maquette artistique en forme de fleur" data-i18n-alt="alt_study_nuage_3" loading="lazy" decoding="async" width="776" height="378"></div></div></div>
+                                            <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/nuage-4.webp" data-full="assets/opt/etudes/nuage-4.webp" alt="Maquette du site et maquette de rendu" data-i18n-alt="alt_study_nuage_4" loading="lazy" decoding="async" width="782" height="637"></div></div></div>
+                                            <div class="carousel-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/nuage-5.webp" srcset="assets/opt/etudes/nuage-5.webp 960w, assets/opt/etudes/nuage-5@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/nuage-5@2x.webp" alt="Planche de présentation complète du projet" data-i18n-alt="alt_study_nuage_5" loading="lazy" decoding="async" width="960" height="453"></div></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Hand-drawn red scribble -->
+                                    <svg class="sketch-rect-svg sketch-rect-svg--carousel" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                                    </svg>
+                                </div>
+                                <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                </button>
+                            </div>
+                            <div class="carousel-footer">
+                                <div class="carousel-counter font-sketch">1 / 5</div>
+                                <div class="carousel-progress"><div class="carousel-progress-bar js-carousel-progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study 5: Versace house (black) -->
+                <div class="panel panel--study">
+                    <div class="sticker-title-wrap sticker-title-wrap--right">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_perry_title">MAISON VERSACE</h3>
+                    </div>
+                    <div class="study-entry study-entry--reverse">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_perry_date">Juillet 2024</span> <span class="study-date-year" data-i18n="study_year_2">2e année</span></p>
+                            <p class="panel-lede" data-i18n="study_perry_text">Rénovation du bâtiment Perry, place de la Trinité à Toulouse, pour y installer la maison mère de Versace. La boutique occupe le rez-de-chaussée, le showroom, l'espace de défilé et les ateliers les étages, les bureaux le haut du bâtiment. Croquis et esquisses à la main, puis plans 2D réalistes et rendus 3D. Projet en binôme.</p>
+                            <p class="panel-tools" data-i18n="study_perry_tools">ArchiCAD, SketchUp, Twinmotion, InDesign</p>
+                        </div>
+                        <div class="carousel carousel--landscape carousel--study" data-study-gallery>
+                            <div class="carousel-row">
+                                <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="carousel-viewport">
+                                        <div class="carousel-track">
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/perry-1.webp" srcset="assets/opt/etudes/perry-1.webp 960w, assets/opt/etudes/perry-1@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/perry-1@2x.webp" alt="Showroom et patio végétal" data-i18n-alt="alt_study_perry_1" loading="lazy" decoding="async" width="960" height="682"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/perry-2.webp" srcset="assets/opt/etudes/perry-2.webp 960w, assets/opt/etudes/perry-2@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/perry-2@2x.webp" alt="Atelier et salon dans les étages" data-i18n-alt="alt_study_perry_2" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/perry-3.webp" srcset="assets/opt/etudes/perry-3.webp 960w, assets/opt/etudes/perry-3@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/perry-3@2x.webp" alt="Perspectives dessinées à la main" data-i18n-alt="alt_study_perry_3" loading="lazy" decoding="async" width="960" height="437"></div></div></div>
+                                            <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/perry-4.webp" srcset="assets/opt/etudes/perry-4.webp 960w, assets/opt/etudes/perry-4@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/perry-4@2x.webp" alt="Coupe sur les six niveaux du bâtiment" data-i18n-alt="alt_study_perry_4" loading="lazy" decoding="async" width="960" height="654"></div></div></div>
+                                            <div class="carousel-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/perry-5.webp" srcset="assets/opt/etudes/perry-5.webp 960w, assets/opt/etudes/perry-5@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/perry-5@2x.webp" alt="Deux propositions de façade" data-i18n-alt="alt_study_perry_5" loading="lazy" decoding="async" width="960" height="652"></div></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Hand-drawn red scribble -->
+                                    <svg class="sketch-rect-svg sketch-rect-svg--carousel" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                                    </svg>
+                                </div>
+                                <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                </button>
+                            </div>
+                            <div class="carousel-footer">
+                                <div class="carousel-counter font-sketch">1 / 5</div>
+                                <div class="carousel-progress"><div class="carousel-progress-bar js-carousel-progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study 6: infill plot (dark grey) -->
+                <div class="panel panel--study panel--alt">
+                    <div class="sticker-title-wrap">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_dent_title">DENT CREUSE</h3>
+                    </div>
+                    <div class="study-entry">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_dent_date">Mars 2024</span> <span class="study-date-year" data-i18n="study_year_2">2e année</span></p>
+                            <p class="panel-lede" data-i18n="study_dent_text">Une dent creuse est une parcelle vide entre deux bâtiments. Celle-ci se trouve descente de la Halle aux Poissons, à Toulouse. Le client, les Ateliers Chutes Libres, ouvre un atelier en libre accès où chacun fabrique un meuble avec des chutes de bois. Le rez-de-chaussée reçoit la camionnette et le stockage, l'atelier occupe le 1er étage et le 2e accueille trois chambres.</p>
+                            <p class="panel-tools" data-i18n="study_dent_tools">ArchiCAD, InDesign, maquette</p>
+                        </div>
+                        <div class="carousel carousel--landscape carousel--study" data-study-gallery>
+                            <div class="carousel-row">
+                                <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="carousel-viewport">
+                                        <div class="carousel-track">
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/dent-creuse-1.webp" srcset="assets/opt/etudes/dent-creuse-1.webp 960w, assets/opt/etudes/dent-creuse-1@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/dent-creuse-1@2x.webp" alt="Maquette de principe vue de dessus, avec le jardin" data-i18n-alt="alt_study_dent_creuse_1" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/dent-creuse-2.webp" srcset="assets/opt/etudes/dent-creuse-2.webp 960w, assets/opt/etudes/dent-creuse-2@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/dent-creuse-2@2x.webp" alt="Façade en rendu et en croquis" data-i18n-alt="alt_study_dent_creuse_2" loading="lazy" decoding="async" width="960" height="679"></div></div></div>
+                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/dent-creuse-3.webp" srcset="assets/opt/etudes/dent-creuse-3.webp 960w, assets/opt/etudes/dent-creuse-3@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/dent-creuse-3@2x.webp" alt="Coupe AA au 1/100" data-i18n-alt="alt_study_dent_creuse_3" loading="lazy" decoding="async" width="960" height="679"></div></div></div>
+                                            <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/dent-creuse-4.webp" srcset="assets/opt/etudes/dent-creuse-4.webp 960w, assets/opt/etudes/dent-creuse-4@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/dent-creuse-4@2x.webp" alt="Insertion dans la rue, au stylo Micron" data-i18n-alt="alt_study_dent_creuse_4" loading="lazy" decoding="async" width="960" height="679"></div></div></div>
+                                            <div class="carousel-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/dent-creuse-5.webp" srcset="assets/opt/etudes/dent-creuse-5.webp 960w, assets/opt/etudes/dent-creuse-5@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/dent-creuse-5@2x.webp" alt="Le jardin intérieur" data-i18n-alt="alt_study_dent_creuse_5" loading="lazy" decoding="async" width="960" height="679"></div></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Hand-drawn red scribble -->
+                                    <svg class="sketch-rect-svg sketch-rect-svg--carousel" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                                    </svg>
+                                </div>
+                                <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                </button>
+                            </div>
+                            <div class="carousel-footer">
+                                <div class="carousel-counter font-sketch">1 / 5</div>
+                                <div class="carousel-progress"><div class="carousel-progress-bar js-carousel-progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study 7: Haussmann apartment (black) -->
+                <div class="panel panel--study">
+                    <div class="sticker-title-wrap sticker-title-wrap--right">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_haussmann_title">APPARTEMENT HAUSSMANNIEN</h3>
+                    </div>
+                    <div class="study-entry study-entry--reverse">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_haussmann_date">Décembre 2023</span> <span class="study-date-year" data-i18n="study_year_2">2e année</span></p>
+                            <p class="panel-lede" data-i18n="study_haussmann_text">Un appartement haussmannien rue Boulbonne, à Toulouse, transformé en studio de photographie de mode pour une cliente photographe. Au centre, un décor rotatif : on le tourne vers la fenêtre pour garder la lumière naturelle, quel que soit le décor. Plans, coupe et perspectives sont dessinés à la main sur calque, au stylo Micron, puis mis en couleur au feutre à alcool.</p>
+                            <p class="panel-tools" data-i18n="study_haussmann_tools">Stylo Micron, feutre à alcool, InDesign</p>
+                        </div>
+                        <div class="carousel carousel--landscape carousel--study" data-study-gallery>
+                            <div class="carousel-row">
+                                <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="carousel-viewport">
+                                        <div class="carousel-track">
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/haussmann-1.webp" srcset="assets/opt/etudes/haussmann-1.webp 960w, assets/opt/etudes/haussmann-1@2x.webp 1191w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/haussmann-1@2x.webp" alt="Plan final coloré au feutre à alcool, au 1/75" data-i18n-alt="alt_study_haussmann_1" loading="lazy" decoding="async" width="960" height="679"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/haussmann-2.webp" srcset="assets/opt/etudes/haussmann-2.webp 960w, assets/opt/etudes/haussmann-2@2x.webp 1191w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/haussmann-2@2x.webp" alt="Croquis du décor rotatif" data-i18n-alt="alt_study_haussmann_2" loading="lazy" decoding="async" width="960" height="679"></div></div></div>
+                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/haussmann-3.webp" srcset="assets/opt/etudes/haussmann-3.webp 960w, assets/opt/etudes/haussmann-3@2x.webp 1191w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/haussmann-3@2x.webp" alt="Perspectives de la chambre, du salon et de la salle d'eau" data-i18n-alt="alt_study_haussmann_3" loading="lazy" decoding="async" width="960" height="679"></div></div></div>
+                                            <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/haussmann-4.webp" srcset="assets/opt/etudes/haussmann-4.webp 960w, assets/opt/etudes/haussmann-4@2x.webp 1191w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/haussmann-4@2x.webp" alt="Coupe AA au 1/50, à travers le décor rotatif" data-i18n-alt="alt_study_haussmann_4" loading="lazy" decoding="async" width="960" height="679"></div></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Hand-drawn red scribble -->
+                                    <svg class="sketch-rect-svg sketch-rect-svg--carousel" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                                    </svg>
+                                </div>
+                                <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                </button>
+                            </div>
+                            <div class="carousel-footer">
+                                <div class="carousel-counter font-sketch">1 / 4</div>
+                                <div class="carousel-progress"><div class="carousel-progress-bar js-carousel-progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study 8: countryside art gallery (dark grey) -->
+                <div class="panel panel--study panel--alt">
+                    <div class="sticker-title-wrap">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_galerie_title">GALERIE D'ART À LA CAMPAGNE</h3>
+                    </div>
+                    <div class="study-entry">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_galerie_date">Mars 2023</span> <span class="study-date-year" data-i18n="study_year_1">1re année</span></p>
+                            <p class="panel-lede" data-i18n="study_galerie_text">Une maison de campagne en brique transformée en galerie d'art. J'ai commencé par la liste des besoins : l'accueil et la billetterie, l'accès des personnes à mobilité réduite, le stockage des œuvres, et des modules d'exposition sur rails ou sur roues qui changent à chaque exposition. Plans, façades et coupe sur AutoCAD, axonométries sur Twinmotion.</p>
+                            <p class="panel-tools" data-i18n="study_galerie_tools">AutoCAD, Twinmotion, Canva</p>
+                        </div>
+                        <div class="carousel carousel--landscape carousel--study" data-study-gallery>
+                            <div class="carousel-row">
+                                <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="carousel-viewport">
+                                        <div class="carousel-track">
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/galerie-1.webp" srcset="assets/opt/etudes/galerie-1.webp 960w, assets/opt/etudes/galerie-1@2x.webp 1152w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/galerie-1@2x.webp" alt="La galerie dans son jardin, vue en axonométrie" data-i18n-alt="alt_study_galerie_1" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/galerie-2.webp" srcset="assets/opt/etudes/galerie-2.webp 960w, assets/opt/etudes/galerie-2@2x.webp 1152w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/galerie-2@2x.webp" alt="Vue de la galerie depuis le pré" data-i18n-alt="alt_study_galerie_2" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/galerie-3.webp" srcset="assets/opt/etudes/galerie-3.webp 960w, assets/opt/etudes/galerie-3@2x.webp 1152w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/galerie-3@2x.webp" alt="L'entrée de la galerie" data-i18n-alt="alt_study_galerie_3" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/galerie-4.webp" srcset="assets/opt/etudes/galerie-4.webp 960w, assets/opt/etudes/galerie-4@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/galerie-4@2x.webp" alt="Façades nord et sud, plans du rez-de-chaussée et de l'étage" data-i18n-alt="alt_study_galerie_4" loading="lazy" decoding="async" width="960" height="508"></div></div></div>
+                                            <div class="carousel-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img" src="assets/opt/etudes/galerie-5.webp" srcset="assets/opt/etudes/galerie-5.webp 960w, assets/opt/etudes/galerie-5@2x.webp 1760w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/galerie-5@2x.webp" alt="Coupe BB sur la charpente, au 1/50" data-i18n-alt="alt_study_galerie_5" loading="lazy" decoding="async" width="960" height="563"></div></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Hand-drawn red scribble -->
+                                    <svg class="sketch-rect-svg sketch-rect-svg--carousel" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                                    </svg>
+                                </div>
+                                <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                </button>
+                            </div>
+                            <div class="carousel-footer">
+                                <div class="carousel-counter font-sketch">1 / 5</div>
+                                <div class="carousel-progress"><div class="carousel-progress-bar js-carousel-progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Study 9: kiosk (black) -->
+                <div class="panel panel--study">
+                    <div class="sticker-title-wrap sticker-title-wrap--right">
+                        <h3 class="sticker-title font-sketch" data-i18n="study_kiosque_title">KIOSQUE</h3>
+                    </div>
+                    <div class="study-entry study-entry--reverse">
+                        <div class="study-text">
+                            <p class="study-date"><span class="study-date-month font-sketch" data-i18n="study_kiosque_date">Décembre 2022</span> <span class="study-date-year" data-i18n="study_year_1">1re année</span></p>
+                            <p class="panel-lede" data-i18n="study_kiosque_text">Un kiosque en brique qui casse la forme rectangulaire de la brique avec une forme ronde, et beaucoup de fenêtres et d'ouvertures pour faire respirer la structure. On peut s'y poser ou y manger, dedans comme dehors. J'ai retenu cette piste parmi trois croquis d'intentions, puis je l'ai rendue sur Twinmotion pour vérifier qu'elle tient à taille humaine.</p>
+                            <p class="panel-tools" data-i18n="study_kiosque_tools">Crayon, Twinmotion</p>
+                        </div>
+                        <div class="carousel carousel--landscape carousel--study" data-study-gallery>
+                            <div class="carousel-row">
+                                <button type="button" class="carousel-arrow carousel-arrow--prev" aria-label="Précédent" data-i18n-aria="aria_prev">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 26 9 L 14 21 L 27 29" class="sketch-frame-1"/><path d="M 24 11 L 16 19 L 23 31" class="sketch-frame-2"/><path d="M 25 10 Q 15 20 15 20 Q 20 25 25 30" class="sketch-frame-3"/></svg>
+                                </button>
+                                <div class="frame-wrap">
+                                    <div class="carousel-viewport">
+                                        <div class="carousel-track">
+                                            <div class="carousel-slide is-active" data-slide="0"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/kiosque-1.webp" srcset="assets/opt/etudes/kiosque-1.webp 960w, assets/opt/etudes/kiosque-1@2x.webp 1000w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/kiosque-1@2x.webp" alt="Le kiosque en brique sur une place" data-i18n-alt="alt_study_kiosque_1" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="1"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/kiosque-2.webp" data-full="assets/opt/etudes/kiosque-2.webp" alt="Le kiosque vu d'en haut" data-i18n-alt="alt_study_kiosque_2" loading="lazy" decoding="async" width="764" height="428"></div></div></div>
+                                            <div class="carousel-slide" data-slide="2"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--cover" src="assets/opt/etudes/kiosque-3.webp" data-full="assets/opt/etudes/kiosque-3.webp" alt="Le kiosque de face, avec ses assises" data-i18n-alt="alt_study_kiosque_3" loading="lazy" decoding="async" width="764" height="428"></div></div></div>
+                                            <div class="carousel-slide" data-slide="3"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--dark" src="assets/opt/etudes/kiosque-4.webp" srcset="assets/opt/etudes/kiosque-4.webp 960w, assets/opt/etudes/kiosque-4@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/kiosque-4@2x.webp" alt="Les trois croquis d'intentions" data-i18n-alt="alt_study_kiosque_4" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                            <div class="carousel-slide" data-slide="4"><div class="drawing-sheet-wrap"><div class="media-frame-inner drawing-sheet"><img class="study-img plan-img study-img--dark" src="assets/opt/etudes/kiosque-5.webp" srcset="assets/opt/etudes/kiosque-5.webp 960w, assets/opt/etudes/kiosque-5@2x.webp 1800w" sizes="(min-width: 1200px) 640px, (min-width: 992px) 52vw, calc(100vw - 60px)" data-full="assets/opt/etudes/kiosque-5@2x.webp" alt="Plans de la structure, avec cotations" data-i18n-alt="alt_study_kiosque_5" loading="lazy" decoding="async" width="960" height="540"></div></div></div>
+                                        </div>
+                                    </div>
+                                    <!-- Hand-drawn red scribble -->
+                                    <svg class="sketch-rect-svg sketch-rect-svg--carousel" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true">
+                                        <path class="sketch-rect-path" d="M12 8 L388 5 L395 12 L392 288 L385 295 L14 292 L6 286 L9 14 Z"/>
+                                    </svg>
+                                </div>
+                                <button type="button" class="carousel-arrow carousel-arrow--next" aria-label="Suivant" data-i18n-aria="aria_next">
+                                    <svg viewBox="0 0 40 40" width="32" height="32" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M 14 9 L 26 21 L 13 29" class="sketch-frame-1"/><path d="M 16 11 L 24 19 L 17 31" class="sketch-frame-2"/><path d="M 15 10 Q 25 20 25 20 Q 20 25 15 30" class="sketch-frame-3"/></svg>
+                                </button>
+                            </div>
+                            <div class="carousel-footer">
+                                <div class="carousel-counter font-sketch">1 / 5</div>
+                                <div class="carousel-progress"><div class="carousel-progress-bar js-carousel-progress"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- End of project board -->
+
                 <!-- Next-page link -->
                 <a href="#dessins" class="page-next" data-target="drawings" aria-label="Aller à la page Dessins" data-i18n-aria="aria_goto_drawings">
                     <span class="page-next-label" data-i18n="nav_next">suivant</span>

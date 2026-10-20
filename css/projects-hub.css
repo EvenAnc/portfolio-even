@@ -115,6 +115,9 @@
     letter-spacing: 2px;
 }
 
+/* Small card that has its photo: it fills the frame like the photo of the other cards. */
+.patchwork-item--small .polaroid-img-wrap--photo { display: block; }
+
 /* backdrop-filter is unprefixed only: Safari before 18 ignores it and shows the tape without blur. */
 .polaroid-tape {
     position: absolute;
@@ -165,6 +168,15 @@
 .patchwork-item--large .polaroid-label-mark { font-size: 3.5rem; }
 .patchwork-item--large .polaroid-label-text { font-size: 2.5rem; }
 
+/* A title that takes two lines in its card: the label returns to the flow, as on phones, and
+   the photo yields the room it needs instead of being covered. */
+.polaroid-card--label-flow { padding-bottom: 14px; }
+
+.polaroid-card--label-flow .polaroid-label {
+    position: static;
+    margin-top: 10px;
+}
+
 @media (max-width: 768px) {
     /* Phones: the label returns to the flow. Absolutely positioned over a flex:1 image, a two-
        line title would overflow the 60px reserved for it and run onto the photo; in the flow,
@@ -194,6 +206,12 @@
     .patchwork-item--small .polaroid-img-wrap {
         min-height: 190px;
         padding: 34px 12px 16px;
+    }
+
+    /* A photo needs neither: it has its own height and the tape may overlap it. */
+    .patchwork-item--small .polaroid-img-wrap--photo {
+        min-height: 0;
+        padding: 0;
     }
 }
 
