@@ -207,8 +207,11 @@ export function refreshPageScroll() {
 // rendering and keeps the first load light. Lazy loading relies on an
 // intersection that is never computed in a skipped subtree, so the images
 // of a page are switched to eager loading when that page opens.
+// data-stay-lazy opts out: the hidden slides of the study overview carousels,
+// sixty images on one page, keep native lazy loading, which works again
+// once the page is displayed and fetches them as the visitor nears them.
 function loadPageImages(pageEl) {
-    pageEl.querySelectorAll('img[loading="lazy"]').forEach(img => {
+    pageEl.querySelectorAll('img[loading="lazy"]:not([data-stay-lazy])').forEach(img => {
         img.loading = 'eager';
         // Setting src again restarts a download the browser had deferred.
         if (!img.complete || img.naturalWidth === 0) {

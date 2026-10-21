@@ -134,11 +134,9 @@
     aspect-ratio: 16 / 10;
 }
 
-/* Renders fill the frame; boards and plans stay whole (.plan-img, frame.css). */
+/* Renders fill the frame; boards and plans stay whole (.plan-img, frame.css). Boards on a dark
+   ground are extended to 16:10 with their own colour when the images are prepared. */
 .drawing-sheet .study-img--cover { object-fit: cover; }
-
-/* Boards laid out on a dark ground keep it around them. */
-.drawing-sheet .study-img--dark { background: var(--bg); }
 
 
 /* Graduation project: a cover that leads to its own page */
