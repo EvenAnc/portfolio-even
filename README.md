@@ -42,7 +42,8 @@ js/
   header.js, menu.js, hero.js, carousel.js, contact.js, notebook.js,
   favicon.js, preload.js, touch-reveal.js, keyboard-activation.js
   sketch-frames.js    five takes of the red sketch frame, dealt out across the site
-  sketchbook.js       corner the sketches of the drawings page grow from on hover
+  sketchbook.js       follows the pointer over the sketches and picks the one that grows
+  quote-band.js       fits the closing quote animation to the bottom of its page
 vendor/               GSAP, Lenis, PDF.js, with their licences
 PDF/                  plan and section PDFs; opt/ holds their WebP previews
 dessin/opt/           optimised drawings (WebP, 1x and 2x); croquis-XX are the sketches, each number bound to one drawing

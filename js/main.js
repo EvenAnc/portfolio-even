@@ -21,6 +21,7 @@ import { initSafariPaperCache, initNotebookLines } from './notebook.js';
 import { initCarousels } from './carousel.js';
 import { initSketchFrames } from './sketch-frames.js';
 import { initSketchbook } from './sketchbook.js';
+import { initQuoteBands } from './quote-band.js';
 import { initTouchReveal } from './touch-reveal.js';
 import { initKeyboardActivation } from './keyboard-activation.js';
 import { initCopyEmail, initContactReveal, initContactForm } from './contact.js';
@@ -67,6 +68,7 @@ function init() {
     initCopyEmail();
     initKeyboardActivation();
 
+    initQuoteBands();
     showInitialPage();
     initHistory();
     onReducedMotionChange(refreshPageScroll);

@@ -463,12 +463,18 @@ body.has-back-button .header-back-btn { display: flex; }
 
 /* Next-page link */
 
+/* Always at the right edge of the screen, whatever the width of the page around it: the margin
+   reaches out of the content column to stop --next-edge short of the screen edge (Even,
+   21/10/2026). 100% is the width of that column; --scrollbar-width is set by script. */
 .page-next {
+    --next-edge: 60px;
+
     display: flex;
     align-items: center;
     gap: 16px;
     margin-top: 80px;
     margin-bottom: 40px;
+    margin-right: calc(var(--next-edge) - (100vw - var(--scrollbar-width, 0px) - 100%) / 2);
     float: right;
     clear: both;
     padding: 10px 0;
@@ -495,12 +501,8 @@ body.has-back-button .header-back-btn { display: flex; }
 }
 
 .page-next-arrow path { stroke: var(--red); }
-.project-detail-page .page-next { margin-right: 60px; }
 
 @media (max-width: 768px) {
-    /* Content outside the panels keeps its breathing room. */
-    .project-detail-page .page-next {
-        padding-left: 20px;
-        padding-right: 20px;
-    }
+    /* Phones: the same edge as the page margins. */
+    .page-next { --next-edge: 20px; }
 }

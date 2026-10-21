@@ -319,7 +319,9 @@
    two, and every sheet has the same height, so the rows stay level. Under the mouse a sheet
    grows, with its caption and its red frame; the zoom is a transform alone, which the browser
    composites without repainting, and no blur on the neighbours: it would weigh on every move
-   from sheet to sheet. sketchbook.js only picks the corner a sheet grows from. */
+   from sheet to sheet. The layer that grows lets the mouse through, so the cell under the
+   pointer decides: a neighbour stays within reach under a grown sheet. sketchbook.js follows
+   the pointer, marks the sheet that grows and picks the corner it grows from. */
 .sketchbook { margin-top: 120px; }
 
 .sketchbook-heading {
@@ -354,6 +356,7 @@
     --sketch-cols: 8;
     --sketch-gap: 14px;
     --sketch-zoom: 2.15;
+    --sketch-zoom-wide: 1.6;
 
     display: grid;
     grid-template-columns: repeat(var(--sketch-cols), minmax(0, 1fr));
@@ -364,7 +367,16 @@
 }
 
 .sketch-item { gap: 0; }
-.sketch-item--wide { grid-column: span 2; }
+
+/* The sheet and its red frame grow as one: the layer is always their containing block. */
+.sketch-zoom { position: relative; }
+
+/* A wide sheet already spans two cells: it grows less, and leaves its neighbours in view. */
+.sketch-item--wide {
+    --sketch-zoom: var(--sketch-zoom-wide);
+
+    grid-column: span 2;
+}
 
 /* .plan-img shows the whole sheet on white (frame.css): nothing of the drawing is cropped. */
 .sketch-item .media-frame-inner { aspect-ratio: 4 / 5; }
@@ -416,23 +428,32 @@
 }
 
 /* The zoom, for a mouse on a screen wide enough to leave it room. The sheet grows in 0.45s and
-   shrinks back a little faster, so that crossing the grid never leaves two sheets large. */
+   shrinks back a little faster, so that crossing the grid never leaves two sheets large. The
+   caption grows from the same point as its sheet (both set by sketchbook.js). */
 @media (hover: hover) and (min-width: 769px) {
-    .sketch-item {
-        transition: transform 0.38s var(--ease-out);
+    .sketch-zoom,
+    .sketch-caption {
+        pointer-events: none;
+        transition: transform 0.38s var(--ease-out), opacity 0.25s var(--ease-out);
     }
 
-    .sketch-item:hover,
-    .sketch-item:focus-within {
+    .sketch-zoom { transform-origin: var(--zoom-x, 50%) var(--zoom-y, 50%); }
+    .sketch-caption { transform-origin: var(--zoom-x, 50%) var(--zoom-cap-y, 0); }
+
+    .sketch-item.is-zoomed .sketch-zoom,
+    .sketch-item.is-zoomed .sketch-caption {
         transform: scale(var(--sketch-zoom));
-        transition-duration: 0.45s;
+        transition-duration: 0.45s, 0.25s;
     }
 
-    .sketch-item:hover .sketch-caption,
-    .sketch-item:focus-within .sketch-caption {
+    .sketch-item.is-zoomed .sketch-caption {
         opacity: 1;
-        transition-delay: 0.15s;
+        transition-delay: 0s, 0.15s;
     }
+
+    /* The red frame draws around the grown sheet only. */
+    .sketch-item.is-zoomed .sketch-rect-svg { opacity: 1; }
+    .sketch-item.is-zoomed .sketch-rect-path { stroke-dashoffset: 0; }
 }
 
 /* Between a tablet and a small laptop, eight columns would be too small: four, and a smaller
@@ -442,6 +463,7 @@
         --sketch-cols: 4;
         --sketch-gap: 22px;
         --sketch-zoom: 1.6;
+        --sketch-zoom-wide: 1.3;
     }
 
     .sketch-caption-title { font-size: 0.6rem; }
@@ -464,6 +486,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .sketch-item,
+    .sketch-zoom,
     .sketch-caption { transition: none; }
 }

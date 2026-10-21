@@ -24,20 +24,20 @@
     margin-left: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
     margin-right: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
 
-    /* Symmetric padding: the text is centred between its neighbours only if their own margins
-       are equal, which the two rules below see to. */
+    /* More air above than below: the "next" arrow, below, ends just under the quote. */
     padding-top: 14vh;
-    padding-bottom: 14vh;
+    padding-bottom: 6vh;
 }
 
 /* Block above: a tight 40px. The amplitude of the animation is fixed, so the larger the starting
    gap, the less visible the movement. */
 .quote-band-before { padding-bottom: 40px; }
 
-/* Block below: the reserve gives the quote air and supplies the scroll travel the animation
-   needs to settle, since the quote is the last block of the page. */
+/* Block below: no reserve any more. The scroll travel the animation needs comes from the footer,
+   and quote-band.js sets where the animation must have closed: at the very bottom of the page,
+   with the arrow back just under the quote (Even, 21/10/2026: a void opened between them). */
 .page--with-quote .page-next {
-    margin-top: 32vh;
+    margin-top: 0;
     margin-bottom: 40px;
 }
 
@@ -78,7 +78,7 @@
 @media (max-width: 768px) {
     .quote-band {
         padding-top: 12vh;
-        padding-bottom: 12vh;
+        padding-bottom: 5vh;
     }
 
     .quote-band-body {
@@ -99,65 +99,70 @@
    so those browsers keep the resting state above and simply show the quote. */
 @supports (animation-timeline: view()) and (timeline-scope: --x) {
     @media (prefers-reduced-motion: no-preference) {
-        /* Range: 21% to 79% of the crossing rather than 0 to 100, so the peak stays centred and
-           the end stays reachable (almost nothing is left to scroll below the quote). */
+        /* Range: from the entry of the quote to the point it reaches at the bottom of the page,
+           both set by quote-band.js (21% to 79% until it has run), so the blocks part then close
+           back as the visitor reaches the end. */
         .quote-band-before {
             animation: quote-gap-up linear both;
             animation-timeline: --quote-timeline;
-            animation-range: cover 21% cover 79%;
+            animation-range: cover var(--quote-start, 21%) cover var(--quote-end, 79%);
         }
 
         .quote-band-body {
             animation: quote-fade linear both;
             animation-timeline: --quote-timeline;
-            animation-range: cover 21% cover 79%;
+            animation-range: cover var(--quote-start, 21%) cover var(--quote-end, 79%);
         }
 
         .page--with-quote .page-next {
             animation: quote-gap-down linear both;
             animation-timeline: --quote-timeline;
-            animation-range: cover 21% cover 79%;
+            animation-range: cover var(--quote-start, 21%) cover var(--quote-end, 79%);
         }
     }
 }
 
-/* The three curves follow sin^2(pi * t), flat at both ends. */
+/* The two gap curves rise as sin^2 to their peak at 42% of the range, then fall back the same
+   way: flat at both ends and at the peak, so the parting and the closing never jolt. The closing
+   is the longer half; the arrow, below, travels less than the block above. */
 @keyframes quote-gap-up {
     0% { transform: translateY(0); }
-    7.1% { transform: translateY(-0.99vh); }
-    14.3% { transform: translateY(-3.765vh); }
-    21.4% { transform: translateY(-7.775vh); }
-    28.6% { transform: translateY(-12.225vh); }
-    35.7% { transform: translateY(-16.235vh); }
-    42.9% { transform: translateY(-19.01vh); }
-    50% { transform: translateY(-20vh); }
-    57.1% { transform: translateY(-19.01vh); }
-    64.3% { transform: translateY(-16.235vh); }
-    71.4% { transform: translateY(-12.225vh); }
-    78.6% { transform: translateY(-7.775vh); }
-    85.7% { transform: translateY(-3.765vh); }
-    92.9% { transform: translateY(-0.99vh); }
+    7% { transform: translateY(-0.938vh); }
+    14% { transform: translateY(-3.5vh); }
+    21% { transform: translateY(-7vh); }
+    28% { transform: translateY(-10.5vh); }
+    35% { transform: translateY(-13.062vh); }
+    42% { transform: translateY(-14vh); }
+    50% { transform: translateY(-13.353vh); }
+    58% { transform: translateY(-11.532vh); }
+    66% { transform: translateY(-8.873vh); }
+    74% { transform: translateY(-5.868vh); }
+    82% { transform: translateY(-3.072vh); }
+    90% { transform: translateY(-1.002vh); }
+    95% { transform: translateY(-0.255vh); }
     100% { transform: translateY(0); }
 }
 
 @keyframes quote-gap-down {
     0% { transform: translateY(0); }
-    7.1% { transform: translateY(0.99vh); }
-    14.3% { transform: translateY(3.765vh); }
-    21.4% { transform: translateY(7.775vh); }
-    28.6% { transform: translateY(12.225vh); }
-    35.7% { transform: translateY(16.235vh); }
-    42.9% { transform: translateY(19.01vh); }
-    50% { transform: translateY(20vh); }
-    57.1% { transform: translateY(19.01vh); }
-    64.3% { transform: translateY(16.235vh); }
-    71.4% { transform: translateY(12.225vh); }
-    78.6% { transform: translateY(7.775vh); }
-    85.7% { transform: translateY(3.765vh); }
-    92.9% { transform: translateY(0.99vh); }
+    7% { transform: translateY(0.67vh); }
+    14% { transform: translateY(2.5vh); }
+    21% { transform: translateY(5vh); }
+    28% { transform: translateY(7.5vh); }
+    35% { transform: translateY(9.33vh); }
+    42% { transform: translateY(10vh); }
+    50% { transform: translateY(9.538vh); }
+    58% { transform: translateY(8.237vh); }
+    66% { transform: translateY(6.338vh); }
+    74% { transform: translateY(4.191vh); }
+    82% { transform: translateY(2.194vh); }
+    90% { transform: translateY(0.716vh); }
+    95% { transform: translateY(0.182vh); }
     100% { transform: translateY(0); }
 }
 
+/* The quote brightens as the blocks part, then stays bright: it is the last text of the page,
+   read where the scroll comes to rest. */
 @keyframes quote-fade {
     0% { opacity: 0.32; }
     7.1% { opacity: 0.354; }
@@ -167,11 +172,5 @@
     35.7% { opacity: 0.872; }
     42.9% { opacity: 0.966; }
     50% { opacity: 1; }
-    57.1% { opacity: 0.966; }
-    64.3% { opacity: 0.872; }
-    71.4% { opacity: 0.736; }
-    78.6% { opacity: 0.584; }
-    85.7% { opacity: 0.448; }
-    92.9% { opacity: 0.354; }
-    100% { opacity: 0.32; }
+    100% { opacity: 1; }
 }

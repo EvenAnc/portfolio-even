@@ -34,19 +34,28 @@
     }
 
     .patchwork-item--large {
-        grid-column: span 6;
+        --span: 6;
+
         grid-row: span 5;
     }
 
     .patchwork-item--medium {
-        grid-column: span 5;
+        --span: 5;
+
         grid-row: span 4;
     }
 
     .patchwork-item--small {
-        grid-column: span 4;
+        --span: 4;
+
         grid-row: span 3;
     }
+
+    /* Every card leans on the central axis of the page, whatever its size: on the left it ends
+       there, on the right it starts there, and the gap between the two halves stays centred. */
+    .patchwork-item { grid-column: span var(--span, 4); }
+    .patchwork-item--left { grid-column: span var(--span, 4) / 7; }
+    .patchwork-item--right { grid-column: 7 / span var(--span, 4); }
 }
 
 
@@ -147,13 +156,21 @@
     color: var(--ink);
 
     /* Mark and title on one row, the title wrapping beside the mark if it must; the date, when
-       there is one, takes a row of its own below. */
-    display: grid;
-    grid-template-columns: auto minmax(0, auto);
+       there is one, sits on its own line below, outside that row, so it never widens the room
+       of the mark. */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 0 10px;
+}
+
+.polaroid-label-head {
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 2px 8px;
-    padding: 0 10px;
+    gap: 8px;
+    max-width: 100%;
 }
 
 .polaroid-label-mark {
@@ -176,7 +193,6 @@
    drawn arrow (the sketch font has no arrow). The card keeps more room under its photo for it,
    where the label sits over the card; on phones the label is in the flow and needs none. */
 .polaroid-label-date {
-    grid-column: 1 / -1;
     display: flex;
     justify-content: center;
     align-items: center;
