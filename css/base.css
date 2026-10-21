@@ -220,24 +220,37 @@ textarea:focus-visible,
 
 /* Language switch */
 
-/* The page in the other language comes in behind a torn edge, an S-shaped tear like the torn
-   frames of the sheets, that sweeps the screen from the top left corner in three quarters of a
-   second, slowing as it ends (Even, 21/10/2026, after the day and night wave of a dashboard he
-   liked). View transition: the old page stays still underneath; the new one is uncovered by a
-   mask three screens wide (assets/ui/tear-wave.svg) sliding across. Both pages share the same
-   ground, so the old one dims at once: the torn front shows as the new page comes in at full
-   light. The class only exists during this switch (i18n.js), so the viewer keeps its own
-   transition. */
+/* The page in the other language is laid over the old one like a new sheet torn across it (Even,
+   21/10/2026, after the day and night wave of a dashboard he liked, then "plus stylé"). View
+   transition, four moves at once over 0.95s:
+   - the torn front, an S-shaped tear like the torn frames of the sheets, sweeps the screen from
+     the top left corner: a mask three screens wide slides across, slow to start, fast across
+     the middle, gentle as it lands;
+   - its edge boils like the site's pencil lines: three drawings of the same tear take turns,
+     eight times a second (assets/ui/tear-wave-1 to 3.svg), and a fringe of fibres at 38% runs a
+     little ahead of it;
+   - the old page sinks back: it dims, shrinks a little and softens;
+   - the new sheet arrives slightly turned and enlarged, and settles flat.
+   The class only exists during this switch (i18n.js), so the viewer keeps its own transition. */
 @media (prefers-reduced-motion: no-preference) {
+    .is-switching-language::view-transition-group(root) {
+        animation-duration: 0.95s;
+    }
+
     .is-switching-language::view-transition-old(root) {
-        animation: language-dim 0.75s ease-out both;
+        animation: language-sink 0.95s cubic-bezier(0.3, 0, 0.2, 1) both;
+        transform-origin: 70% 70%;
     }
 
     .is-switching-language::view-transition-new(root) {
-        animation: language-tear 0.75s cubic-bezier(0.45, 0, 0.2, 1) both;
-        mask-image: url("../assets/ui/tear-wave.svg");
+        animation:
+            language-tear 0.95s cubic-bezier(0.7, 0, 0.25, 1) both,
+            language-boil 0.95s steps(1) both,
+            language-settle 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+        mask-image: url("../assets/ui/tear-wave-1.svg");
         mask-repeat: no-repeat;
         mask-size: 300% 300%;
+        transform-origin: 0 0;
     }
 }
 
@@ -246,9 +259,32 @@ textarea:focus-visible,
     to { mask-position: 0% 0%; }
 }
 
-@keyframes language-dim {
-    0% { filter: brightness(1); }
-    15%, 100% { filter: brightness(0.42) saturate(0.7); }
+/* Discrete: the drawing of the tear changes every eighth of a second, like the boiling lines. */
+@keyframes language-boil {
+    0%, 39%, 78% { mask-image: url("../assets/ui/tear-wave-1.svg"); }
+    13%, 52%, 91% { mask-image: url("../assets/ui/tear-wave-2.svg"); }
+    26%, 65% { mask-image: url("../assets/ui/tear-wave-3.svg"); }
+}
+
+@keyframes language-sink {
+    0% {
+        filter: brightness(1);
+        transform: scale(1);
+    }
+
+    25% {
+        filter: brightness(0.5) saturate(0.7) blur(1px);
+    }
+
+    100% {
+        filter: brightness(0.38) saturate(0.6) blur(2px);
+        transform: scale(0.965);
+    }
+}
+
+@keyframes language-settle {
+    from { transform: rotate(-1.2deg) scale(1.04); }
+    to { transform: none; }
 }
 
 

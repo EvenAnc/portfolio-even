@@ -108,8 +108,8 @@ export function applyLanguage(lang) {
     emit(EVENTS.LANGUAGE_CHANGE, { lang });
 }
 
-// The page in the other language comes in behind a torn edge that sweeps the
-// screen (base.css, "Language switch"). The texts change inside a view
+// The page in the other language is laid over the old one like a new sheet
+// torn across it (base.css, "Language switch"). The texts change inside a view
 // transition; the class scopes its animation to this switch, so the viewer
 // keeps its own. Without view transitions, or under reduced motion, the
 // texts simply change.
@@ -124,8 +124,21 @@ function switchLanguage(lang) {
     transition.finished.catch(() => {}).finally(() => root.classList.remove('is-switching-language'));
 }
 
+// The three drawings of the torn edge, fetched while the page is idle: a
+// mask image still loading would hide the new page during the first switch.
+const TEAR_MASKS = ['assets/ui/tear-wave-1.svg', 'assets/ui/tear-wave-2.svg', 'assets/ui/tear-wave-3.svg'];
+const MASK_PRELOAD_DELAY_MS = 3000;
+
+function preloadTearMasks() {
+    TEAR_MASKS.forEach(url => {
+        const image = new Image();
+        image.src = url;
+    });
+}
+
 /** Wires the language buttons. */
 export function initLanguageSwitcher() {
+    if (document.startViewTransition) setTimeout(preloadTearMasks, MASK_PRELOAD_DELAY_MS);
     document.querySelectorAll('.lang-btn').forEach(button => {
         button.addEventListener('click', () => {
             if (button.dataset.lang !== state.lang) switchLanguage(button.dataset.lang);
