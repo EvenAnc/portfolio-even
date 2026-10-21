@@ -45,7 +45,7 @@ vendor/               GSAP, Lenis, PDF.js, with their licences
 PDF/                  plan and section PDFs; opt/ holds their WebP previews
 dessin/opt/           optimised drawings (WebP, 1x and 2x)
 photo/opt/            optimised photograph
-assets/               images and illustrations; opt/etudes/ holds the study overview views (WebP, 1x and 2x)
+assets/               images and illustrations; opt/etudes/ holds the study overview views (WebP, 1x and 2x) and videos (H.264 MP4, no sound, with a WebP poster)
 fonts/                the display font (woff, woff2)
 defaultsite/          stale-redirect catch-up page (noindex), kept for visitors who cached an old 301
 .well-known/          security.txt

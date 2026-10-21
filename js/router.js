@@ -20,17 +20,25 @@ const PAGE_SLUGS = {
     'projects': 'projets',
     'project-diploma': 'projet-diplome',
     'project-2': 'projet-paterr-suisse',
-    'project-3': 'projet-03',
+    'project-3': 'synthese-etudes',
+    'project-4': 'projet-a-suivre',
     'drawings': 'dessins',
     'diploma': 'diplome',
     'hobbies': 'hobbies',
 };
 
+// Former addresses that may still be shared: they open their page, and the
+// address bar then shows the current one.
+const LEGACY_SLUGS = {
+    'projet-03': 'project-3',
+};
+
 // A Map, not a plain object: fragments such as #constructor would otherwise
 // resolve to members inherited from Object.prototype.
-const SLUG_TO_PAGE = new Map(
-    Object.entries(PAGE_SLUGS).filter(([, slug]) => slug).map(([id, slug]) => [slug, id]),
-);
+const SLUG_TO_PAGE = new Map([
+    ...Object.entries(LEGACY_SLUGS),
+    ...Object.entries(PAGE_SLUGS).filter(([, slug]) => slug).map(([id, slug]) => [slug, id]),
+]);
 
 const FADE_OUT_S = 0.35;
 const FADE_IN_S = 0.55;

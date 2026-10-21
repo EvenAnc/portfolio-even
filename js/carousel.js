@@ -10,6 +10,20 @@ const SLIDE_DURATION_MS = 5000;
 const ON_SCREEN_THRESHOLD = 0.3;
 const OBSERVER_FALLBACK_MS = 4000;
 
+// Hidden slides stay in the DOM: only the visible sheet may take keyboard
+// focus. Sheets that keyboard-activation.js left out of the tab order carry
+// no tabindex and stay out of it. A video on a slide that leaves the screen
+// stops, and its controls leave the tab order with it.
+function setSlideShown(slide, isCurrent) {
+    slide.classList.toggle('is-active', isCurrent);
+    const sheet = slide.querySelector('.drawing-sheet-wrap');
+    if (sheet && sheet.hasAttribute('tabindex')) sheet.tabIndex = isCurrent ? 0 : -1;
+    slide.querySelectorAll('video').forEach(video => {
+        video.tabIndex = isCurrent ? 0 : -1;
+        if (!isCurrent) video.pause();
+    });
+}
+
 // Builds the state and the moves of one carousel. Autoplay runs only while
 // it is switched on, the page is open AND the carousel is on screen: a
 // carousel lower down the page must not have moved on by the time the
@@ -32,6 +46,7 @@ function createCarousel(container, slides) {
         isPlaying: !prefersReducedMotion(),
         isPageOpen: false,
         isOnScreen: false,
+        isVideoPlaying: false,
         goToSlide,
         showNext: () => goToSlide(currentIndex + 1),
         showPrevious: () => goToSlide(currentIndex - 1),
@@ -64,8 +79,9 @@ function createCarousel(container, slides) {
         progressFrame = requestAnimationFrame(drawProgress);
     }
 
+    // A video being watched holds the carousel on its slide.
     function syncAutoplay() {
-        if (carousel.isPlaying && carousel.isPageOpen && carousel.isOnScreen) startAutoplay();
+        if (carousel.isPlaying && carousel.isPageOpen && carousel.isOnScreen && !carousel.isVideoPlaying) startAutoplay();
         else stopAutoplay();
     }
 
@@ -73,15 +89,7 @@ function createCarousel(container, slides) {
         // Wraps around at both ends.
         currentIndex = (index + slides.length) % slides.length;
 
-        slides.forEach((slide, slideIndex) => {
-            const isCurrent = slideIndex === currentIndex;
-            slide.classList.toggle('is-active', isCurrent);
-            // Hidden slides stay in the DOM: only the visible sheet may take
-            // keyboard focus. Sheets that keyboard-activation.js left out of
-            // the tab order carry no tabindex and stay out of it.
-            const sheet = slide.querySelector('.drawing-sheet-wrap');
-            if (sheet && sheet.hasAttribute('tabindex')) sheet.tabIndex = isCurrent ? 0 : -1;
-        });
+        slides.forEach((slide, slideIndex) => setSlideShown(slide, slideIndex === currentIndex));
 
         dots.forEach((dot, dotIndex) => {
             dot.classList.toggle('is-active', dotIndex === currentIndex);
@@ -193,6 +201,29 @@ function bindSwipe(container, carousel) {
     viewport.addEventListener('touchcancel', carousel.syncAutoplay, { passive: true });
 }
 
+// Videos of a carousel (study overview): autoplay waits while one plays and
+// resumes once it is paused or over. Leaving the page pauses them.
+function bindVideos(container, carousel) {
+    const videos = container.querySelectorAll('video');
+    if (!videos.length) return;
+
+    const setVideoPlaying = isVideoPlaying => {
+        carousel.isVideoPlaying = isVideoPlaying;
+        carousel.syncAutoplay();
+    };
+    videos.forEach(video => {
+        video.addEventListener('play', () => setVideoPlaying(true));
+        video.addEventListener('pause', () => setVideoPlaying(false));
+        video.addEventListener('ended', () => setVideoPlaying(false));
+    });
+
+    const parentPage = container.closest('.page');
+    if (!parentPage) return;
+    on(EVENTS.PAGE_SHOWN, () => {
+        if (!parentPage.classList.contains('is-active')) videos.forEach(video => video.pause());
+    });
+}
+
 function initCarousel(container) {
     const slides = container.querySelectorAll('.carousel-slide');
     if (!slides.length) return;
@@ -201,6 +232,7 @@ function initCarousel(container) {
     bindControls(container, carousel);
     watchVisibility(container, carousel);
     bindSwipe(container, carousel);
+    bindVideos(container, carousel);
     // A carousel without a play button follows the preference on its own.
     if (!container.querySelector('.carousel-toggle')) {
         onReducedMotionChange(isReduced => {
