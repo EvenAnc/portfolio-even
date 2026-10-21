@@ -19,6 +19,8 @@ import { resetActivePages, initPageLinks, showInitialPage, initHistory, refreshP
 import { initMenu } from './menu.js';
 import { initSafariPaperCache, initNotebookLines } from './notebook.js';
 import { initCarousels } from './carousel.js';
+import { initSketchFrames } from './sketch-frames.js';
+import { initSketchbook } from './sketchbook.js';
 import { initTouchReveal } from './touch-reveal.js';
 import { initKeyboardActivation } from './keyboard-activation.js';
 import { initCopyEmail, initContactReveal, initContactForm } from './contact.js';
@@ -57,6 +59,8 @@ function init() {
     initContactReveal();
     initContactForm();
     initCarousels();
+    initSketchFrames();
+    initSketchbook();
 
     initLightbox();
     initLightboxTriggers();

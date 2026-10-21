@@ -41,9 +41,11 @@ js/
   core/               shared state, environment checks, GSAP fallback
   header.js, menu.js, hero.js, carousel.js, contact.js, notebook.js,
   favicon.js, preload.js, touch-reveal.js, keyboard-activation.js
+  sketch-frames.js    five takes of the red sketch frame, dealt out across the site
+  sketchbook.js       corner the sketches of the drawings page grow from on hover
 vendor/               GSAP, Lenis, PDF.js, with their licences
 PDF/                  plan and section PDFs; opt/ holds their WebP previews
-dessin/opt/           optimised drawings (WebP, 1x and 2x); croquis-XX are the sketches, in page order
+dessin/opt/           optimised drawings (WebP, 1x and 2x); croquis-XX are the sketches, each number bound to one drawing
 photo/opt/            optimised photograph
 assets/               images and illustrations; opt/etudes/ holds the study overview views (WebP, 1x and 2x) and videos (H.264 MP4, no sound, with a WebP poster)
 fonts/                the display font (woff, woff2)

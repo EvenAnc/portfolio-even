@@ -66,9 +66,20 @@ let contactTimers = [];
 // Fade of the page that is leaving, while it runs.
 let fadeOut = null;
 
-// Address the display was last synchronised with by a history event. Reset
-// whenever this module writes an entry itself.
-let syncedUrl = null;
+// Entry the display was last synchronised with by a history event (address
+// plus contact mark). Reset whenever this module writes an entry itself.
+let syncedEntry = null;
+
+// Contact keeps the home address: the block belongs to the home page, and a
+// link copied from there must be the home link. The entry is told apart by
+// its state, { contact: true }, which Back and Forward give back.
+function isContactEntry() {
+    return Boolean(history.state && history.state.contact);
+}
+
+function entryKey() {
+    return `${location.href}|${isContactEntry() ? 'contact' : ''}`;
+}
 
 /**
  * Reads the current fragment.
@@ -133,7 +144,7 @@ function revealContact(outerDelay = 0) {
     const wasOnHome = state.page === 'home';
     contactTimers.push(setTimeout(() => {
         // The visitor may have gone back while the menu was closing.
-        if (pageFromHash() !== 'contact') return;
+        if (!isContactEntry()) return;
         if (state.page !== 'home') showPage('home', { updateHistory: false });
         const scrollDelay = wasOnHome ? CONTACT_SCROLL_DELAY_MS : CONTACT_SCROLL_DELAY_AFTER_TRANSITION_MS;
         contactTimers.push(setTimeout(scrollToContact, scrollDelay));
@@ -154,16 +165,33 @@ function scrollHomeToTop() {
 
 /**
  * Navigates to the contact block. One navigation, one history entry: the
- * #contact entry stands for the whole move, including the switch to the
- * home page.
+ * contact entry, at the home address, stands for the whole move, including
+ * the switch to the home page.
  * @param {number} [outerDelay] milliseconds to wait before moving
  */
 export function goToContact(outerDelay) {
-    revealContact(outerDelay);
-    if (location.hash !== '#contact') {
-        history.pushState({ page: 'contact' }, '', `${baseUrl()}#contact`);
+    if (!isContactEntry()) {
+        history.pushState({ page: 'home', contact: true }, '', baseUrl());
         hasHistoryEntry = true;
-        syncedUrl = null;
+        syncedEntry = null;
+    }
+    revealContact(outerDelay);
+}
+
+/**
+ * The header logo and the home item of the menu. From another page they open
+ * home; on home they bring it back to the top, leaving the contact entry.
+ */
+export function goHome() {
+    if (state.page !== 'home') {
+        showPage('home');
+        return;
+    }
+    scrollHomeToTop();
+    if (isContactEntry()) {
+        history.pushState({ page: 'home' }, '', baseUrl());
+        hasHistoryEntry = true;
+        syncedEntry = null;
     }
 }
 
@@ -180,7 +208,7 @@ function recordHistoryEntry(pageId) {
     const method = hasHistoryEntry ? 'pushState' : 'replaceState';
     history[method]({ page: pageId }, '', urlForPage(pageId));
     hasHistoryEntry = true;
-    syncedUrl = null;
+    syncedEntry = null;
 }
 
 function swapActivePage(outEl, inEl, pageId) {
@@ -337,16 +365,17 @@ export function initPageLinks() {
     });
 }
 
-/** Displays the page the address asks for; an unknown fragment falls back to home. */
+/**
+ * Displays the page the address asks for; an unknown fragment falls back to
+ * home. A #contact link shared before contact kept the home address still
+ * leads to the contact block, and the address bar then shows the home one.
+ */
 export function showInitialPage() {
     const requestedPage = pageFromHash();
     const initialPage = (requestedPage && requestedPage !== 'contact') ? requestedPage : 'home';
-    // For #contact the history is left alone: showPage would write the home
-    // address and drop the fragment, so a reload would no longer come back
-    // to the contact block.
     showPage(initialPage, { animate: false, updateHistory: requestedPage !== 'contact' });
     if (requestedPage === 'contact') {
-        history.replaceState({ page: 'contact' }, '', '#contact');
+        history.replaceState({ page: 'home', contact: true }, '', baseUrl());
     }
     // The landing entry now exists whichever branch ran: the next
     // navigation must add an entry, not overwrite this one.
@@ -364,9 +393,13 @@ export function showInitialPage() {
 
 // Brings the display in line with the address, without adding an entry.
 function showAddress(targetPage) {
-    // An unknown fragment shows home and leaves the address bar.
-    const pageId = targetPage || 'home';
+    // A #contact typed by hand becomes the contact entry at the home address.
     if (targetPage === 'contact') {
+        history.replaceState({ page: 'home', contact: true }, '', baseUrl());
+    }
+    // An unknown fragment shows home and leaves the address bar.
+    const pageId = targetPage === 'contact' ? 'home' : (targetPage || 'home');
+    if (pageId === 'home' && isContactEntry()) {
         revealContact();
     } else if (pageId === 'home' && state.page === 'home') {
         scrollHomeToTop();
@@ -380,11 +413,11 @@ function showAddress(targetPage) {
 // change fires popstate and then hashchange for the same address: the
 // second event finds the address already synchronised and does nothing.
 function syncWithAddress() {
-    if (location.href === syncedUrl) return;
+    if (entryKey() === syncedEntry) return;
     const targetPage = pageFromHash();
     emit(EVENTS.HISTORY_NAVIGATION, { from: state.page, to: targetPage });
     showAddress(targetPage);
-    syncedUrl = location.href;
+    syncedEntry = entryKey();
 }
 
 /** Follows the browser history: Back and Forward, and fragments typed by hand. */

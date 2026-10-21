@@ -10,18 +10,69 @@ const SLIDE_DURATION_MS = 5000;
 const ON_SCREEN_THRESHOLD = 0.3;
 const OBSERVER_FALLBACK_MS = 4000;
 
+// A video leads its carousel (study overview). Once the carousel is on
+// screen it plays on its own, muted, and the progress bar waits for its end
+// before moving on. Off screen it pauses, and goes on when the visitor comes
+// back. A visitor who pauses it takes over: the carousel then runs as usual,
+// as it does when the browser refuses to play it (data saver, low power).
+// 'done' marks a video that no longer holds the carousel; it is cleared each
+// time its slide comes back.
+const videoDone = new WeakSet();
+// Pauses the script makes itself, which must not count as the visitor's.
+const pausedByScript = new WeakSet();
+// Slides shown at the last move, to tell a slide that comes back.
+const currentSlides = new WeakSet();
+
+function pauseByScript(video) {
+    if (video.paused) return;
+    pausedByScript.add(video);
+    video.pause();
+}
+
+// True while the current slide's video holds the carousel. It plays only
+// when the carousel is shown and running; reduced motion leaves it to the
+// visitor.
+function holdForVideo(slide, carousel) {
+    const video = slide.querySelector('video');
+    if (!video || videoDone.has(video)) return false;
+    // The pause that ends playback comes before the ended event: without
+    // this check the video would be started again from the beginning.
+    if (video.ended) {
+        videoDone.add(video);
+        return false;
+    }
+
+    if (!carousel.isPageOpen || !carousel.isOnScreen) {
+        pauseByScript(video);
+    } else if (carousel.isPlaying && video.paused) {
+        video.play().catch(() => {
+            videoDone.add(video);
+            carousel.syncAutoplay();
+        });
+    }
+    return true;
+}
+
 // Hidden slides stay in the DOM: only the visible sheet may take keyboard
 // focus. Sheets that keyboard-activation.js left out of the tab order carry
 // no tabindex and stay out of it. A video on a slide that leaves the screen
-// stops, and its controls leave the tab order with it.
+// stops, and its controls leave the tab order with it; a video whose slide
+// comes back holds the carousel again, from the start if it had ended.
 function setSlideShown(slide, isCurrent) {
     slide.classList.toggle('is-active', isCurrent);
     const sheet = slide.querySelector('.drawing-sheet-wrap');
     if (sheet && sheet.hasAttribute('tabindex')) sheet.tabIndex = isCurrent ? 0 : -1;
     slide.querySelectorAll('video').forEach(video => {
         video.tabIndex = isCurrent ? 0 : -1;
-        if (!isCurrent) video.pause();
+        if (!isCurrent) {
+            pauseByScript(video);
+        } else if (!currentSlides.has(slide)) {
+            videoDone.delete(video);
+            if (video.ended) video.currentTime = 0;
+        }
     });
+    if (isCurrent) currentSlides.add(slide);
+    else currentSlides.delete(slide);
 }
 
 // Builds the state and the moves of one carousel. Autoplay runs only while
@@ -79,9 +130,11 @@ function createCarousel(container, slides) {
         progressFrame = requestAnimationFrame(drawProgress);
     }
 
-    // A video being watched holds the carousel on its slide.
+    // A video being watched holds the carousel on its slide, and so does the
+    // leading video until it is over.
     function syncAutoplay() {
-        if (carousel.isPlaying && carousel.isPageOpen && carousel.isOnScreen && !carousel.isVideoPlaying) startAutoplay();
+        if (holdForVideo(slides[currentIndex], carousel)) stopAutoplay();
+        else if (carousel.isPlaying && carousel.isPageOpen && carousel.isOnScreen && !carousel.isVideoPlaying) startAutoplay();
         else stopAutoplay();
     }
 
@@ -201,8 +254,9 @@ function bindSwipe(container, carousel) {
     viewport.addEventListener('touchcancel', carousel.syncAutoplay, { passive: true });
 }
 
-// Videos of a carousel (study overview): autoplay waits while one plays and
-// resumes once it is paused or over. Leaving the page pauses them.
+// Videos of a carousel (study overview): autoplay waits while one plays.
+// Its end, or a pause from the visitor, releases the carousel; a pause the
+// script made (off screen, other slide, other page) keeps it held.
 function bindVideos(container, carousel) {
     const videos = container.querySelectorAll('video');
     if (!videos.length) return;
@@ -213,14 +267,21 @@ function bindVideos(container, carousel) {
     };
     videos.forEach(video => {
         video.addEventListener('play', () => setVideoPlaying(true));
-        video.addEventListener('pause', () => setVideoPlaying(false));
-        video.addEventListener('ended', () => setVideoPlaying(false));
+        video.addEventListener('pause', () => {
+            if (pausedByScript.has(video)) pausedByScript.delete(video);
+            else if (!video.ended) videoDone.add(video);
+            setVideoPlaying(false);
+        });
+        video.addEventListener('ended', () => {
+            videoDone.add(video);
+            setVideoPlaying(false);
+        });
     });
 
     const parentPage = container.closest('.page');
     if (!parentPage) return;
     on(EVENTS.PAGE_SHOWN, () => {
-        if (!parentPage.classList.contains('is-active')) videos.forEach(video => video.pause());
+        if (!parentPage.classList.contains('is-active')) videos.forEach(pauseByScript);
     });
 }
 

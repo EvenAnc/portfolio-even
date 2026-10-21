@@ -3,10 +3,10 @@
  * header.
  */
 
-import { state, on, EVENTS } from './core/state.js';
+import { on, EVENTS } from './core/state.js';
 import { prefersReducedMotion } from './core/env.js';
 import { tweenFromTo } from './core/gsap-fallback.js';
-import { showPage, goToContact } from './router.js';
+import { showPage, goToContact, goHome } from './router.js';
 
 // Wait between a click on a menu item and the page change. Deliberately
 // shorter than the closing transition of the overlay (--dur-med, 0.55s):
@@ -74,6 +74,8 @@ function onMenuItemClick(event) {
     clearTimeout(navigationTimer);
     if (page === 'contact') {
         goToContact(delay);
+    } else if (page === 'home') {
+        navigationTimer = setTimeout(goHome, delay);
     } else {
         navigationTimer = setTimeout(() => showPage(page), delay);
     }
@@ -87,7 +89,7 @@ function bindHeaderControls() {
     if (headerLogo) {
         headerLogo.addEventListener('click', event => {
             event.preventDefault();
-            if (state.page !== 'home') showPage('home');
+            goHome();
         });
     }
 }

@@ -314,10 +314,12 @@
 
 /* Sketches */
 
-/* Freehand sketches from the school years, on a four-column grid read row by row, in the
-   order of the viewer. Upright sheets take one column, wide ones two: at 4:5 and 8:5 both come
-   out at the same height, so the rows stay level. Unlike the gallery above, no blur on the
-   neighbours: over thirty sheets it would weigh on every hover, in Safari above all. */
+/* Freehand sketches from the school years, small, many to a row, read row by row in the order
+   of the viewer: the whole set fits in a few screens. Upright sheets take one column, wide ones
+   two, and every sheet has the same height, so the rows stay level. Under the mouse a sheet
+   grows, with its caption and its red frame; the zoom is a transform alone, which the browser
+   composites without repainting, and no blur on the neighbours: it would weigh on every move
+   from sheet to sheet. sketchbook.js only picks the corner a sheet grows from. */
 .sketchbook { margin-top: 120px; }
 
 .sketchbook-heading {
@@ -349,15 +351,19 @@
 }
 
 .sketchbook-grid {
-    --sketch-cols: 4;
-    --sketch-gap: 30px;
+    --sketch-cols: 8;
+    --sketch-gap: 14px;
+    --sketch-zoom: 2.15;
 
     display: grid;
     grid-template-columns: repeat(var(--sketch-cols), minmax(0, 1fr));
-    gap: 34px var(--sketch-gap);
+    gap: 14px var(--sketch-gap);
+
+    /* The script measures the sheets from the grid. */
+    position: relative;
 }
 
-.sketch-item { gap: 10px; }
+.sketch-item { gap: 0; }
 .sketch-item--wide { grid-column: span 2; }
 
 /* .plan-img shows the whole sheet on white (frame.css): nothing of the drawing is cropped. */
@@ -377,43 +383,87 @@
     }
 }
 
+/* The caption hangs under its sheet and only shows on the grown sheet: it is set small, and the
+   zoom brings it to a readable size. Screen readers have it all along. */
 .sketch-caption {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    gap: 12px;
+    gap: 6px;
+    margin-top: 3px;
+    padding: 3px 4px;
+    border-radius: 3px;
+    background: rgb(17 17 17 / 88%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s var(--ease-out);
 }
 
 .sketch-caption-title {
-    font-size: 0.9rem;
-    line-height: 1.4;
-    color: var(--muted);
+    font-size: 0.43rem;
+    line-height: 1.35;
+    color: var(--white);
 }
 
 .sketch-caption-date {
     flex-shrink: 0;
-    font-size: 1.15rem;
+    font-size: 0.55rem;
     color: var(--red);
+}
+
+/* The zoom, for a mouse on a screen wide enough to leave it room. The sheet grows in 0.45s and
+   shrinks back a little faster, so that crossing the grid never leaves two sheets large. */
+@media (hover: hover) and (min-width: 769px) {
+    .sketch-item {
+        transition: transform 0.38s var(--ease-out);
+    }
+
+    .sketch-item:hover,
+    .sketch-item:focus-within {
+        transform: scale(var(--sketch-zoom));
+        transition-duration: 0.45s;
+    }
+
+    .sketch-item:hover .sketch-caption,
+    .sketch-item:focus-within .sketch-caption {
+        opacity: 1;
+        transition-delay: 0.15s;
+    }
+}
+
+/* Between a tablet and a small laptop, eight columns would be too small: four, and a smaller
+   zoom. */
+@media (min-width: 769px) and (max-width: 1100px) {
+    .sketchbook-grid {
+        --sketch-cols: 4;
+        --sketch-gap: 22px;
+        --sketch-zoom: 1.6;
+    }
+
+    .sketch-caption-title { font-size: 0.6rem; }
+    .sketch-caption-date { font-size: 0.72rem; }
 }
 
 @media (max-width: 768px) {
     .sketchbook { margin-top: 80px; }
 
-    /* Two columns; a wide sheet takes the whole row, and dense packing pulls the next upright
-       sheet up into a gap it would leave. Like the gallery above, the grid breaks out of the
-       page margins to gain width. */
+    /* Phones: four small columns, like the rows of the larger grid, and no zoom; a tap opens the
+       sheet in the viewer. The grid breaks out of the page margins, like the gallery above. */
     .sketchbook-grid {
-        --sketch-cols: 2;
-        --sketch-gap: 14px;
+        --sketch-cols: 4;
+        --sketch-gap: 8px;
 
-        grid-auto-flow: dense;
-        row-gap: 22px;
+        row-gap: 8px;
         margin-left: -28px;
         margin-right: -28px;
     }
+}
 
-    .sketch-caption {
-        flex-direction: column;
-        gap: 2px;
-    }
+@media (prefers-reduced-motion: reduce) {
+    .sketch-item,
+    .sketch-caption { transition: none; }
 }
