@@ -9,19 +9,31 @@ const SLIDE_DURATION_MS = 5000;
 // Share of the carousel that must be on screen for autoplay to run.
 const ON_SCREEN_THRESHOLD = 0.3;
 const OBSERVER_FALLBACK_MS = 4000;
+// The thin band across the middle of the screen that the frame of a video
+// must cover for it to start: the video is then in the middle of the screen,
+// and two carousels can never qualify at once.
+const CENTRE_BAND_MARGIN = '-48% 0px -48% 0px';
 
-// A video leads its carousel (study overview). Once the carousel is on
-// screen it plays on its own, muted, and the progress bar waits for its end
-// before moving on. Off screen it pauses, and goes on when the visitor comes
-// back. A visitor who pauses it takes over: the carousel then runs as usual,
-// as it does when the browser refuses to play it (data saver, low power).
-// 'done' marks a video that no longer holds the carousel; it is cleared each
-// time its slide comes back.
+// A video leads its carousel (study overview). It starts on its own, muted,
+// when its carousel reaches the middle of the screen, and the progress bar
+// waits for its end before moving on. Only one video plays at a time: the
+// one that starts pauses the other. Off screen it pauses, and goes on when
+// its carousel is back in the middle. It plays even when the system asks for
+// reduced motion (Windows does whenever its animation effects are turned
+// off): Even wants the video to run for every visitor, and it is muted and
+// keeps its controls. The slides themselves still follow that preference.
+// A visitor who pauses it takes over: the carousel then runs as usual. A
+// browser that refuses to play it (autoplay blocked, low power) releases the
+// carousel too, and the video is tried again at the visitor's first click or
+// key, which browsers count as permission. 'done' marks a video that no
+// longer holds the carousel; it is cleared each time its slide comes back.
 const videoDone = new WeakSet();
 // Pauses the script makes itself, which must not count as the visitor's.
 const pausedByScript = new WeakSet();
 // Slides shown at the last move, to tell a slide that comes back.
 const currentSlides = new WeakSet();
+// The video playing now, if any: there is never more than one.
+let playingVideo = null;
 
 function pauseByScript(video) {
     if (video.paused) return;
@@ -29,9 +41,37 @@ function pauseByScript(video) {
     video.pause();
 }
 
-// True while the current slide's video holds the carousel. It plays only
-// when the carousel is shown and running; reduced motion leaves it to the
-// visitor.
+// Videos refused by the browser, with their carousel, to try again once the
+// visitor has interacted with the page.
+const refusedVideos = new Map();
+
+function retryRefusedVideos() {
+    refusedVideos.forEach((carousel, video) => {
+        videoDone.delete(video);
+        carousel.syncAutoplay();
+    });
+    refusedVideos.clear();
+}
+
+['pointerdown', 'keydown'].forEach(type => {
+    document.addEventListener(type, retryRefusedVideos, { passive: true });
+});
+
+function startVideo(video, carousel) {
+    if (playingVideo && playingVideo !== video) pauseByScript(playingVideo);
+    // Set again in script: some browsers only trust the properties.
+    video.muted = true;
+    video.playsInline = true;
+    video.play().catch(() => {
+        videoDone.add(video);
+        refusedVideos.set(video, carousel);
+        carousel.syncAutoplay();
+    });
+}
+
+// True while the current slide's video holds the carousel. It starts when
+// the carousel is in the middle of the open page, and pauses when it leaves
+// the screen.
 function holdForVideo(slide, carousel) {
     const video = slide.querySelector('video');
     if (!video || videoDone.has(video)) return false;
@@ -44,11 +84,8 @@ function holdForVideo(slide, carousel) {
 
     if (!carousel.isPageOpen || !carousel.isOnScreen) {
         pauseByScript(video);
-    } else if (carousel.isPlaying && video.paused) {
-        video.play().catch(() => {
-            videoDone.add(video);
-            carousel.syncAutoplay();
-        });
+    } else if (carousel.isCentred && video.paused) {
+        startVideo(video, carousel);
     }
     return true;
 }
@@ -97,6 +134,7 @@ function createCarousel(container, slides) {
         isPlaying: !prefersReducedMotion(),
         isPageOpen: false,
         isOnScreen: false,
+        isCentred: false,
         isVideoPlaying: false,
         goToSlide,
         showNext: () => goToSlide(currentIndex + 1),
@@ -208,12 +246,23 @@ function watchVisibility(container, carousel) {
         carousel.syncAutoplay();
     }, { threshold: ON_SCREEN_THRESHOLD }).observe(container);
 
+    // Only a carousel with a video needs to know when its frame is in the
+    // middle of the screen.
+    const frame = container.querySelector('video') && container.querySelector('.frame-wrap');
+    if (frame) {
+        new IntersectionObserver(entries => {
+            carousel.isCentred = entries[0].isIntersecting;
+            carousel.syncAutoplay();
+        }, { rootMargin: CENTRE_BAND_MARGIN }).observe(frame);
+    }
+
     // A working observer reports at once, even to say "not visible". If it
     // never reports, autoplay falls back to running rather than staying
     // frozen for good.
     setTimeout(() => {
         if (hasObserverFired) return;
         carousel.isOnScreen = true;
+        carousel.isCentred = true;
         carousel.syncAutoplay();
     }, OBSERVER_FALLBACK_MS);
 
@@ -266,8 +315,14 @@ function bindVideos(container, carousel) {
         carousel.syncAutoplay();
     };
     videos.forEach(video => {
-        video.addEventListener('play', () => setVideoPlaying(true));
+        video.addEventListener('play', () => {
+            // A video started by the visitor stops the one already playing.
+            if (playingVideo && playingVideo !== video) pauseByScript(playingVideo);
+            playingVideo = video;
+            setVideoPlaying(true);
+        });
         video.addEventListener('pause', () => {
+            if (playingVideo === video) playingVideo = null;
             if (pausedByScript.has(video)) pausedByScript.delete(video);
             else if (!video.ended) videoDone.add(video);
             setVideoPlaying(false);
