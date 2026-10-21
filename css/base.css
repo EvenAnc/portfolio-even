@@ -134,6 +134,16 @@ img {
 
 .font-sketch { font-family: var(--font-sketch); }
 
+/* Read by screen readers, not shown: the word a drawn sign stands for. */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
 /* Holder of the SVG filters and clip paths: takes no room. */
 .svg-filters {
     position: absolute;

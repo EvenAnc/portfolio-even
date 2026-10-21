@@ -145,10 +145,14 @@
     width: 100%;
     text-align: center;
     color: var(--ink);
-    display: flex;
+
+    /* Mark and title on one row, the title wrapping beside the mark if it must; the date, when
+       there is one, takes a row of its own below. */
+    display: grid;
+    grid-template-columns: auto minmax(0, auto);
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 2px 8px;
     padding: 0 10px;
 }
 
@@ -167,6 +171,38 @@
 
 .patchwork-item--large .polaroid-label-mark { font-size: 3.5rem; }
 .patchwork-item--large .polaroid-label-text { font-size: 2.5rem; }
+
+/* The date sits on its own line under the title: one year, or the span of a collection with a
+   drawn arrow (the sketch font has no arrow). The card keeps more room under its photo for it,
+   where the label sits over the card; on phones the label is in the flow and needs none. */
+.polaroid-label-date {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.3rem;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--red);
+}
+
+.patchwork-item--large .polaroid-label-date { font-size: 1.6rem; }
+
+.polaroid-label-arrow {
+    width: 30px;
+    height: 11px;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+@media (min-width: 769px) {
+    .polaroid-card--dated { padding-bottom: 90px; }
+    .patchwork-item--large .polaroid-card--dated { padding-bottom: 102px; }
+}
 
 /* A title that takes two lines in its card: the label returns to the flow, as on phones, and
    the photo yields the room it needs instead of being covered. */
