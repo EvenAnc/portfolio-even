@@ -108,25 +108,45 @@ export function applyLanguage(lang) {
     emit(EVENTS.LANGUAGE_CHANGE, { lang });
 }
 
-// The page in the other language is laid over the old one like a new sheet
-// torn across it (base.css, "Language switch"). The texts change inside a view
-// transition; the class scopes its animation to this switch, so the viewer
-// keeps its own. Without view transitions, or under reduced motion, the
-// texts simply change.
+// The old page tears away and uncovers the page in the other language
+// (base.css, "Language switch"). The texts change inside a view transition;
+// the strip of torn paper and the shadow it casts are two layers, invisible
+// in the old state and shown in the new one, so each becomes a transition of
+// its own, slid along with the edge. They are added before the transition:
+// Safari leaves out a layer that only appears in the new state. The class scopes the animation to this switch, so the
+// viewer keeps its own. Without view transitions, or under reduced motion,
+// the texts simply change.
+function addTearLayers() {
+    return ['shadow', 'rim'].map(kind => {
+        const layer = document.createElement('div');
+        layer.className = `lang-tear lang-tear--${kind} is-waiting`;
+        layer.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(layer);
+        return layer;
+    });
+}
+
 function switchLanguage(lang) {
     if (!document.startViewTransition || prefersReducedMotion()) {
         applyLanguage(lang);
         return;
     }
     const root = document.documentElement;
+    const layers = addTearLayers();
     root.classList.add('is-switching-language');
-    const transition = document.startViewTransition(() => applyLanguage(lang));
-    transition.finished.catch(() => {}).finally(() => root.classList.remove('is-switching-language'));
+    const transition = document.startViewTransition(() => {
+        applyLanguage(lang);
+        layers.forEach(layer => layer.classList.remove('is-waiting'));
+    });
+    transition.finished.catch(() => {}).finally(() => {
+        layers.forEach(layer => layer.remove());
+        root.classList.remove('is-switching-language');
+    });
 }
 
-// The three drawings of the torn edge, fetched while the page is idle: a
-// mask image still loading would hide the new page during the first switch.
-const TEAR_MASKS = ['assets/ui/tear-wave-1.svg', 'assets/ui/tear-wave-2.svg', 'assets/ui/tear-wave-3.svg'];
+// The three drawings of the tear, fetched while the page is idle: a mask
+// image still loading would hide its layer during the first switch.
+const TEAR_MASKS = ['assets/ui/tear-old.svg', 'assets/ui/tear-rim.svg', 'assets/ui/tear-shadow.svg'];
 const MASK_PRELOAD_DELAY_MS = 3000;
 
 function preloadTearMasks() {

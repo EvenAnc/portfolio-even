@@ -220,71 +220,75 @@ textarea:focus-visible,
 
 /* Language switch */
 
-/* The page in the other language is laid over the old one like a new sheet torn across it (Even,
-   21/10/2026, after the day and night wave of a dashboard he liked, then "plus stylé"). View
-   transition, four moves at once over 0.95s:
-   - the torn front, an S-shaped tear like the torn frames of the sheets, sweeps the screen from
-     the top left corner: a mask three screens wide slides across, slow to start, fast across
-     the middle, gentle as it lands;
-   - its edge boils like the site's pencil lines: three drawings of the same tear take turns,
-     eight times a second (assets/ui/tear-wave-1 to 3.svg), and a fringe of fibres at 38% runs a
-     little ahead of it;
-   - the old page sinks back: it dims, shrinks a little and softens;
-   - the new sheet arrives slightly turned and enlarged, and settles flat.
-   The class only exists during this switch (i18n.js), so the viewer keeps its own transition. */
+/* The old page tears away and uncovers the new one beneath it (Even, 21/10/2026: a real torn
+   sheet, slow enough to be seen, nothing else moving). View transition in 1.5s:
+   - the old page stays on top and loses ground behind a torn edge, an S-shaped tear that
+     enters at the top left corner of the screen and leaves at the bottom right; it stays in
+     view from start to finish, slow at first, then steady, gentle as it ends;
+   - along the edge, a strip of torn paper, fibrous on its inner side, paper white;
+   - on the new page, right beyond the edge, the soft shadow of the sheet still lying over it.
+   The three share one edge drawn twice the size of the screen (assets/ui/tear-*.svg) and slide
+   together. The strip and the shadow are two layers the script adds for the switch only
+   (i18n.js), invisible until the new state, each a view transition of its own; the class scopes all this to the switch, so
+   the viewer keeps its own transition. */
+.lang-tear {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.lang-tear--shadow {
+    background: var(--black);
+    view-transition-name: lang-tear-shadow;
+}
+
+.lang-tear--rim {
+    background: #efe9dc;
+    view-transition-name: lang-tear-rim;
+}
+
+/* In the old state the layers are there but invisible. */
+.lang-tear.is-waiting { opacity: 0; }
+
 @media (prefers-reduced-motion: no-preference) {
-    .is-switching-language::view-transition-group(root) {
-        animation-duration: 0.95s;
-    }
+    .is-switching-language::view-transition-group(root) { animation-duration: 1.5s; }
+
+    .is-switching-language::view-transition-new(root) { animation: none; }
 
     .is-switching-language::view-transition-old(root) {
-        animation: language-sink 0.95s cubic-bezier(0.3, 0, 0.2, 1) both;
-        transform-origin: 70% 70%;
+        z-index: 1;
+        mask-image: url("../assets/ui/tear-old.svg");
     }
 
-    .is-switching-language::view-transition-new(root) {
-        animation:
-            language-tear 0.95s cubic-bezier(0.7, 0, 0.25, 1) both,
-            language-boil 0.95s steps(1) both,
-            language-settle 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
-        mask-image: url("../assets/ui/tear-wave-1.svg");
+    .is-switching-language::view-transition-new(lang-tear-rim) {
+        mask-image: url("../assets/ui/tear-rim.svg");
+    }
+
+    .is-switching-language::view-transition-new(lang-tear-shadow) {
+        mask-image: url("../assets/ui/tear-shadow.svg");
+    }
+
+    .is-switching-language::view-transition-old(root),
+    .is-switching-language::view-transition-new(lang-tear-rim),
+    .is-switching-language::view-transition-new(lang-tear-shadow) {
+        animation: language-tear 1.5s cubic-bezier(0.5, 0, 0.3, 1) both;
         mask-repeat: no-repeat;
-        mask-size: 300% 300%;
-        transform-origin: 0 0;
+        mask-size: 200% 200%;
     }
+
+    .is-switching-language::view-transition-group(lang-tear-rim),
+    .is-switching-language::view-transition-group(lang-tear-shadow) { animation: none; }
+
+    .is-switching-language::view-transition-old(lang-tear-rim),
+    .is-switching-language::view-transition-old(lang-tear-shadow) { display: none; }
 }
 
+/* 104% to -4%: the edge starts just outside the top left corner and ends just outside the
+   bottom right one. */
 @keyframes language-tear {
-    from { mask-position: 100% 100%; }
-    to { mask-position: 0% 0%; }
-}
-
-/* Discrete: the drawing of the tear changes every eighth of a second, like the boiling lines. */
-@keyframes language-boil {
-    0%, 39%, 78% { mask-image: url("../assets/ui/tear-wave-1.svg"); }
-    13%, 52%, 91% { mask-image: url("../assets/ui/tear-wave-2.svg"); }
-    26%, 65% { mask-image: url("../assets/ui/tear-wave-3.svg"); }
-}
-
-@keyframes language-sink {
-    0% {
-        filter: brightness(1);
-        transform: scale(1);
-    }
-
-    25% {
-        filter: brightness(0.5) saturate(0.7) blur(1px);
-    }
-
-    100% {
-        filter: brightness(0.38) saturate(0.6) blur(2px);
-        transform: scale(0.965);
-    }
-}
-
-@keyframes language-settle {
-    from { transform: rotate(-1.2deg) scale(1.04); }
-    to { transform: none; }
+    from { mask-position: 104% 104%; }
+    to { mask-position: -4% -4%; }
 }
 
 
