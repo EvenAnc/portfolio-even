@@ -162,18 +162,6 @@
                 <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="1" result="noise"/>
                 <feDisplacementMap in="SourceGraphic" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G"/>
             </filter>
-            <!-- Language switch: the ripple around the torn edge. The map slides with the edge;
-                 its image, sizes and offsets are set by i18n.js, in pixels from the size of the
-                 screen, once the map is loaded. -->
-            <filter id="lang-ripple" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB" primitiveUnits="userSpaceOnUse">
-                <feImage preserveAspectRatio="none" x="0" y="0" width="1" height="1" result="map">
-                    <animate attributeName="x" calcMode="spline" keyTimes="0;1" keySplines="0.5 0 0.3 1" dur="1.5s" begin="indefinite" fill="freeze" values="0;0"/>
-                    <animate attributeName="y" calcMode="spline" keyTimes="0;1" keySplines="0.5 0 0.3 1" dur="1.5s" begin="indefinite" fill="freeze" values="0;0"/>
-                </feImage>
-                <feDisplacementMap in="SourceGraphic" in2="map" scale="0" xChannelSelector="R" yChannelSelector="G">
-                    <animate attributeName="scale" keyTimes="0;0.25;0.7;1" dur="1.5s" begin="indefinite" fill="freeze" values="0;0;0;0"/>
-                </feDisplacementMap>
-            </filter>
             <clipPath id="torn-1" clipPathUnits="objectBoundingBox">
                 <path d="M0,0.04 C0.05,0 0.12,0.02 0.2,0.01 C0.32,-0.01 0.38,0.03 0.5,0.01 C0.62,-0.01 0.72,0.02 0.84,0 C0.92,-0.01 0.97,0.02 1,0.03 L1,0.97 C0.96,1 0.88,0.98 0.78,1 C0.66,1.02 0.6,0.97 0.48,1 C0.36,1.02 0.28,0.98 0.18,1 C0.1,1.01 0.04,0.99 0,0.97 Z"/>
             </clipPath>
