@@ -218,6 +218,21 @@ textarea:focus-visible,
 }
 
 
+/* Language switch */
+
+/* The page in the other language fades in over the old one, a third of a second, soft at both
+   ends: what does not change stays still, only the words seem to turn into the others (Even,
+   22/10/2026: almost invisible, very fluid, after the torn page he no longer wanted). The
+   class only exists during the switch (i18n.js). */
+@media (prefers-reduced-motion: no-preference) {
+    .is-switching-language::view-transition-old(root),
+    .is-switching-language::view-transition-new(root) {
+        animation-duration: 0.32s;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+
 /* Sketch animation */
 
 /* Boiling line: three displacement filters in turn make a stroke look redrawn by hand. */
