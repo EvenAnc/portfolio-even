@@ -1,16 +1,25 @@
 /* Closing quote: the last moment of the drawings page and of the diploma project.
 
    The quote sits in a pinned box as tall as the screen (sticky), inside a stage a little taller
-   than that. Scrolling down, the stage rises: the page above leaves the screen and the quote
-   comes up from the bottom, faint and soft, until it reaches the middle, sharp, alone between
-   two bands of the page colour. It stays there while the visitor scrolls on, and the "next"
-   arrow rises from below to settle just under it. Then the footer comes in; the quote moves up
-   by only half of it, so it ends centred in what is left of the screen (Even, 21/10/2026).
+   than that. Scrolling down, it shows faint and soft at the bottom of the screen while the last
+   sheets above are still in view, then rises slower than they do: they leave the screen, the gap
+   opens, and the quote reaches the middle sharp, alone between two bands of the page colour.
+   It stays there a moment, then the footer comes in with the "next" arrow right above it; the
+   arrow eases onto its place at the bottom right, and the quote moves up by only half of what
+   they take, so it ends centred in what is left of the screen (Even, 21/10/2026).
 
-   Everything is driven by the view timeline of the stage, natively, with no script: entry is
-   the rise of the quote, contain the pinned stretch, exit the arrival of the footer. Without
-   scroll timelines, or under reduced motion, the stage still pins the quote and the arrow simply
-   waits under it. Only transforms, opacity and a small blur are animated. */
+   Everything is driven by view timelines, natively, with no script: the entry and exit of the
+   stage for the quote, the entry of the footer for the arrow. Without scroll timelines, or under
+   reduced motion, the stage still pins the quote and the arrow simply sits above the footer.
+   Only transforms, opacity and a small blur are animated. */
+
+/* The footer timeline must reach the arrow, which comes before the footer. */
+.page--with-quote .page-inner { timeline-scope: --page-footer; }
+
+.page--with-quote .site-footer {
+    view-timeline-name: --page-footer;
+    view-timeline-axis: block;
+}
 
 .quote-stage {
     /* Full-bleed inside the padded page, like the footer: --scrollbar-width (set by script)
@@ -19,9 +28,9 @@
     margin-left: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
     margin-right: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
 
-    /* One screen for the pinned box, plus the stretch during which the arrow rises. */
-    height: 180vh;
-    height: calc(100dvh + 80vh);
+    /* One screen for the pinned box, plus a short stretch during which the quote stays alone. */
+    height: 125vh;
+    height: calc(100dvh + 25vh);
     view-timeline-name: --quote-stage;
     view-timeline-axis: block;
 }
@@ -44,24 +53,20 @@
     text-align: center;
 }
 
-/* A row of no height under the quote: the arrow hangs from it without pushing the quote off
-   the centre, at the right edge of the screen like every "next" arrow. */
-.quote-stage-next {
-    position: relative;
-    align-self: stretch;
-    height: 0;
+/* The arrow right above the footer, at the right edge of the screen like every "next" arrow. The
+   padding below is the little air it keeps from the footer once the page is at its end. */
+.quote-next {
+    display: flow-root;
+    padding-bottom: 34px;
 }
 
-.quote-stage-next .page-next {
-    position: absolute;
-    top: 28px;
-    right: var(--next-edge);
-    margin: 0;
-    float: none;
+.quote-next .page-next {
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
-/* The footer follows the stage directly: the stage already gives the end of the page its air. */
-.quote-stage + .site-footer { margin-top: 0; }
+/* The footer follows the arrow directly: they come in together. */
+.quote-next + .site-footer { margin-top: 0; }
 
 /* A single line needs restraint: small, light body. The guillemets are drawn here. */
 .quote-band-text {
@@ -100,66 +105,58 @@
     }
 
     .quote-band-author { margin-top: 15px; }
-    .quote-stage-next .page-next { top: 22px; }
+    .quote-next { padding-bottom: 24px; }
 }
 
 /* Scroll-driven, native, no script. Only where view timelines exist: elsewhere the animations
-   would run on the document timeline and leave their first keyframe applied (a faint quote, a
-   hidden arrow), so those browsers keep the resting state above. */
-@supports (animation-timeline: view()) {
+   would run on the document timeline and leave their first keyframe applied (a faint quote out
+   of place), so those browsers keep the resting state above. */
+@supports (animation-timeline: view()) and (timeline-scope: --x) {
     @media (prefers-reduced-motion: no-preference) {
-        /* The rise: the quote shows at the bottom of the screen once the stage is half in, and is
-           sharp when it reaches the middle, the moment the page above has gone. */
+        /* The rise: the quote starts 45vh above its place in the box, just under the sheets, and
+           comes down to it while the box climbs the screen. On screen it rises at little more
+           than half the speed of the page, faint and soft at first, sharp in the middle: the
+           sheets pull away from it as they leave. */
         .quote-band-body {
             animation: quote-arrive linear both;
             animation-timeline: --quote-stage;
-            animation-range: entry 45% entry 100%;
+            animation-range: entry 0% entry 100%;
         }
 
-        /* The pinned stretch: the arrow rises from below the screen over its first three
-           quarters, slowing as it lands, then waits. */
-        .quote-stage-next {
-            animation: quote-next-rise cubic-bezier(0.22, 1, 0.36, 1) both;
-            animation-timeline: --quote-stage;
-            animation-range: contain 0% contain 75%;
-        }
-
-        /* The footer comes in: the box moves down by half of what the footer takes, so the quote
-           and its arrow end centred above it. exit lasts one screen height, hence 50vh. */
+        /* The footer comes in: the box moves down by half of what the footer and the arrow take,
+           so the quote ends centred above them. exit lasts one screen height, hence 50vh. */
         .quote-stage-pin {
             animation: quote-settle linear both;
             animation-timeline: --quote-stage;
             animation-range: exit 0% exit 100%;
         }
+
+        /* The arrow comes in hugging the footer, then eases up onto its place as the footer
+           finishes coming in: a little more air at the very end. */
+        .quote-next {
+            animation: quote-next-land cubic-bezier(0.22, 1, 0.36, 1) both;
+            animation-timeline: --page-footer;
+            animation-range: entry 0% entry 100%;
+        }
     }
 
-    /* Phones: the footer, with its legal text, takes most of the screen. Half of it would still
-       press the arrow against it, so the quote and the arrow simply scroll up ahead of it. */
+    /* Phones: the footer, with its legal text, takes most of the screen. Moving the quote by half
+       of it would push it under the header, so the quote simply scrolls up ahead of it. */
     @media (prefers-reduced-motion: no-preference) and (max-width: 768px) {
         .quote-stage-pin { animation: none; }
     }
 }
 
 @keyframes quote-arrive {
-    from {
-        opacity: 0.25;
+    0% {
+        opacity: 0.22;
         filter: blur(5px);
+        transform: translateY(-45vh);
     }
 
-    to {
+    100% {
         opacity: 1;
         filter: blur(0);
-    }
-}
-
-@keyframes quote-next-rise {
-    from {
-        opacity: 0;
-        transform: translateY(55vh);
-    }
-
-    to {
-        opacity: 1;
         transform: translateY(0);
     }
 }
@@ -167,4 +164,9 @@
 @keyframes quote-settle {
     from { transform: translateY(0); }
     to { transform: translateY(50vh); }
+}
+
+@keyframes quote-next-land {
+    from { transform: translateY(26px); }
+    to { transform: translateY(0); }
 }
