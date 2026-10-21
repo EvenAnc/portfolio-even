@@ -110,20 +110,54 @@ export function applyLanguage(lang) {
 
 // The old page tears away and uncovers the page in the other language
 // (base.css, "Language switch"). The texts change inside a view transition;
-// the strip of torn paper and the shadow it casts are two layers, invisible
-// in the old state and shown in the new one, so each becomes a transition of
-// its own, slid along with the edge. They are added before the transition:
-// Safari leaves out a layer that only appears in the new state. The class scopes the animation to this switch, so the
-// viewer keeps its own. Without view transitions, or under reduced motion,
-// the texts simply change.
+// the shadow, the strip of torn paper and the red pencil line are three
+// layers, invisible in the old state and shown in the new one, so each
+// becomes a transition of its own, slid along with the edge. They are added
+// before the transition: Safari leaves out a layer that only appears in the
+// new state. The class scopes the animation to this switch, so the viewer
+// keeps its own. Without view transitions, or under reduced motion, the
+// texts simply change.
 function addTearLayers() {
-    return ['shadow', 'rim'].map(kind => {
+    return ['shadow', 'rim', 'line'].map(kind => {
         const layer = document.createElement('div');
         layer.className = `lang-tear lang-tear--${kind} is-waiting`;
         layer.setAttribute('aria-hidden', 'true');
         document.body.appendChild(layer);
         return layer;
     });
+}
+
+// The ripple around the edge (index.html, #lang-ripple): its map is drawn
+// like the masks, 2.08 screens wide, and slides the same 1.08 screens on the
+// same curve; the filter works in pixels, so the numbers follow the screen.
+// The wave is a little stronger on large screens.
+const RIPPLE_MAP = 'assets/ui/tear2-ripple.png';
+const RIPPLE_SIZE = 2.08;
+const RIPPLE_TRAVEL = 1.08;
+const RIPPLE_STRENGTH = 0.036;
+let rippleMapLoaded = false;
+
+// Firefox is left out: its test build never shows the images of a view
+// transition, so the filter on them could not be checked there; the tear
+// itself still plays.
+const RIPPLE_CHECKED = !/\bFirefox\//.test(navigator.userAgent);
+
+/** Sets the ripple for this screen; returns its animations, none until the map is loaded. */
+function prepareRipple() {
+    const filter = document.getElementById('lang-ripple');
+    if (!RIPPLE_CHECKED || !rippleMapLoaded || !filter) return [];
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+    const map = filter.querySelector('feImage');
+    const [slideX, slideY] = map.querySelectorAll('animate');
+    const wave = filter.querySelector('feDisplacementMap animate');
+    const strength = Math.round(Math.min(width, height) * RIPPLE_STRENGTH);
+    map.setAttribute('width', width * RIPPLE_SIZE);
+    map.setAttribute('height', height * RIPPLE_SIZE);
+    slideX.setAttribute('values', `0;${-width * RIPPLE_TRAVEL}`);
+    slideY.setAttribute('values', `${-height * RIPPLE_TRAVEL};0`);
+    wave.setAttribute('values', `0;${strength};${strength};0`);
+    return [slideX, slideY, wave];
 }
 
 function switchLanguage(lang) {
@@ -133,20 +167,24 @@ function switchLanguage(lang) {
     }
     const root = document.documentElement;
     const layers = addTearLayers();
+    const ripple = prepareRipple();
     root.classList.add('is-switching-language');
+    root.classList.toggle('has-ripple', ripple.length > 0);
     const transition = document.startViewTransition(() => {
         applyLanguage(lang);
         layers.forEach(layer => layer.classList.remove('is-waiting'));
     });
+    transition.ready.then(() => ripple.forEach(animation => animation.beginElement())).catch(() => {});
     transition.finished.catch(() => {}).finally(() => {
         layers.forEach(layer => layer.remove());
-        root.classList.remove('is-switching-language');
+        root.classList.remove('is-switching-language', 'has-ripple');
     });
 }
 
-// The three drawings of the tear, fetched while the page is idle: a mask
-// image still loading would hide its layer during the first switch.
-const TEAR_MASKS = ['assets/ui/tear-old.svg', 'assets/ui/tear-rim.svg', 'assets/ui/tear-shadow.svg'];
+// The drawings of the tear and the ripple map, fetched while the page is
+// idle: a mask image still loading would hide its layer during the first
+// switch, and the ripple waits for its map.
+const TEAR_MASKS = ['assets/ui/tear2-old.svg', 'assets/ui/tear2-rim.svg', 'assets/ui/tear2-line.svg', 'assets/ui/tear2-shadow.svg'];
 const MASK_PRELOAD_DELAY_MS = 3000;
 
 function preloadTearMasks() {
@@ -154,6 +192,14 @@ function preloadTearMasks() {
         const image = new Image();
         image.src = url;
     });
+    const map = document.querySelector('#lang-ripple feImage');
+    if (!map || !RIPPLE_CHECKED) return;
+    const image = new Image();
+    image.onload = () => {
+        map.setAttribute('href', RIPPLE_MAP);
+        rippleMapLoaded = true;
+    };
+    image.src = RIPPLE_MAP;
 }
 
 /** Wires the language buttons. */
