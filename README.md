@@ -26,7 +26,7 @@ css/                  one stylesheet per component, loaded in this order from in
   projects-hub.css    patchwork of polaroid cards
   project-detail.css  project page: board, panels, section stack
   carousel.css        sheet carousel and its comic heading
-  drawings.css        drawings gallery
+  drawings.css        drawings gallery and sketches grid
   quote-band.css      closing quote animated on scroll
   diploma.css         diploma page
   studies.css         study overview: one compact panel per school project
@@ -43,7 +43,7 @@ js/
   favicon.js, preload.js, touch-reveal.js, keyboard-activation.js
 vendor/               GSAP, Lenis, PDF.js, with their licences
 PDF/                  plan and section PDFs; opt/ holds their WebP previews
-dessin/opt/           optimised drawings (WebP, 1x and 2x)
+dessin/opt/           optimised drawings (WebP, 1x and 2x); croquis-XX are the sketches, in page order
 photo/opt/            optimised photograph
 assets/               images and illustrations; opt/etudes/ holds the study overview views (WebP, 1x and 2x) and videos (H.264 MP4, no sound, with a WebP poster)
 fonts/                the display font (woff, woff2)

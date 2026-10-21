@@ -1,4 +1,4 @@
-/* Drawings: gallery of single drawings with their pinned extras. */
+/* Drawings: gallery of single drawings with their pinned extras, and the sketches grid. */
 
 
 /* Gallery */
@@ -308,5 +308,112 @@
     .drawing-item:not(.is-in-view):hover .map-pin-icon,
     .drawing-item:not(.is-in-view):hover .map-pin-text {
         opacity: 0;
+    }
+}
+
+
+/* Sketches */
+
+/* Freehand sketches from the school years, on a four-column grid read row by row, in the
+   order of the viewer. Upright sheets take one column, wide ones two: at 4:5 and 8:5 both come
+   out at the same height, so the rows stay level. Unlike the gallery above, no blur on the
+   neighbours: over thirty sheets it would weigh on every hover, in Safari above all. */
+.sketchbook { margin-top: 120px; }
+
+.sketchbook-heading {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.sketchbook-kicker {
+    display: inline-block;
+    font-size: clamp(1.6rem, 3vw, 2.3rem);
+    color: var(--white);
+    transform: rotate(-4deg);
+}
+
+.sketchbook-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 9vw, 6.5rem);
+    font-weight: bold;
+    line-height: 0.85;
+    color: var(--red);
+}
+
+.sketchbook-intro {
+    max-width: 38rem;
+    margin: 18px auto 0;
+    font-weight: 300;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.sketchbook-grid {
+    --sketch-cols: 4;
+    --sketch-gap: 30px;
+
+    display: grid;
+    grid-template-columns: repeat(var(--sketch-cols), minmax(0, 1fr));
+    gap: 34px var(--sketch-gap);
+}
+
+.sketch-item { gap: 10px; }
+.sketch-item--wide { grid-column: span 2; }
+
+/* .plan-img shows the whole sheet on white (frame.css): nothing of the drawing is cropped. */
+.sketch-item .media-frame-inner { aspect-ratio: 4 / 5; }
+.sketch-item--wide .media-frame-inner { aspect-ratio: 8 / 5; }
+
+/* At those ratios a wide sheet still comes out a little taller, since its width takes in the
+   column gap. Where container units exist, every sheet gets the height of an upright one,
+   measured on the grid itself. */
+@supports (height: 1cqw) {
+    .sketchbook-grid { container-type: inline-size; }
+
+    .sketch-item .media-frame-inner,
+    .sketch-item--wide .media-frame-inner {
+        aspect-ratio: auto;
+        height: calc((100cqw - (var(--sketch-cols) - 1) * var(--sketch-gap)) / var(--sketch-cols) * 1.25);
+    }
+}
+
+.sketch-caption {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.sketch-caption-title {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--muted);
+}
+
+.sketch-caption-date {
+    flex-shrink: 0;
+    font-size: 1.15rem;
+    color: var(--red);
+}
+
+@media (max-width: 768px) {
+    .sketchbook { margin-top: 80px; }
+
+    /* Two columns; a wide sheet takes the whole row, and dense packing pulls the next upright
+       sheet up into a gap it would leave. Like the gallery above, the grid breaks out of the
+       page margins to gain width. */
+    .sketchbook-grid {
+        --sketch-cols: 2;
+        --sketch-gap: 14px;
+
+        grid-auto-flow: dense;
+        row-gap: 22px;
+        margin-left: -28px;
+        margin-right: -28px;
+    }
+
+    .sketch-caption {
+        flex-direction: column;
+        gap: 2px;
     }
 }
