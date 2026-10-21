@@ -1,16 +1,17 @@
 /* Closing quote: the last moment of the drawings page and of the diploma project.
 
-   The quote sits in a pinned box as tall as the screen (sticky), inside a stage a little taller
-   than that. Scrolling down, it shows faint and soft at the bottom of the screen while the last
-   sheets above are still in view, then rises slower than they do: they leave the screen, the gap
-   opens, and the quote reaches the middle sharp, alone between two bands of the page colour.
-   It stays there a moment, then the footer comes in with the "next" arrow right above it; the
-   arrow eases onto its place at the bottom right, and the quote moves up by only half of what
-   they take, so it ends centred in what is left of the screen (Even, 21/10/2026).
+   The quote sits in a stage as tall as the screen. Scrolling down, it shows faint and soft at the
+   bottom of the screen while the last sheets above are still in view, then rises at half the
+   speed of the page, all the way, never stopping: the sheets pull away from it, it passes the
+   middle sharp and alone between two bands of the page colour, and keeps rising slowly while the
+   footer comes in with the "next" arrow right above it; the arrow eases onto its place at the
+   bottom right, and the quote ends centred in what is left of the screen (Even, 21/10/2026).
+   No pause in the middle (Even, 21/10/2026: a quote held still while the page scrolls feels like
+   a freeze, scrolling must stay fluid).
 
    Everything is driven by view timelines, natively, with no script: the entry and exit of the
    stage for the quote, the entry of the footer for the arrow. Without scroll timelines, or under
-   reduced motion, the stage still pins the quote and the arrow simply sits above the footer.
+   reduced motion, the quote simply scrolls with the page and the arrow sits above the footer.
    Only transforms, opacity and a small blur are animated. */
 
 /* The footer timeline must reach the arrow, which comes before the footer. */
@@ -28,18 +29,19 @@
     margin-left: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
     margin-right: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
 
-    /* One screen for the pinned box, plus a short stretch during which the quote stays alone. */
-    height: 125vh;
-    height: calc(100dvh + 25vh);
+    /* One screen: the end of its entry is the start of its exit, so the quote never stops. */
+    height: 100vh;
+    height: 100dvh;
     view-timeline-name: --quote-stage;
     view-timeline-axis: block;
+
+    /* How far the quote lags behind the page over one screen of scrolling: half a screen, it
+       moves at half the speed of the page. */
+    --quote-drift: 50vh;
 }
 
 .quote-stage-pin {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100dvh;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -106,6 +108,11 @@
 
     .quote-band-author { margin-top: 15px; }
     .quote-next { padding-bottom: 24px; }
+
+    /* Phones: the footer, with its legal text, takes most of the screen. Half a screen of lag
+       would leave the quote under the header at the end: a quarter, at three quarters of the
+       speed of the page, the same from start to end. */
+    .quote-stage { --quote-drift: 25vh; }
 }
 
 /* Scroll-driven, native, no script. Only where view timelines exist: elsewhere the animations
@@ -113,18 +120,18 @@
    of place), so those browsers keep the resting state above. */
 @supports (animation-timeline: view()) and (timeline-scope: --x) {
     @media (prefers-reduced-motion: no-preference) {
-        /* The rise: the quote starts 45vh above its place in the box, just under the sheets, and
-           comes down to it while the box climbs the screen. On screen it rises at little more
-           than half the speed of the page, faint and soft at first, sharp in the middle: the
-           sheets pull away from it as they leave. */
+        /* The rise: the quote starts --quote-drift above its place in the box, at the bottom of
+           the screen just under the sheets, and comes down to it while the box climbs the
+           screen: on screen it rises slower than the page, faint and soft at first, sharp in the
+           middle. */
         .quote-band-body {
             animation: quote-arrive linear both;
             animation-timeline: --quote-stage;
             animation-range: entry 0% entry 100%;
         }
 
-        /* The footer comes in: the box moves down by half of what the footer and the arrow take,
-           so the quote ends centred above them. exit lasts one screen height, hence 50vh. */
+        /* Then, as the footer comes in, the box moves down by the same lag, at the same pace: the
+           quote goes on rising at the same speed and ends centred above the footer. */
         .quote-stage-pin {
             animation: quote-settle linear both;
             animation-timeline: --quote-stage;
@@ -139,19 +146,13 @@
             animation-range: entry 0% entry 100%;
         }
     }
-
-    /* Phones: the footer, with its legal text, takes most of the screen. Moving the quote by half
-       of it would push it under the header, so the quote simply scrolls up ahead of it. */
-    @media (prefers-reduced-motion: no-preference) and (max-width: 768px) {
-        .quote-stage-pin { animation: none; }
-    }
 }
 
 @keyframes quote-arrive {
     0% {
         opacity: 0.22;
         filter: blur(5px);
-        transform: translateY(-45vh);
+        transform: translateY(calc(-1 * var(--quote-drift)));
     }
 
     100% {
@@ -163,7 +164,7 @@
 
 @keyframes quote-settle {
     from { transform: translateY(0); }
-    to { transform: translateY(50vh); }
+    to { transform: translateY(var(--quote-drift)); }
 }
 
 @keyframes quote-next-land {
