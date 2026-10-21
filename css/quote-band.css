@@ -1,54 +1,67 @@
-/* Quote band: closing quote whose neighbours part as it scrolls through the viewport. */
+/* Closing quote: the last moment of the drawings page and of the diploma project.
 
-/* The gap opens by translating the blocks above and below, never by resizing the layout: a page
-   height that changes mid-scroll would break the maximum scroll the smooth-scroll library
-   caches. The quote itself does not move, so the scroll timeline anchors on it. The footer does
-   not move either: if the animation stopped short, part of it would stay out of reach.
+   The quote sits in a pinned box as tall as the screen (sticky), inside a stage a little taller
+   than that. Scrolling down, the stage rises: the page above leaves the screen and the quote
+   comes up from the bottom, faint and soft, until it reaches the middle, sharp, alone between
+   two bands of the page colour. It stays there while the visitor scrolls on, and the "next"
+   arrow rises from below to settle just under it. Then the footer comes in; the quote moves up
+   by only half of it, so it ends centred in what is left of the screen (Even, 21/10/2026).
 
-   .page--with-quote marks the page, .quote-band-before the block just above the quote. */
+   Everything is driven by the view timeline of the stage, natively, with no script: entry is
+   the rise of the quote, contain the pinned stretch, exit the arrival of the footer. Without
+   scroll timelines, or under reduced motion, the stage still pins the quote and the arrow simply
+   waits under it. Only transforms, opacity and a small blur are animated. */
 
-/* The timeline is scoped to the page, so that two pages never share it. */
-.page--with-quote .page-inner { timeline-scope: --quote-timeline; }
-
-/* No background: a gradient this dark has only a dozen 8-bit values over 600px, so banding
-   would show whatever the curve. */
-.quote-band {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
+.quote-stage {
     /* Full-bleed inside the padded page, like the footer: --scrollbar-width (set by script)
        keeps the scrollbar of .page from causing an overflow. */
     width: calc(100vw - var(--scrollbar-width, 0px));
     margin-left: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
     margin-right: calc(-50vw + var(--scrollbar-width, 0px) / 2 + 50%);
 
-    /* More air above than below: the "next" arrow, below, ends just under the quote. */
-    padding-top: 14vh;
-    padding-bottom: 6vh;
-}
-
-/* Block above: a tight 40px. The amplitude of the animation is fixed, so the larger the starting
-   gap, the less visible the movement. */
-.quote-band-before { padding-bottom: 40px; }
-
-/* Block below: no reserve any more. The scroll travel the animation needs comes from the footer,
-   and quote-band.js sets where the animation must have closed: at the very bottom of the page,
-   with the arrow back just under the quote (Even, 21/10/2026: a void opened between them). */
-.page--with-quote .page-next {
-    margin-top: 0;
-    margin-bottom: 40px;
-}
-
-/* Fixed size and position: this is the subject of the view timeline. One line on desktop. */
-.quote-band-body {
-    view-timeline-name: --quote-timeline;
+    /* One screen for the pinned box, plus the stretch during which the arrow rises. */
+    height: 180vh;
+    height: calc(100dvh + 80vh);
+    view-timeline-name: --quote-stage;
     view-timeline-axis: block;
+}
+
+.quote-stage-pin {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* The quote, alone in the middle. One line on desktop. */
+.quote-band-body {
     padding: 0 40px;
     max-width: 80rem;
     text-align: center;
 }
+
+/* A row of no height under the quote: the arrow hangs from it without pushing the quote off
+   the centre, at the right edge of the screen like every "next" arrow. */
+.quote-stage-next {
+    position: relative;
+    align-self: stretch;
+    height: 0;
+}
+
+.quote-stage-next .page-next {
+    position: absolute;
+    top: 28px;
+    right: var(--next-edge);
+    margin: 0;
+    float: none;
+}
+
+/* The footer follows the stage directly: the stage already gives the end of the page its air. */
+.quote-stage + .site-footer { margin-top: 0; }
 
 /* A single line needs restraint: small, light body. The guillemets are drawn here. */
 .quote-band-text {
@@ -76,11 +89,6 @@
 }
 
 @media (max-width: 768px) {
-    .quote-band {
-        padding-top: 12vh;
-        padding-bottom: 5vh;
-    }
-
     .quote-band-body {
         padding: 0 26px;
         max-width: 30rem;
@@ -92,85 +100,71 @@
     }
 
     .quote-band-author { margin-top: 15px; }
+    .quote-stage-next .page-next { top: 22px; }
 }
 
-/* Scroll-driven, native, no script. Only where scroll timelines exist: elsewhere the animations
-   would run on the document timeline and leave their first keyframe applied (a dimmed quote),
-   so those browsers keep the resting state above and simply show the quote. */
-@supports (animation-timeline: view()) and (timeline-scope: --x) {
+/* Scroll-driven, native, no script. Only where view timelines exist: elsewhere the animations
+   would run on the document timeline and leave their first keyframe applied (a faint quote, a
+   hidden arrow), so those browsers keep the resting state above. */
+@supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-        /* Range: from the entry of the quote to the point it reaches at the bottom of the page,
-           both set by quote-band.js (21% to 79% until it has run), so the blocks part then close
-           back as the visitor reaches the end. */
-        .quote-band-before {
-            animation: quote-gap-up linear both;
-            animation-timeline: --quote-timeline;
-            animation-range: cover var(--quote-start, 21%) cover var(--quote-end, 79%);
-        }
-
+        /* The rise: the quote shows at the bottom of the screen once the stage is half in, and is
+           sharp when it reaches the middle, the moment the page above has gone. */
         .quote-band-body {
-            animation: quote-fade linear both;
-            animation-timeline: --quote-timeline;
-            animation-range: cover var(--quote-start, 21%) cover var(--quote-end, 79%);
+            animation: quote-arrive linear both;
+            animation-timeline: --quote-stage;
+            animation-range: entry 45% entry 100%;
         }
 
-        .page--with-quote .page-next {
-            animation: quote-gap-down linear both;
-            animation-timeline: --quote-timeline;
-            animation-range: cover var(--quote-start, 21%) cover var(--quote-end, 79%);
+        /* The pinned stretch: the arrow rises from below the screen over its first three
+           quarters, slowing as it lands, then waits. */
+        .quote-stage-next {
+            animation: quote-next-rise cubic-bezier(0.22, 1, 0.36, 1) both;
+            animation-timeline: --quote-stage;
+            animation-range: contain 0% contain 75%;
         }
+
+        /* The footer comes in: the box moves down by half of what the footer takes, so the quote
+           and its arrow end centred above it. exit lasts one screen height, hence 50vh. */
+        .quote-stage-pin {
+            animation: quote-settle linear both;
+            animation-timeline: --quote-stage;
+            animation-range: exit 0% exit 100%;
+        }
+    }
+
+    /* Phones: the footer, with its legal text, takes most of the screen. Half of it would still
+       press the arrow against it, so the quote and the arrow simply scroll up ahead of it. */
+    @media (prefers-reduced-motion: no-preference) and (max-width: 768px) {
+        .quote-stage-pin { animation: none; }
     }
 }
 
-/* The two gap curves rise as sin^2 to their peak at 42% of the range, then fall back the same
-   way: flat at both ends and at the peak, so the parting and the closing never jolt. The closing
-   is the longer half; the arrow, below, travels less than the block above. */
-@keyframes quote-gap-up {
-    0% { transform: translateY(0); }
-    7% { transform: translateY(-0.938vh); }
-    14% { transform: translateY(-3.5vh); }
-    21% { transform: translateY(-7vh); }
-    28% { transform: translateY(-10.5vh); }
-    35% { transform: translateY(-13.062vh); }
-    42% { transform: translateY(-14vh); }
-    50% { transform: translateY(-13.353vh); }
-    58% { transform: translateY(-11.532vh); }
-    66% { transform: translateY(-8.873vh); }
-    74% { transform: translateY(-5.868vh); }
-    82% { transform: translateY(-3.072vh); }
-    90% { transform: translateY(-1.002vh); }
-    95% { transform: translateY(-0.255vh); }
-    100% { transform: translateY(0); }
+@keyframes quote-arrive {
+    from {
+        opacity: 0.25;
+        filter: blur(5px);
+    }
+
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
 }
 
-@keyframes quote-gap-down {
-    0% { transform: translateY(0); }
-    7% { transform: translateY(0.67vh); }
-    14% { transform: translateY(2.5vh); }
-    21% { transform: translateY(5vh); }
-    28% { transform: translateY(7.5vh); }
-    35% { transform: translateY(9.33vh); }
-    42% { transform: translateY(10vh); }
-    50% { transform: translateY(9.538vh); }
-    58% { transform: translateY(8.237vh); }
-    66% { transform: translateY(6.338vh); }
-    74% { transform: translateY(4.191vh); }
-    82% { transform: translateY(2.194vh); }
-    90% { transform: translateY(0.716vh); }
-    95% { transform: translateY(0.182vh); }
-    100% { transform: translateY(0); }
+@keyframes quote-next-rise {
+    from {
+        opacity: 0;
+        transform: translateY(55vh);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* The quote brightens as the blocks part, then stays bright: it is the last text of the page,
-   read where the scroll comes to rest. */
-@keyframes quote-fade {
-    0% { opacity: 0.32; }
-    7.1% { opacity: 0.354; }
-    14.3% { opacity: 0.448; }
-    21.4% { opacity: 0.584; }
-    28.6% { opacity: 0.736; }
-    35.7% { opacity: 0.872; }
-    42.9% { opacity: 0.966; }
-    50% { opacity: 1; }
-    100% { opacity: 1; }
+@keyframes quote-settle {
+    from { transform: translateY(0); }
+    to { transform: translateY(50vh); }
 }

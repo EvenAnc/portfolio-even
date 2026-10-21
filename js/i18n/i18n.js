@@ -4,7 +4,7 @@
  */
 
 import { state, emit, EVENTS } from '../core/state.js';
-import { readStored, writeStored } from '../core/env.js';
+import { readStored, writeStored, prefersReducedMotion } from '../core/env.js';
 import { TRANSLATIONS, PAGE_META } from './dictionary.js';
 
 const LANGUAGES = ['fr', 'en'];
@@ -108,11 +108,27 @@ export function applyLanguage(lang) {
     emit(EVENTS.LANGUAGE_CHANGE, { lang });
 }
 
+// The page in the other language comes in behind a torn edge that sweeps the
+// screen (base.css, "Language switch"). The texts change inside a view
+// transition; the class scopes its animation to this switch, so the viewer
+// keeps its own. Without view transitions, or under reduced motion, the
+// texts simply change.
+function switchLanguage(lang) {
+    if (!document.startViewTransition || prefersReducedMotion()) {
+        applyLanguage(lang);
+        return;
+    }
+    const root = document.documentElement;
+    root.classList.add('is-switching-language');
+    const transition = document.startViewTransition(() => applyLanguage(lang));
+    transition.finished.catch(() => {}).finally(() => root.classList.remove('is-switching-language'));
+}
+
 /** Wires the language buttons. */
 export function initLanguageSwitcher() {
     document.querySelectorAll('.lang-btn').forEach(button => {
         button.addEventListener('click', () => {
-            if (button.dataset.lang !== state.lang) applyLanguage(button.dataset.lang);
+            if (button.dataset.lang !== state.lang) switchLanguage(button.dataset.lang);
         });
     });
 }

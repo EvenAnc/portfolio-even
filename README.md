@@ -27,7 +27,7 @@ css/                  one stylesheet per component, loaded in this order from in
   project-detail.css  project page: board, panels, section stack
   carousel.css        sheet carousel and its comic heading
   drawings.css        drawings gallery and sketches grid
-  quote-band.css      closing quote animated on scroll
+  quote-band.css      closing quote pinned at the centre of the screen, next arrow rising under it
   diploma.css         diploma page
   studies.css         study overview: one compact panel per school project
   lightbox.css        viewer for drawings and plans
@@ -43,7 +43,6 @@ js/
   favicon.js, preload.js, touch-reveal.js, keyboard-activation.js
   sketch-frames.js    five takes of the red sketch frame, dealt out across the site
   sketchbook.js       follows the pointer over the sketches and picks the one that grows
-  quote-band.js       fits the closing quote animation to the bottom of its page
 vendor/               GSAP, Lenis, PDF.js, with their licences
 PDF/                  plan and section PDFs; opt/ holds their WebP previews
 dessin/opt/           optimised drawings (WebP, 1x and 2x); croquis-XX are the sketches, each number bound to one drawing

@@ -218,6 +218,40 @@ textarea:focus-visible,
 }
 
 
+/* Language switch */
+
+/* The page in the other language comes in behind a torn edge, an S-shaped tear like the torn
+   frames of the sheets, that sweeps the screen from the top left corner in three quarters of a
+   second, slowing as it ends (Even, 21/10/2026, after the day and night wave of a dashboard he
+   liked). View transition: the old page stays still underneath; the new one is uncovered by a
+   mask three screens wide (assets/ui/tear-wave.svg) sliding across. Both pages share the same
+   ground, so the old one dims at once: the torn front shows as the new page comes in at full
+   light. The class only exists during this switch (i18n.js), so the viewer keeps its own
+   transition. */
+@media (prefers-reduced-motion: no-preference) {
+    .is-switching-language::view-transition-old(root) {
+        animation: language-dim 0.75s ease-out both;
+    }
+
+    .is-switching-language::view-transition-new(root) {
+        animation: language-tear 0.75s cubic-bezier(0.45, 0, 0.2, 1) both;
+        mask-image: url("../assets/ui/tear-wave.svg");
+        mask-repeat: no-repeat;
+        mask-size: 300% 300%;
+    }
+}
+
+@keyframes language-tear {
+    from { mask-position: 100% 100%; }
+    to { mask-position: 0% 0%; }
+}
+
+@keyframes language-dim {
+    0% { filter: brightness(1); }
+    15%, 100% { filter: brightness(0.42) saturate(0.7); }
+}
+
+
 /* Sketch animation */
 
 /* Boiling line: three displacement filters in turn make a stroke look redrawn by hand. */
