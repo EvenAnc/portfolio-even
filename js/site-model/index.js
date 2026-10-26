@@ -172,6 +172,17 @@ function wireEye(root, view) {
     });
 }
 
+/** The pause button between the heads of the 360 degree arrow: stops or starts the slow turn. */
+function wireAutoTurn(root, turn) {
+    const button = root.querySelector('.site-model-autoturn');
+    if (!button) return;
+    button.setAttribute('aria-pressed', String(turn.turning));
+    button.addEventListener('click', () => {
+        turn.setTurning(!turn.turning);
+        button.setAttribute('aria-pressed', String(turn.turning));
+    });
+}
+
 /** Runs the drawing loop while the model is on screen and the tab is visible. */
 function runLoop(THREE, view, model, parts, root) {
     let frameId = 0;
@@ -234,9 +245,27 @@ async function start(root, link) {
     link.turn = parts.turn;
     wireDescent(parts.handle, parts.rail, parts.descent);
     wireEye(root, view);
+    wireAutoTurn(root, parts.turn);
     canvas.addEventListener('webglcontextlost', () => root.classList.add('is-unavailable'));
     root.classList.remove('is-loading');
     runLoop(THREE, view, model, parts, root);
+}
+
+/**
+ * On a phone the polaroid moves from above the text to just above the 3D: touching it turns the
+ * model, which then stays in view (Even, 27/10/2026: full phone friendly). It goes back to its
+ * place if the screen widens.
+ */
+function placePolaroid(wrap, root) {
+    const home = document.createComment('polaroid');
+    wrap.before(home);
+    const phone = window.matchMedia('(max-width: 768px)');
+    const place = () => {
+        if (phone.matches) root.before(wrap);
+        else home.after(wrap);
+    };
+    place();
+    phone.addEventListener('change', place);
 }
 
 /** Starts each site model on the page when it comes near the screen. */
@@ -246,6 +275,7 @@ export function initSiteModel() {
         const link = { turn: null };
         const polaroid = root.closest('.panel')?.querySelector('.site-model-polaroid');
         if (polaroid) {
+            placePolaroid(polaroid.parentElement, root);
             createPolaroid(polaroid, (angle, direction) => link.turn?.turnTo(angle, direction), (photos, index) => {
                 openGallery(photos.map(photo => ({ url: photo.dataset.full, altKey: 'alt_model_photo' })), index);
             });

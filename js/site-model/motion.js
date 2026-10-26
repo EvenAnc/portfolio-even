@@ -38,12 +38,19 @@ export function createTurn(reducedMotion) {
     let dragging = false;
     let tween = null; // a turn to a given angle (a photo of the polaroid)
     let hold = false; // after such a turn the model stays on that side, until it is grabbed
-    let sample = 0;
-    let lastX = 0;
-    let lastTime = 0;
-    const autoSpeed = () => (reducedMotion || hold ? 0 : AUTO_DEG_PER_S * turn.direction);
+    let paused = reducedMotion; // the slow turn of its own, stopped by the pause button
+    const drag = { sample: 0, x: 0, time: 0 }; // last pointer sample and the fling speed
+    const free = () => { tween = null; hold = false; };
+    const autoSpeed = () => (paused || hold ? 0 : AUTO_DEG_PER_S * turn.direction);
     return {
         get angle() { return turn.angle; },
+        get turning() { return !paused; },
+        /** The pause button: stops or starts again the slow turn of its own. */
+        setTurning(on) {
+            paused = !on;
+            if (on) hold = false;
+            else if (Math.abs(turn.velocity) <= AUTO_DEG_PER_S * 1.5) turn.velocity = 0; // stops at once
+        },
         get dragging() { return dragging; },
         step(dt) {
             if (tween) {
@@ -57,31 +64,25 @@ export function createTurn(reducedMotion) {
             }
         },
         grab(x, time) {
-            tween = null;
-            hold = false;
+            free();
             dragging = true;
-            sample = 0;
-            lastX = x;
-            lastTime = time;
+            Object.assign(drag, { sample: 0, x, time });
         },
         drag(x, time, width) {
-            const delta = (x - lastX) / Math.max(1, width) * DEG_PER_WIDTH;
-            const dt = Math.max(1, time - lastTime) / 1000;
+            const delta = (x - drag.x) / Math.max(1, width) * DEG_PER_WIDTH;
+            const dt = Math.max(1, time - drag.time) / 1000;
             turn.angle += delta;
-            sample = 0.65 * (delta / dt) + 0.35 * sample;
-            lastX = x;
-            lastTime = time;
+            Object.assign(drag, { sample: 0.65 * (delta / dt) + 0.35 * drag.sample, x, time });
         },
         release(time) {
             dragging = false;
-            const held = time - lastTime > HOLD_MS;
-            turn.velocity = held ? 0 : Math.max(-MAX_DEG_PER_S, Math.min(MAX_DEG_PER_S, sample));
+            const held = time - drag.time > HOLD_MS;
+            turn.velocity = held ? 0 : Math.max(-MAX_DEG_PER_S, Math.min(MAX_DEG_PER_S, drag.sample));
             if (Math.abs(turn.velocity) > AUTO_DEG_PER_S) turn.direction = Math.sign(turn.velocity);
         },
         /** Keyboard: a push of about KEY_STEP_DEG in the given direction. */
         nudge(sign) {
-            tween = null;
-            hold = false;
+            free();
             turn.direction = sign;
             turn.velocity += sign * KEY_STEP_DEG / FRICTION_S;
         },

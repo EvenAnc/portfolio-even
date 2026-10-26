@@ -11,6 +11,13 @@
     margin: 34px auto 0;
 }
 
+/* Touch: a quick double tap on a button does not zoom the page (the arrow and the sun, dragged,
+   keep touch-action: none). */
+.site-model-eye,
+.site-model-autoturn,
+.site-model-polaroid,
+.site-model-polaroid-zoom { touch-action: manipulation; }
+
 /* Compass: one letter in view at a time, fading at both ends. */
 
 /* Over the top of the view, inside it: above it, the compass slid under the blurred band of the
@@ -100,7 +107,10 @@
     transition: opacity 0.6s ease;
 }
 
+/* The canvas is drawn over the dotted arc of the sun: the arc shows around the model, never
+   across it (Even, 27/10/2026). The canvas is transparent where there is no model. */
 .site-model-canvas {
+    z-index: 1;
     display: block;
     opacity: 0;
     transition: opacity 0.6s ease;
@@ -120,6 +130,7 @@
 /* The pin, from the Toulouse map of the drawings page; its tip is on the point of the model. */
 .site-model-pin {
     position: absolute;
+    z-index: 2;
     top: 0;
     left: 0;
     width: 0;
@@ -182,6 +193,7 @@
 /* The rail and the red arrow that brings the site view down. */
 .site-model-rail {
     position: absolute;
+    z-index: 2;
     top: 6%;
     right: 12px;
     bottom: 22%;
@@ -312,7 +324,6 @@
     transition: transform var(--dur-base) var(--ease-soft);
 }
 
-.site-model-drop:hover .site-model-drop-sticker { transform: rotate(-2deg) scale(1.08); }
 
 .site-model-drop:active { cursor: grabbing; }
 
@@ -338,14 +349,61 @@
 /* The curved arrow under the model: it turns all the way round. */
 .site-model-turn {
     position: absolute;
+    z-index: 2;
     left: 50%;
     bottom: -14px;
     width: min(57%, 528px);
     margin-left: calc(min(57%, 528px) / -2 - 32px);
-    height: auto;
     pointer-events: none;
+}
+
+.site-model-turn-arrow {
+    display: block;
+    width: 100%;
+    height: auto;
     overflow: visible;
 }
+
+/* Pause or play of the slow turn, between the two heads of the 360 degree arrow (Even,
+   27/10/2026), drawn by hand like the other controls, red on hover like the arrows of the
+   carousels. */
+.site-model-autoturn {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: rgb(255 255 255 / 80%);
+    cursor: pointer;
+    pointer-events: auto;
+    transform: translate(-50%, -50%);
+    transition: color var(--dur-base) ease, transform var(--dur-base) var(--ease-soft);
+}
+
+
+.site-model-autoturn:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 2px;
+}
+
+.site-model-autoturn svg {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: currentcolor;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.site-model-autoturn-play { display: none; }
+.site-model-autoturn[aria-pressed="false"] .site-model-autoturn-pause { display: none; }
+.site-model-autoturn[aria-pressed="false"] .site-model-autoturn-play { display: block; }
 
 .site-model-turn path {
     fill: none;
@@ -367,6 +425,7 @@
    same axis and at the same width: one column of controls on the right. */
 .site-model-eye {
     position: absolute;
+    z-index: 2;
     right: 12px;
     bottom: calc(22% - 64px);
     display: grid;
@@ -381,11 +440,6 @@
     transition: color var(--dur-base) ease, transform var(--dur-base) var(--ease-soft), opacity var(--dur-base) ease;
 }
 
-/* Same touch as the arrows of the carousels: red, a little larger and crooked. */
-.site-model-eye:hover {
-    color: var(--red);
-    transform: scale(1.15) rotate(-5deg);
-}
 
 .site-model-eye:focus-visible {
     outline: 2px solid var(--white);
@@ -426,6 +480,7 @@
    while the pointer is on the model or the sun is being moved. */
 .site-model-sun-arc {
     position: absolute;
+    z-index: 0;
     inset: 0;
     width: 100%;
     height: 100%;
@@ -480,7 +535,6 @@
     outline-offset: 2px;
 }
 
-.site-model-stage:hover .site-model-sun-arc path,
 .site-model-stage.is-moving-sun .site-model-sun-arc path { stroke: rgb(245 240 232 / 60%); }
 
 .site-model-stage.is-moving-sun .site-model-sun { cursor: grabbing; }
@@ -509,7 +563,6 @@
     transition: transform 0.35s var(--ease-overshoot);
 }
 
-.site-model-polaroid:hover { transform: rotate(2deg) translateY(-4px); }
 
 /* The magnifier, top right of the polaroid: the eight photos full size in the viewer. */
 .site-model-polaroid-zoom {
@@ -530,7 +583,6 @@
     transition: transform var(--dur-base) var(--ease-soft);
 }
 
-.site-model-polaroid-zoom:hover { transform: rotate(3deg) scale(1.1); }
 
 .site-model-polaroid-zoom:focus-visible {
     outline: 2px solid var(--white);
@@ -697,7 +749,11 @@
         bottom: calc(30% - 64px);
     }
 
-    .site-model-polaroid-wrap { width: 180px; }
+    /* Moved by the script just above the 3D: close to the model it turns. */
+    .site-model-polaroid-wrap {
+        width: 170px;
+        margin: 6px auto 0;
+    }
 
     .site-model-rail-photo {
         width: 40px;
@@ -719,6 +775,26 @@
         margin-right: 0;
         padding: 0 16px;
     }
+}
+
+/* Hover effects only with a mouse: on a touch screen they stayed stuck after a tap (the eye stayed
+   red, the polaroid tilted). Same touch as the arrows of the carousels: red, larger, crooked. */
+@media (hover: hover) and (pointer: fine) {
+    .site-model-drop:hover .site-model-drop-sticker { transform: rotate(-2deg) scale(1.08); }
+
+    .site-model-autoturn:hover {
+        color: var(--red);
+        transform: translate(-50%, -50%) scale(1.15) rotate(-5deg);
+    }
+
+    .site-model-eye:hover {
+        color: var(--red);
+        transform: scale(1.15) rotate(-5deg);
+    }
+
+    .site-model-stage:hover .site-model-sun-arc path { stroke: rgb(245 240 232 / 60%); }
+    .site-model-polaroid:hover { transform: rotate(2deg) translateY(-4px); }
+    .site-model-polaroid-zoom:hover { transform: rotate(3deg) scale(1.1); }
 }
 
 @media (prefers-reduced-motion: reduce) {
