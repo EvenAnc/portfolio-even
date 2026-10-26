@@ -1,0 +1,383 @@
+/* Site model (diploma page): Even's carved wooden site model in 3D (js/site-model).
+
+   Above the model, the compass; on the stage, the model, turning, with the Lambesc pin; on its
+   right, the rail and the red arrow that brings the view of the real site down onto it; under
+   it, the curved arrow that says it turns all the way round. The photo of the model stays in
+   place until the 3D is ready, and for good without WebGL. */
+
+.site-model {
+    position: relative;
+    max-width: 1120px;
+    margin: 34px auto 0;
+}
+
+/* Compass: one letter in view at a time, fading at both ends. */
+.site-model-compass {
+    position: relative;
+    width: min(300px, 70%);
+    height: 40px;
+    margin: 12px auto 6px;
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 28%, #000 72%, transparent);
+}
+
+.site-model-compass-strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 40px;
+    will-change: transform;
+}
+
+.site-model-compass-tick {
+    stroke: rgb(255 255 255 / 72%);
+    stroke-width: 1.6;
+}
+
+.site-model-compass-letter {
+    font-family: var(--font-sketch);
+    font-size: 23px;
+    fill: var(--white);
+    paint-order: stroke;
+    stroke: rgb(0 0 0 / 60%);
+    stroke-width: 3px;
+}
+
+/* The mark of the direction looked at, a small red notch above the middle. */
+.site-model-compass::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 50%;
+    width: 3px;
+    height: 11px;
+    margin-left: -1.5px;
+    border-radius: 1px;
+    background: var(--red);
+}
+
+/* Room under the stage for the curved arrow, which stays clear of the model. */
+.site-model-frame {
+    position: relative;
+    padding-right: 64px;
+    padding-bottom: 58px;
+}
+
+.site-model-stage {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+    outline: none;
+}
+
+.site-model-stage:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 6px;
+    border-radius: 4px;
+}
+
+.site-model.is-dragging .site-model-stage { cursor: grabbing; }
+
+.site-model-poster,
+.site-model-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.site-model-poster {
+    object-fit: contain;
+    transition: opacity 0.6s ease;
+}
+
+.site-model-canvas {
+    display: block;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.site-model.is-ready .site-model-canvas { opacity: 1; }
+.site-model.is-ready .site-model-poster { opacity: 0; }
+
+/* Loading: the poster breathes a little. */
+.site-model.is-loading .site-model-poster { animation: site-model-wait 1.6s ease-in-out infinite alternate; }
+
+@keyframes site-model-wait {
+    from { opacity: 1; }
+    to { opacity: 0.72; }
+}
+
+/* The pin, from the Toulouse map of the drawings page; its tip is on the point of the model. */
+.site-model-pin {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    will-change: transform;
+}
+
+.site-model-pin.is-shown { opacity: 1; }
+
+/* Contact shadow under the tip: the pin stands on the ground. */
+.site-model-pin::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: -3px;
+    width: 18px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(rgb(0 0 0 / 55%), rgb(0 0 0 / 0%) 70%);
+}
+
+.site-model-pin-icon {
+    position: absolute;
+    left: -20px;
+    top: -58px;
+    width: 40px;
+    height: 60px;
+    filter: drop-shadow(0 8px 10px rgb(0 0 0 / 50%));
+    transform: translateY(-34px);
+    transition: transform 0.5s var(--ease-back);
+    animation: sketch-wobble var(--sketch-timing);
+}
+
+.site-model-pin.is-shown .site-model-pin-icon { transform: translateY(0); }
+
+.site-model-pin-text {
+    position: absolute;
+    left: -150px;
+    top: -118px;
+    width: 140px;
+    color: var(--red);
+    font-size: 2.3rem;
+    line-height: 0.95;
+    letter-spacing: 2px;
+    text-align: right;
+    text-shadow: 0 0 3px rgb(0 0 0 / 70%), 2px 2px 6px rgb(0 0 0 / 55%);
+    transform: rotate(-15deg);
+    white-space: nowrap;
+}
+
+.site-model-pin-code {
+    display: block;
+    font-size: 0.78em;
+    letter-spacing: 3px;
+}
+
+/* The rail and the red arrow that brings the site view down. */
+.site-model-rail {
+    position: absolute;
+    top: 6%;
+    right: 12px;
+    bottom: 22%;
+    width: 44px;
+}
+
+.site-model-rail::before {
+    content: '';
+    position: absolute;
+    top: 22px;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    background: linear-gradient(rgb(255 255 255 / 35%), rgb(255 255 255 / 5%));
+}
+
+.site-model-drop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--red);
+    color: var(--white);
+    display: grid;
+    place-items: center;
+    cursor: grab;
+    touch-action: none;
+    box-shadow: 0 6px 16px rgb(0 0 0 / 45%);
+    will-change: transform;
+}
+
+.site-model-drop:active { cursor: grabbing; }
+
+.site-model-drop:focus-visible {
+    border-radius: 50%;
+    outline: 2px solid var(--white);
+    outline-offset: 3px;
+}
+
+.site-model-drop svg {
+    width: 22px;
+    height: 22px;
+}
+
+.site-model-rail-label {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    color: var(--white);
+    font-size: 1.05rem;
+    white-space: nowrap;
+    transform: translateX(-50%) rotate(-6deg);
+    opacity: 0.8;
+}
+
+/* The curved arrow under the model: it turns all the way round. */
+.site-model-turn {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: min(46%, 420px);
+    margin-left: calc(min(46%, 420px) / -2 - 32px);
+    height: auto;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.site-model-turn path {
+    fill: none;
+    stroke: rgb(255 255 255 / 55%);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.site-model-turn text {
+    font-family: var(--font-sketch);
+    font-size: 17px;
+    fill: rgb(255 255 255 / 70%);
+}
+
+.site-model-credit {
+    margin: 14px 64px 0 0;
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    text-align: right;
+    color: rgb(255 255 255 / 42%);
+}
+
+/* The sun on its arc over the model: drag it to move the light. The arc shows faintly, more
+   while the pointer is on the model or the sun is being moved. */
+.site-model-sun-arc {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.site-model-sun-arc path {
+    fill: none;
+    stroke: rgb(255 236 200 / 16%);
+    stroke-width: 1.2;
+    stroke-dasharray: 3 7;
+    transition: stroke 0.3s ease;
+}
+
+.site-model-sun {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    border-radius: 50%;
+    cursor: grab;
+    touch-action: none;
+    will-change: transform;
+    z-index: 2;
+}
+
+.site-model-sun svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    filter: drop-shadow(0 0 10px rgb(255 210 140 / 55%));
+}
+
+.site-model-sun circle {
+    fill: #ffe2ad;
+}
+
+.site-model-sun path {
+    fill: none;
+    stroke: #ffe2ad;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+}
+
+.site-model-sun:focus-visible {
+    border-radius: 50%;
+    outline: 2px solid var(--white);
+    outline-offset: 2px;
+}
+
+.site-model-stage:hover .site-model-sun-arc path,
+.site-model-stage.is-moving-sun .site-model-sun-arc path { stroke: rgb(255 236 200 / 45%); }
+
+.site-model-stage.is-moving-sun .site-model-sun { cursor: grabbing; }
+
+/* Without WebGL, or when loading failed: the photo of the model alone. */
+.site-model.is-unavailable .site-model-canvas,
+.site-model.is-unavailable .site-model-pin,
+.site-model.is-unavailable .site-model-rail,
+.site-model.is-unavailable .site-model-turn,
+.site-model.is-unavailable .site-model-compass,
+.site-model.is-unavailable .site-model-sun,
+.site-model.is-unavailable .site-model-sun-arc { display: none; }
+
+.site-model.is-unavailable .site-model-poster { opacity: 1; }
+
+@media (max-width: 768px) {
+    /* Room under the credit: the next panel's title starts right below. */
+    .site-model { margin: 24px 0 56px; }
+
+    .site-model-frame {
+        padding-right: 0;
+        padding-bottom: 48px;
+    }
+    .site-model-stage { aspect-ratio: 1 / 0.92; }
+
+    .site-model-rail {
+        right: 0;
+        top: 4%;
+        bottom: 30%;
+    }
+
+    /* On a narrow screen the name sits just right of the pin head, on the block: above the pin it
+       floated in the air past the back edge (second review, 26/10/2026). */
+    .site-model-pin-text {
+        left: 22px;
+        top: -58px;
+        width: auto;
+        font-size: 1.3rem;
+        text-align: left;
+        transform: rotate(-10deg);
+    }
+
+    .site-model-turn {
+        width: 70%;
+        margin-left: -35%;
+    }
+
+    .site-model-credit {
+        margin-right: 0;
+        padding: 0 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-model-pin-icon { animation: none; }
+    .site-model.is-loading .site-model-poster { animation: none; }
+}

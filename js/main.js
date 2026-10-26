@@ -19,6 +19,7 @@ import { resetActivePages, initPageLinks, showInitialPage, initHistory, refreshP
 import { initMenu } from './menu.js';
 import { initSafariPaperCache, initNotebookLines } from './notebook.js';
 import { initCarousels } from './carousel.js';
+import { initSiteModel } from './site-model/index.js';
 import { initSketchFrames } from './sketch-frames.js';
 import { initSketchbook } from './sketchbook.js';
 import { initTouchReveal } from './touch-reveal.js';
@@ -59,6 +60,7 @@ function init() {
     initContactReveal();
     initContactForm();
     initCarousels();
+    initSiteModel();
     initSketchFrames();
     initSketchbook();
 

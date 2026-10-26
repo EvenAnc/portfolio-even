@@ -94,6 +94,7 @@
     <link rel="stylesheet" href="css/drawings.css">
     <link rel="stylesheet" href="css/quote-band.css">
     <link rel="stylesheet" href="css/diploma.css">
+    <link rel="stylesheet" href="css/site-model.css">
     <link rel="stylesheet" href="css/studies.css">
     <link rel="stylesheet" href="css/lightbox.css">
     <link rel="stylesheet" href="css/reduced-motion.css">
@@ -1229,9 +1230,51 @@
                         </div>
                     </div>
 
-                    <!-- Panel 2: plans (black) -->
+                    <!-- Panel 2: the site model in 3D (black) -->
                     <div class="panel">
                         <div class="sticker-title-wrap sticker-title-wrap--right">
+                            <h3 class="sticker-title font-sketch" data-i18n="proj_panel_model">MAQUETTE DE SITE</h3>
+                        </div>
+                        <p class="panel-lede" data-i18n="lede_model">Une bûche de bois massif, taillée au ciseau à bois en trois jours de travail. Elle reprend le relief du site, avec la D67 creusée en sillon et une épingle rouge sur le terrain du projet.</p>
+                        <p class="panel-tools" data-i18n="tools_model">Bois massif, ciseau à bois</p>
+                        <div class="site-model" data-site-model="assets/maquette/maquette-v1.json">
+                            <div class="site-model-compass" aria-hidden="true"></div>
+                            <div class="site-model-frame">
+                                <div class="site-model-stage" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0" aria-label="Maquette de site en 3D : glissez à gauche ou à droite, ou utilisez les flèches du clavier, pour la faire tourner" data-i18n-aria="aria_model_turn">
+                                    <img class="site-model-poster" src="assets/maquette/maquette-v1-affiche.webp" alt="Maquette de site en bois massif, taillée au ciseau à bois" data-i18n-alt="alt_model_poster" width="1600" height="990" loading="lazy" decoding="async">
+                                    <canvas class="site-model-canvas" aria-hidden="true"></canvas>
+                                    <svg class="site-model-sun-arc" aria-hidden="true"><path/></svg>
+                                    <div class="site-model-sun" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="6" aria-valuemax="174" aria-valuenow="135" aria-label="Déplacer le soleil pour voir les ombres du relief" data-i18n-aria="aria_model_sun">
+                                        <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="7.5"/><path d="M20 4 V9 M20 31 V36 M4 20 H9 M31 20 H36 M8.7 8.7 L12.2 12.2 M27.8 27.8 L31.3 31.3 M8.7 31.3 L12.2 27.8 M27.8 12.2 L31.3 8.7"/></svg>
+                                    </div>
+                                    <div class="site-model-pin" aria-hidden="true">
+                                        <div class="site-model-pin-text font-sketch">LAMBESC<span class="site-model-pin-code">13410</span></div>
+                                        <svg class="site-model-pin-icon" viewBox="0 0 40 60">
+                                            <path d="M20 5 C5 5 5 30 20 55 C35 30 35 5 20 5 Z" fill="none" stroke="var(--red)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            <circle cx="20" cy="18" r="4" fill="none" stroke="var(--red)" stroke-width="3.5"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="site-model-rail">
+                                    <span class="site-model-rail-label font-sketch" data-i18n="model_drop_hint">Le site</span>
+                                    <div class="site-model-drop" tabindex="0" role="slider" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Poser la vue du vrai site sur la maquette" data-i18n-aria="aria_model_drop">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4 L12 19 M6 13 L12 19 L18 13"/></svg>
+                                    </div>
+                                </div>
+                                <svg class="site-model-turn" viewBox="0 0 300 78" aria-hidden="true">
+                                    <path d="M22 18 C44 62, 256 62, 278 18"/>
+                                    <path d="M266 12 L279 18 L271 31"/>
+                                    <path d="M34 12 L21 18 L29 31"/>
+                                    <text x="150" y="74" text-anchor="middle">360°</text>
+                                </svg>
+                            </div>
+                            <p class="site-model-credit" data-i18n="model_credit">Vue du site : photo aérienne © IGN (BD ORTHO, avril 2026), posée sur le relief de la maquette</p>
+                        </div>
+                    </div>
+
+                    <!-- Panel 3: plans (dark grey) -->
+                    <div class="panel panel--alt">
+                        <div class="sticker-title-wrap">
                             <h3 class="sticker-title font-sketch" data-i18n="proj_panel_plans">PLANS</h3>
                         </div>
                         <p class="panel-lede" data-i18n="lede_plans">Plans définitifs et détails, niveau par niveau, en suivant la pente du terrain. La matériauthèque répond à l'architecture vernaculaire du lieu. Chaque matériau est choisi pour tenir l'ensemble, du sol à la toiture.</p>
@@ -1269,9 +1312,9 @@
                         </div>
                     </div>
 
-                    <!-- Panel 3: architectural sections (dark grey) -->
-                    <div class="panel panel--alt">
-                        <div class="sticker-title-wrap">
+                    <!-- Panel 4: architectural sections (black) -->
+                    <div class="panel">
+                        <div class="sticker-title-wrap sticker-title-wrap--right">
                             <h3 class="sticker-title font-sketch" data-i18n="proj_panel_sections">COUPES ARCHITECTURALES</h3>
                         </div>
                         <p class="panel-lede" data-i18n="lede_sections">Ici tout se joue sur la verticalité du site. Les coupes sont texturées pour rendre lisible l'épaisseur du projet et la matière réelle des parois, ce qu'un plan ne peut pas montrer.</p>
@@ -1313,9 +1356,9 @@
                         </div>
                     </div>
 
-                    <!-- Panel 4: 3D (black) -->
-                    <div class="panel">
-                        <div class="sticker-title-wrap sticker-title-wrap--right">
+                    <!-- Panel 5: 3D (dark grey) -->
+                    <div class="panel panel--alt">
+                        <div class="sticker-title-wrap">
                             <h3 class="sticker-title font-sketch" data-i18n="proj_panel_3d">3D</h3>
                         </div>
                         <p class="panel-lede" data-i18n="lede_3d">La forme finale du projet. Ces vues intérieures et extérieures montrent ce que j'avais en tête depuis le premier croquis.</p>

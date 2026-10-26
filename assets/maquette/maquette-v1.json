@@ -1,0 +1,103 @@
+{
+ "format": 1,
+ "bin": "maquette-v1.bin",
+ "vertexCount": 63738,
+ "indexCount": 373464,
+ "indexType": "u16",
+ "topIndexCount": 367524,
+ "boundsMin": [
+  -1.0,
+  0.0,
+  -0.986022
+ ],
+ "boundsMax": [
+  1.0,
+  0.561794,
+  0.986022
+ ],
+ "north": [
+  -0.669131,
+  -0.743145
+ ],
+ "pin": [
+  0.048239,
+  0.443399,
+  -0.023294
+ ],
+ "textures": {
+  "wood": "maquette-v1-bois.webp",
+  "woodNormal": "maquette-v1-bois-normales.webp",
+  "woodSide": "maquette-v1-cotes.webp",
+  "site": "maquette-v1-site.webp"
+ },
+ "layout": {
+  "position": {
+   "offset": 0,
+   "bytes": 382428
+  },
+  "normal": {
+   "offset": 382428,
+   "bytes": 254952
+  },
+  "uv": {
+   "offset": 637380,
+   "bytes": 254952
+  },
+  "uv1": {
+   "offset": 892332,
+   "bytes": 254952
+  },
+  "index": {
+   "offset": 1147284,
+   "bytes": 746928
+  }
+ },
+ "grid": [
+  247,
+  250
+ ],
+ "pinUv": [
+  0.524119358438149,
+  0.4881877958915864
+ ],
+ "size": [
+  2.0,
+  0.5560893455991321,
+  1.9720447783224526
+ ],
+ "vegetation": {
+  "file": "maquette-v1-vegetation.webp",
+  "metresPerLevel": 0.1,
+  "unitsPerMetre": 0.001233750151641359,
+  "exaggeration": 2.0,
+  "source": "IGN LiDAR HD, MNH (hauteur au-dessus du sol), Licence Ouverte Etalab 2.0"
+ },
+ "siteFit": {
+  "routePixels": 47214,
+  "theta_deg": 318.0,
+  "width_m": 1621.1,
+  "score": 0.0312,
+  "pin_l93": [
+   881494.0,
+   6290172.0
+  ],
+  "reliefCorrelation": 0.5,
+  "warpMaxM": 71.0,
+  "d67Erased": 258179,
+  "share20cm": 0.13,
+  "asphalt": [
+   0.651,
+   0.622,
+   0.594
+  ],
+  "roadLine": {
+   "points": 148,
+   "widthTexPx": 17.5
+  },
+  "vegetation": {
+   "maxM": 23.3,
+   "meanM": 1.26,
+   "over5mShare": 0.074
+  }
+ }
+}
