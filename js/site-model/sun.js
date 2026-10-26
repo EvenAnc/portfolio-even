@@ -13,7 +13,7 @@ const MAX_DEG = 170;
 // Rather low at first (about 35 degrees above the table), like the lamp of the photos: the chisel marks
 // stand out from the start (Even, 26/10/2026). On a phone the arc is tighter and the sun would sit
 // on the edge of the block: a little higher there.
-export const SUN_START_DEG = window.matchMedia('(max-width: 768px)').matches ? 134 : 142;
+export const SUN_START_DEG = window.matchMedia('(max-width: 768px)').matches ? 152 : 142;
 const KEY_STEP_DEG = 8;
 
 const clamp = degrees => Math.max(MIN_DEG, Math.min(MAX_DEG, degrees));
@@ -21,7 +21,10 @@ const clamp = degrees => Math.max(MIN_DEG, Math.min(MAX_DEG, degrees));
 function arcOf(stage) {
     const width = stage.clientWidth;
     const height = stage.clientHeight;
-    return { width, height, cx: width / 2, cy: height * 0.66, r: Math.min(width * 0.44, height * 0.6) };
+    // On a phone the arc is shifted a little to the left: it stops short of the column of controls
+    // on the right, and the sun starts beside the block rather than on its corner.
+    const phone = width < 600;
+    return { width, height, cx: width * (phone ? 0.45 : 0.5), cy: height * 0.66, r: Math.min(width * (phone ? 0.42 : 0.44), height * 0.6) };
 }
 
 /**

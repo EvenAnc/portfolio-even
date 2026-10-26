@@ -81,13 +81,17 @@ export async function loadModel(THREE, url, anisotropy) {
     const loader = new THREE.TextureLoader();
     const urlOf = name => (name ? new URL(name, base).href : null);
     const names = desc.textures;
-    const [wood, woodNormal, woodSide, site] = await Promise.all([
+    // Phones get the site photo at half size: 4096 pixels take about 64 MB of graphics memory.
+    const small = window.matchMedia('(max-width: 768px)').matches || (navigator.deviceMemory || 8) <= 4;
+    const siteName = small && names.siteSmall ? names.siteSmall : names.site;
+    const [wood, woodNormal, woodRoughness, woodSide, site] = await Promise.all([
         loadTexture(THREE, loader, urlOf(names.wood), true, anisotropy),
         loadTexture(THREE, loader, urlOf(names.woodNormal), false, anisotropy),
+        loadTexture(THREE, loader, urlOf(names.woodRoughness), false, anisotropy),
         loadTexture(THREE, loader, urlOf(names.woodSide), true, anisotropy),
-        loadTexture(THREE, loader, urlOf(names.site), true, anisotropy),
+        loadTexture(THREE, loader, urlOf(siteName), true, anisotropy),
     ]);
     if (site) site.channel = 1;
     const vegetation = desc.vegetation ? await loadGreyLevels(urlOf(desc.vegetation.file)).catch(() => null) : null;
-    return { desc, geometry, index, vegetation, textures: { wood, woodNormal, woodSide, site } };
+    return { desc, geometry, index, vegetation, textures: { wood, woodNormal, woodRoughness, woodSide, site } };
 }

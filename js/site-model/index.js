@@ -29,6 +29,7 @@ const LOAD_MARGIN = '700px 0px';
 // the way down: the real shadow of the site view is enough, and the darkened wood showed as a
 // dark band in the gap (Even, 26/10/2026: the landing looked buggy).
 const TOUCH_GAP = 0.002;
+const SHEET_FADE = 0.65; // share of the descent over which the site view fades in
 const ARIA_EVERY_MS = 400;
 
 /** Turns the model with the mouse, the finger and the arrow keys. */
@@ -104,8 +105,28 @@ function drawFrame(THREE, view, model, parts, now, dt) {
     view.sheet.position.y = lift;
     const touching = view.sheet.visible && lift < TOUCH_GAP * width;
     view.wood.top.visible = !touching;
+    const fade = Math.min(1, descent.value / SHEET_FADE);
+    fadeSheet(view.sheet, fade * fade * (3 - 2 * fade), touching);
     view.renderer.render(view.scene, view.camera);
     return { touching, settled: !descent.moving && (descent.value === 0 || descent.value === 1) };
+}
+
+/**
+ * The site view fades in as it comes down: it no longer appears cut by the top edge of the view.
+ * It casts its shadow only once landed: on the way, its shadow floated by the arrow and darkened
+ * the wood in a band (second blind review, 27/10/2026).
+ */
+function fadeSheet(sheet, opacity, landed) {
+    sheet.children.forEach(part => {
+        const { material } = part;
+        const transparent = opacity < 1;
+        if (material.transparent !== transparent) {
+            material.transparent = transparent;
+            material.needsUpdate = true;
+        }
+        material.opacity = opacity;
+        part.castShadow = landed;
+    });
 }
 
 /** Compass, pin, arrow position and the values read by screen readers. */

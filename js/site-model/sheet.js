@@ -9,7 +9,7 @@
  * -X to +X, like the wooden top; uv1 is the one of the site photo.
  */
 
-const SHEET_THICKNESS = 0.006; // of the model width: a thin card, the edge in the colour of the wooden sides
+const SHEET_THICKNESS = 0.004; // of the model width: a thin card, the edge in the colour of the wooden sides
 const SHEET_INSET = 0.003;
 const EDGE_FADE = 0.02; // of the width, from each edge
 

@@ -260,7 +260,7 @@ export const TRANSLATIONS = {
         // Diploma project
         proj_desc: "Un complexe moto multifonctionnel, inspiré des motels américains et des stations-service des années 60-70. On y trouve une station essence, un garage moto, un espace d'exposition, un bar-restaurant et un espace de pause, le tout organisé autour d'une circulation et d'une signalétique travaillées. C'est un lieu de rencontre, pour les passionnés comme pour ceux qui veulent découvrir cet univers.",
         proj_annotation: "→ MJM Graphic Design Toulouse — 2025",
-        proj_panel_zoning: "ZOONING ET ANALYSE",
+        proj_panel_zoning: "ZONING ET ANALYSE",
         lede_zoning: "Une oliveraie en bord de route, à Lambesc, sur un axe très fréquenté par les motards. Le projet s'installe sur une portion de parcelle restée vide. La circulation reprend les codes d'une piste de moto, et c'est elle qui décide de l'implantation des bâtiments.",
         tools_zoning: "InDesign · Procreate",
         proj_panel_model: "MAQUETTE DE SITE",

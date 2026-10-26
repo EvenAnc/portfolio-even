@@ -16,7 +16,7 @@ import { buildSheet } from './sheet.js';
 const ELEVATION_DEG = 40;
 const FIELD_DEG = 24;
 const FRAME_MARGIN = 1.14; // air around the block for the sun, the arc and the arrows
-const SKIRT_COLOUR = 0xb88f7c; // the edge of the site view while it comes down reads as wood, like the sides
+const SKIRT_COLOUR = 0x8f5f49; // the edge of the site view while it comes down: the brown of the sawn sides
 // The site view's grid: finer than the wooden top, lighter on phones.
 const SHEET_COLUMNS = window.matchMedia('(max-width: 768px)').matches ? 360 : 600;
 
@@ -67,10 +67,31 @@ function addLights(THREE, scene, span) {
             const warm = 1 - Math.min(1, Math.max(0, (height - 0.15) / 0.55));
             sun.color.copy(high).lerp(low, warm * 0.5);
             // Low sun: more direct light, less ambient, so the shadows draw the relief.
-            sun.intensity = 3.1 - 0.2 * height; // a low sun lights less of each square: stronger, so the wood stays light
-            sky.intensity = 0.28 + 0.62 * height;
+            // A low sun lights less of each square: stronger, so the wood stays light; high, a little
+            // less of both, so the wood no longer washes out like plaster (review, 27/10/2026).
+            sun.intensity = 3.4 - 0.8 * height;
+            sky.intensity = 0.4 + 0.3 * height;
         },
     };
+}
+
+/**
+ * Shadow on the table, fading with the distance to the block (second blind review, 27/10/2026): a
+ * low sun drew a long black slab, cut by the edge of the view, that read as a hole in the page.
+ */
+function fadingShadowMaterial(THREE, width) {
+    const material = new THREE.ShadowMaterial({ opacity: 0.34 });
+    material.onBeforeCompile = shader => {
+        shader.uniforms.fadeFrom = { value: width * 0.75 };
+        shader.uniforms.fadeTo = { value: width * 1.7 };
+        shader.vertexShader = shader.vertexShader
+            .replace('#include <common>', '#include <common>\nvarying vec2 vTablePos;')
+            .replace('#include <begin_vertex>', '#include <begin_vertex>\nvTablePos = (modelMatrix * vec4(position, 1.0)).xz;');
+        shader.fragmentShader = shader.fragmentShader
+            .replace('#include <common>', '#include <common>\nvarying vec2 vTablePos;\nuniform float fadeFrom;\nuniform float fadeTo;')
+            .replace('#include <fog_fragment>', 'gl_FragColor.a *= 1.0 - smoothstep(fadeFrom, fadeTo, length(vTablePos));\n#include <fog_fragment>');
+    };
+    return material;
 }
 
 /** Puts a mesh made in the 0..1 box back to the size of the model. */
@@ -86,7 +107,10 @@ function buildWood(THREE, model) {
     // The normal map carries the chisel marks measured on the photos (photometric stereo): at
     // full strength, the sun brings them out as the real lamp did. The raw wood has a soft sheen:
     // the light catches the ridges between two chisel cuts, as on the photos.
-    const top = new THREE.MeshStandardMaterial({ map: textures.wood, normalMap: textures.woodNormal, roughness: 0.8, metalness: 0 });
+    const top = new THREE.MeshStandardMaterial({
+        map: textures.wood, normalMap: textures.woodNormal, metalness: 0,
+        roughness: textures.woodRoughness ? 1 : 0.8, roughnessMap: textures.woodRoughness,
+    });
     const side = new THREE.MeshStandardMaterial({ map: textures.woodSide || textures.wood, roughness: 0.95, metalness: 0 });
     const mesh = new THREE.Mesh(geometry, [top, side]);
     mesh.castShadow = true;
@@ -156,7 +180,7 @@ export function buildScene(THREE, canvas, model) {
     scene.add(pivot);
     // Wide enough for the longest shadow (sun 14 degrees high), and a shadow that darkens without
     // turning into a hole in the page.
-    const table = new THREE.Mesh(new THREE.PlaneGeometry(modelWidth * 14, modelWidth * 14), new THREE.ShadowMaterial({ opacity: 0.34 }));
+    const table = new THREE.Mesh(new THREE.PlaneGeometry(modelWidth * 14, modelWidth * 14), fadingShadowMaterial(THREE, modelWidth));
     table.rotation.x = -Math.PI / 2;
     table.position.y = model.desc.boundsMin[1] - 0.001;
     table.receiveShadow = true;
@@ -170,7 +194,7 @@ export function buildScene(THREE, canvas, model) {
     return {
         renderer, scene, camera, pivot, wood, sheet, realPin,
         setSun: lights.setSun,
-        liftMax: modelWidth * 1.6,
+        liftMax: modelWidth * 0.75, // starts inside the view, no longer cut by its top edge
         resize(width, height) {
             renderer.setSize(width, height, false);
             frameCamera(camera, model.desc, width, height);

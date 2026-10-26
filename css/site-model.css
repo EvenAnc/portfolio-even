@@ -12,11 +12,18 @@
 }
 
 /* Compass: one letter in view at a time, fading at both ends. */
+
+/* Over the top of the view, inside it: above it, the compass slid under the blurred band of the
+   header as soon as the whole model was on screen (blind review, 27/10/2026). */
 .site-model-compass {
-    position: relative;
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    z-index: 3;
     width: min(300px, 70%);
     height: 40px;
-    margin: 12px auto 6px;
+    transform: translateX(-50%);
+    pointer-events: none;
     overflow: hidden;
     mask-image: linear-gradient(90deg, transparent, #000 28%, #000 72%, transparent);
 }
@@ -30,13 +37,13 @@
 }
 
 .site-model-compass-tick {
-    stroke: rgb(255 255 255 / 72%);
-    stroke-width: 1.6;
+    stroke: rgb(255 255 255 / 85%);
+    stroke-width: 1.8;
 }
 
 .site-model-compass-letter {
     font-family: var(--font-sketch);
-    font-size: 23px;
+    font-size: 26px;
     fill: var(--white);
     paint-order: stroke;
     stroke: rgb(0 0 0 / 60%);
@@ -47,13 +54,13 @@
 .site-model-compass::after {
     content: '';
     position: absolute;
-    top: 2px;
+    top: 0;
     left: 50%;
-    width: 3px;
+    width: 14px;
     height: 11px;
-    margin-left: -1.5px;
-    border-radius: 1px;
+    margin-left: -7px;
     background: var(--red);
+    clip-path: polygon(0 0, 100% 8%, 46% 100%);
 }
 
 /* Room under the stage for the curved arrow, which stays clear of the model. */
@@ -181,36 +188,47 @@
     width: 44px;
 }
 
-/* The track the arrow slides down (Even, 26/10/2026: the small "Le site" label did not tell
-   that the arrow is pulled down). A visible groove, chevrons that run downwards under the arrow,
-   and a map at the bottom, where the arrow leads: the real site. */
-.site-model-rail::before {
-    content: '';
+/* The track of the arrow, in the language of the site (Even, 27/10/2026: the interface looked too
+   modern): a dashed pencil line drawn by hand, chevrons that run down under the arrow, and at the
+   bottom a small taped polaroid of the aerial photo, where the arrow leads: the real site. */
+.site-model-rail-line {
     position: absolute;
-    inset: 0;
-    border: 1px solid rgb(255 255 255 / 16%);
-    border-radius: 22px;
-    background: linear-gradient(rgb(255 255 255 / 7%), rgb(255 255 255 / 2%));
+    top: 24px;
+    bottom: 48px;
+    left: 50%;
+    width: 20px;
+    height: calc(100% - 72px);
+    margin-left: -10px;
+    overflow: visible;
+}
+
+.site-model-rail-line path {
+    fill: none;
+    stroke: rgb(255 255 255 / 38%);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 5 7;
+    vector-effect: non-scaling-stroke;
 }
 
 .site-model-rail-hint {
     position: absolute;
-    top: 52px;
+    top: 54px;
     left: 50%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: 1px;
     transform: translateX(-50%);
     transition: opacity 0.3s ease;
 }
 
 .site-model-rail-chevron {
-    width: 18px;
-    height: 11px;
+    width: 20px;
+    height: 12px;
     fill: none;
     stroke: var(--white);
-    stroke-width: 2.4;
+    stroke-width: 2.6;
     stroke-linecap: round;
     stroke-linejoin: round;
     opacity: 0.15;
@@ -227,7 +245,7 @@
     }
 
     40% {
-        opacity: 0.85;
+        opacity: 0.9;
         transform: translateY(2px);
     }
 }
@@ -235,48 +253,87 @@
 /* Once the site view is down, the chevrons have done their job. */
 .site-model-rail.is-down .site-model-rail-hint { opacity: 0; }
 
-.site-model-rail-end {
+.site-model-rail-photo {
     position: absolute;
-    bottom: 11px;
+    bottom: 0;
     left: 50%;
-    width: 22px;
-    height: 22px;
-    fill: none;
-    stroke: rgb(255 255 255 / 55%);
-    stroke-width: 1.6;
-    stroke-linejoin: round;
-    transform: translateX(-50%);
+    width: 56px;
+    padding: 4px 4px 13px;
+    margin-left: -28px;
+    background: var(--photo-paper);
+    box-shadow: 0 6px 12px rgb(0 0 0 / 50%);
+    transform: rotate(5deg);
 }
 
+.site-model-rail-photo img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.site-model-rail-photo::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    width: 34px;
+    height: 12px;
+    margin-left: -17px;
+    background: rgb(255 255 255 / 22%);
+    border: 1px solid rgb(255 255 255 / 8%);
+    transform: rotate(-7deg);
+}
+
+/* The arrow: a red sticker like the panel titles (dark border, hard shadow, a little crooked),
+   its white arrow drawn by hand in three takes, like the arrows of the carousels. */
 .site-model-drop {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 1;
     width: 44px;
     height: 44px;
-    border-radius: 50%;
-    background: var(--red);
-    color: var(--white);
     display: grid;
     place-items: center;
     cursor: grab;
     touch-action: none;
-    box-shadow: 0 6px 16px rgb(0 0 0 / 45%);
     will-change: transform;
 }
+
+.site-model-drop-sticker {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    background: var(--red);
+    border: 3px solid var(--bg);
+    box-shadow: 4px 4px 0 var(--black);
+    transform: rotate(-5deg);
+    transition: transform var(--dur-base) var(--ease-soft);
+}
+
+.site-model-drop:hover .site-model-drop-sticker { transform: rotate(-2deg) scale(1.08); }
 
 .site-model-drop:active { cursor: grabbing; }
 
 .site-model-drop:focus-visible {
-    border-radius: 50%;
     outline: 2px solid var(--white);
-    outline-offset: 3px;
+    outline-offset: 5px;
 }
 
-.site-model-drop svg {
-    width: 22px;
-    height: 22px;
+.site-model-drop-arrow {
+    transition: transform var(--dur-med) var(--ease-back);
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: var(--white);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
+
+/* Once the site view is down, the arrow turns up: the only way left is back up. */
+.site-model-rail.is-down .site-model-drop-arrow { transform: rotate(180deg); }
 
 /* The curved arrow under the model: it turns all the way round. */
 .site-model-turn {
@@ -311,21 +368,24 @@
 .site-model-eye {
     position: absolute;
     right: 12px;
-    bottom: calc(22% - 58px);
+    bottom: calc(22% - 64px);
     display: grid;
     place-items: center;
     width: 44px;
     height: 44px;
     padding: 0;
-    border: 1px solid rgb(255 255 255 / 30%);
-    border-radius: 50%;
-    background: rgb(255 255 255 / 6%);
+    border: 0;
+    background: none;
     color: var(--white);
     cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+    transition: color var(--dur-base) ease, transform var(--dur-base) var(--ease-soft), opacity var(--dur-base) ease;
 }
 
-.site-model-eye:hover { background: rgb(255 255 255 / 14%); }
+/* Same touch as the arrows of the carousels: red, a little larger and crooked. */
+.site-model-eye:hover {
+    color: var(--red);
+    transform: scale(1.15) rotate(-5deg);
+}
 
 .site-model-eye:focus-visible {
     outline: 2px solid var(--white);
@@ -333,24 +393,23 @@
 }
 
 .site-model-eye svg {
-    width: 22px;
-    height: 22px;
+    width: 34px;
+    height: 34px;
     fill: none;
     stroke: currentcolor;
-    stroke-width: 1.8;
+    stroke-width: 2.4;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
 .site-model-eye-slash {
     opacity: 0;
+    stroke: var(--red);
+    stroke-width: 3;
     transition: opacity 0.2s ease;
 }
 
-.site-model-eye[aria-pressed="true"] {
-    opacity: 0.6;
-    border-color: rgb(255 255 255 / 18%);
-}
+.site-model-eye[aria-pressed="true"] { color: var(--white); }
 .site-model-eye[aria-pressed="true"] .site-model-eye-slash { opacity: 1; }
 .site-model.is-real-pin .site-model-pin { visibility: hidden; }
 
@@ -360,7 +419,7 @@
     font-size: 0.72rem;
     letter-spacing: 0.02em;
     text-align: center;
-    color: rgb(255 255 255 / 42%);
+    color: rgb(255 255 255 / 62%);
 }
 
 /* The sun on its arc over the model: drag it to move the light. The arc shows faintly, more
@@ -376,9 +435,9 @@
 
 .site-model-sun-arc path {
     fill: none;
-    stroke: rgb(255 236 200 / 16%);
-    stroke-width: 1.2;
-    stroke-dasharray: 3 7;
+    stroke: rgb(245 240 232 / 34%);
+    stroke-width: 1.4;
+    stroke-dasharray: 4 7;
     transition: stroke 0.3s ease;
 }
 
@@ -400,17 +459,18 @@
     width: 100%;
     height: 100%;
     overflow: visible;
-    filter: drop-shadow(0 0 10px rgb(255 210 140 / 55%));
+    filter: drop-shadow(0 0 8px rgb(245 240 232 / 35%));
 }
 
+/* Cream paper, like the pages of the notebook: yellow was the only yellow of the site. */
 .site-model-sun circle {
-    fill: #ffe2ad;
+    fill: var(--intro-bg);
 }
 
 .site-model-sun path {
     fill: none;
-    stroke: #ffe2ad;
-    stroke-width: 2.4;
+    stroke: var(--intro-bg);
+    stroke-width: 2.6;
     stroke-linecap: round;
 }
 
@@ -421,7 +481,7 @@
 }
 
 .site-model-stage:hover .site-model-sun-arc path,
-.site-model-stage.is-moving-sun .site-model-sun-arc path { stroke: rgb(255 236 200 / 45%); }
+.site-model-stage.is-moving-sun .site-model-sun-arc path { stroke: rgb(245 240 232 / 60%); }
 
 .site-model-stage.is-moving-sun .site-model-sun { cursor: grabbing; }
 
@@ -454,36 +514,37 @@
 /* The magnifier, top right of the polaroid: the eight photos full size in the viewer. */
 .site-model-polaroid-zoom {
     position: absolute;
-    top: -14px;
-    right: -14px;
+    top: -12px;
+    right: -12px;
     z-index: 4;
     display: grid;
     place-items: center;
     width: 40px;
     height: 40px;
     padding: 0;
-    border: 0;
-    border-radius: 50%;
     background: var(--red);
-    box-shadow: 0 6px 14px rgb(0 0 0 / 45%);
+    border: 3px solid var(--bg);
+    box-shadow: 3px 3px 0 var(--black);
     cursor: zoom-in;
-    transition: transform 0.3s var(--ease-overshoot);
+    transform: rotate(8deg);
+    transition: transform var(--dur-base) var(--ease-soft);
 }
 
-.site-model-polaroid-zoom:hover { transform: scale(1.1); }
+.site-model-polaroid-zoom:hover { transform: rotate(3deg) scale(1.1); }
 
 .site-model-polaroid-zoom:focus-visible {
     outline: 2px solid var(--white);
-    outline-offset: 3px;
+    outline-offset: 4px;
 }
 
 .site-model-polaroid-zoom svg {
-    width: 22px;
-    height: 22px;
+    width: 26px;
+    height: 26px;
     fill: none;
     stroke: var(--white);
-    stroke-width: 2.2;
+    stroke-width: 3;
     stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .site-model-polaroid:focus-visible {
@@ -606,9 +667,18 @@
 
     /* On a narrow screen the name sits just right of the pin head, on the block: above the pin it
        floated in the air past the back edge (second review, 26/10/2026). */
+
+    /* Smaller pin on a phone: at full size it weighed as much as the block (review, 27/10/2026). */
+    .site-model-pin-icon {
+        left: -14px;
+        top: -41px;
+        width: 28px;
+        height: 42px;
+    }
+
     .site-model-pin-text {
-        left: 22px;
-        top: -58px;
+        left: 16px;
+        top: -46px;
         width: auto;
         font-size: 1.3rem;
         text-align: left;
@@ -624,10 +694,21 @@
 
     .site-model-eye {
         right: 0;
-        bottom: calc(30% - 58px);
+        bottom: calc(30% - 64px);
     }
 
     .site-model-polaroid-wrap { width: 180px; }
+
+    .site-model-rail-photo {
+        width: 40px;
+        padding: 3px 3px 9px;
+        margin-left: -24px;
+    }
+
+    .site-model-rail-photo::before {
+        width: 26px;
+        margin-left: -13px;
+    }
 
     .site-model-polaroid-zoom {
         width: 36px;

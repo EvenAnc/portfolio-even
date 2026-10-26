@@ -10,7 +10,7 @@
 
 const AUTO_DEG_PER_S = 6;
 const FRICTION_S = 1.1;
-const MAX_DEG_PER_S = 900;
+const MAX_DEG_PER_S = 360; // a quick fling makes it turn, not spin like a top (review, 27/10/2026)
 const DEG_PER_WIDTH = 300;
 const HOLD_MS = 80;
 const KEY_STEP_DEG = 30;
