@@ -11,6 +11,7 @@
 
 const SHEET_THICKNESS = 0.006; // of the model width: a thin card, the edge in the colour of the wooden sides
 const SHEET_INSET = 0.003;
+const EDGE_FADE = 0.02; // of the width, from each edge
 
 function bilinear(values, width, height, x, y) {
     const x0 = Math.min(width - 2, Math.max(0, Math.floor(x)));
@@ -50,7 +51,10 @@ function surfaceGeometry(THREE, model, cols) {
             const u = c / (cols - 1);
             const i = r * cols + c;
             let y = bilinear(top.heights, top.cols, top.rows, u * (top.cols - 1), t * (top.rows - 1));
-            if (vegetation) y += perLevel * bilinear(vegetation.levels, vegetation.width, vegetation.height, u * (vegetation.width - 1), t * (vegetation.height - 1));
+            // Trees fade out on the last 2 % towards the edge: standing on the edge, they raised the
+            // site view above the wooden sides, and its edge showed as a pale band (Even, 26/10/2026).
+            const edgeFade = Math.min(1, Math.min(u, 1 - u, t, 1 - t) / EDGE_FADE);
+            if (vegetation) y += edgeFade * perLevel * bilinear(vegetation.levels, vegetation.width, vegetation.height, u * (vegetation.width - 1), t * (vegetation.height - 1));
             positions.set([x0 + u * (x1 - x0), y, z0 + t * (z1 - z0)], i * 3);
             uvs.set([u, 1 - t], i * 2);
         }
