@@ -282,9 +282,9 @@
 .site-model-turn {
     position: absolute;
     left: 50%;
-    bottom: -6px;
-    width: min(52%, 480px);
-    margin-left: calc(min(52%, 480px) / -2 - 32px);
+    bottom: -14px;
+    width: min(57%, 528px);
+    margin-left: calc(min(57%, 528px) / -2 - 32px);
     height: auto;
     pointer-events: none;
     overflow: visible;
@@ -305,16 +305,17 @@
     fill: rgb(255 255 255 / 78%);
 }
 
-/* The eye, right of the 360 degree arrow: hides the name and the drawn marker and shows the real
-   red pin of the model, in 3D (Even, 26/10/2026). Crossed out while it is on. */
+/* The eye: hides the name and the drawn marker and shows the real red pin of the model, in 3D
+   (Even, 26/10/2026). Crossed out while it is on. It sits under the track of the arrow, on the
+   same axis and at the same width: one column of controls on the right. */
 .site-model-eye {
     position: absolute;
-    bottom: 12px;
-    left: calc(50% + min(26%, 240px) - 10px);
+    right: 12px;
+    bottom: calc(22% - 58px);
     display: grid;
     place-items: center;
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     padding: 0;
     border: 1px solid rgb(255 255 255 / 30%);
     border-radius: 50%;
@@ -615,18 +616,15 @@
     }
 
     .site-model-turn {
-        width: 64%;
-        margin-left: calc(-32% - 22px);
+        width: 70%;
+        margin-left: calc(-35% - 22px);
     }
 
     .site-model-turn text { font-size: 32px; }
 
     .site-model-eye {
-        left: auto;
-        right: 2px;
-        bottom: 22px;
-        width: 38px;
-        height: 38px;
+        right: 0;
+        bottom: calc(30% - 58px);
     }
 
     .site-model-polaroid-wrap { width: 180px; }
