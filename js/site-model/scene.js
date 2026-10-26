@@ -15,7 +15,9 @@ import { buildSheet } from './sheet.js';
 
 const ELEVATION_DEG = 40;
 const FIELD_DEG = 24;
-const FRAME_MARGIN = 1.14; // air around the block for the sun, the arc and the arrows
+// Air around the block, so that the sun goes round it without ever running over it (Even,
+// 27/10/2026); more on a phone, where the block would otherwise fill the width.
+const FRAME_MARGIN = window.matchMedia('(max-width: 768px)').matches ? 1.36 : 1.22;
 const SKIRT_COLOUR = 0x8f5f49; // the edge of the site view while it comes down: the brown of the sawn sides
 // The site view's grid: finer than the wooden top, lighter on phones.
 const SHEET_COLUMNS = window.matchMedia('(max-width: 768px)').matches ? 360 : 600;

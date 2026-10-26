@@ -8,25 +8,28 @@
 
 // Not down to the horizon (the wood went dark and the shadow ran off the view), and the dotted arc
 // stops exactly where the sun does: it showed further than the sun could go (Even, 26/10/2026).
-const MIN_DEG = window.matchMedia('(max-width: 768px)').matches ? 22 : 10; // a phone: clear of the rail
+const PHONE = window.matchMedia('(max-width: 768px)').matches;
+const MIN_DEG = PHONE ? 30 : 10; // a phone: clear of the rail
 const MAX_DEG = 170;
 // Rather low at first (about 35 degrees above the table), like the lamp of the photos: the chisel marks
 // stand out from the start (Even, 26/10/2026). On a phone the arc is tighter and the sun would sit
 // on the edge of the block: a little higher there.
-export const SUN_START_DEG = window.matchMedia('(max-width: 768px)').matches ? 152 : 142;
+export const SUN_START_DEG = PHONE ? 152 : 142;
 const KEY_STEP_DEG = 8;
 
 const clamp = degrees => Math.max(MIN_DEG, Math.min(MAX_DEG, degrees));
 
+/**
+ * The path of the sun: an oval around the model, never over it (Even, 27/10/2026). Its size comes
+ * from the area the model sweeps on screen over a full turn (measured, scratchpad emprise.py): on
+ * a computer the sun stays at least 40 pixels from it, on a phone 18, and the top of the oval
+ * stays under the compass.
+ */
 function arcOf(stage) {
     const width = stage.clientWidth;
     const height = stage.clientHeight;
-    // On a phone the arc is shifted a little to the left: it stops short of the column of controls
-    // on the right, and the sun starts beside the block rather than on its corner.
-    // The top of the arc stays under the compass (review, 27/10/2026: the sun at its highest ran
-    // into it).
-    const phone = width < 600;
-    return { width, height, cx: width * (phone ? 0.44 : 0.5), cy: height * 0.7, r: Math.min(width * (phone ? 0.43 : 0.44), height * 0.58) };
+    const shape = PHONE ? { cx: 0.5, cy: 0.44, rx: 0.41, ry: 0.24 } : { cx: 0.49, cy: 0.4, rx: 0.47, ry: 0.3 };
+    return { width, height, cx: width * shape.cx, cy: height * shape.cy, rx: width * shape.rx, ry: height * shape.ry };
 }
 
 /**
@@ -39,7 +42,7 @@ export function createSun(stage, handle, path, apply) {
     let grabbed = false;
     const place = () => {
         const a = angle * Math.PI / 180;
-        handle.style.transform = `translate3d(${(arc.cx + arc.r * Math.cos(a)).toFixed(1)}px, ${(arc.cy - arc.r * Math.sin(a)).toFixed(1)}px, 0)`;
+        handle.style.transform = `translate3d(${(arc.cx + arc.rx * Math.cos(a)).toFixed(1)}px, ${(arc.cy - arc.ry * Math.sin(a)).toFixed(1)}px, 0)`;
         handle.setAttribute('aria-valuenow', String(Math.round(angle)));
     };
     const set = degrees => {
@@ -49,8 +52,8 @@ export function createSun(stage, handle, path, apply) {
     };
     const follow = event => {
         const box = stage.getBoundingClientRect();
-        const x = event.clientX - box.left - arc.cx;
-        const y = arc.cy - (event.clientY - box.top);
+        const x = (event.clientX - box.left - arc.cx) / arc.rx;
+        const y = (arc.cy - (event.clientY - box.top)) / arc.ry;
         // Under the horizon line, the sun stays at the end of its arc on that side.
         set(y < 0 ? (x < 0 ? MAX_DEG : MIN_DEG) : Math.atan2(y, x) * 180 / Math.PI);
     };
@@ -83,9 +86,9 @@ export function createSun(stage, handle, path, apply) {
         path.ownerSVGElement.setAttribute('viewBox', `0 0 ${arc.width} ${arc.height}`);
         const end = degrees => {
             const a = degrees * Math.PI / 180;
-            return `${(arc.cx + arc.r * Math.cos(a)).toFixed(1)} ${(arc.cy - arc.r * Math.sin(a)).toFixed(1)}`;
+            return `${(arc.cx + arc.rx * Math.cos(a)).toFixed(1)} ${(arc.cy - arc.ry * Math.sin(a)).toFixed(1)}`;
         };
-        path.setAttribute('d', `M ${end(MAX_DEG)} A ${arc.r} ${arc.r} 0 0 1 ${end(MIN_DEG)}`);
+        path.setAttribute('d', `M ${end(MAX_DEG)} A ${arc.rx.toFixed(1)} ${arc.ry.toFixed(1)} 0 0 1 ${end(MIN_DEG)}`);
         place();
     };
     set(angle);

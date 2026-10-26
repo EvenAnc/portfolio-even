@@ -364,13 +364,13 @@
     overflow: visible;
 }
 
-/* Pause or play of the slow turn, between the two heads of the 360 degree arrow (Even,
-   27/10/2026), drawn by hand like the other controls, red on hover like the arrows of the
-   carousels. */
+/* Pause or play of the slow turn, set in a gap of the 360 degree arrow itself (Even, 27/10/2026),
+   in the colour and weight of the arrow: one drawing, not one more control. Red on hover with a
+   mouse, like the arrows of the carousels. */
 .site-model-autoturn {
     position: absolute;
     left: 50%;
-    top: 40%;
+    top: 69%;
     display: grid;
     place-items: center;
     width: 44px;
@@ -378,7 +378,7 @@
     padding: 0;
     border: 0;
     background: none;
-    color: rgb(255 255 255 / 80%);
+    color: rgb(255 255 255 / 55%);
     cursor: pointer;
     pointer-events: auto;
     transform: translate(-50%, -50%);
@@ -392,11 +392,11 @@
 }
 
 .site-model-autoturn svg {
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
     fill: none;
     stroke: currentcolor;
-    stroke-width: 3;
+    stroke-width: 4.6;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
@@ -709,7 +709,7 @@
         padding-right: 0;
         padding-bottom: 48px;
     }
-    .site-model-stage { aspect-ratio: 1 / 0.92; }
+    .site-model-stage { aspect-ratio: 1 / 1.02; }
 
     .site-model-rail {
         right: 0;
@@ -750,6 +750,18 @@
     }
 
     /* Moved by the script just above the 3D: close to the model it turns. */
+
+    /* A smaller sun on a phone (the touch area stays 44 pixels): air between it and the block. */
+    .site-model-sun {
+        display: grid;
+        place-items: center;
+    }
+
+    .site-model-sun svg {
+        width: 34px;
+        height: 34px;
+    }
+
     .site-model-polaroid-wrap {
         width: 170px;
         margin: 6px auto 0;
