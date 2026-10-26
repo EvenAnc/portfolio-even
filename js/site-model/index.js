@@ -20,6 +20,7 @@ import { buildScene } from './scene.js';
 import { createTurn, createDescent } from './motion.js';
 import { createCompass, createPin, headingOf } from './overlay.js';
 import { createSun } from './sun.js';
+import { createPolaroid } from './polaroid.js';
 
 const THREE_URL = new URL('../../vendor/three-0.186.1/three.module.js', import.meta.url).href;
 const LOAD_MARGIN = '700px 0px';
@@ -154,7 +155,7 @@ function runLoop(THREE, view, model, parts, root) {
     document.addEventListener('visibilitychange', update);
 }
 
-async function start(root) {
+async function start(root, link) {
     root.classList.add('is-loading');
     const THREE = await import(THREE_URL);
     const stage = root.querySelector('.site-model-stage');
@@ -183,6 +184,7 @@ async function start(root) {
     };
     on(EVENTS.LANGUAGE_CHANGE, ({ lang }) => parts.compass.setLanguage(lang));
     wireTurn(stage, parts.turn, root);
+    link.turn = parts.turn;
     wireDescent(parts.handle, parts.rail, parts.descent);
     canvas.addEventListener('webglcontextlost', () => root.classList.add('is-unavailable'));
     root.classList.remove('is-loading');
@@ -192,10 +194,14 @@ async function start(root) {
 /** Starts each site model on the page when it comes near the screen. */
 export function initSiteModel() {
     document.querySelectorAll('[data-site-model]').forEach(root => {
+        // The polaroid of the real model turns the 3D once it is loaded.
+        const link = { turn: null };
+        const polaroid = root.closest('.panel')?.querySelector('.site-model-polaroid');
+        if (polaroid) createPolaroid(polaroid, (angle, direction) => link.turn?.turnTo(angle, direction));
         const observer = new IntersectionObserver(entries => {
             if (!entries.some(entry => entry.isIntersecting)) return;
             observer.disconnect();
-            start(root).catch(error => {
+            start(root, link).catch(error => {
                 root.classList.remove('is-loading');
                 root.classList.add('is-unavailable');
                 console.warn('Site model unavailable:', error);

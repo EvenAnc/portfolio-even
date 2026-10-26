@@ -328,6 +328,117 @@
 
 .site-model-stage.is-moving-sun .site-model-sun { cursor: grabbing; }
 
+/* The polaroid of the real model, top left of the panel, beside the text (Even, 26/10/2026):
+   the eight first photos, one every 45 degrees around it. A click brings the next one on top and
+   turns the 3D to the same side. Like the reference photo of the drawings, larger, with two
+   cards behind it for the stack. */
+.site-model-polaroid {
+    position: absolute;
+    top: 92px;
+    left: max(20px, calc(50% - 610px));
+    z-index: 3;
+    width: 230px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    transform: rotate(-6deg);
+    transition: transform 0.35s var(--ease-overshoot);
+}
+
+.site-model-polaroid:hover { transform: rotate(-4deg) translateY(-4px); }
+
+.site-model-polaroid:focus-visible {
+    border-radius: 4px;
+    outline: 2px solid var(--white);
+    outline-offset: 6px;
+}
+
+/* Two blank cards behind the photo: the stack. */
+.site-model-polaroid::before,
+.site-model-polaroid::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+    background: var(--photo-paper);
+    box-shadow: 0 8px 18px rgb(0 0 0 / 45%);
+}
+
+.site-model-polaroid::before { transform: rotate(7deg) translate(6px, 4px); }
+.site-model-polaroid::after { transform: rotate(-4deg) translate(-5px, 3px); }
+
+.site-model-polaroid-frame {
+    position: relative;
+    z-index: 1;
+    display: block;
+    padding: 10px 10px 38px;
+    border-radius: 2px;
+    background: var(--photo-paper);
+    box-shadow: 0 14px 26px rgb(0 0 0 / 55%);
+}
+
+.site-model-polaroid.is-shuffling .site-model-polaroid-frame { animation: site-model-shuffle 0.45s ease-out; }
+
+@keyframes site-model-shuffle {
+    35% { transform: translate(-16px, -6px) rotate(-5deg); }
+    100% { transform: none; }
+}
+
+.site-model-polaroid-window {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: #1b2430;
+}
+
+.site-model-polaroid-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.site-model-polaroid-photo.is-active { opacity: 1; }
+
+.site-model-polaroid-count {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    color: #2a2a2a;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+}
+
+.site-model-polaroid-turn {
+    position: absolute;
+    left: 12px;
+    bottom: 9px;
+    width: 34px;
+    height: 21px;
+    fill: none;
+    stroke: var(--red);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Below this width the text would run under it: the polaroid sits above the text instead. */
+@media (max-width: 1240px) {
+    .site-model-polaroid {
+        position: relative;
+        top: auto;
+        left: auto;
+        display: block;
+        margin: -18px auto 34px;
+        width: 210px;
+    }
+}
+
 /* Without WebGL, or when loading failed: the photo of the model alone. */
 .site-model.is-unavailable .site-model-canvas,
 .site-model.is-unavailable .site-model-pin,
@@ -371,6 +482,8 @@
         margin-left: -35%;
     }
 
+    .site-model-polaroid { width: 180px; }
+
     .site-model-credit {
         margin-right: 0;
         padding: 0 16px;
@@ -379,5 +492,7 @@
 
 @media (prefers-reduced-motion: reduce) {
     .site-model-pin-icon { animation: none; }
+    .site-model-polaroid.is-shuffling .site-model-polaroid-frame { animation: none; }
+    .site-model-polaroid-photo { transition: none; }
     .site-model.is-loading .site-model-poster { animation: none; }
 }

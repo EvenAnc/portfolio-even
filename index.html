@@ -1235,6 +1235,24 @@
                         <div class="sticker-title-wrap sticker-title-wrap--right">
                             <h3 class="sticker-title font-sketch" data-i18n="proj_panel_model">MAQUETTE DE SITE</h3>
                         </div>
+                        <!-- The eight first photos of the real model, one every 45 degrees around it: each click
+                             brings the next one on top and turns the 3D to the same side. -->
+                        <button class="site-model-polaroid" type="button" aria-label="Photos de la vraie maquette : photo suivante, et la maquette 3D tourne d'un huitième de tour pour la montrer du même côté" data-i18n-aria="aria_model_polaroid">
+                            <span class="site-model-polaroid-frame">
+                                <span class="site-model-polaroid-window">
+                                    <img class="site-model-polaroid-photo is-active" src="assets/maquette/polaroid-1-400.webp" srcset="assets/maquette/polaroid-1-400.webp 400w, assets/maquette/polaroid-1.webp 800w" sizes="(max-width: 768px) 180px, 230px" width="800" height="600" alt="" data-angle="45.2" loading="lazy" decoding="async">
+                                    <img class="site-model-polaroid-photo" src="assets/maquette/polaroid-2-400.webp" srcset="assets/maquette/polaroid-2-400.webp 400w, assets/maquette/polaroid-2.webp 800w" sizes="(max-width: 768px) 180px, 230px" width="800" height="600" alt="" data-angle="-0.4" loading="lazy" decoding="async">
+                                    <img class="site-model-polaroid-photo" src="assets/maquette/polaroid-3-400.webp" srcset="assets/maquette/polaroid-3-400.webp 400w, assets/maquette/polaroid-3.webp 800w" sizes="(max-width: 768px) 180px, 230px" width="800" height="600" alt="" data-angle="-52.2" loading="lazy" decoding="async">
+                                    <img class="site-model-polaroid-photo" src="assets/maquette/polaroid-4-400.webp" srcset="assets/maquette/polaroid-4-400.webp 400w, assets/maquette/polaroid-4.webp 800w" sizes="(max-width: 768px) 180px, 230px" width="800" height="600" alt="" data-angle="-91.5" loading="lazy" decoding="async">
+                                    <img class="site-model-polaroid-photo" src="assets/maquette/polaroid-5-400.webp" srcset="assets/maquette/polaroid-5-400.webp 400w, assets/maquette/polaroid-5.webp 800w" sizes="(max-width: 768px) 180px, 230px" width="800" height="600" alt="" data-angle="-137.4" loading="lazy" decoding="async">
+                                    <img class="site-model-polaroid-photo" src="assets/maquette/polaroid-6-400.webp" srcset="assets/maquette/polaroid-6-400.webp 400w, assets/maquette/polaroid-6.webp 800w" sizes="(max-width: 768px) 180px, 230px" width="800" height="600" alt="" data-angle="178.7" loading="lazy" decoding="async">
+                                    <img class="site-model-polaroid-photo" src="assets/maquette/polaroid-7-400.webp" srcset="assets/maquette/polaroid-7-400.webp 400w, assets/maquette/polaroid-7.webp 800w" sizes="(max-width: 768px) 180px, 230px" width="800" height="600" alt="" data-angle="130.3" loading="lazy" decoding="async">
+                                    <img class="site-model-polaroid-photo" src="assets/maquette/polaroid-8-400.webp" srcset="assets/maquette/polaroid-8-400.webp 400w, assets/maquette/polaroid-8.webp 800w" sizes="(max-width: 768px) 180px, 230px" width="800" height="600" alt="" data-angle="87.7" loading="lazy" decoding="async">
+                                </span>
+                                <span class="site-model-polaroid-count font-sketch" aria-hidden="true">1 / 8</span>
+                                <svg class="site-model-polaroid-turn" viewBox="0 0 40 24" aria-hidden="true"><path d="M6 9 C 14 2, 28 2, 34 10 M29 4.5 L34.5 10.5 L27.5 12"/><path d="M34 15 C 26 22, 13 22, 6 14"/></svg>
+                            </span>
+                        </button>
                         <p class="panel-lede" data-i18n="lede_model">Une bûche de bois massif, taillée au ciseau à bois en trois jours de travail. Elle reprend le relief du site, avec la D67 creusée en sillon et une épingle rouge sur le terrain du projet.</p>
                         <p class="panel-tools" data-i18n="tools_model">Bois massif, ciseau à bois</p>
                         <div class="site-model" data-site-model="assets/maquette/maquette-v1.json">
@@ -1244,7 +1262,7 @@
                                     <img class="site-model-poster" src="assets/maquette/maquette-v1-affiche.webp" alt="Maquette de site en bois massif, taillée au ciseau à bois" data-i18n-alt="alt_model_poster" width="1600" height="990" loading="lazy" decoding="async">
                                     <canvas class="site-model-canvas" aria-hidden="true"></canvas>
                                     <svg class="site-model-sun-arc" aria-hidden="true"><path/></svg>
-                                    <div class="site-model-sun" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="6" aria-valuemax="174" aria-valuenow="135" aria-label="Déplacer le soleil pour voir les ombres du relief" data-i18n-aria="aria_model_sun">
+                                    <div class="site-model-sun" tabindex="0" role="slider" aria-orientation="horizontal" aria-valuemin="14" aria-valuemax="166" aria-valuenow="142" aria-label="Déplacer le soleil pour voir les ombres du relief" data-i18n-aria="aria_model_sun">
                                         <svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="7.5"/><path d="M20 4 V9 M20 31 V36 M4 20 H9 M31 20 H36 M8.7 8.7 L12.2 12.2 M27.8 27.8 L31.3 31.3 M8.7 31.3 L12.2 27.8 M27.8 12.2 L31.3 8.7"/></svg>
                                     </div>
                                     <div class="site-model-pin" aria-hidden="true">

@@ -15,18 +15,41 @@ const DEG_PER_WIDTH = 300;
 const HOLD_MS = 80;
 const KEY_STEP_DEG = 30;
 
+// Starts gently, ends softly, with no bounce (turns to a photo, descent of the site view).
+const easeInOut = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+
+/** Signed turn from one angle to another, the short way or in the given direction (1 or -1). */
+function turnDelta(from, to, direction) {
+    const delta = ((to - from) % 360 + 540) % 360 - 180;
+    return direction && delta * direction < 0 ? delta + direction * 360 : delta;
+}
+
+/** One step of a turn to an angle; returns the turn, or null once it has arrived. */
+function stepTween(tween, turn, dt) {
+    const next = { ...tween, t: Math.min(1, tween.t + dt / tween.duration) };
+    turn.angle = next.from + next.delta * easeInOut(next.t);
+    turn.velocity = 0;
+    return next.t >= 1 ? null : next;
+}
+
 /** The turn. `reducedMotion`: no turn of its own, the drag still works. */
 export function createTurn(reducedMotion) {
     const turn = { angle: 0, velocity: reducedMotion ? 0 : AUTO_DEG_PER_S, direction: 1 };
     let dragging = false;
+    let tween = null; // a turn to a given angle (a photo of the polaroid)
+    let hold = false; // after such a turn the model stays on that side, until it is grabbed
     let sample = 0;
     let lastX = 0;
     let lastTime = 0;
-    const autoSpeed = () => (reducedMotion ? 0 : AUTO_DEG_PER_S * turn.direction);
+    const autoSpeed = () => (reducedMotion || hold ? 0 : AUTO_DEG_PER_S * turn.direction);
     return {
         get angle() { return turn.angle; },
         get dragging() { return dragging; },
         step(dt) {
+            if (tween) {
+                tween = stepTween(tween, turn, dt);
+                return;
+            }
             if (!dragging) {
                 const target = autoSpeed();
                 turn.velocity = target + (turn.velocity - target) * Math.exp(-dt / FRICTION_S);
@@ -34,6 +57,8 @@ export function createTurn(reducedMotion) {
             }
         },
         grab(x, time) {
+            tween = null;
+            hold = false;
             dragging = true;
             sample = 0;
             lastX = x;
@@ -55,18 +80,26 @@ export function createTurn(reducedMotion) {
         },
         /** Keyboard: a push of about KEY_STEP_DEG in the given direction. */
         nudge(sign) {
+            tween = null;
+            hold = false;
             turn.direction = sign;
             turn.velocity += sign * KEY_STEP_DEG / FRICTION_S;
+        },
+        /**
+         * Turns the model to an angle (degrees), in the given direction (1 or -1), then holds it
+         * there: the photo of the polaroid and the 3D show the same side.
+         */
+        turnTo(target, direction) {
+            const delta = turnDelta(turn.angle, target, direction);
+            tween = { from: turn.angle, delta, t: 0, duration: reducedMotion ? 0.001 : 0.7 + Math.abs(delta) / 180 * 0.5 };
+            hold = true;
+            if (direction) turn.direction = direction;
         },
     };
 }
 
 const DESCENT_MS = 1100;
 const LIFT_CURVE = 1.6;
-
-// Starts gently, lands softly: the last part of the way slows down to a stop, with no bounce. The
-// bounce used to sink the site view under the wooden sides, which then stuck out around it.
-const easeInOut = t => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
 /** The descent of the site view. */
 export function createDescent(reducedMotion) {
