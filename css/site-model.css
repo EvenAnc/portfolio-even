@@ -332,21 +332,62 @@
    the eight first photos, one every 45 degrees around it. A click brings the next one on top and
    turns the 3D to the same side. Like the reference photo of the drawings, larger, with two
    cards behind it for the stack. */
-.site-model-polaroid {
+.site-model-polaroid-wrap {
     position: absolute;
     top: 92px;
     left: max(20px, calc(50% - 610px));
     z-index: 3;
     width: 230px;
+    transform: rotate(-6deg);
+}
+
+.site-model-polaroid {
+    position: relative;
+    display: block;
+    width: 100%;
     padding: 0;
     border: 0;
     background: none;
     cursor: pointer;
-    transform: rotate(-6deg);
     transition: transform 0.35s var(--ease-overshoot);
 }
 
-.site-model-polaroid:hover { transform: rotate(-4deg) translateY(-4px); }
+.site-model-polaroid:hover { transform: rotate(2deg) translateY(-4px); }
+
+/* The magnifier, top right of the polaroid: the eight photos full size in the viewer. */
+.site-model-polaroid-zoom {
+    position: absolute;
+    top: -14px;
+    right: -14px;
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 6px 14px rgb(0 0 0 / 45%);
+    cursor: zoom-in;
+    transition: transform 0.3s var(--ease-overshoot);
+}
+
+.site-model-polaroid-zoom:hover { transform: scale(1.1); }
+
+.site-model-polaroid-zoom:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: 3px;
+}
+
+.site-model-polaroid-zoom svg {
+    width: 22px;
+    height: 22px;
+    fill: none;
+    stroke: var(--white);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+}
 
 .site-model-polaroid:focus-visible {
     border-radius: 4px;
@@ -429,11 +470,10 @@
 
 /* Below this width the text would run under it: the polaroid sits above the text instead. */
 @media (max-width: 1240px) {
-    .site-model-polaroid {
+    .site-model-polaroid-wrap {
         position: relative;
         top: auto;
         left: auto;
-        display: block;
         margin: -18px auto 34px;
         width: 210px;
     }
@@ -482,7 +522,12 @@
         margin-left: -35%;
     }
 
-    .site-model-polaroid { width: 180px; }
+    .site-model-polaroid-wrap { width: 180px; }
+
+    .site-model-polaroid-zoom {
+        width: 36px;
+        height: 36px;
+    }
 
     .site-model-credit {
         margin-right: 0;

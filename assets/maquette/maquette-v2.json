@@ -1,6 +1,6 @@
 {
  "format": 1,
- "bin": "maquette-v1.bin",
+ "bin": "maquette-v2.bin",
  "vertexCount": 63738,
  "indexCount": 373464,
  "indexType": "u16",
@@ -12,7 +12,7 @@
  ],
  "boundsMax": [
   1.0,
-  0.561794,
+  0.559772,
   0.986022
  ],
  "north": [
@@ -25,10 +25,10 @@
   -0.023294
  ],
  "textures": {
-  "wood": "maquette-v1-bois.webp",
-  "woodNormal": "maquette-v1-bois-normales.webp",
-  "woodSide": "maquette-v1-cotes.webp",
-  "site": "maquette-v1-site.webp"
+  "wood": "maquette-v2-bois.webp",
+  "woodNormal": "maquette-v2-bois-normales.webp",
+  "woodSide": "maquette-v2-cotes.webp",
+  "site": "maquette-v2-site.webp"
  },
  "layout": {
   "position": {
@@ -66,7 +66,7 @@
   1.9720447783224526
  ],
  "vegetation": {
-  "file": "maquette-v1-vegetation.webp",
+  "file": "maquette-v2-vegetation.webp",
   "metresPerLevel": 0.1,
   "unitsPerMetre": 0.001233750151641359,
   "exaggeration": 2.0,

@@ -21,6 +21,7 @@ import { createTurn, createDescent } from './motion.js';
 import { createCompass, createPin, headingOf } from './overlay.js';
 import { createSun } from './sun.js';
 import { createPolaroid } from './polaroid.js';
+import { openGallery } from '../lightbox/lightbox.js';
 
 const THREE_URL = new URL('../../vendor/three-0.186.1/three.module.js', import.meta.url).href;
 const LOAD_MARGIN = '700px 0px';
@@ -197,7 +198,11 @@ export function initSiteModel() {
         // The polaroid of the real model turns the 3D once it is loaded.
         const link = { turn: null };
         const polaroid = root.closest('.panel')?.querySelector('.site-model-polaroid');
-        if (polaroid) createPolaroid(polaroid, (angle, direction) => link.turn?.turnTo(angle, direction));
+        if (polaroid) {
+            createPolaroid(polaroid, (angle, direction) => link.turn?.turnTo(angle, direction), (photos, index) => {
+                openGallery(photos.map(photo => ({ url: photo.dataset.full, altKey: 'alt_model_photo' })), index);
+            });
+        }
         const observer = new IntersectionObserver(entries => {
             if (!entries.some(entry => entry.isIntersecting)) return;
             observer.disconnect();

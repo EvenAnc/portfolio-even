@@ -15,8 +15,9 @@ const NEXT_DIRECTION = -1; // the photos were taken turning that way round the m
 /**
  * @param {HTMLElement} root the polaroid button
  * @param {(angle: number, direction: number) => void} onShow called with the angle of the photo shown
+ * @param {(photos: HTMLImageElement[], index: number) => void} onZoom the magnifier: the photos full size
  */
-export function createPolaroid(root, onShow) {
+export function createPolaroid(root, onShow, onZoom) {
     const photos = [...root.querySelectorAll('.site-model-polaroid-photo')];
     const count = root.querySelector('.site-model-polaroid-count');
     if (photos.length === 0) return;
@@ -48,4 +49,6 @@ export function createPolaroid(root, onShow) {
         prefetch();
     });
     root.addEventListener('animationend', () => root.classList.remove('is-shuffling'));
+    const zoom = root.parentElement?.querySelector('.site-model-polaroid-zoom');
+    if (zoom) zoom.addEventListener('click', () => onZoom(photos, index));
 }
