@@ -207,7 +207,7 @@
     stroke: rgb(255 255 255 / 38%);
     stroke-width: 1.6;
     stroke-linecap: round;
-    stroke-dasharray: 5 7;
+    stroke-dasharray: 7 5 3 6 9 4 4 7;
     vector-effect: non-scaling-stroke;
 }
 
@@ -332,8 +332,8 @@
     stroke-linejoin: round;
 }
 
-/* Once the site view is down, the arrow turns up: the only way left is back up. */
-.site-model-rail.is-down .site-model-drop-arrow { transform: rotate(180deg); }
+/* Once the site view has landed, the arrow turns up: the only way left is back up. */
+.site-model-rail.is-landed .site-model-drop-arrow { transform: rotate(180deg); }
 
 /* The curved arrow under the model: it turns all the way round. */
 .site-model-turn {

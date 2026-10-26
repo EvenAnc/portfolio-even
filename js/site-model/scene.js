@@ -35,7 +35,7 @@ function makeRenderer(THREE, canvas) {
 
 const SUN_HIGH = 0xfffaf4; // near white: the wood keeps the pink of the photos (Even, 26/10/2026)
 const SUN_LOW = 0xffad66;
-const SUN_TOWARDS_VIEWER = 0.35; // the arc leans a little towards the visitor: the front stays lit
+const SUN_TOWARDS_VIEWER = 0.2; // the arc leans a little towards the visitor: the front stays lit, the sides keep their mass
 const SHADOW_SIZE = window.matchMedia('(max-width: 768px)').matches ? 2048 : 4096;
 
 function addLights(THREE, scene, span) {
@@ -82,14 +82,16 @@ function addLights(THREE, scene, span) {
 function fadingShadowMaterial(THREE, width) {
     const material = new THREE.ShadowMaterial({ opacity: 0.34 });
     material.onBeforeCompile = shader => {
-        shader.uniforms.fadeFrom = { value: width * 0.75 };
-        shader.uniforms.fadeTo = { value: width * 1.7 };
+        shader.uniforms.fadeFrom = { value: width * 0.6 };
+        shader.uniforms.fadeTo = { value: width * 1.35 };
         shader.vertexShader = shader.vertexShader
             .replace('#include <common>', '#include <common>\nvarying vec2 vTablePos;')
             .replace('#include <begin_vertex>', '#include <begin_vertex>\nvTablePos = (modelMatrix * vec4(position, 1.0)).xz;');
         shader.fragmentShader = shader.fragmentShader
             .replace('#include <common>', '#include <common>\nvarying vec2 vTablePos;\nuniform float fadeFrom;\nuniform float fadeTo;')
-            .replace('#include <fog_fragment>', 'gl_FragColor.a *= 1.0 - smoothstep(fadeFrom, fadeTo, length(vTablePos));\n#include <fog_fragment>');
+            .replace('#include <fog_fragment>', 'gl_FragColor.a *= 1.0 - smoothstep(fadeFrom, fadeTo, length(vTablePos));\n' +
+                // A faint grain: no visible steps in the fade.
+                'gl_FragColor.a += (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 96.0 * gl_FragColor.a;\n#include <fog_fragment>');
     };
     return material;
 }

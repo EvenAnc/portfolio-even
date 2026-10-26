@@ -29,7 +29,8 @@ const LOAD_MARGIN = '700px 0px';
 // the way down: the real shadow of the site view is enough, and the darkened wood showed as a
 // dark band in the gap (Even, 26/10/2026: the landing looked buggy).
 const TOUCH_GAP = 0.002;
-const SHEET_FADE = 0.65; // share of the descent over which the site view fades in
+const SHEET_FADE_FROM = 0.15; // the site view fades in between these two shares of the descent:
+const SHEET_FADE_TO = 0.7; // nearly transparent, it read as a dark veil (review, 27/10/2026)
 const ARIA_EVERY_MS = 400;
 
 /** Turns the model with the mouse, the finger and the arrow keys. */
@@ -72,7 +73,7 @@ function wireDescent(handle, rail, descent) {
         if (!grab) return;
         const dy = event.clientY - grab.y;
         if (Math.abs(dy) > 4) grab.moved = true;
-        if (grab.moved) descent.set(grab.value + dy / Math.max(1, rail.clientHeight - handle.offsetHeight));
+        if (grab.moved) descent.set(grab.value + dy / Math.max(1, railTravel(rail, handle)));
     });
     const end = event => {
         if (!grab) return;
@@ -101,11 +102,11 @@ function drawFrame(THREE, view, model, parts, now, dt) {
     const lift = descent.step(now) * view.liftMax;
     const width = model.desc.boundsMax[0] - model.desc.boundsMin[0];
     view.pivot.rotation.y = turn.angle * Math.PI / 180;
-    view.sheet.visible = descent.value > 0.0005;
+    view.sheet.visible = descent.value > SHEET_FADE_FROM;
     view.sheet.position.y = lift;
     const touching = view.sheet.visible && lift < TOUCH_GAP * width;
     view.wood.top.visible = !touching;
-    const fade = Math.min(1, descent.value / SHEET_FADE);
+    const fade = Math.min(1, Math.max(0, (descent.value - SHEET_FADE_FROM) / (SHEET_FADE_TO - SHEET_FADE_FROM)));
     fadeSheet(view.sheet, fade * fade * (3 - 2 * fade), touching);
     view.renderer.render(view.scene, view.camera);
     return { touching, settled: !descent.moving && (descent.value === 0 || descent.value === 1) };
@@ -129,6 +130,16 @@ function fadeSheet(sheet, opacity, landed) {
     });
 }
 
+/**
+ * How far the arrow slides: down to just above the small polaroid at the bottom of the rail, which
+ * it used to cover once the site view had landed (review, 27/10/2026).
+ */
+function railTravel(rail, handle) {
+    const photo = rail.querySelector('.site-model-rail-photo');
+    const reserve = photo ? photo.offsetHeight + 6 : 0;
+    return rail.clientHeight - handle.offsetHeight - reserve;
+}
+
 /** Compass, pin, arrow position and the values read by screen readers. */
 function drawOverlay(view, model, parts, frame, now) {
     const { compass, pin, stage, handle, rail, descent, turn } = parts;
@@ -139,7 +150,8 @@ function drawOverlay(view, model, parts, frame, now) {
     const showPin = frame.settled && (descent.value === 0 || frame.touching);
     pin.update((parts.pinPoint.x + 1) / 2 * stage.clientWidth, (1 - parts.pinPoint.y) / 2 * stage.clientHeight, showPin);
     rail.classList.toggle('is-down', descent.value > 0.02);
-    const travel = rail.clientHeight - handle.offsetHeight;
+    rail.classList.toggle('is-landed', frame.touching);
+    const travel = railTravel(rail, handle);
     handle.style.transform = `translate3d(0, ${(descent.value * travel).toFixed(1)}px, 0)`;
     if (now - parts.ariaTime > ARIA_EVERY_MS) {
         parts.ariaTime = now;

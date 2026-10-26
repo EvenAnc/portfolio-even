@@ -8,7 +8,7 @@
 
 // Not down to the horizon (the wood went dark and the shadow ran off the view), and the dotted arc
 // stops exactly where the sun does: it showed further than the sun could go (Even, 26/10/2026).
-const MIN_DEG = 10;
+const MIN_DEG = window.matchMedia('(max-width: 768px)').matches ? 22 : 10; // a phone: clear of the rail
 const MAX_DEG = 170;
 // Rather low at first (about 35 degrees above the table), like the lamp of the photos: the chisel marks
 // stand out from the start (Even, 26/10/2026). On a phone the arc is tighter and the sun would sit
@@ -23,8 +23,10 @@ function arcOf(stage) {
     const height = stage.clientHeight;
     // On a phone the arc is shifted a little to the left: it stops short of the column of controls
     // on the right, and the sun starts beside the block rather than on its corner.
+    // The top of the arc stays under the compass (review, 27/10/2026: the sun at its highest ran
+    // into it).
     const phone = width < 600;
-    return { width, height, cx: width * (phone ? 0.45 : 0.5), cy: height * 0.66, r: Math.min(width * (phone ? 0.42 : 0.44), height * 0.6) };
+    return { width, height, cx: width * (phone ? 0.44 : 0.5), cy: height * 0.7, r: Math.min(width * (phone ? 0.43 : 0.44), height * 0.58) };
 }
 
 /**
