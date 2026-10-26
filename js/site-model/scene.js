@@ -95,6 +95,31 @@ function buildWood(THREE, model) {
     return { mesh, top, topColour: top.color.clone() };
 }
 
+/**
+ * The real pin of the model, in 3D (Even, 26/10/2026: the eye shows it instead of the drawn
+ * marker): a red plastic push pin shaped like a spool, rounded cap, thin stem, wide rounded base,
+ * and the steel needle showing a little above the wood. Its size comes from the photos: the red
+ * head, found on the 21 photos, sits 0.083 above the wood at its base.
+ */
+function buildRealPin(THREE, desc) {
+    const profile = [
+        [0, 0.0315], [0.018, 0.0325], [0.027, 0.037], [0.029, 0.043], [0.026, 0.05], [0.014, 0.055],
+        [0.0095, 0.06], [0.0085, 0.08], [0.0095, 0.098], [0.016, 0.102], [0.023, 0.105],
+        [0.0245, 0.112], [0.022, 0.119], [0.012, 0.1225], [0, 0.123],
+    ].map(([r, y]) => new THREE.Vector2(r, y));
+    const plastic = new THREE.MeshPhysicalMaterial({ color: 0xe0201b, roughness: 0.3, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.25 });
+    const steel = new THREE.MeshStandardMaterial({ color: 0xc9c9c9, roughness: 0.35, metalness: 0.6 });
+    const head = new THREE.Mesh(new THREE.LatheGeometry(profile, 40), plastic);
+    const needle = new THREE.Mesh(new THREE.CylinderGeometry(0.0022, 0.0018, 0.06, 12), steel);
+    needle.position.y = 0.0015; // half of it in the wood
+    const pin = new THREE.Group();
+    pin.add(head, needle);
+    pin.traverse(part => { part.castShadow = true; });
+    pin.position.set(desc.pin[0], desc.pin[1] - 0.003, desc.pin[2]);
+    pin.visible = false;
+    return pin;
+}
+
 /** Frames the model: camera 40 degrees above, at the distance where it fills the view. */
 function frameCamera(camera, desc, width, height) {
     const span = desc.boundsMax.map((v, i) => v - desc.boundsMin[i]);
@@ -140,8 +165,10 @@ export function buildScene(THREE, canvas, model) {
     pivot.add(wood.mesh);
     const sheet = buildSheet(THREE, model, SHEET_COLUMNS, SKIRT_COLOUR);
     pivot.add(sheet);
+    const realPin = buildRealPin(THREE, model.desc);
+    pivot.add(realPin);
     return {
-        renderer, scene, camera, pivot, wood, sheet,
+        renderer, scene, camera, pivot, wood, sheet, realPin,
         setSun: lights.setSun,
         liftMax: modelWidth * 1.6,
         resize(width, height) {

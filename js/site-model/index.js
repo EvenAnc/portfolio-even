@@ -117,6 +117,7 @@ function drawOverlay(view, model, parts, frame, now) {
     view.pivot.localToWorld(parts.pinPoint).project(view.camera);
     const showPin = frame.settled && (descent.value === 0 || frame.touching);
     pin.update((parts.pinPoint.x + 1) / 2 * stage.clientWidth, (1 - parts.pinPoint.y) / 2 * stage.clientHeight, showPin);
+    rail.classList.toggle('is-down', descent.value > 0.02);
     const travel = rail.clientHeight - handle.offsetHeight;
     handle.style.transform = `translate3d(0, ${(descent.value * travel).toFixed(1)}px, 0)`;
     if (now - parts.ariaTime > ARIA_EVERY_MS) {
@@ -124,6 +125,18 @@ function drawOverlay(view, model, parts, frame, now) {
         stage.setAttribute('aria-valuenow', String(Math.round(heading)));
         handle.setAttribute('aria-valuenow', String(Math.round(descent.value * 100)));
     }
+}
+
+/** The eye: hides the name and the drawn marker, and shows the real pin of the model in 3D. */
+function wireEye(root, view) {
+    const eye = root.querySelector('.site-model-eye');
+    if (!eye) return;
+    eye.addEventListener('click', () => {
+        const showReal = eye.getAttribute('aria-pressed') !== 'true';
+        eye.setAttribute('aria-pressed', String(showReal));
+        root.classList.toggle('is-real-pin', showReal);
+        view.realPin.visible = showReal;
+    });
 }
 
 /** Runs the drawing loop while the model is on screen and the tab is visible. */
@@ -187,6 +200,7 @@ async function start(root, link) {
     wireTurn(stage, parts.turn, root);
     link.turn = parts.turn;
     wireDescent(parts.handle, parts.rail, parts.descent);
+    wireEye(root, view);
     canvas.addEventListener('webglcontextlost', () => root.classList.add('is-unavailable'));
     root.classList.remove('is-loading');
     runLoop(THREE, view, model, parts, root);

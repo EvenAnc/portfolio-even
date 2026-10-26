@@ -6,10 +6,10 @@
  * where it is put while the model turns under it, like the sun over the real site.
  */
 
-// Not down to the horizon: below 14 degrees the shadow on the table ran past the edge of the view
-// and the wood went dark (second review, 26/10/2026).
-const MIN_DEG = 14;
-const MAX_DEG = 166;
+// Not down to the horizon (the wood went dark and the shadow ran off the view), and the dotted arc
+// stops exactly where the sun does: it showed further than the sun could go (Even, 26/10/2026).
+const MIN_DEG = 10;
+const MAX_DEG = 170;
 // Rather low at first (about 35 degrees above the table), like the lamp of the photos: the chisel marks
 // stand out from the start (Even, 26/10/2026). On a phone the arc is tighter and the sun would sit
 // on the edge of the block: a little higher there.
@@ -76,7 +76,11 @@ export function createSun(stage, handle, path, apply) {
     const resize = () => {
         arc = arcOf(stage);
         path.ownerSVGElement.setAttribute('viewBox', `0 0 ${arc.width} ${arc.height}`);
-        path.setAttribute('d', `M ${arc.cx - arc.r} ${arc.cy} A ${arc.r} ${arc.r} 0 0 1 ${arc.cx + arc.r} ${arc.cy}`);
+        const end = degrees => {
+            const a = degrees * Math.PI / 180;
+            return `${(arc.cx + arc.r * Math.cos(a)).toFixed(1)} ${(arc.cy - arc.r * Math.sin(a)).toFixed(1)}`;
+        };
+        path.setAttribute('d', `M ${end(MAX_DEG)} A ${arc.r} ${arc.r} 0 0 1 ${end(MIN_DEG)}`);
         place();
     };
     set(angle);
